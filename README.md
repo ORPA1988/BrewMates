@@ -32,5 +32,10 @@ Untappd-Check-in mit dem Beer-with-Me-Beacon:
 
 ## 🚀 Status
 
-Konzeptphase – dieses Repository enthält aktuell die vollständige Design- und
-Architekturdokumentation als Grundlage für die Implementierung (empfohlener Stack: **Flutter + Supabase**).
+Phase 0 (Fundament) hat begonnen. Das Repository enthält:
+
+- **`docs/`** – vollständige Design- und Architekturdokumentation
+- **`app/`** – Flutter-Projektgerüst (Android · iOS · Windows): adaptive Navigation, Theme, Router, alle Kern-Screens als funktionierende Platzhalter mit Demo-Daten ([Anleitung](app/README.md))
+- **`supabase/`** – komplettes Postgres-Schema mit Row-Level-Security-Policies, Abzeichen-Seed und der `notify`-Edge-Function für den Beacon-Fan-out ([Anleitung](supabase/README.md))
+
+CI (GitHub Actions) führt `flutter analyze` und `flutter test` bei jedem Pull Request aus.

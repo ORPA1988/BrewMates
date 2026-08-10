@@ -1,0 +1,17 @@
+# Dart/Flutter
+.dart_tool/
+.packages
+build/
+
+# Generierte Plattform-Shells (per `flutter create` erzeugen, siehe README)
+android/
+ios/
+windows/
+macos/
+linux/
+web/
+
+# IDE
+.idea/
+*.iml
+.vscode/
