@@ -15,3 +15,5 @@ web/
 .idea/
 *.iml
 .vscode/
+.flutter-plugins
+.flutter-plugins-dependencies
