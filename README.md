@@ -7,7 +7,9 @@ BrewMates kombiniert das Beste aus zwei Welten:
 - **Untappd** – Biere entdecken, einchecken, bewerten, Abzeichen sammeln und ein persönliches Bier-Tagebuch führen.
 - **Beer with Me** – mit einem Tap den Freunden sagen *„Ich trinke gerade ein Bier – komm vorbei!"*, Freunde live auf der Karte sehen und spontane Treffen ermöglichen.
 
-**Plattformen:** Android · iOS · Windows (sowie macOS und Web als Bonus über dieselbe Codebasis).
+**Plattform-Fokus: Android** (die iOS-Option bleibt über dieselbe Flutter-Codebasis offen; Windows/macOS/Web funktionieren als Entwickler-Targets).
+
+**📲 APK herunterladen:** [Neuestes Release](https://github.com/ORPA1988/BrewMates/releases/latest) – `.apk` auf dem Android-Gerät öffnen und installieren.
 
 ## 📚 Dokumentation
 
