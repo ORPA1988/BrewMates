@@ -17,6 +17,25 @@ class _BeersScreenState extends ConsumerState<BeersScreen> {
   String _search = '';
   String? _style;
   bool _alcoholFreeOnly = false;
+  bool _syncing = false;
+
+  Future<void> _syncNow() async {
+    setState(() => _syncing = true);
+    try {
+      final count =
+          await ref.read(communitySyncProvider).syncFromGitHub();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Datenbank aktuell – $count Einträge geladen 🍺')));
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content:
+              Text('Kein Internet – lokale Datenbank bleibt gültig.')));
+    } finally {
+      if (mounted) setState(() => _syncing = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +47,17 @@ class _BeersScreenState extends ConsumerState<BeersScreen> {
       appBar: AppBar(
         title: const Text('Entdecken'),
         actions: [
+          IconButton(
+            icon: _syncing
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.sync),
+            tooltip: 'Datenbank von GitHub aktualisieren',
+            onPressed: _syncing ? null : _syncNow,
+          ),
           IconButton(
             icon: const Icon(Icons.add),
             tooltip: 'Bier hinzufügen',

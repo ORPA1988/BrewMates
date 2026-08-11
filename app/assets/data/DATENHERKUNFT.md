@@ -1,0 +1,3 @@
+# Datenherkunft
+
+Die Bierdaten in `beers-at.json` stammen aus dem Trainingswissen eines KI-Modells (Stand ca. 2025) und wurden redaktionell zusammengestellt — ohne Gewähr auf Vollständigkeit oder Richtigkeit einzelner Angaben (z. B. Alkoholgehalt oder Sortimentsstand). Das Feld `community_rating` ist eine konservative redaktionelle Schätzung auf Basis des allgemeinen Rufs der Biere und kein gemessener oder von einer Plattform übernommener Wert. Beschreibungstexte sind Paraphrasen und keine wörtlichen Zitate der Brauereien. Korrekturen und Ergänzungen sind ausdrücklich willkommen — bitte per GitHub-Issue melden.

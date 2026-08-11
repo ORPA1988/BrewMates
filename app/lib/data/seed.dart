@@ -484,8 +484,8 @@ Future<void> seedDatabase(AppDatabase db) async {
         status: SessionStatus.active,
         startedAt: now.subtract(const Duration(minutes: 40)),
         expiresAt: now.add(const Duration(hours: 2)),
-        latitude: const Value(48.1374),
-        longitude: const Value(11.5755),
+        latitude: const Value(48.2082),
+        longitude: const Value(16.3738),
       ),
       // Beendete Session von Ben (gestern).
       SessionsCompanion.insert(

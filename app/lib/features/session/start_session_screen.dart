@@ -55,8 +55,8 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
     // damit Marker auf der Karte nicht übereinanderliegen.
     // Echtes GPS folgt mit geolocator.
     final offset = venue.hashCode % 20;
-    final latitude = shareLocation ? 48.1374 + offset * 0.001 : null;
-    final longitude = shareLocation ? 11.5755 + offset * 0.0015 : null;
+    final latitude = shareLocation ? 48.2082 + offset * 0.001 : null;
+    final longitude = shareLocation ? 16.3738 + offset * 0.0015 : null;
 
     try {
       final earned = await ref.read(actionsProvider).startSession(

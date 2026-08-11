@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/providers.dart';
 
@@ -27,7 +28,7 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
   final _nameController = TextEditingController();
   final _styleController = TextEditingController();
   final _breweryController = TextEditingController();
-  final _countryController = TextEditingController(text: 'Deutschland');
+  final _countryController = TextEditingController(text: 'Österreich');
   final _cityController = TextEditingController();
   final _abvController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -58,6 +59,49 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
     return null;
   }
 
+  /// Vorausgefülltes GitHub-Issue-Formular („🍺 Bier vorschlagen") öffnen —
+  /// so landet der Vorschlag in der gemeinsamen Community-Datenbank.
+  Uri _proposalUrl() {
+    return Uri.https('github.com', '/ORPA1988/BrewMates/issues/new', {
+      'template': 'bier-vorschlag.yml',
+      'title': '[Bier] ${_nameController.text.trim()}',
+      'biername': _nameController.text.trim(),
+      'brauerei': _breweryController.text.trim(),
+      'ort': _cityController.text.trim(),
+      'stil': _styleController.text.trim(),
+      'abv': _abvController.text.trim(),
+      'beschreibung': _descriptionController.text.trim(),
+    });
+  }
+
+  Future<void> _offerCommunityProposal() async {
+    final propose = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Der Community vorschlagen?'),
+        content: const Text(
+            'Dein Bier ist lokal gespeichert. Soll es zusätzlich in die '
+            'gemeinsame BrewMates-Datenbank auf GitHub? Es öffnet sich ein '
+            'vorausgefülltes Formular – absenden genügt (GitHub-Konto '
+            'nötig). Nach Prüfung bekommen es alle Nutzer beim nächsten '
+            'Sync.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Nur lokal'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Vorschlagen 🍺'),
+          ),
+        ],
+      ),
+    );
+    if (propose ?? false) {
+      await launchUrl(_proposalUrl(), mode: LaunchMode.externalApplication);
+    }
+  }
+
   Future<void> _save() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     setState(() => _saving = true);
@@ -74,6 +118,8 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
             isAlcoholFree: _isAlcoholFree,
             description: description.isEmpty ? null : description,
           );
+      if (!mounted) return;
+      await _offerCommunityProposal();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Danke! Dein Bier ist drin 🍺')),

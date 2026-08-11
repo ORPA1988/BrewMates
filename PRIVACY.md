@@ -4,11 +4,12 @@
 
 ## 1. Kurzfassung
 
-BrewMates speichert alle Daten ausschließlich lokal auf Ihrem Gerät. Es gibt
-keine Benutzerkonten, keine Server des Anbieters, keine Analyse- oder
-Werbe-SDKs und keine Übertragung personenbezogener Daten an uns. Die einzige
-Netzwerkverbindung der App ist das Laden von Kartenkacheln von Servern der
-OpenStreetMap Foundation.
+BrewMates speichert alle Nutzerdaten ausschließlich lokal auf Ihrem Gerät.
+Es gibt keine Benutzerkonten, keine Server des Anbieters, keine Analyse-
+oder Werbe-SDKs und keine Übertragung personenbezogener Daten an uns. Die
+App stellt genau zwei rein lesende Netzwerkverbindungen her: das Laden von
+Kartenkacheln von Servern der OpenStreetMap Foundation und das Laden der
+redaktionellen Bier-/Brauerei-Datenbank von GitHub.
 
 ## 2. Verantwortlicher
 
@@ -48,8 +49,26 @@ Diese Übertragung ist für das Anzeigen der Karte technisch erforderlich
 Verarbeitung durch die OSMF gilt deren Datenschutzerklärung:
 <https://osmfoundation.org/wiki/Privacy_Policy>
 
-Wenn Sie die Kartenansicht nicht öffnen, findet keine Netzwerkverbindung
-statt.
+Wenn Sie die Kartenansicht nicht öffnen, findet dafür keine
+Netzwerkverbindung statt.
+
+## 4a. Community-Datenbank von GitHub
+
+Die App lädt beim Start und auf Wunsch („Aktualisieren"-Knopf im
+Entdecken-Bereich) die redaktionelle Bier- und Brauerei-Datenbank als
+JSON-Dateien von `raw.githubusercontent.com` (ein Dienst von GitHub Inc.,
+Teil von Microsoft). Dabei werden technisch bedingt Ihre IP-Adresse und
+technische Anfragedaten an GitHub übertragen; es werden **keine** Inhalte
+von Ihrem Gerät gesendet — der Abruf ist rein lesend. Schlägt der Abruf
+fehl (z. B. offline), verwendet die App die mitgelieferte lokale Kopie.
+Für die Verarbeitung durch GitHub gilt deren Datenschutzerklärung:
+<https://docs.github.com/privacy>
+
+Ihre persönlichen Bewertungen, Check-ins und sonstigen Nutzerdaten werden
+dabei **nicht** übertragen. Wenn Sie freiwillig ein Bier für die
+gemeinsame Datenbank vorschlagen, öffnet die App lediglich die
+GitHub-Webseite mit einem vorausgefüllten Formular in Ihrem Browser; das
+Absenden erfolgt dort mit Ihrem eigenen GitHub-Konto.
 
 ## 5. Was BrewMates NICHT tut
 

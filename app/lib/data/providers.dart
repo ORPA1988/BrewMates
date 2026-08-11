@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 import '../domain/badges.dart';
+import 'community_sync.dart';
 import 'db/database.dart';
 
 // ============================================================================
@@ -39,6 +40,21 @@ final clockProvider = StreamProvider<DateTime>((ref) {
 
 DateTime _now(Ref ref) =>
     ref.watch(clockProvider).valueOrNull ?? DateTime.now();
+
+// ============================================================================
+// Community-Datenbank (GitHub)
+// ============================================================================
+
+final communitySyncProvider =
+    Provider<CommunitySync>((ref) => CommunitySync(ref.watch(databaseProvider)));
+
+/// Läuft einmal beim App-Start: gebündelte Daten importieren, dann still
+/// die neueste Fassung von GitHub holen (offline kein Fehler).
+final communityBootstrapProvider = FutureProvider<void>((ref) async {
+  final sync = ref.watch(communitySyncProvider);
+  await sync.importBundledData();
+  await sync.syncSilently();
+});
 
 // ============================================================================
 // Profil & Freunde
@@ -121,6 +137,16 @@ final beerProvider = StreamProvider.family<BeerWithBrewery?, String>(
 
 final beerStatsProvider = StreamProvider.family<BeerStats, String>(
     (ref, id) => ref.watch(databaseProvider).watchBeerStats(id));
+
+final breweryProvider = StreamProvider.family<Brewery?, String>(
+    (ref, id) => ref.watch(databaseProvider).watchBrewery(id));
+
+final breweryBeersProvider =
+    StreamProvider.family<List<BeerWithBrewery>, String>((ref, id) =>
+        ref.watch(databaseProvider).watchBeersOfBrewery(id));
+
+final breweriesWithLocationProvider = StreamProvider<List<Brewery>>(
+    (ref) => ref.watch(databaseProvider).watchBreweriesWithLocation());
 
 final wishlistProvider = StreamProvider<List<BeerWithBrewery>>((ref) {
   final me = ref.watch(meProvider).valueOrNull;

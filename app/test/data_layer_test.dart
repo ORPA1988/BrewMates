@@ -1,10 +1,12 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:brewmates/data/community_sync.dart';
 import 'package:brewmates/data/db/database.dart';
 import 'package:brewmates/domain/badges.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   late AppDatabase db;
 
   setUp(() {
@@ -133,6 +135,53 @@ void main() {
     expect(await db.watchOnWishlist(me.id, beer.id).first, isTrue);
     await db.toggleWishlist(me.id, beer.id, now);
     expect(await db.watchOnWishlist(me.id, beer.id).first, isFalse);
+  });
+
+  test('Community-Sync: JSON parsen und upserten (idempotent)', () async {
+    const breweriesJson = '''
+    {"version":1,"updated":"2026-08-11","breweries":[{
+      "id":"at-test","name":"Testbrauerei","city":"Wien",
+      "country":"Österreich","address":"Teststraße 1","latitude":48.2,
+      "longitude":16.4,"founded":1900,"website":"https://example.at",
+      "ownership":"Testbesitz","employees":10,"annual_output_hl":5000,
+      "revenue_eur":null,"profit_eur":null,"energy_notes":null,
+      "notes":"Testnotiz","data_status":"Test"}]}''';
+    const beersJson = '''
+    {"version":1,"updated":"2026-08-11","beers":[{
+      "id":"at-test-maerzen","brewery_id":"at-test","name":"Test Märzen",
+      "style":"Märzen","abv":5.0,"ibu":null,"is_alcohol_free":false,
+      "description_manufacturer":"Süffig.",
+      "description_community":"Solide.","community_rating":3.5}]}''';
+
+    final breweryRows = CommunitySync.parseBreweries(breweriesJson);
+    final beerRows = CommunitySync.parseBeers(beersJson);
+    await db.upsertCommunityData(
+        breweryRows: breweryRows, beerRows: beerRows);
+    // Zweiter Import derselben Daten darf nichts duplizieren (Upsert).
+    await db.upsertCommunityData(
+        breweryRows: breweryRows, beerRows: beerRows);
+
+    final found = await db.watchBeers(search: 'test märzen').first;
+    expect(found, hasLength(1));
+    expect(found.single.beer.communityRating, 3.5);
+    expect(found.single.brewery.ownership, 'Testbesitz');
+
+    final located = await db.watchBreweriesWithLocation().first;
+    expect(located.map((b) => b.id), contains('at-test'));
+  });
+
+  test('Gebündelte Österreich-Datenbank wird importiert', () async {
+    final imported = await CommunitySync(db).importBundledData();
+    expect(imported, greaterThan(50),
+        reason: '57 Biere + 26 Brauereien aus den Assets');
+
+    final stiegl = await db.watchBrewery('at-stiegl').first;
+    expect(stiegl, isNotNull);
+    expect(stiegl!.country, 'Österreich');
+    expect(stiegl.latitude, isNotNull);
+
+    final goldbraeu = await db.watchBeersOfBrewery('at-stiegl').first;
+    expect(goldbraeu, isNotEmpty);
   });
 
   test('Community-Bier anlegen und finden', () async {

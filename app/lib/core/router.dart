@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../features/beers/add_beer_screen.dart';
 import '../features/beers/beer_detail_screen.dart';
 import '../features/beers/beers_screen.dart';
+import '../features/beers/brewery_detail_screen.dart';
 import '../features/checkin/checkin_screen.dart';
 import '../features/feed/feed_screen.dart';
 import '../features/map/map_screen.dart';
@@ -62,6 +63,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/beers/add',
         builder: (_, __) => const AddBeerScreen(),
+      ),
+      GoRoute(
+        path: '/brewery/:id',
+        builder: (_, state) =>
+            BreweryDetailScreen(breweryId: state.pathParameters['id']!),
       ),
       GoRoute(
         path: '/profile/badges',

@@ -1,0 +1,78 @@
+name: "🍺 Bier vorschlagen"
+description: "Schlage ein österreichisches Bier für die BrewMates-Datenbank vor. Ein Bot erstellt daraus automatisch einen Pull Request."
+title: "[Bier] "
+labels: ["bier-vorschlag"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke, dass du die BrewMates-Bierdatenbank erweitern möchtest! 🍻
+        Fülle die Felder unten aus — Pflichtfelder sind markiert. Nach dem Absenden
+        erstellt ein Bot automatisch einen Pull Request, den die Maintainer prüfen.
+  - type: input
+    id: biername
+    attributes:
+      label: Biername
+      description: "Wie heißt das Bier? (z. B. Zwettler Original)"
+      placeholder: "z. B. Zwettler Original"
+    validations:
+      required: true
+  - type: input
+    id: brauerei
+    attributes:
+      label: Brauerei
+      description: "Name der Brauerei"
+      placeholder: "z. B. Brauerei Zwettl"
+    validations:
+      required: true
+  - type: input
+    id: ort
+    attributes:
+      label: Ort
+      description: "Ort/Bundesland der Brauerei"
+      placeholder: "z. B. Zwettl, Niederösterreich"
+    validations:
+      required: false
+  - type: input
+    id: stil
+    attributes:
+      label: Bierstil
+      description: "Welcher Stil? (z. B. Märzen, Pils, Weizen, IPA)"
+      placeholder: "z. B. Märzen"
+    validations:
+      required: true
+  - type: input
+    id: abv
+    attributes:
+      label: Alkoholgehalt
+      description: "Alkoholgehalt in % (z. B. 5,2)"
+      placeholder: "z. B. 5,2"
+    validations:
+      required: false
+  - type: dropdown
+    id: alkoholfrei
+    attributes:
+      label: Alkoholfrei?
+      description: "Ist das Bier alkoholfrei?"
+      options:
+        - "Nein"
+        - "Ja"
+      default: 0
+    validations:
+      required: false
+  - type: textarea
+    id: beschreibung
+    attributes:
+      label: Beschreibung
+      description: "Wie beschreibt die Brauerei das Bier? Wie schmeckt es dir?"
+      placeholder: "Geschmack, Besonderheiten, Anlass …"
+    validations:
+      required: false
+  - type: input
+    id: quelle
+    attributes:
+      label: Quelle
+      description: "Link zur Brauerei-/Produktseite"
+      placeholder: "https://…"
+    validations:
+      required: false

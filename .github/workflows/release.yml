@@ -9,6 +9,13 @@ on:
   push:
     tags:
       - "v*"
+  # Manuell aus dem Actions-Tab auslösbar („Run workflow"): erstellt
+  # Tag + Release mit der angegebenen Version.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Versions-Tag, z. B. v1.1.0"
+        required: true
 
 permissions:
   contents: write
@@ -38,17 +45,26 @@ jobs:
       - run: flutter test
       - run: flutter build apk --release
       - run: flutter build appbundle --release
+      - name: Version bestimmen
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          fi
       - name: Artefakte benennen
         run: |
-          cp build/app/outputs/flutter-apk/app-release.apk "brewmates-${{ github.ref_name }}.apk"
-          cp build/app/outputs/bundle/release/app-release.aab "brewmates-${{ github.ref_name }}.aab"
+          cp build/app/outputs/flutter-apk/app-release.apk "brewmates-${{ steps.version.outputs.tag }}.apk"
+          cp build/app/outputs/bundle/release/app-release.aab "brewmates-${{ steps.version.outputs.tag }}.aab"
       - name: GitHub-Release erstellen
         uses: softprops/action-gh-release@v2
         with:
-          name: BrewMates ${{ github.ref_name }}
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: BrewMates ${{ steps.version.outputs.tag }}
           files: |
-            app/brewmates-${{ github.ref_name }}.apk
-            app/brewmates-${{ github.ref_name }}.aab
+            app/brewmates-${{ steps.version.outputs.tag }}.apk
+            app/brewmates-${{ steps.version.outputs.tag }}.aab
           body: |
             ## 🍻 BrewMates für Android
 

@@ -7,19 +7,34 @@ import 'package:latlong2/latlong.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
 
-/// Live-Karte: zeigt ausschließlich aktive Sessions bestätigter Freunde
-/// (Privatsphäre-Modell siehe docs/04-datenmodell.md).
-class MapScreen extends ConsumerWidget {
+/// Live-Karte: aktive Sessions bestätigter Freunde (Privatsphäre-Modell
+/// siehe docs/04-datenmodell.md) plus optionale Ebene mit österreichischen
+/// Brauereistandorten aus der Community-Datenbank.
+class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MapScreen> createState() => _MapScreenState();
+}
+
+class _MapScreenState extends ConsumerState<MapScreen> {
+  bool _showBreweries = true;
+
+  // Wien – Fokusmarkt Österreich.
+  static const _fallbackCenter = LatLng(48.2082, 16.3738);
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final sessions = ref.watch(activeSessionsProvider).valueOrNull ?? [];
     final located = sessions
-        .where((d) =>
-            d.session.latitude != null && d.session.longitude != null)
+        .where(
+            (d) => d.session.latitude != null && d.session.longitude != null)
         .toList();
+    final breweries = _showBreweries
+        ? (ref.watch(breweriesWithLocationProvider).valueOrNull ??
+            const <Brewery>[])
+        : const <Brewery>[];
 
     return Scaffold(
       appBar: AppBar(title: const Text('Karte')),
@@ -30,8 +45,8 @@ class MapScreen extends ConsumerWidget {
               initialCenter: located.isNotEmpty
                   ? LatLng(located.first.session.latitude!,
                       located.first.session.longitude!)
-                  : const LatLng(48.1374, 11.5755),
-              initialZoom: 13,
+                  : _fallbackCenter,
+              initialZoom: located.isNotEmpty ? 13 : 7,
             ),
             children: [
               TileLayer(
@@ -40,29 +55,38 @@ class MapScreen extends ConsumerWidget {
               ),
               MarkerLayer(
                 markers: [
+                  for (final b in breweries) _breweryMarker(context, b),
                   for (final d in located) _sessionMarker(context, d),
                 ],
               ),
             ],
           ),
-          // Datenschutz-Hinweis: was die Karte zeigt – und was nicht.
+          // Ebenen-Umschalter + Datenschutz-Hinweis.
           Positioned(
             top: 12,
             left: 0,
             right: 0,
-            child: Center(
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surface.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(16),
+            child: Column(
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    '🔒 Nur Freunde · nur während aktiver Sessions',
+                    style: theme.textTheme.labelSmall,
+                  ),
                 ),
-                child: Text(
-                  '🔒 Nur Freunde · nur während aktiver Sessions',
-                  style: theme.textTheme.labelSmall,
+                const SizedBox(height: 8),
+                FilterChip(
+                  label: const Text('🏭 Brauereien'),
+                  selected: _showBreweries,
+                  onSelected: (v) => setState(() => _showBreweries = v),
                 ),
-              ),
+              ],
             ),
           ),
           Positioned(
@@ -105,6 +129,40 @@ class MapScreen extends ConsumerWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  Marker _breweryMarker(BuildContext context, Brewery b) {
+    final theme = Theme.of(context);
+    return Marker(
+      point: LatLng(b.latitude!, b.longitude!),
+      width: 90,
+      height: 52,
+      alignment: Alignment.center,
+      child: GestureDetector(
+        onTap: () => context.push('/brewery/${b.id}'),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('🏭', style: TextStyle(fontSize: 20)),
+            Container(
+              constraints: const BoxConstraints(maxWidth: 88),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface.withOpacity(0.85),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                b.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelSmall,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

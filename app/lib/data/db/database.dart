@@ -44,6 +44,19 @@ class Breweries extends Table {
   TextColumn get country => text()();
   TextColumn get city => text()();
 
+  // Detailinfos aus der Community-Datenbank (breweries-at.json), alle optional.
+  TextColumn get address => text().nullable()();
+  RealColumn get latitude => real().nullable()();
+  RealColumn get longitude => real().nullable()();
+  IntColumn get founded => integer().nullable()();
+  TextColumn get website => text().nullable()();
+  TextColumn get ownership => text().nullable()();
+  IntColumn get employees => integer().nullable()();
+  IntColumn get annualOutputHl => integer().nullable()();
+  IntColumn get revenueEur => integer().nullable()();
+  TextColumn get notes => text().nullable()();
+  TextColumn get dataStatus => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -59,6 +72,12 @@ class Beers extends Table {
   BoolColumn get isAlcoholFree => boolean().withDefault(const Constant(false))();
   BoolColumn get isUserSubmitted =>
       boolean().withDefault(const Constant(false))();
+
+  /// Kundenerfahrungen/Verkostungsnotizen aus der Community-Datenbank.
+  TextColumn get descriptionCommunity => text().nullable()();
+
+  /// Redaktionelle Community-Bewertung (0–5) aus der Datenbank, kein Messwert.
+  RealColumn get communityRating => real().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -239,13 +258,31 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (m) async {
           await m.createAll();
           await seedDatabase(this);
+        },
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            // v2: Community-Datenbank-Felder (Österreich-Fokus).
+            await m.addColumn(breweries, breweries.address);
+            await m.addColumn(breweries, breweries.latitude);
+            await m.addColumn(breweries, breweries.longitude);
+            await m.addColumn(breweries, breweries.founded);
+            await m.addColumn(breweries, breweries.website);
+            await m.addColumn(breweries, breweries.ownership);
+            await m.addColumn(breweries, breweries.employees);
+            await m.addColumn(breweries, breweries.annualOutputHl);
+            await m.addColumn(breweries, breweries.revenueEur);
+            await m.addColumn(breweries, breweries.notes);
+            await m.addColumn(breweries, breweries.dataStatus);
+            await m.addColumn(beers, beers.descriptionCommunity);
+            await m.addColumn(beers, beers.communityRating);
+          }
         },
       );
 
@@ -590,6 +627,40 @@ class AppDatabase extends _$AppDatabase {
         description: Value(description),
         isUserSubmitted: const Value(true),
       ));
+
+  Stream<Brewery?> watchBrewery(String id) =>
+      (select(breweries)..where((t) => t.id.equals(id))).watchSingleOrNull();
+
+  Stream<List<BeerWithBrewery>> watchBeersOfBrewery(String breweryId) {
+    final query = select(beers).join([
+      innerJoin(breweries, breweries.id.equalsExp(beers.breweryId)),
+    ])
+      ..where(beers.breweryId.equals(breweryId))
+      ..orderBy([OrderingTerm.asc(beers.name)]);
+    return query.watch().map((rows) => rows
+        .map((row) => BeerWithBrewery(
+              beer: row.readTable(beers),
+              brewery: row.readTable(breweries),
+            ))
+        .toList());
+  }
+
+  /// Brauereien mit bekanntem Standort (für die Karten-Ebene).
+  Stream<List<Brewery>> watchBreweriesWithLocation() => (select(breweries)
+        ..where((t) => t.latitude.isNotNull() & t.longitude.isNotNull())
+        ..orderBy([(t) => OrderingTerm.asc(t.name)]))
+      .watch();
+
+  /// Upsert aus der Community-Datenbank (GitHub-JSON).
+  Future<void> upsertCommunityData({
+    required List<BreweriesCompanion> breweryRows,
+    required List<BeersCompanion> beerRows,
+  }) async {
+    await batch((b) {
+      b.insertAllOnConflictUpdate(breweries, breweryRows);
+      b.insertAllOnConflictUpdate(beers, beerRows);
+    });
+  }
 
   Future<Brewery> getOrCreateBrewery({
     required String id,

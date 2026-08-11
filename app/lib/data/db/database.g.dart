@@ -421,8 +421,89 @@ class $BreweriesTable extends Breweries
   late final GeneratedColumn<String> city = GeneratedColumn<String>(
       'city', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _addressMeta =
+      const VerificationMeta('address');
   @override
-  List<GeneratedColumn> get $columns => [id, name, country, city];
+  late final GeneratedColumn<String> address = GeneratedColumn<String>(
+      'address', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _latitudeMeta =
+      const VerificationMeta('latitude');
+  @override
+  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
+      'latitude', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
+  static const VerificationMeta _longitudeMeta =
+      const VerificationMeta('longitude');
+  @override
+  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
+      'longitude', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
+  static const VerificationMeta _foundedMeta =
+      const VerificationMeta('founded');
+  @override
+  late final GeneratedColumn<int> founded = GeneratedColumn<int>(
+      'founded', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _websiteMeta =
+      const VerificationMeta('website');
+  @override
+  late final GeneratedColumn<String> website = GeneratedColumn<String>(
+      'website', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _ownershipMeta =
+      const VerificationMeta('ownership');
+  @override
+  late final GeneratedColumn<String> ownership = GeneratedColumn<String>(
+      'ownership', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _employeesMeta =
+      const VerificationMeta('employees');
+  @override
+  late final GeneratedColumn<int> employees = GeneratedColumn<int>(
+      'employees', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _annualOutputHlMeta =
+      const VerificationMeta('annualOutputHl');
+  @override
+  late final GeneratedColumn<int> annualOutputHl = GeneratedColumn<int>(
+      'annual_output_hl', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _revenueEurMeta =
+      const VerificationMeta('revenueEur');
+  @override
+  late final GeneratedColumn<int> revenueEur = GeneratedColumn<int>(
+      'revenue_eur', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+      'notes', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _dataStatusMeta =
+      const VerificationMeta('dataStatus');
+  @override
+  late final GeneratedColumn<String> dataStatus = GeneratedColumn<String>(
+      'data_status', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        country,
+        city,
+        address,
+        latitude,
+        longitude,
+        founded,
+        website,
+        ownership,
+        employees,
+        annualOutputHl,
+        revenueEur,
+        notes,
+        dataStatus
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -456,6 +537,56 @@ class $BreweriesTable extends Breweries
     } else if (isInserting) {
       context.missing(_cityMeta);
     }
+    if (data.containsKey('address')) {
+      context.handle(_addressMeta,
+          address.isAcceptableOrUnknown(data['address']!, _addressMeta));
+    }
+    if (data.containsKey('latitude')) {
+      context.handle(_latitudeMeta,
+          latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta));
+    }
+    if (data.containsKey('longitude')) {
+      context.handle(_longitudeMeta,
+          longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta));
+    }
+    if (data.containsKey('founded')) {
+      context.handle(_foundedMeta,
+          founded.isAcceptableOrUnknown(data['founded']!, _foundedMeta));
+    }
+    if (data.containsKey('website')) {
+      context.handle(_websiteMeta,
+          website.isAcceptableOrUnknown(data['website']!, _websiteMeta));
+    }
+    if (data.containsKey('ownership')) {
+      context.handle(_ownershipMeta,
+          ownership.isAcceptableOrUnknown(data['ownership']!, _ownershipMeta));
+    }
+    if (data.containsKey('employees')) {
+      context.handle(_employeesMeta,
+          employees.isAcceptableOrUnknown(data['employees']!, _employeesMeta));
+    }
+    if (data.containsKey('annual_output_hl')) {
+      context.handle(
+          _annualOutputHlMeta,
+          annualOutputHl.isAcceptableOrUnknown(
+              data['annual_output_hl']!, _annualOutputHlMeta));
+    }
+    if (data.containsKey('revenue_eur')) {
+      context.handle(
+          _revenueEurMeta,
+          revenueEur.isAcceptableOrUnknown(
+              data['revenue_eur']!, _revenueEurMeta));
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+          _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
+    }
+    if (data.containsKey('data_status')) {
+      context.handle(
+          _dataStatusMeta,
+          dataStatus.isAcceptableOrUnknown(
+              data['data_status']!, _dataStatusMeta));
+    }
     return context;
   }
 
@@ -473,6 +604,28 @@ class $BreweriesTable extends Breweries
           .read(DriftSqlType.string, data['${effectivePrefix}country'])!,
       city: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}city'])!,
+      address: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}address']),
+      latitude: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}latitude']),
+      longitude: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}longitude']),
+      founded: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}founded']),
+      website: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}website']),
+      ownership: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}ownership']),
+      employees: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}employees']),
+      annualOutputHl: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}annual_output_hl']),
+      revenueEur: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}revenue_eur']),
+      notes: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}notes']),
+      dataStatus: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}data_status']),
     );
   }
 
@@ -487,11 +640,33 @@ class Brewery extends DataClass implements Insertable<Brewery> {
   final String name;
   final String country;
   final String city;
+  final String? address;
+  final double? latitude;
+  final double? longitude;
+  final int? founded;
+  final String? website;
+  final String? ownership;
+  final int? employees;
+  final int? annualOutputHl;
+  final int? revenueEur;
+  final String? notes;
+  final String? dataStatus;
   const Brewery(
       {required this.id,
       required this.name,
       required this.country,
-      required this.city});
+      required this.city,
+      this.address,
+      this.latitude,
+      this.longitude,
+      this.founded,
+      this.website,
+      this.ownership,
+      this.employees,
+      this.annualOutputHl,
+      this.revenueEur,
+      this.notes,
+      this.dataStatus});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -499,6 +674,39 @@ class Brewery extends DataClass implements Insertable<Brewery> {
     map['name'] = Variable<String>(name);
     map['country'] = Variable<String>(country);
     map['city'] = Variable<String>(city);
+    if (!nullToAbsent || address != null) {
+      map['address'] = Variable<String>(address);
+    }
+    if (!nullToAbsent || latitude != null) {
+      map['latitude'] = Variable<double>(latitude);
+    }
+    if (!nullToAbsent || longitude != null) {
+      map['longitude'] = Variable<double>(longitude);
+    }
+    if (!nullToAbsent || founded != null) {
+      map['founded'] = Variable<int>(founded);
+    }
+    if (!nullToAbsent || website != null) {
+      map['website'] = Variable<String>(website);
+    }
+    if (!nullToAbsent || ownership != null) {
+      map['ownership'] = Variable<String>(ownership);
+    }
+    if (!nullToAbsent || employees != null) {
+      map['employees'] = Variable<int>(employees);
+    }
+    if (!nullToAbsent || annualOutputHl != null) {
+      map['annual_output_hl'] = Variable<int>(annualOutputHl);
+    }
+    if (!nullToAbsent || revenueEur != null) {
+      map['revenue_eur'] = Variable<int>(revenueEur);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || dataStatus != null) {
+      map['data_status'] = Variable<String>(dataStatus);
+    }
     return map;
   }
 
@@ -508,6 +716,38 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       name: Value(name),
       country: Value(country),
       city: Value(city),
+      address: address == null && nullToAbsent
+          ? const Value.absent()
+          : Value(address),
+      latitude: latitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(latitude),
+      longitude: longitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(longitude),
+      founded: founded == null && nullToAbsent
+          ? const Value.absent()
+          : Value(founded),
+      website: website == null && nullToAbsent
+          ? const Value.absent()
+          : Value(website),
+      ownership: ownership == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ownership),
+      employees: employees == null && nullToAbsent
+          ? const Value.absent()
+          : Value(employees),
+      annualOutputHl: annualOutputHl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(annualOutputHl),
+      revenueEur: revenueEur == null && nullToAbsent
+          ? const Value.absent()
+          : Value(revenueEur),
+      notes:
+          notes == null && nullToAbsent ? const Value.absent() : Value(notes),
+      dataStatus: dataStatus == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dataStatus),
     );
   }
 
@@ -519,6 +759,17 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       name: serializer.fromJson<String>(json['name']),
       country: serializer.fromJson<String>(json['country']),
       city: serializer.fromJson<String>(json['city']),
+      address: serializer.fromJson<String?>(json['address']),
+      latitude: serializer.fromJson<double?>(json['latitude']),
+      longitude: serializer.fromJson<double?>(json['longitude']),
+      founded: serializer.fromJson<int?>(json['founded']),
+      website: serializer.fromJson<String?>(json['website']),
+      ownership: serializer.fromJson<String?>(json['ownership']),
+      employees: serializer.fromJson<int?>(json['employees']),
+      annualOutputHl: serializer.fromJson<int?>(json['annualOutputHl']),
+      revenueEur: serializer.fromJson<int?>(json['revenueEur']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      dataStatus: serializer.fromJson<String?>(json['dataStatus']),
     );
   }
   @override
@@ -529,15 +780,53 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       'name': serializer.toJson<String>(name),
       'country': serializer.toJson<String>(country),
       'city': serializer.toJson<String>(city),
+      'address': serializer.toJson<String?>(address),
+      'latitude': serializer.toJson<double?>(latitude),
+      'longitude': serializer.toJson<double?>(longitude),
+      'founded': serializer.toJson<int?>(founded),
+      'website': serializer.toJson<String?>(website),
+      'ownership': serializer.toJson<String?>(ownership),
+      'employees': serializer.toJson<int?>(employees),
+      'annualOutputHl': serializer.toJson<int?>(annualOutputHl),
+      'revenueEur': serializer.toJson<int?>(revenueEur),
+      'notes': serializer.toJson<String?>(notes),
+      'dataStatus': serializer.toJson<String?>(dataStatus),
     };
   }
 
-  Brewery copyWith({String? id, String? name, String? country, String? city}) =>
+  Brewery copyWith(
+          {String? id,
+          String? name,
+          String? country,
+          String? city,
+          Value<String?> address = const Value.absent(),
+          Value<double?> latitude = const Value.absent(),
+          Value<double?> longitude = const Value.absent(),
+          Value<int?> founded = const Value.absent(),
+          Value<String?> website = const Value.absent(),
+          Value<String?> ownership = const Value.absent(),
+          Value<int?> employees = const Value.absent(),
+          Value<int?> annualOutputHl = const Value.absent(),
+          Value<int?> revenueEur = const Value.absent(),
+          Value<String?> notes = const Value.absent(),
+          Value<String?> dataStatus = const Value.absent()}) =>
       Brewery(
         id: id ?? this.id,
         name: name ?? this.name,
         country: country ?? this.country,
         city: city ?? this.city,
+        address: address.present ? address.value : this.address,
+        latitude: latitude.present ? latitude.value : this.latitude,
+        longitude: longitude.present ? longitude.value : this.longitude,
+        founded: founded.present ? founded.value : this.founded,
+        website: website.present ? website.value : this.website,
+        ownership: ownership.present ? ownership.value : this.ownership,
+        employees: employees.present ? employees.value : this.employees,
+        annualOutputHl:
+            annualOutputHl.present ? annualOutputHl.value : this.annualOutputHl,
+        revenueEur: revenueEur.present ? revenueEur.value : this.revenueEur,
+        notes: notes.present ? notes.value : this.notes,
+        dataStatus: dataStatus.present ? dataStatus.value : this.dataStatus,
       );
   Brewery copyWithCompanion(BreweriesCompanion data) {
     return Brewery(
@@ -545,6 +834,21 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       name: data.name.present ? data.name.value : this.name,
       country: data.country.present ? data.country.value : this.country,
       city: data.city.present ? data.city.value : this.city,
+      address: data.address.present ? data.address.value : this.address,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
+      founded: data.founded.present ? data.founded.value : this.founded,
+      website: data.website.present ? data.website.value : this.website,
+      ownership: data.ownership.present ? data.ownership.value : this.ownership,
+      employees: data.employees.present ? data.employees.value : this.employees,
+      annualOutputHl: data.annualOutputHl.present
+          ? data.annualOutputHl.value
+          : this.annualOutputHl,
+      revenueEur:
+          data.revenueEur.present ? data.revenueEur.value : this.revenueEur,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      dataStatus:
+          data.dataStatus.present ? data.dataStatus.value : this.dataStatus,
     );
   }
 
@@ -554,13 +858,39 @@ class Brewery extends DataClass implements Insertable<Brewery> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('country: $country, ')
-          ..write('city: $city')
+          ..write('city: $city, ')
+          ..write('address: $address, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('founded: $founded, ')
+          ..write('website: $website, ')
+          ..write('ownership: $ownership, ')
+          ..write('employees: $employees, ')
+          ..write('annualOutputHl: $annualOutputHl, ')
+          ..write('revenueEur: $revenueEur, ')
+          ..write('notes: $notes, ')
+          ..write('dataStatus: $dataStatus')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, country, city);
+  int get hashCode => Object.hash(
+      id,
+      name,
+      country,
+      city,
+      address,
+      latitude,
+      longitude,
+      founded,
+      website,
+      ownership,
+      employees,
+      annualOutputHl,
+      revenueEur,
+      notes,
+      dataStatus);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -568,7 +898,18 @@ class Brewery extends DataClass implements Insertable<Brewery> {
           other.id == this.id &&
           other.name == this.name &&
           other.country == this.country &&
-          other.city == this.city);
+          other.city == this.city &&
+          other.address == this.address &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude &&
+          other.founded == this.founded &&
+          other.website == this.website &&
+          other.ownership == this.ownership &&
+          other.employees == this.employees &&
+          other.annualOutputHl == this.annualOutputHl &&
+          other.revenueEur == this.revenueEur &&
+          other.notes == this.notes &&
+          other.dataStatus == this.dataStatus);
 }
 
 class BreweriesCompanion extends UpdateCompanion<Brewery> {
@@ -576,12 +917,34 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
   final Value<String> name;
   final Value<String> country;
   final Value<String> city;
+  final Value<String?> address;
+  final Value<double?> latitude;
+  final Value<double?> longitude;
+  final Value<int?> founded;
+  final Value<String?> website;
+  final Value<String?> ownership;
+  final Value<int?> employees;
+  final Value<int?> annualOutputHl;
+  final Value<int?> revenueEur;
+  final Value<String?> notes;
+  final Value<String?> dataStatus;
   final Value<int> rowid;
   const BreweriesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.country = const Value.absent(),
     this.city = const Value.absent(),
+    this.address = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.founded = const Value.absent(),
+    this.website = const Value.absent(),
+    this.ownership = const Value.absent(),
+    this.employees = const Value.absent(),
+    this.annualOutputHl = const Value.absent(),
+    this.revenueEur = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.dataStatus = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   BreweriesCompanion.insert({
@@ -589,6 +952,17 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
     required String name,
     required String country,
     required String city,
+    this.address = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.founded = const Value.absent(),
+    this.website = const Value.absent(),
+    this.ownership = const Value.absent(),
+    this.employees = const Value.absent(),
+    this.annualOutputHl = const Value.absent(),
+    this.revenueEur = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.dataStatus = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         name = Value(name),
@@ -599,6 +973,17 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
     Expression<String>? name,
     Expression<String>? country,
     Expression<String>? city,
+    Expression<String>? address,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
+    Expression<int>? founded,
+    Expression<String>? website,
+    Expression<String>? ownership,
+    Expression<int>? employees,
+    Expression<int>? annualOutputHl,
+    Expression<int>? revenueEur,
+    Expression<String>? notes,
+    Expression<String>? dataStatus,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -606,6 +991,17 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
       if (name != null) 'name': name,
       if (country != null) 'country': country,
       if (city != null) 'city': city,
+      if (address != null) 'address': address,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (founded != null) 'founded': founded,
+      if (website != null) 'website': website,
+      if (ownership != null) 'ownership': ownership,
+      if (employees != null) 'employees': employees,
+      if (annualOutputHl != null) 'annual_output_hl': annualOutputHl,
+      if (revenueEur != null) 'revenue_eur': revenueEur,
+      if (notes != null) 'notes': notes,
+      if (dataStatus != null) 'data_status': dataStatus,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -615,12 +1011,34 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
       Value<String>? name,
       Value<String>? country,
       Value<String>? city,
+      Value<String?>? address,
+      Value<double?>? latitude,
+      Value<double?>? longitude,
+      Value<int?>? founded,
+      Value<String?>? website,
+      Value<String?>? ownership,
+      Value<int?>? employees,
+      Value<int?>? annualOutputHl,
+      Value<int?>? revenueEur,
+      Value<String?>? notes,
+      Value<String?>? dataStatus,
       Value<int>? rowid}) {
     return BreweriesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       country: country ?? this.country,
       city: city ?? this.city,
+      address: address ?? this.address,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      founded: founded ?? this.founded,
+      website: website ?? this.website,
+      ownership: ownership ?? this.ownership,
+      employees: employees ?? this.employees,
+      annualOutputHl: annualOutputHl ?? this.annualOutputHl,
+      revenueEur: revenueEur ?? this.revenueEur,
+      notes: notes ?? this.notes,
+      dataStatus: dataStatus ?? this.dataStatus,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -640,6 +1058,39 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
     if (city.present) {
       map['city'] = Variable<String>(city.value);
     }
+    if (address.present) {
+      map['address'] = Variable<String>(address.value);
+    }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    if (founded.present) {
+      map['founded'] = Variable<int>(founded.value);
+    }
+    if (website.present) {
+      map['website'] = Variable<String>(website.value);
+    }
+    if (ownership.present) {
+      map['ownership'] = Variable<String>(ownership.value);
+    }
+    if (employees.present) {
+      map['employees'] = Variable<int>(employees.value);
+    }
+    if (annualOutputHl.present) {
+      map['annual_output_hl'] = Variable<int>(annualOutputHl.value);
+    }
+    if (revenueEur.present) {
+      map['revenue_eur'] = Variable<int>(revenueEur.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (dataStatus.present) {
+      map['data_status'] = Variable<String>(dataStatus.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -653,6 +1104,17 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
           ..write('name: $name, ')
           ..write('country: $country, ')
           ..write('city: $city, ')
+          ..write('address: $address, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('founded: $founded, ')
+          ..write('website: $website, ')
+          ..write('ownership: $ownership, ')
+          ..write('employees: $employees, ')
+          ..write('annualOutputHl: $annualOutputHl, ')
+          ..write('revenueEur: $revenueEur, ')
+          ..write('notes: $notes, ')
+          ..write('dataStatus: $dataStatus, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -724,6 +1186,18 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("is_user_submitted" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _descriptionCommunityMeta =
+      const VerificationMeta('descriptionCommunity');
+  @override
+  late final GeneratedColumn<String> descriptionCommunity =
+      GeneratedColumn<String>('description_community', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _communityRatingMeta =
+      const VerificationMeta('communityRating');
+  @override
+  late final GeneratedColumn<double> communityRating = GeneratedColumn<double>(
+      'community_rating', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -734,7 +1208,9 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
         ibu,
         description,
         isAlcoholFree,
-        isUserSubmitted
+        isUserSubmitted,
+        descriptionCommunity,
+        communityRating
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -795,6 +1271,18 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
           isUserSubmitted.isAcceptableOrUnknown(
               data['is_user_submitted']!, _isUserSubmittedMeta));
     }
+    if (data.containsKey('description_community')) {
+      context.handle(
+          _descriptionCommunityMeta,
+          descriptionCommunity.isAcceptableOrUnknown(
+              data['description_community']!, _descriptionCommunityMeta));
+    }
+    if (data.containsKey('community_rating')) {
+      context.handle(
+          _communityRatingMeta,
+          communityRating.isAcceptableOrUnknown(
+              data['community_rating']!, _communityRatingMeta));
+    }
     return context;
   }
 
@@ -822,6 +1310,10 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
           .read(DriftSqlType.bool, data['${effectivePrefix}is_alcohol_free'])!,
       isUserSubmitted: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}is_user_submitted'])!,
+      descriptionCommunity: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}description_community']),
+      communityRating: attachedDatabase.typeMapping.read(
+          DriftSqlType.double, data['${effectivePrefix}community_rating']),
     );
   }
 
@@ -841,6 +1333,12 @@ class Beer extends DataClass implements Insertable<Beer> {
   final String? description;
   final bool isAlcoholFree;
   final bool isUserSubmitted;
+
+  /// Kundenerfahrungen/Verkostungsnotizen aus der Community-Datenbank.
+  final String? descriptionCommunity;
+
+  /// Redaktionelle Community-Bewertung (0–5) aus der Datenbank, kein Messwert.
+  final double? communityRating;
   const Beer(
       {required this.id,
       required this.breweryId,
@@ -850,7 +1348,9 @@ class Beer extends DataClass implements Insertable<Beer> {
       this.ibu,
       this.description,
       required this.isAlcoholFree,
-      required this.isUserSubmitted});
+      required this.isUserSubmitted,
+      this.descriptionCommunity,
+      this.communityRating});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -869,6 +1369,12 @@ class Beer extends DataClass implements Insertable<Beer> {
     }
     map['is_alcohol_free'] = Variable<bool>(isAlcoholFree);
     map['is_user_submitted'] = Variable<bool>(isUserSubmitted);
+    if (!nullToAbsent || descriptionCommunity != null) {
+      map['description_community'] = Variable<String>(descriptionCommunity);
+    }
+    if (!nullToAbsent || communityRating != null) {
+      map['community_rating'] = Variable<double>(communityRating);
+    }
     return map;
   }
 
@@ -885,6 +1391,12 @@ class Beer extends DataClass implements Insertable<Beer> {
           : Value(description),
       isAlcoholFree: Value(isAlcoholFree),
       isUserSubmitted: Value(isUserSubmitted),
+      descriptionCommunity: descriptionCommunity == null && nullToAbsent
+          ? const Value.absent()
+          : Value(descriptionCommunity),
+      communityRating: communityRating == null && nullToAbsent
+          ? const Value.absent()
+          : Value(communityRating),
     );
   }
 
@@ -901,6 +1413,9 @@ class Beer extends DataClass implements Insertable<Beer> {
       description: serializer.fromJson<String?>(json['description']),
       isAlcoholFree: serializer.fromJson<bool>(json['isAlcoholFree']),
       isUserSubmitted: serializer.fromJson<bool>(json['isUserSubmitted']),
+      descriptionCommunity:
+          serializer.fromJson<String?>(json['descriptionCommunity']),
+      communityRating: serializer.fromJson<double?>(json['communityRating']),
     );
   }
   @override
@@ -916,6 +1431,8 @@ class Beer extends DataClass implements Insertable<Beer> {
       'description': serializer.toJson<String?>(description),
       'isAlcoholFree': serializer.toJson<bool>(isAlcoholFree),
       'isUserSubmitted': serializer.toJson<bool>(isUserSubmitted),
+      'descriptionCommunity': serializer.toJson<String?>(descriptionCommunity),
+      'communityRating': serializer.toJson<double?>(communityRating),
     };
   }
 
@@ -928,7 +1445,9 @@ class Beer extends DataClass implements Insertable<Beer> {
           Value<int?> ibu = const Value.absent(),
           Value<String?> description = const Value.absent(),
           bool? isAlcoholFree,
-          bool? isUserSubmitted}) =>
+          bool? isUserSubmitted,
+          Value<String?> descriptionCommunity = const Value.absent(),
+          Value<double?> communityRating = const Value.absent()}) =>
       Beer(
         id: id ?? this.id,
         breweryId: breweryId ?? this.breweryId,
@@ -939,6 +1458,12 @@ class Beer extends DataClass implements Insertable<Beer> {
         description: description.present ? description.value : this.description,
         isAlcoholFree: isAlcoholFree ?? this.isAlcoholFree,
         isUserSubmitted: isUserSubmitted ?? this.isUserSubmitted,
+        descriptionCommunity: descriptionCommunity.present
+            ? descriptionCommunity.value
+            : this.descriptionCommunity,
+        communityRating: communityRating.present
+            ? communityRating.value
+            : this.communityRating,
       );
   Beer copyWithCompanion(BeersCompanion data) {
     return Beer(
@@ -956,6 +1481,12 @@ class Beer extends DataClass implements Insertable<Beer> {
       isUserSubmitted: data.isUserSubmitted.present
           ? data.isUserSubmitted.value
           : this.isUserSubmitted,
+      descriptionCommunity: data.descriptionCommunity.present
+          ? data.descriptionCommunity.value
+          : this.descriptionCommunity,
+      communityRating: data.communityRating.present
+          ? data.communityRating.value
+          : this.communityRating,
     );
   }
 
@@ -970,14 +1501,26 @@ class Beer extends DataClass implements Insertable<Beer> {
           ..write('ibu: $ibu, ')
           ..write('description: $description, ')
           ..write('isAlcoholFree: $isAlcoholFree, ')
-          ..write('isUserSubmitted: $isUserSubmitted')
+          ..write('isUserSubmitted: $isUserSubmitted, ')
+          ..write('descriptionCommunity: $descriptionCommunity, ')
+          ..write('communityRating: $communityRating')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, breweryId, name, style, abv, ibu,
-      description, isAlcoholFree, isUserSubmitted);
+  int get hashCode => Object.hash(
+      id,
+      breweryId,
+      name,
+      style,
+      abv,
+      ibu,
+      description,
+      isAlcoholFree,
+      isUserSubmitted,
+      descriptionCommunity,
+      communityRating);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -990,7 +1533,9 @@ class Beer extends DataClass implements Insertable<Beer> {
           other.ibu == this.ibu &&
           other.description == this.description &&
           other.isAlcoholFree == this.isAlcoholFree &&
-          other.isUserSubmitted == this.isUserSubmitted);
+          other.isUserSubmitted == this.isUserSubmitted &&
+          other.descriptionCommunity == this.descriptionCommunity &&
+          other.communityRating == this.communityRating);
 }
 
 class BeersCompanion extends UpdateCompanion<Beer> {
@@ -1003,6 +1548,8 @@ class BeersCompanion extends UpdateCompanion<Beer> {
   final Value<String?> description;
   final Value<bool> isAlcoholFree;
   final Value<bool> isUserSubmitted;
+  final Value<String?> descriptionCommunity;
+  final Value<double?> communityRating;
   final Value<int> rowid;
   const BeersCompanion({
     this.id = const Value.absent(),
@@ -1014,6 +1561,8 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     this.description = const Value.absent(),
     this.isAlcoholFree = const Value.absent(),
     this.isUserSubmitted = const Value.absent(),
+    this.descriptionCommunity = const Value.absent(),
+    this.communityRating = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   BeersCompanion.insert({
@@ -1026,6 +1575,8 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     this.description = const Value.absent(),
     this.isAlcoholFree = const Value.absent(),
     this.isUserSubmitted = const Value.absent(),
+    this.descriptionCommunity = const Value.absent(),
+    this.communityRating = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         breweryId = Value(breweryId),
@@ -1041,6 +1592,8 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     Expression<String>? description,
     Expression<bool>? isAlcoholFree,
     Expression<bool>? isUserSubmitted,
+    Expression<String>? descriptionCommunity,
+    Expression<double>? communityRating,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1053,6 +1606,9 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       if (description != null) 'description': description,
       if (isAlcoholFree != null) 'is_alcohol_free': isAlcoholFree,
       if (isUserSubmitted != null) 'is_user_submitted': isUserSubmitted,
+      if (descriptionCommunity != null)
+        'description_community': descriptionCommunity,
+      if (communityRating != null) 'community_rating': communityRating,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1067,6 +1623,8 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       Value<String?>? description,
       Value<bool>? isAlcoholFree,
       Value<bool>? isUserSubmitted,
+      Value<String?>? descriptionCommunity,
+      Value<double?>? communityRating,
       Value<int>? rowid}) {
     return BeersCompanion(
       id: id ?? this.id,
@@ -1078,6 +1636,8 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       description: description ?? this.description,
       isAlcoholFree: isAlcoholFree ?? this.isAlcoholFree,
       isUserSubmitted: isUserSubmitted ?? this.isUserSubmitted,
+      descriptionCommunity: descriptionCommunity ?? this.descriptionCommunity,
+      communityRating: communityRating ?? this.communityRating,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1112,6 +1672,13 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     if (isUserSubmitted.present) {
       map['is_user_submitted'] = Variable<bool>(isUserSubmitted.value);
     }
+    if (descriptionCommunity.present) {
+      map['description_community'] =
+          Variable<String>(descriptionCommunity.value);
+    }
+    if (communityRating.present) {
+      map['community_rating'] = Variable<double>(communityRating.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1130,6 +1697,8 @@ class BeersCompanion extends UpdateCompanion<Beer> {
           ..write('description: $description, ')
           ..write('isAlcoholFree: $isAlcoholFree, ')
           ..write('isUserSubmitted: $isUserSubmitted, ')
+          ..write('descriptionCommunity: $descriptionCommunity, ')
+          ..write('communityRating: $communityRating, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4217,6 +4786,17 @@ typedef $$BreweriesTableCreateCompanionBuilder = BreweriesCompanion Function({
   required String name,
   required String country,
   required String city,
+  Value<String?> address,
+  Value<double?> latitude,
+  Value<double?> longitude,
+  Value<int?> founded,
+  Value<String?> website,
+  Value<String?> ownership,
+  Value<int?> employees,
+  Value<int?> annualOutputHl,
+  Value<int?> revenueEur,
+  Value<String?> notes,
+  Value<String?> dataStatus,
   Value<int> rowid,
 });
 typedef $$BreweriesTableUpdateCompanionBuilder = BreweriesCompanion Function({
@@ -4224,6 +4804,17 @@ typedef $$BreweriesTableUpdateCompanionBuilder = BreweriesCompanion Function({
   Value<String> name,
   Value<String> country,
   Value<String> city,
+  Value<String?> address,
+  Value<double?> latitude,
+  Value<double?> longitude,
+  Value<int?> founded,
+  Value<String?> website,
+  Value<String?> ownership,
+  Value<int?> employees,
+  Value<int?> annualOutputHl,
+  Value<int?> revenueEur,
+  Value<String?> notes,
+  Value<String?> dataStatus,
   Value<int> rowid,
 });
 
@@ -4267,6 +4858,40 @@ class $$BreweriesTableFilterComposer
   ColumnFilters<String> get city => $composableBuilder(
       column: $table.city, builder: (column) => ColumnFilters(column));
 
+  ColumnFilters<String> get address => $composableBuilder(
+      column: $table.address, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get latitude => $composableBuilder(
+      column: $table.latitude, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get longitude => $composableBuilder(
+      column: $table.longitude, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get founded => $composableBuilder(
+      column: $table.founded, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get website => $composableBuilder(
+      column: $table.website, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get ownership => $composableBuilder(
+      column: $table.ownership, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get employees => $composableBuilder(
+      column: $table.employees, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get annualOutputHl => $composableBuilder(
+      column: $table.annualOutputHl,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get revenueEur => $composableBuilder(
+      column: $table.revenueEur, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get notes => $composableBuilder(
+      column: $table.notes, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get dataStatus => $composableBuilder(
+      column: $table.dataStatus, builder: (column) => ColumnFilters(column));
+
   Expression<bool> beersRefs(
       Expression<bool> Function($$BeersTableFilterComposer f) f) {
     final $$BeersTableFilterComposer composer = $composerBuilder(
@@ -4309,6 +4934,40 @@ class $$BreweriesTableOrderingComposer
 
   ColumnOrderings<String> get city => $composableBuilder(
       column: $table.city, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get address => $composableBuilder(
+      column: $table.address, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get latitude => $composableBuilder(
+      column: $table.latitude, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get longitude => $composableBuilder(
+      column: $table.longitude, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get founded => $composableBuilder(
+      column: $table.founded, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get website => $composableBuilder(
+      column: $table.website, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get ownership => $composableBuilder(
+      column: $table.ownership, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get employees => $composableBuilder(
+      column: $table.employees, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get annualOutputHl => $composableBuilder(
+      column: $table.annualOutputHl,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get revenueEur => $composableBuilder(
+      column: $table.revenueEur, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+      column: $table.notes, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get dataStatus => $composableBuilder(
+      column: $table.dataStatus, builder: (column) => ColumnOrderings(column));
 }
 
 class $$BreweriesTableAnnotationComposer
@@ -4331,6 +4990,39 @@ class $$BreweriesTableAnnotationComposer
 
   GeneratedColumn<String> get city =>
       $composableBuilder(column: $table.city, builder: (column) => column);
+
+  GeneratedColumn<String> get address =>
+      $composableBuilder(column: $table.address, builder: (column) => column);
+
+  GeneratedColumn<double> get latitude =>
+      $composableBuilder(column: $table.latitude, builder: (column) => column);
+
+  GeneratedColumn<double> get longitude =>
+      $composableBuilder(column: $table.longitude, builder: (column) => column);
+
+  GeneratedColumn<int> get founded =>
+      $composableBuilder(column: $table.founded, builder: (column) => column);
+
+  GeneratedColumn<String> get website =>
+      $composableBuilder(column: $table.website, builder: (column) => column);
+
+  GeneratedColumn<String> get ownership =>
+      $composableBuilder(column: $table.ownership, builder: (column) => column);
+
+  GeneratedColumn<int> get employees =>
+      $composableBuilder(column: $table.employees, builder: (column) => column);
+
+  GeneratedColumn<int> get annualOutputHl => $composableBuilder(
+      column: $table.annualOutputHl, builder: (column) => column);
+
+  GeneratedColumn<int> get revenueEur => $composableBuilder(
+      column: $table.revenueEur, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get dataStatus => $composableBuilder(
+      column: $table.dataStatus, builder: (column) => column);
 
   Expression<T> beersRefs<T extends Object>(
       Expression<T> Function($$BeersTableAnnotationComposer a) f) {
@@ -4381,6 +5073,17 @@ class $$BreweriesTableTableManager extends RootTableManager<
             Value<String> name = const Value.absent(),
             Value<String> country = const Value.absent(),
             Value<String> city = const Value.absent(),
+            Value<String?> address = const Value.absent(),
+            Value<double?> latitude = const Value.absent(),
+            Value<double?> longitude = const Value.absent(),
+            Value<int?> founded = const Value.absent(),
+            Value<String?> website = const Value.absent(),
+            Value<String?> ownership = const Value.absent(),
+            Value<int?> employees = const Value.absent(),
+            Value<int?> annualOutputHl = const Value.absent(),
+            Value<int?> revenueEur = const Value.absent(),
+            Value<String?> notes = const Value.absent(),
+            Value<String?> dataStatus = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               BreweriesCompanion(
@@ -4388,6 +5091,17 @@ class $$BreweriesTableTableManager extends RootTableManager<
             name: name,
             country: country,
             city: city,
+            address: address,
+            latitude: latitude,
+            longitude: longitude,
+            founded: founded,
+            website: website,
+            ownership: ownership,
+            employees: employees,
+            annualOutputHl: annualOutputHl,
+            revenueEur: revenueEur,
+            notes: notes,
+            dataStatus: dataStatus,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -4395,6 +5109,17 @@ class $$BreweriesTableTableManager extends RootTableManager<
             required String name,
             required String country,
             required String city,
+            Value<String?> address = const Value.absent(),
+            Value<double?> latitude = const Value.absent(),
+            Value<double?> longitude = const Value.absent(),
+            Value<int?> founded = const Value.absent(),
+            Value<String?> website = const Value.absent(),
+            Value<String?> ownership = const Value.absent(),
+            Value<int?> employees = const Value.absent(),
+            Value<int?> annualOutputHl = const Value.absent(),
+            Value<int?> revenueEur = const Value.absent(),
+            Value<String?> notes = const Value.absent(),
+            Value<String?> dataStatus = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               BreweriesCompanion.insert(
@@ -4402,6 +5127,17 @@ class $$BreweriesTableTableManager extends RootTableManager<
             name: name,
             country: country,
             city: city,
+            address: address,
+            latitude: latitude,
+            longitude: longitude,
+            founded: founded,
+            website: website,
+            ownership: ownership,
+            employees: employees,
+            annualOutputHl: annualOutputHl,
+            revenueEur: revenueEur,
+            notes: notes,
+            dataStatus: dataStatus,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -4457,6 +5193,8 @@ typedef $$BeersTableCreateCompanionBuilder = BeersCompanion Function({
   Value<String?> description,
   Value<bool> isAlcoholFree,
   Value<bool> isUserSubmitted,
+  Value<String?> descriptionCommunity,
+  Value<double?> communityRating,
   Value<int> rowid,
 });
 typedef $$BeersTableUpdateCompanionBuilder = BeersCompanion Function({
@@ -4469,6 +5207,8 @@ typedef $$BeersTableUpdateCompanionBuilder = BeersCompanion Function({
   Value<String?> description,
   Value<bool> isAlcoholFree,
   Value<bool> isUserSubmitted,
+  Value<String?> descriptionCommunity,
+  Value<double?> communityRating,
   Value<int> rowid,
 });
 
@@ -4549,6 +5289,14 @@ class $$BeersTableFilterComposer extends Composer<_$AppDatabase, $BeersTable> {
 
   ColumnFilters<bool> get isUserSubmitted => $composableBuilder(
       column: $table.isUserSubmitted,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get descriptionCommunity => $composableBuilder(
+      column: $table.descriptionCommunity,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get communityRating => $composableBuilder(
+      column: $table.communityRating,
       builder: (column) => ColumnFilters(column));
 
   $$BreweriesTableFilterComposer get breweryId {
@@ -4649,6 +5397,14 @@ class $$BeersTableOrderingComposer
       column: $table.isUserSubmitted,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get descriptionCommunity => $composableBuilder(
+      column: $table.descriptionCommunity,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get communityRating => $composableBuilder(
+      column: $table.communityRating,
+      builder: (column) => ColumnOrderings(column));
+
   $$BreweriesTableOrderingComposer get breweryId {
     final $$BreweriesTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -4702,6 +5458,12 @@ class $$BeersTableAnnotationComposer
 
   GeneratedColumn<bool> get isUserSubmitted => $composableBuilder(
       column: $table.isUserSubmitted, builder: (column) => column);
+
+  GeneratedColumn<String> get descriptionCommunity => $composableBuilder(
+      column: $table.descriptionCommunity, builder: (column) => column);
+
+  GeneratedColumn<double> get communityRating => $composableBuilder(
+      column: $table.communityRating, builder: (column) => column);
 
   $$BreweriesTableAnnotationComposer get breweryId {
     final $$BreweriesTableAnnotationComposer composer = $composerBuilder(
@@ -4799,6 +5561,8 @@ class $$BeersTableTableManager extends RootTableManager<
             Value<String?> description = const Value.absent(),
             Value<bool> isAlcoholFree = const Value.absent(),
             Value<bool> isUserSubmitted = const Value.absent(),
+            Value<String?> descriptionCommunity = const Value.absent(),
+            Value<double?> communityRating = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               BeersCompanion(
@@ -4811,6 +5575,8 @@ class $$BeersTableTableManager extends RootTableManager<
             description: description,
             isAlcoholFree: isAlcoholFree,
             isUserSubmitted: isUserSubmitted,
+            descriptionCommunity: descriptionCommunity,
+            communityRating: communityRating,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -4823,6 +5589,8 @@ class $$BeersTableTableManager extends RootTableManager<
             Value<String?> description = const Value.absent(),
             Value<bool> isAlcoholFree = const Value.absent(),
             Value<bool> isUserSubmitted = const Value.absent(),
+            Value<String?> descriptionCommunity = const Value.absent(),
+            Value<double?> communityRating = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               BeersCompanion.insert(
@@ -4835,6 +5603,8 @@ class $$BeersTableTableManager extends RootTableManager<
             description: description,
             isAlcoholFree: isAlcoholFree,
             isUserSubmitted: isUserSubmitted,
+            descriptionCommunity: descriptionCommunity,
+            communityRating: communityRating,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

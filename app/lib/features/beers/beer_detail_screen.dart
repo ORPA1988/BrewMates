@@ -72,10 +72,15 @@ class _BeerDetailBody extends ConsumerWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 4),
-          Text(
-            '${brewery.name} · ${brewery.city}, ${brewery.country}',
-            style: theme.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
+          Center(
+            child: TextButton.icon(
+              onPressed: () => context.push('/brewery/${brewery.id}'),
+              icon: const Text('🏭'),
+              label: Text(
+                '${brewery.name} · ${brewery.city}, ${brewery.country}',
+                style: theme.textTheme.bodyMedium,
+              ),
+            ),
           ),
           const SizedBox(height: 12),
           Wrap(
@@ -94,7 +99,33 @@ class _BeerDetailBody extends ConsumerWidget {
           ),
           if (beer.description != null) ...[
             const SizedBox(height: 16),
+            Text('Laut Brauerei', style: theme.textTheme.titleSmall),
+            const SizedBox(height: 4),
             Text(beer.description!, style: theme.textTheme.bodyMedium),
+          ],
+          if (beer.descriptionCommunity != null) ...[
+            const SizedBox(height: 12),
+            Text('Erfahrungen aus der Community',
+                style: theme.textTheme.titleSmall),
+            const SizedBox(height: 4),
+            Text(beer.descriptionCommunity!,
+                style: theme.textTheme.bodyMedium),
+          ],
+          if (beer.communityRating != null) ...[
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                RatingStars(rating: beer.communityRating!, size: 18),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '${beer.communityRating!.toStringAsFixed(1)} · '
+                    'Community-Datenbank (redaktionelle Einschätzung)',
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ),
+              ],
+            ),
           ],
           const SizedBox(height: 16),
           // Bewertungs-Card
