@@ -30,12 +30,25 @@ Untappd-Check-in mit dem Beer-with-Me-Beacon:
 3. Jedes Bier, das du während der Session trinkst, checkst du wie bei Untappd ein: Bewertung, Foto, Geschmacksnoten.
 4. Nach der Session hast du automatisch ein Tagebuch des Abends – und deine Statistiken & Abzeichen wachsen mit.
 
-## 🚀 Status
+## 🚀 Status: Version 1.0 (release-fähig)
 
-Phase 0 (Fundament) hat begonnen. Das Repository enthält:
+Version 1.0 ist **local-first** und voll funktionsfähig – ohne Konto, ohne Backend:
 
-- **`docs/`** – vollständige Design- und Architekturdokumentation
-- **`app/`** – Flutter-Projektgerüst (Android · iOS · Windows): adaptive Navigation, Theme, Router, alle Kern-Screens als funktionierende Platzhalter mit Demo-Daten ([Anleitung](app/README.md))
-- **`supabase/`** – komplettes Postgres-Schema mit Row-Level-Security-Policies, Abzeichen-Seed und der `notify`-Edge-Function für den Beacon-Fan-out ([Anleitung](supabase/README.md))
+- ✅ **Sessions & Beacon**: Ein-Tap-Session mit Sichtbarkeit, Stealth-Modus, Auto-Ende, Live-Karte
+- ✅ **Check-ins**: Bewertung in 0,25er-Schritten, Geschmacks-Tags, Serving-Style, Venue, Notizen
+- ✅ **Bier-Datenbank**: 31 Biere / 14 Brauereien als Start, Suche, Stil-Filter, eigene Einreichungen
+- ✅ **12 Abzeichen** mit grafischer Galerie und Fortschrittsanzeige (belohnt Vielfalt, nie Menge)
+- ✅ **Statistiken, Tagebuch, Wunschliste**, Feed mit Toasts & Kommentaren
+- ✅ Drei Demo-Freunde mit Aktivität, damit die App ab Sekunde 1 lebt
 
-CI (GitHub Actions) führt `flutter analyze` und `flutter test` bei jedem Pull Request aus.
+Der Mehrspieler-Sync (Supabase, `supabase/`) ist vorbereitet und folgt in v2.
+
+| Bereich | Inhalt |
+|---|---|
+| [`app/`](app/README.md) | Flutter-App (Android · iOS · Windows), SQLite/Drift, Riverpod |
+| [`docs/`](docs/01-produktvision.md) | Produktvision → Roadmap, inkl. [Release-Playbook](docs/07-release-playbook.md) |
+| [`store/`](store/listing-de.md) | Store-Texte für Play Store, App Store, Microsoft Store |
+| [`supabase/`](supabase/README.md) | Backend-Schema für den v2-Sync |
+| [`PRIVACY.md`](PRIVACY.md) | Datenschutzerklärung (lokal-only) |
+
+CI: Analyze + Tests je PR; ein Git-Tag `v*` baut APK, AAB und Windows-MSIX als Release-Artefakte.

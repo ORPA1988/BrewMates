@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  android:
+    name: Build Android (APK + AAB)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      # AGP 8.1 (Flutter-3.24-Template) braucht JDK 17 – mit JDK 21
+      # schlägt der jlink-Schritt fehl.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24.5"
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter build apk --release
+      - run: flutter build appbundle --release
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: brewmates-android-apk
+          path: app/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+      - name: Upload App Bundle (AAB)
+        uses: actions/upload-artifact@v4
+        with:
+          name: brewmates-android-aab
+          path: app/build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+
+  windows:
+    name: Build Windows (MSIX + ZIP)
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24.5"
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter build windows --release
+      # Nutzt die msix_config aus app/pubspec.yaml. Ohne --store entsteht ein
+      # selbstsigniertes, sideload-fähiges Testpaket; das Store-Paket wird
+      # laut docs/07-release-playbook.md mit --store gebaut.
+      - run: dart run msix:create
+      - name: Upload MSIX
+        uses: actions/upload-artifact@v4
+        with:
+          name: brewmates-windows-msix
+          # msix legt das Paket standardmäßig neben der EXE ab; je nach
+          # Toolchain-Version x64- oder älterer Pfad — beide abdecken.
+          path: |
+            app/build/windows/x64/runner/Release/*.msix
+            app/build/windows/runner/Release/*.msix
+          if-no-files-found: error
+      - name: Zip Release folder
+        shell: pwsh
+        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath brewmates-windows.zip
+      - name: Upload Release folder (ZIP)
+        uses: actions/upload-artifact@v4
+        with:
+          name: brewmates-windows-zip
+          path: app/brewmates-windows.zip
+          if-no-files-found: error

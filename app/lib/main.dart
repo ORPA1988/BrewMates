@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-import 'core/config.dart';
 import 'core/router.dart';
 import 'core/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  if (AppConfig.hasSupabase) {
-    await Supabase.initialize(
-      url: AppConfig.supabaseUrl,
-      // ignore: deprecated_member_use
-      anonKey: AppConfig.supabaseAnonKey,
-    );
-  }
-
+  await initializeDateFormatting('de');
   runApp(const ProviderScope(child: BrewMatesApp()));
 }
 

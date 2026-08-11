@@ -2,18 +2,29 @@
 .dart_tool/
 .packages
 build/
-
-# Generierte Plattform-Shells (per `flutter create` erzeugen, siehe README)
-android/
-ios/
-windows/
-macos/
-linux/
-web/
+.flutter-plugins
+.flutter-plugins-dependencies
 
 # IDE
 .idea/
 *.iml
 .vscode/
-.flutter-plugins
-.flutter-plugins-dependencies
+
+# Android
+android/.gradle/
+android/local.properties
+android/app/.cxx/
+android/key.properties
+android/upload-keystore.jks
+*.keystore
+*.jks
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/ephemeral/
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/Generated.xcconfig
+
+# Windows
+windows/flutter/ephemeral/
