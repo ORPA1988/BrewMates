@@ -1,0 +1,67 @@
+name: Release
+
+# Ein Git-Tag `v*` (z. B. v1.0.0) baut die Android-App und veröffentlicht
+# APK + AAB als öffentlich herunterladbares GitHub-Release.
+# Fokus laut Produktentscheidung: Android (iOS-Option offen, kein
+# Microsoft/Apple-Store-Prozess).
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  android:
+    name: Android bauen & Release veröffentlichen
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      # AGP 8.1 (Flutter-3.24-Template) braucht JDK 17 – mit JDK 21
+      # schlägt der jlink-Schritt fehl.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24.5"
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter build apk --release
+      - run: flutter build appbundle --release
+      - name: Artefakte benennen
+        run: |
+          cp build/app/outputs/flutter-apk/app-release.apk "brewmates-${{ github.ref_name }}.apk"
+          cp build/app/outputs/bundle/release/app-release.aab "brewmates-${{ github.ref_name }}.aab"
+      - name: GitHub-Release erstellen
+        uses: softprops/action-gh-release@v2
+        with:
+          name: BrewMates ${{ github.ref_name }}
+          files: |
+            app/brewmates-${{ github.ref_name }}.apk
+            app/brewmates-${{ github.ref_name }}.aab
+          body: |
+            ## 🍻 BrewMates für Android
+
+            **Installation:** Die `.apk`-Datei unten auf dem Android-Gerät
+            herunterladen und öffnen. Beim ersten Mal fragt Android nach der
+            Erlaubnis, Apps aus dieser Quelle zu installieren („Unbekannte
+            Quellen") – einmal bestätigen, fertig.
+
+            Die App läuft komplett lokal, braucht kein Konto und keine
+            Anmeldung. Hinweis: Diese Test-Builds sind mit einem
+            Debug-Schlüssel signiert; für den späteren Play-Store-Release
+            wird mit dem Upload-Keystore signiert
+            (siehe docs/07-release-playbook.md).
+
+            Die `.aab`-Datei ist das Play-Store-Format und nur für den
+            Store-Upload gedacht.

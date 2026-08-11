@@ -1,0 +1,16 @@
+# Vorlage für android/key.properties (NICHT einchecken — key.properties
+# gehört in .gitignore, diese .example-Datei darf im Repo bleiben).
+#
+# 1. Upload-Keystore einmalig erzeugen (Passwörter sicher aufbewahren!):
+#
+#    keytool -genkey -v -keystore upload-keystore.jks \
+#      -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+#
+# 2. Diese Datei nach key.properties kopieren und die Werte eintragen.
+#    storeFile ist relativ zu android/app/ — bei Ablage des Keystores unter
+#    android/ also "../upload-keystore.jks", oder ein absoluter Pfad.
+
+storeFile=../upload-keystore.jks
+storePassword=HIER_STORE_PASSWORT
+keyAlias=upload
+keyPassword=HIER_KEY_PASSWORT
