@@ -315,6 +315,12 @@ final breweryBeersProvider =
 final breweriesWithLocationProvider = StreamProvider<List<Brewery>>(
     (ref) => ref.watch(databaseProvider).watchBreweriesWithLocation());
 
+/// Brauerei-Suche für den Entdecken-Tab (leer bei leerem Suchbegriff).
+final brewerySearchProvider = StreamProvider.family<List<Brewery>, String>(
+    (ref, search) => search.trim().isEmpty
+        ? Stream.value(const <Brewery>[])
+        : ref.watch(databaseProvider).watchBreweriesSearch(search.trim()));
+
 final wishlistProvider = StreamProvider<List<BeerWithBrewery>>((ref) {
   final me = ref.watch(meProvider).valueOrNull;
   if (me == null) return const Stream.empty();

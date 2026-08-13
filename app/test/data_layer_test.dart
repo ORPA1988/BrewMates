@@ -226,6 +226,23 @@ void main() {
     expect(augustiner!.country, 'Deutschland');
     expect(augustiner.latitude, isNotNull);
 
+    final biere = await db.watchBeersOfBrewery('de-by-augustiner').first;
+    expect(biere, isNotEmpty,
+        reason: 'beers-by.json muss Augustiner-Biere enthalten');
+  });
+
+  test('Brauerei-Suche findet nach Name, Ort und Land', () async {
+    await CommunitySync(db).importBundledData();
+
+    final byName = await db.watchBreweriesSearch('augustiner').first;
+    expect(byName.map((b) => b.id), contains('de-by-augustiner'));
+
+    final byCity = await db.watchBreweriesSearch('salzburg').first;
+    expect(byCity, isNotEmpty, reason: 'Stiegl sitzt in Salzburg');
+
+    final byCountry = await db.watchBreweriesSearch('deutschland').first;
+    expect(byCountry.length, greaterThanOrEqualTo(20),
+        reason: '23 bayerische Brauereien');
   });
 
   test('Gebündelte DB: Stiegl-Goldbräu ist per Barcode auffindbar',

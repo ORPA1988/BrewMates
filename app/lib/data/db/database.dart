@@ -680,6 +680,18 @@ class AppDatabase extends _$AppDatabase {
         .toList());
   }
 
+  /// Brauereien nach Name/Ort/Land suchen (Entdecken-Suche).
+  Stream<List<Brewery>> watchBreweriesSearch(String search) {
+    final term = '%${search.toLowerCase()}%';
+    return (select(breweries)
+          ..where((t) =>
+              t.name.lower().like(term) |
+              t.city.lower().like(term) |
+              t.country.lower().like(term))
+          ..orderBy([(t) => OrderingTerm.asc(t.name)]))
+        .watch();
+  }
+
   /// Brauereien mit bekanntem Standort (für die Karten-Ebene).
   Stream<List<Brewery>> watchBreweriesWithLocation() => (select(breweries)
         ..where((t) => t.latitude.isNotNull() & t.longitude.isNotNull())

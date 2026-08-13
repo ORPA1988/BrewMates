@@ -42,6 +42,10 @@ class _BeersScreenState extends ConsumerState<BeersScreen> {
     final styles = ref.watch(beerStylesProvider).valueOrNull ?? const <String>[];
     final beersAsync =
         ref.watch(beersProvider((search: _search, style: _style)));
+    // Brauerei-Treffer erscheinen nur bei aktiver Suche als eigene Sektion.
+    final breweryHits =
+        ref.watch(brewerySearchProvider(_search)).valueOrNull ??
+            const <Brewery>[];
 
     return Scaffold(
       appBar: AppBar(
@@ -116,12 +120,29 @@ class _BeersScreenState extends ConsumerState<BeersScreen> {
                 final visible = _alcoholFreeOnly
                     ? beers.where((b) => b.beer.isAlcoholFree).toList()
                     : beers;
-                if (visible.isEmpty) return const _EmptyResults();
-                return ListView.builder(
+                if (visible.isEmpty && breweryHits.isEmpty) {
+                  return const _EmptyResults();
+                }
+                return ListView(
                   padding: const EdgeInsets.only(bottom: 24),
-                  itemCount: visible.length,
-                  itemBuilder: (context, index) =>
-                      _BeerTile(item: visible[index]),
+                  children: [
+                    if (breweryHits.isNotEmpty) ...[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                        child: Text('Brauereien (${breweryHits.length})',
+                            style: Theme.of(context).textTheme.titleSmall),
+                      ),
+                      for (final brewery in breweryHits)
+                        _BreweryTile(brewery: brewery),
+                      if (visible.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                          child: Text('Biere (${visible.length})',
+                              style: Theme.of(context).textTheme.titleSmall),
+                        ),
+                    ],
+                    for (final item in visible) _BeerTile(item: item),
+                  ],
                 );
               },
             ),
@@ -175,6 +196,26 @@ class _BeerTile extends ConsumerWidget {
           onPressed: () => ref.read(actionsProvider).toggleWishlist(beer.id),
         ),
         onTap: () => context.push('/beer/${beer.id}'),
+      ),
+    );
+  }
+}
+
+class _BreweryTile extends StatelessWidget {
+  const _BreweryTile({required this.brewery});
+
+  final Brewery brewery;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        leading: const Text('🏭', style: TextStyle(fontSize: 26)),
+        title: Text(brewery.name),
+        subtitle: Text('${brewery.city}, ${brewery.country}'
+            '${brewery.founded != null ? ' · seit ${brewery.founded}' : ''}'),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => context.push('/brewery/${brewery.id}'),
       ),
     );
   }

@@ -14,8 +14,8 @@ String activeUsersLabel(int n) =>
     n == 1 ? '🍻 1 weiterer BrewMate aktiv' : '🍻 $n weitere BrewMates aktiv';
 
 /// Live-Karte: aktive Sessions bestätigter Freunde (Privatsphäre-Modell
-/// siehe docs/04-datenmodell.md) plus optionale Ebene mit österreichischen
-/// Brauereistandorten aus der Community-Datenbank.
+/// siehe docs/04-datenmodell.md) plus optionale, abschaltbare Ebene mit
+/// Brauereistandorten (Österreich + Bayern) aus der Community-Datenbank.
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
 
@@ -28,6 +28,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Timer? _boundsDebounce;
   final _mapController = MapController();
 
+  /// Aktueller Zoom (entprellt aktualisiert). Unterhalb von
+  /// [_labelZoom] werden Brauereien nur als Punkte gezeichnet –
+  /// bei ~50 Brauereien (AT + Bayern) wäre die Länder-Ansicht
+  /// sonst mit Namensschildern zugepflastert.
+  double _zoom = 7;
+  static const _labelZoom = 9.0;
+
   // Wien – Fokusmarkt Österreich.
   static const _fallbackCenter = LatLng(48.2082, 16.3738);
 
@@ -39,8 +46,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   /// Sichtbaren Ausschnitt (entprellt) melden – Grundlage für den
-  /// „x weitere BrewMates aktiv"-Zähler.
-  void _reportBounds(LatLngBounds bounds) {
+  /// „x weitere BrewMates aktiv"-Zähler und die Brauerei-Darstellung
+  /// (Punkt vs. Symbol mit Namen).
+  void _reportBounds(LatLngBounds bounds, double zoom) {
     _boundsDebounce?.cancel();
     _boundsDebounce = Timer(const Duration(milliseconds: 400), () {
       if (!mounted) return;
@@ -50,6 +58,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         maxLat: bounds.north,
         maxLng: bounds.east,
       );
+      if ((zoom < _labelZoom) != (_zoom < _labelZoom)) {
+        setState(() => _zoom = zoom);
+      } else {
+        _zoom = zoom;
+      }
     });
   }
 
@@ -78,9 +91,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       located.first.session.longitude!)
                   : _fallbackCenter,
               initialZoom: located.isNotEmpty ? 13 : 7,
-              onMapReady: () =>
-                  _reportBounds(_mapController.camera.visibleBounds),
-              onMapEvent: (event) => _reportBounds(event.camera.visibleBounds),
+              onMapReady: () => _reportBounds(
+                  _mapController.camera.visibleBounds,
+                  _mapController.camera.zoom),
+              onMapEvent: (event) => _reportBounds(
+                  event.camera.visibleBounds, event.camera.zoom),
             ),
             children: [
               TileLayer(
@@ -89,7 +104,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
               MarkerLayer(
                 markers: [
-                  for (final b in breweries) _breweryMarker(context, b),
+                  for (final b in breweries)
+                    _zoom < _labelZoom
+                        ? _breweryDot(context, b)
+                        : _breweryMarker(context, b),
                   for (final d in located) _sessionMarker(context, d),
                 ],
               ),
@@ -199,6 +217,28 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  /// Herausgezoomt: Brauerei nur als kleiner Punkt – bleibt antippbar,
+  /// beim Heranzoomen (ab Zoom [_labelZoom]) erscheinen Symbol + Name.
+  Marker _breweryDot(BuildContext context, Brewery b) {
+    final theme = Theme.of(context);
+    return Marker(
+      point: LatLng(b.latitude!, b.longitude!),
+      width: 16,
+      height: 16,
+      alignment: Alignment.center,
+      child: GestureDetector(
+        onTap: () => context.push('/brewery/${b.id}'),
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: theme.colorScheme.tertiary,
+            border: Border.all(color: theme.colorScheme.surface, width: 2),
+          ),
+        ),
       ),
     );
   }
