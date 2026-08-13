@@ -25,6 +25,8 @@ Widget _app() => ProviderScope(
         }),
         locationServiceProvider
             .overrideWithValue(const _FakeLocationService()),
+        // Kein Supabase in Widget-Tests: der Offline-Pfad ist der Testpfad.
+        onlineServiceProvider.overrideWith((ref) async => null),
       ],
       child: const BrewMatesApp(),
     );

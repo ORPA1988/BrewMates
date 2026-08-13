@@ -1,28 +1,40 @@
 # BrewMates – Supabase-Backend
 
-## 🧪 Online-Beta (v0.9) aktivieren — Checkliste
+## 🧪 Online-Beta (v0.9) — Setup-Status
 
-Projekt: `swlqkwlpnxwthbneblww` (EU). Drei Schritte, dann ist die Beta
-mehrspielerfähig:
+Projekt: `swlqkwlpnxwthbneblww` (EU, eu-central-1).
 
-1. **Schema einspielen** — entweder über die GitHub-Integration im
-   Supabase-Dashboard (Settings → Integrations → GitHub: „Supabase
-   directory" = `supabase`, „Deploy migrations on push" aktivieren; der
-   nächste Push auf `main` spielt `migrations/0001–0003` automatisch ein)
-   oder einmalig per CLI: `supabase link --project-ref swlqkwlpnxwthbneblww
-   && supabase db push`.
-2. **Auth vereinfachen (empfohlen für die Beta)** — Dashboard →
-   Authentication → Sign In / Up → E-Mail: „Confirm email" **aus**. Dann
-   können Tester sich ohne Bestätigungs-Mail sofort anmelden. (Bleibt es
-   an, funktioniert die App trotzdem: sie fordert zur Bestätigung auf.)
-3. **Anon-Key in die App** — Dashboard → Settings → API: `anon`/publishable
-   Key kopieren und in `app/lib/core/supabase_config.dart` als
-   `defaultValue` eintragen (URL: `https://swlqkwlpnxwthbneblww.supabase.co`).
-   Danach ein Release bauen — fertig. Der Key ist per Design öffentlich;
-   der Datenschutz hängt an den RLS-Policies aus Migration 0001.
+**✅ Erledigt (per Supabase-MCP eingespielt):**
 
-Der Claude-MCP-Zugang ist in `.mcp.json` im Repo-Root vorkonfiguriert —
-nach einmaliger OAuth-Anmeldung kann Claude diese Schritte direkt erledigen.
+- Migrationen `0001`–`0005` angewendet: komplettes Schema mit RLS,
+  Badges-Seed, Beta-Angleichung (venue_name/Koordinaten/denormalisierte
+  Check-ins, Realtime für `sessions`), **Kontomodell** (unveränderliche
+  `account_no`, Auto-Profil-Trigger `handle_new_user` für alle
+  Anmeldeverfahren inkl. OAuth) und Security-Härtung laut Advisor.
+- Projekt-URL + anon-Key sind in `app/lib/core/supabase_config.dart`
+  eingetragen (der anon-Key ist per Design öffentlich; Schutz = RLS).
+
+**☐ Verbleibende Dashboard-Schritte (nur über die Web-Oberfläche möglich):**
+
+1. **E-Mail-Bestätigung aus (empfohlen für die Beta)** — Authentication →
+   Sign In / Providers → Email → „Confirm email" deaktivieren. (Bleibt sie
+   an, funktioniert die App trotzdem und fordert zur Bestätigung auf.)
+2. **Google-Login freischalten** — braucht einmalig OAuth-Zugangsdaten aus
+   der [Google Cloud Console](https://console.cloud.google.com/apis/credentials):
+   „OAuth-Client-ID" vom Typ **Webanwendung** anlegen mit Redirect-URI
+   `https://swlqkwlpnxwthbneblww.supabase.co/auth/v1/callback`, dann
+   Client-ID + Secret im Supabase-Dashboard unter Authentication →
+   Providers → Google eintragen. Zusätzlich unter Authentication →
+   URL Configuration die Redirect-URL `de.brewmates.app://login-callback`
+   erlauben (der Deep-Link, über den die App aus dem Browser zurückkehrt).
+   Bis dahin zeigt der Google-Knopf in der App eine verständliche Meldung;
+   E-Mail + Passwort funktioniert sofort.
+
+**Kontomodell (Stand der Technik):** Die unveränderliche Konto-Identität
+ist `auth.users.id` (UUID) plus die kurze Anzeige-`account_no`. Daran
+hängen die Anmeldeverfahren (E-Mail, Google, später Telefon) als
+`auth.identities` — alle änderbar. Der Nutzername ist frei wählbar,
+global einmalig (unique) und jederzeit änderbar (Konto-Screen der App).
 
 Postgres-Schema, RLS-Policies und Edge Functions (siehe
 [docs/03-architektur.md](../docs/03-architektur.md) und

@@ -12,6 +12,7 @@ class RemoteProfile {
     required this.username,
     required this.displayName,
     required this.avatarEmoji,
+    this.accountNo,
   });
 
   factory RemoteProfile.fromRow(Map<String, dynamic> row) => RemoteProfile(
@@ -19,12 +20,22 @@ class RemoteProfile {
         username: row['username'] as String,
         displayName: (row['display_name'] as String?) ?? row['username'] as String,
         avatarEmoji: (row['avatar_emoji'] as String?) ?? '🍺',
+        accountNo: (row['account_no'] as num?)?.toInt(),
       );
 
   final String id;
   final String username;
   final String displayName;
   final String avatarEmoji;
+
+  /// Unveränderliche, kurze Kontonummer (für Anzeige/Support). Die
+  /// technische Konto-ID ist die UUID [id]; Anmeldeverfahren (E-Mail,
+  /// Google …) hängen daran und sind änderbar.
+  final int? accountNo;
+
+  /// Platzhalter-Name aus der automatischen Kontoanlage (z. B. nach
+  /// Google-Login) – Nutzer sollte sich umbenennen.
+  bool get hasPlaceholderUsername => username.startsWith('mate_');
 }
 
 /// Eingehende Freundschaftsanfrage.
@@ -97,16 +108,26 @@ class OnlineService {
 
   final SupabaseClient _client;
 
-  static const _profileCols = 'id, username, display_name, avatar_emoji';
+  static const _profileCols =
+      'id, username, display_name, avatar_emoji, account_no';
+
+  /// Deep-Link, über den OAuth-Anmeldungen in die App zurückkehren.
+  static const oauthRedirect = 'de.brewmates.app://login-callback';
 
   static Future<OnlineService?> initialize() async {
     if (!SupabaseConfig.isConfigured) return null;
-    await Supabase.initialize(
-      url: SupabaseConfig.url,
-      // ignore: deprecated_member_use
-      anonKey: SupabaseConfig.anonKey,
-    );
-    return OnlineService(Supabase.instance.client);
+    try {
+      await Supabase.initialize(
+        url: SupabaseConfig.url,
+        // ignore: deprecated_member_use
+        anonKey: SupabaseConfig.anonKey,
+      );
+      return OnlineService(Supabase.instance.client);
+    } catch (_) {
+      // Kein Plattform-Plugin (Tests) oder kaputte Konfiguration →
+      // App läuft lokal weiter.
+      return null;
+    }
   }
 
   // --------------------------------------------------------------------------
@@ -190,6 +211,49 @@ class OnlineService {
   }
 
   Future<void> signOut() => _client.auth.signOut();
+
+  /// Anmeldung/Registrierung mit dem Google-Konto (Browser-OAuth-Flow;
+  /// die Rückkehr in die App läuft über [oauthRedirect]). Das Profil
+  /// entsteht serverseitig automatisch (Trigger) mit Platzhalter-Username.
+  Future<String?> signInWithGoogle() async {
+    try {
+      final launched = await _client.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: oauthRedirect,
+        authScreenLaunchMode: LaunchMode.externalApplication,
+      );
+      return launched ? null : 'Google-Anmeldung konnte nicht gestartet werden.';
+    } on AuthException catch (e) {
+      if (e.message.toLowerCase().contains('not enabled')) {
+        return 'Google-Login ist serverseitig noch nicht freigeschaltet – '
+            'nutze vorerst E-Mail + Passwort.';
+      }
+      return 'Google-Anmeldung fehlgeschlagen: ${e.message}';
+    } catch (_) {
+      return 'Keine Verbindung – bitte später erneut versuchen.';
+    }
+  }
+
+  /// Nutzername ändern – frei wählbar, aber global nur einmal vergeben.
+  /// Die Kontonummer/Konto-ID bleibt dabei unverändert.
+  Future<String?> updateUsername(String username) async {
+    final clean = username.trim().toLowerCase();
+    if (!RegExp(r'^[a-z0-9_]{3,30}$').hasMatch(clean)) {
+      return 'Der Nutzername braucht 3–30 Zeichen: Kleinbuchstaben, '
+          'Ziffern oder _';
+    }
+    try {
+      await _client
+          .from('profiles')
+          .update({'username': clean}).eq('id', currentUser!.id);
+      return null;
+    } on PostgrestException catch (e) {
+      if (e.code == '23505') return 'Dieser Nutzername ist schon vergeben.';
+      return 'Änderung fehlgeschlagen – bitte erneut versuchen.';
+    } catch (_) {
+      return 'Keine Verbindung – bitte später erneut versuchen.';
+    }
+  }
 
   String _authMessage(AuthException e) {
     final msg = e.message.toLowerCase();

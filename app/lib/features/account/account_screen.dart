@@ -260,6 +260,24 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 )
               : Text(isSignUp ? 'Konto erstellen' : 'Anmelden'),
         ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            const Expanded(child: Divider()),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text('oder', style: theme.textTheme.bodySmall),
+            ),
+            const Expanded(child: Divider()),
+          ],
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          onPressed: _busy ? null : () async => _googleSignIn(online),
+          icon: const Text('G',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          label: const Text('Mit Google anmelden'),
+        ),
         const SizedBox(height: 12),
         Text(
           '🔒 Deine Check-ins sind nur für bestätigte Freunde sichtbar.',
@@ -269,6 +287,60 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         ),
       ],
     );
+  }
+
+  Future<void> _googleSignIn(OnlineService online) async {
+    setState(() => _busy = true);
+    try {
+      final err = await online.signInWithGoogle();
+      if (!mounted) return;
+      if (err != null) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(err)));
+      }
+      // Bei Erfolg kehrt die App über den Deep-Link zurück; der
+      // Auth-Stream schaltet die Ansicht dann automatisch um.
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _changeUsername(OnlineService online) async {
+    final controller = TextEditingController();
+    final newName = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Nutzername ändern'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: const InputDecoration(
+            prefixText: '@',
+            hintText: '3–30 Zeichen: a–z, 0–9, _',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Abbrechen'),
+          ),
+          FilledButton(
+            onPressed: () =>
+                Navigator.of(dialogContext).pop(controller.text),
+            child: const Text('Speichern'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (newName == null || newName.trim().isEmpty || !mounted) return;
+    final err = await online.updateUsername(newName);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(err ?? 'Nutzername geändert – Prost, @'
+            '${newName.trim().toLowerCase()}! 🍻')));
+    ref.invalidate(myRemoteProfileProvider);
   }
 
   // --------------------------------------------------------------------------
@@ -301,12 +373,38 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         ),
         if (profile != null)
           Center(
+            child: TextButton.icon(
+              onPressed: () async => _changeUsername(online),
+              icon: const Icon(Icons.edit_outlined, size: 16),
+              label: Text(
+                '@${profile.username}',
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: scheme.onSurfaceVariant),
+              ),
+            ),
+          ),
+        if (profile?.accountNo != null)
+          Center(
             child: Text(
-              '@${profile.username}',
-              style: theme.textTheme.bodyMedium
+              'Kontonummer #${profile!.accountNo} (unveränderlich)',
+              style: theme.textTheme.bodySmall
                   ?.copyWith(color: scheme.onSurfaceVariant),
             ),
           ),
+        if (profile != null && profile.hasPlaceholderUsername) ...[
+          const SizedBox(height: 12),
+          Card(
+            color: scheme.primaryContainer,
+            child: ListTile(
+              leading: const Text('✏️', style: TextStyle(fontSize: 24)),
+              title: const Text('Wähle deinen Nutzernamen'),
+              subtitle: const Text(
+                  'Dein Konto hat noch einen Platzhalter-Namen – so finden '
+                  'dich Freunde schwer.'),
+              onTap: () async => _changeUsername(online),
+            ),
+          ),
+        ],
         if (email != null) ...[
           const SizedBox(height: 4),
           Center(
