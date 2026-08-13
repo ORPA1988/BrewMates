@@ -6,7 +6,7 @@ Fokus Österreich + Bayern. Antworte dem Nutzer auf Deutsch.
 ## Aktueller Stand (2026-08-13)
 
 - **Branch**: Entwicklung läuft auf `claude/multi-platform-app-design-7lm758`,
-  PR #2 (Draft) gegen `main`. Version `0.9.4-beta+8` (Beta 0.x bis zum
+  PR #2 (Draft) gegen `main`. Version `0.9.5-beta+9` (Beta 0.x bis zum
   Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU). Migrationen
   `supabase/migrations/0001–0008` sind LIVE. Google-Login und

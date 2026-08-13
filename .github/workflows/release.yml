@@ -73,8 +73,9 @@ jobs:
             Erlaubnis, Apps aus dieser Quelle zu installieren („Unbekannte
             Quellen") – einmal bestätigen, fertig.
 
-            Die App läuft komplett lokal, braucht kein Konto und keine
-            Anmeldung. Hinweis: Diese Test-Builds sind mit einem
+            In der Online-Beta ist ein Konto erforderlich (E-Mail oder
+            Google); Check-ins und Sessions sind nur für bestätigte
+            Freunde sichtbar. Hinweis: Diese Test-Builds sind mit einem
             Debug-Schlüssel signiert; für den späteren Play-Store-Release
             wird mit dem Upload-Keystore signiert
             (siehe docs/07-release-playbook.md).
