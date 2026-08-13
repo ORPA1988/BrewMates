@@ -463,6 +463,10 @@
       "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
+      "barcodes": [
+        "90151835"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/000/009/015/1835/front_de.12.400.jpg",
       "description_manufacturer": "Das klassische Märzen der Privatbrauerei Egger aus Unterradlberg: mild, goldgelb und auf unkomplizierte Trinkbarkeit ausgelegt.",
       "description_community": "Preisbewusstes, süffiges Standardbier aus Niederösterreich; unauffällig, aber solide.",
       "community_rating": 2.9

@@ -6,7 +6,7 @@ Die Bier- und Brauereidaten stammen aus dem Trainingswissen eines KI-Modells (St
 
 ## Etiketten-Bilder (`image_url`) und Barcodes aus Open Food Facts
 
-Die Felder `image_url` sowie ein Teil der `barcodes`-Einträge (in allen Bier-Dateien, Österreich wie Bayern) stammen aus [Open Food Facts](https://world.openfoodfacts.org), einer offenen, gemeinschaftlich gepflegten Lebensmitteldatenbank (Abgleich am 2026-08-13 über die Open-Food-Facts-Such-API).
+Die Felder `image_url` sowie ein Teil der `barcodes`-Einträge (in allen Bier-Dateien, Österreich wie Bayern) stammen aus [Open Food Facts](https://world.openfoodfacts.org), einer offenen, gemeinschaftlich gepflegten Lebensmitteldatenbank (Abgleich am 2026-08-13 über die Such- und Produkt-API von Open Food Facts).
 
 - **Bilder:** Wir speichern keine Bilddateien, sondern verlinken lediglich auf die bei Open Food Facts gehosteten Produktfotos (`images.openfoodfacts.org`). Die Fotos wurden von Open-Food-Facts-Beitragenden hochgeladen und stehen unter der Lizenz [CC-BY-SA](https://creativecommons.org/licenses/by-sa/3.0/deed.de); Urheber sind die jeweiligen Fotografinnen und Fotografen (abrufbar über die Produktseite zum jeweiligen Barcode, z. B. `https://world.openfoodfacts.org/product/<EAN>`).
 - **Produktdaten** (z. B. per Abgleich ergänzte EAN-Barcodes) stehen unter der [Open Database License (ODbL)](https://opendatacommons.org/licenses/odbl/1-0/).

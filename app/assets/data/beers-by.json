@@ -44,7 +44,12 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Das obergärige Weißbier von Augustiner mit natürlicher Hefetrübung, gebraut als klassisch bayerische Ergänzung zum hellen Sortiment.",
       "description_community": "Solides, eher schlankes Münchner Weißbier mit milder Banane und leichter Nelke; steht im Schatten des Hellen, ist aber sauber gemacht.",
-      "community_rating": 3.6
+      "community_rating": 3.6,
+      "barcodes": [
+        "4105250028005",
+        "4105250028333"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/410/525/002/8005/front_de.8.400.jpg"
     },
     {
       "id": "de-by-augustiner-dunkel",
@@ -59,7 +64,8 @@
       "community_rating": 3.8,
       "barcodes": [
         "4105250023000"
-      ]
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/410/525/002/3000/front_de.9.400.jpg"
     },
     {
       "id": "de-by-paulaner-hefe-weissbier",
@@ -126,7 +132,8 @@
       "community_rating": 3.3,
       "barcodes": [
         "4066600202912"
-      ]
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/406/660/020/2912/front_en.3.400.jpg"
     },
     {
       "id": "de-by-hacker-pschorr-muenchner-gold",
@@ -170,7 +177,8 @@
       "community_rating": 3.7,
       "barcodes": [
         "4004866721600"
-      ]
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/400/486/672/1600/front_fr.7.400.jpg"
     },
     {
       "id": "de-by-loewenbraeu-original",
@@ -493,7 +501,8 @@
       "community_rating": 3.9,
       "barcodes": [
         "4105120993150"
-      ]
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/410/512/099/3150/front_ru.3.400.jpg"
     },
     {
       "id": "de-by-weihenstephan-korbinian",
@@ -533,7 +542,10 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Der dunkle Weizenbock von Schneider, seit 1907 als Bayerns ältester Weizendoppelbock gebraut und international als Stilikone vermarktet.",
       "description_community": "Weltklasse-Weizenbock: Dörrpflaume, Banane, Gewürznelke und Schokolade in perfekter Balance, wärmend und komplex; regelmäßig unter den besten Bieren Deutschlands.",
-      "community_rating": 4.4
+      "community_rating": 4.4,
+      "barcodes": [
+        "4003669018337"
+      ]
     },
     {
       "id": "de-by-schneider-weisse-tap3-alkoholfrei",
@@ -557,7 +569,11 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Das Helle des Herzoglichen Brauhauses Tegernsee: schlank, spritzig und als unkompliziertes Bier der Tegernseer Wirtshauskultur positioniert.",
       "description_community": "Kultbier in ganz Oberbayern: leicht, trocken und extrem süffig – das klassische 'Feierabendbier', dem viele Münchner die Treue halten.",
-      "community_rating": 4.0
+      "community_rating": 4.0,
+      "barcodes": [
+        "4022396000125"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/402/239/600/0125/front_en.16.400.jpg"
     },
     {
       "id": "de-by-tegernseer-spezial",
@@ -569,7 +585,11 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Das kräftigere Spezialbier aus Tegernsee mit höherer Stammwürze, als festlicheres Pendant zum Hellen gebraut.",
       "description_community": "Runder und malziger als das Hell, mit feiner Süße; wird von Stammtrinkern gern zu besonderen Anlässen gewählt.",
-      "community_rating": 3.7
+      "community_rating": 3.7,
+      "barcodes": [
+        "4022396000033"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/402/239/600/0033/front_en.7.400.jpg"
     },
     {
       "id": "de-by-giesinger-muenchner-hell",
@@ -642,7 +662,12 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Das bernsteinfarbene Hefeweißbier der Brauerei Gebr. Maisel aus Bayreuth, das als fränkischer Weißbierklassiker mit kräftiger Hefearomatik vermarktet wird.",
       "description_community": "Charaktervolles Weißbier mit dunklerer Malznote, Banane und feiner Röstwürze; hebt sich angenehm von den milden Münchner Weißen ab.",
-      "community_rating": 3.7
+      "community_rating": 3.7,
+      "barcodes": [
+        "4017300020009",
+        "40173351"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/401/730/002/0009/front_fr.8.400.jpg"
     },
     {
       "id": "de-by-maisel-weisse-alkoholfrei",
