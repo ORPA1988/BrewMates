@@ -56,29 +56,34 @@ ohne Konto, ohne Backend.
 unter 15 Sekunden als Check-in; der Beacon zeigt die echte eigene Position auf
 der Karte. Standort bleibt dabei wie bisher rein lokal auf dem Gerät.
 
-## Stufe B — v2.0 „Echte Freunde" *(Online, komplett auf Supabase; ca. 8–12 Wochen, mit KI-Unterstützung deutlich schneller)*
+## Stufe B — v2.0 „Echte Freunde" *(Online, komplett auf Supabase; in Beta-Umsetzung — ca. 8–12 Wochen, mit KI-Unterstützung deutlich schneller)*
 
 Ziel: Der Mehrspieler-Betrieb – echte Freunde statt Demo-Daten. **Wichtig:
 unabhängig von jeder bestimmten Domain.** Datenschutz-URL und Download-Seite
 laufen über GitHub (Pages/Releases); eine eigene Domain ist nice-to-have,
 niemals Voraussetzung.
 
-- [ ] **Supabase-Projekt aktivieren** (Schema liegt fertig in `supabase/`;
-      Server-Region EU, RLS-Policies scharf schalten)
-- [ ] **Konten**: E-Mail, Google, Apple – die App bleibt ohne Konto weiter voll
-      als lokales Tagebuch nutzbar
+- [x] **Supabase-Projekt aktivieren** — erledigt mit der Beta 0.9: Schema
+      liegt in `supabase/` (Migrationen 0001–0003), Server-Region EU,
+      RLS-Policies scharf geschaltet
+- [x] **Konten** — E-Mail + Passwort seit Beta 0.9 (Google/Apple-Login später);
+      die App bleibt ohne Konto weiter voll als lokales Tagebuch nutzbar
 - [ ] **Migration lokale Daten → Konto**: Upload-Assistent, der Check-ins,
-      Abzeichen, Wunschliste & Co. einmalig und nachvollziehbar ins Konto überträgt
-- [ ] **Echte Freundschaften** per QR-Code (Anfrage, Bestätigung, Entfernen)
-- [ ] **Live-Beacon über Geräte hinweg** (Supabase Realtime): Freunde sehen die
-      Session in Sekunden auf ihrer Karte
+      Abzeichen, Wunschliste & Co. einmalig und nachvollziehbar ins Konto
+      überträgt — *teilweise: neue Check-ins werden seit der Beta für Freunde
+      gespiegelt, der Alt-Bestand wird noch nicht übertragen*
+- [x] **Echte Freundschaften** — seit Beta 0.9 per Nutzername-Suche (Anfrage,
+      Bestätigung); QR-Code-Einladung später
+- [x] **Live-Beacon über Geräte hinweg** (Supabase Realtime): Freunde sehen die
+      Session in Sekunden auf ihrer Karte — seit Beta 0.9
 - [ ] **Push-Benachrichtigungen** (FCM): „Anna hat eine Session gestartet – alle
       willkommen!"
 - [ ] **Aggregierte echte Community-Bewertungen**, die die redaktionelle
       `community_rating` schrittweise ersetzen (klar gekennzeichneter Übergang)
 - [ ] **Blockieren & Melden serverseitig** (durchsetzbar, nicht nur lokal)
-- [ ] **Neue Datenschutzerklärung** inkl. AVV mit Supabase, Konto-Löschung und
-      Datenexport (DSGVO-Rechte), Standort-Regeln unverändert streng
+- [x] **Neue Datenschutzerklärung** — PRIVACY.md um Abschnitt 4d
+      (Online-Modus) ergänzt; Konto-Löschung in der Beta auf Anfrage, in-App
+      ab v1.0; Standort-Regeln unverändert streng
 - [ ] **Play-Store-Launch** parallel zur weiterhin verfügbaren GitHub-APK
 
 **Exit-Kriterium:** Der magische Moment aus der Produktvision – ≥ 25 % der

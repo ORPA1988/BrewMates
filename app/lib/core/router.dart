@@ -1,12 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/account/account_screen.dart';
 import '../features/beers/add_beer_screen.dart';
 import '../features/beers/beer_detail_screen.dart';
 import '../features/beers/beers_screen.dart';
 import '../features/beers/brewery_detail_screen.dart';
 import '../features/checkin/checkin_screen.dart';
 import '../features/feed/feed_screen.dart';
+import '../features/friends/friends_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/map/map_screen.dart';
 import '../features/profile/badges_screen.dart';
@@ -87,6 +89,15 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/brewery/:id',
         builder: (_, state) =>
             BreweryDetailScreen(breweryId: state.pathParameters['id']!),
+      ),
+      // Online-Beta
+      GoRoute(
+        path: '/account',
+        builder: (_, __) => const AccountScreen(),
+      ),
+      GoRoute(
+        path: '/friends',
+        builder: (_, __) => const FriendsScreen(),
       ),
       GoRoute(
         path: '/profile/badges',

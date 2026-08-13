@@ -1,5 +1,29 @@
 # BrewMates – Supabase-Backend
 
+## 🧪 Online-Beta (v0.9) aktivieren — Checkliste
+
+Projekt: `swlqkwlpnxwthbneblww` (EU). Drei Schritte, dann ist die Beta
+mehrspielerfähig:
+
+1. **Schema einspielen** — entweder über die GitHub-Integration im
+   Supabase-Dashboard (Settings → Integrations → GitHub: „Supabase
+   directory" = `supabase`, „Deploy migrations on push" aktivieren; der
+   nächste Push auf `main` spielt `migrations/0001–0003` automatisch ein)
+   oder einmalig per CLI: `supabase link --project-ref swlqkwlpnxwthbneblww
+   && supabase db push`.
+2. **Auth vereinfachen (empfohlen für die Beta)** — Dashboard →
+   Authentication → Sign In / Up → E-Mail: „Confirm email" **aus**. Dann
+   können Tester sich ohne Bestätigungs-Mail sofort anmelden. (Bleibt es
+   an, funktioniert die App trotzdem: sie fordert zur Bestätigung auf.)
+3. **Anon-Key in die App** — Dashboard → Settings → API: `anon`/publishable
+   Key kopieren und in `app/lib/core/supabase_config.dart` als
+   `defaultValue` eintragen (URL: `https://swlqkwlpnxwthbneblww.supabase.co`).
+   Danach ein Release bauen — fertig. Der Key ist per Design öffentlich;
+   der Datenschutz hängt an den RLS-Policies aus Migration 0001.
+
+Der Claude-MCP-Zugang ist in `.mcp.json` im Repo-Root vorkonfiguriert —
+nach einmaliger OAuth-Anmeldung kann Claude diese Schritte direkt erledigen.
+
 Postgres-Schema, RLS-Policies und Edge Functions (siehe
 [docs/03-architektur.md](../docs/03-architektur.md) und
 [docs/04-datenmodell.md](../docs/04-datenmodell.md)).

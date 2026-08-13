@@ -31,9 +31,12 @@ Der Startbildschirm besteht aus zwei großen Hero-Aktionen — alles andere grup
 
 Jedes Bier während einer Session landet automatisch im gemeinsamen Abend-Album; Statistiken und Abzeichen wachsen mit.
 
-## 🚀 Status: Version 1.2 (release-fähig)
+## 🚀 Status: Beta 0.9 — Version 1.2-Funktionsumfang + Online-Beta
 
-Version 1.2 ist **local-first** und voll funktionsfähig – ohne Konto, ohne Backend:
+Die App ist bewusst als **0.x-Beta** versioniert, bis der Play-Store-Release
+1.0 kommt (der interne Android-`versionCode` zählt weiter hoch, Updates
+funktionieren normal). Der lokale Kern (Funktionsumfang der Version 1.2) ist
+**local-first** und voll funktionsfähig – ohne Konto, ohne Backend:
 
 - ✅ **Hero-Aktionen**: Barcode-Scanner (EAN-8/13, Open-Food-Facts-Fallback) und Ein-Tap-Beacon mit echtem GPS
 
@@ -42,9 +45,8 @@ Version 1.2 ist **local-first** und voll funktionsfähig – ohne Konto, ohne Ba
 - ✅ **Bier-Datenbank**: 31 Biere / 14 Brauereien als Start, Suche, Stil-Filter, eigene Einreichungen
 - ✅ **12 Abzeichen** mit grafischer Galerie und Fortschrittsanzeige (belohnt Vielfalt, nie Menge)
 - ✅ **Statistiken, Tagebuch, Wunschliste**, Feed mit Toasts & Kommentaren
-- ✅ Drei Demo-Freunde mit Aktivität, damit die App ab Sekunde 1 lebt
-
-Der Mehrspieler-Sync (Supabase, `supabase/`) ist vorbereitet und folgt in v2.
+- ✅ Drei Demo-Freunde mit Aktivität, damit die App ab Sekunde 1 lebt (nur abgemeldet)
+- 🧪 **Online-Beta (optional)**: Konto anlegen, Freunde per Nutzername hinzufügen, Live-Beacons und Feed echter Freunde (Supabase, EU; ohne Konto läuft alles lokal wie bisher)
 
 **🇦🇹 Fokus: Österreich.** Die App bringt eine redaktionelle Datenbank mit **57 österreichischen Bieren** (Beschreibungen laut Brauerei + Community-Erfahrungen + Bewertung) und **26 Brauereistandorten** mit Detailinfos (Eigentümer, Gründungsjahr, Kennzahlen soweit öffentlich) mit — gepflegt direkt in diesem Repository (`app/assets/data/`), von der App beim Start via GitHub aktualisiert und auf der Karte sichtbar. Neue Biere schlägst du direkt aus der App vor ([Anleitung](CONTRIBUTING.md)).
 
@@ -54,7 +56,7 @@ Der Mehrspieler-Sync (Supabase, `supabase/`) ist vorbereitet und folgt in v2.
 | [`app/assets/data/`](app/assets/data/DATENHERKUNFT.md) | 🇦🇹 Community-Datenbank: Biere + Brauereien (JSON) |
 | [`docs/`](docs/01-produktvision.md) | Produktvision → Roadmap, [Release-Playbook](docs/07-release-playbook.md), **[So funktioniert BrewMates (für alle)](docs/08-funktionsweise-fuer-alle.md)**, **[Wachstum & Geschäftsmodell](docs/09-wachstum-und-geschaeftsmodell.md)** |
 | [`store/`](store/listing-de.md) | Store-Texte (Play Store; App Store optional) |
-| [`supabase/`](supabase/README.md) | Backend-Schema für den späteren Mehrspieler-Sync |
+| [`supabase/`](supabase/README.md) | Backend (Schema & Migrationen) für die Online-Beta |
 | [`PRIVACY.md`](PRIVACY.md) | Datenschutzerklärung |
 
 CI: Analyze + Tests je PR. Ein Release entsteht per Git-Tag `v*` **oder** manuell im Actions-Tab („Release" → „Run workflow") — beides baut die APK und veröffentlicht sie unter [Releases](https://github.com/ORPA1988/BrewMates/releases).

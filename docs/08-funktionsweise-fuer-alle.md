@@ -47,9 +47,10 @@ er gespeichert ist und ob dafür eine Internetverbindung nötig ist.
 | **Ihre Nutzerdaten**: Profil, Check-ins, Bewertungen, Sessions, Abzeichen, Wunschliste, Tagebuch, Statistiken | Nur in einer lokalen Datenbank (SQLite) auf Ihrem Gerät | **Nein.** Verlässt das Gerät nie. Kein Konto, keine Server des Anbieters, keine Analyse- oder Werbe-Software |
 | **Die Karte** | Wird nicht gespeichert, sondern bei Bedarf Stück für Stück angezeigt | **Ja**, nur beim Öffnen der Karte: Kartenkacheln kommen von OpenStreetMap (tile.openstreetmap.org). Dabei wird technisch bedingt Ihre IP-Adresse übertragen – so wie bei jedem Webseiten-Aufruf |
 | **Die Bier- und Brauerei-Datenbank** (österreichische Biere und Brauereien) | Als Kopie fest in der App eingebaut **und** als gemeinsame „Stammliste" im GitHub-Repository (Ordner `app/assets/data/`) | **Ja, aber nur lesend**: Beim App-Start und auf Knopfdruck holt sich die App die aktuelle Liste von GitHub und frischt die lokale Kopie auf. Ohne Internet nutzt sie einfach die eingebaute Kopie |
-| **Die „Freunde"** in Version 1 | Demo-Daten auf Ihrem Gerät | **Nein.** Es sind Beispielpersonen, keine echten Menschen |
+| **Die „Freunde"** ohne Konto (abgemeldet) | Demo-Daten auf Ihrem Gerät | **Nein.** Es sind Beispielpersonen, keine echten Menschen |
 | **Gescannte Barcodes** | Werden dem jeweiligen Bier in der lokalen Datenbank zugeordnet | **Nur bei unbekannten Codes**: Anfrage (nur die Ziffernfolge) an Open Food Facts (world.openfoodfacts.org) |
 | **Ihr GPS-Standort** (Beacon/Session) | Nur in der lokalen Datenbank, nur während einer aktiven Session, keine Historie | **Nein** (in Version 1.x verlässt der Standort das Gerät nicht) |
+| **Online-Modus (optional)**: eigene Check-ins & aktive Sessions | Supabase-Server (EU), nur für bestätigte Freunde sichtbar | **Ja**, nur solange Sie angemeldet sind |
 
 ### „Offline-first" – die Notizbuch-Metapher
 
@@ -163,23 +164,48 @@ eine Version mit einem Etikett wie `v1.0` markieren, baut ein
 CI-Automatismus (eine Art Fließband) die APK und veröffentlicht sie auf der
 Releases-Seite.
 
-## Grenzen der Version 1 – ehrlich gesagt
+## Der Online-Modus (Beta): echte Freunde
 
-- **Die Freunde sind Demo-Daten.** Die drei Freunde samt ihrer Aktivität sind
-  Beispielfiguren auf Ihrem Gerät, damit die App von Anfang an lebendig wirkt.
-  Es sind keine echten Personen, und Sie können (noch) keine echten Freunde
-  hinzufügen.
-- **Keine echten Live-Standorte anderer.** Die Karte zeigt Ihre eigene
-  Position und die Demo-Sessions – aber niemand sieht Sie, und Sie sehen keine
-  echten anderen Menschen. Echter Mehrspieler-Betrieb (echte Freunde,
-  Live-Karte über Geräte hinweg, Push-Benachrichtigungen) braucht einen
-  Server im Hintergrund („Backend"). Das ist für Version 2 mit Supabase
-  bereits vorbereitet (Ordner `supabase/` im Repository), aber noch nicht
-  aktiv.
+Seit der Online-Beta (v0.9) kann BrewMates auf Wunsch mehr als ein privates
+Notizbuch sein. So funktioniert es:
+
+1. **Einmal registrieren**: In der App ein Konto anlegen – mit E-Mail-Adresse,
+   Passwort und einem frei gewählten Nutzernamen. Das ist komplett freiwillig;
+   ohne Konto ändert sich an der App **gar nichts**.
+2. **Freunde finden**: Sie suchen Ihre Freunde über deren Nutzernamen und
+   schicken eine Freundschaftsanfrage. Erst wenn die Gegenseite bestätigt,
+   sind Sie verbunden – niemand kann Sie ungefragt „abonnieren".
+3. **Gegenseitig sehen**: Ab dann erscheinen die Beacons Ihrer Freunde live
+   auf Ihrer Karte (und Ihrer auf deren Karte), und Ihre Check-ins tauchen im
+   Feed der Freunde auf – binnen Sekunden, nicht erst beim nächsten App-Start.
+
+Sobald Sie angemeldet sind, verschwinden die Demo-Freunde und echte Freunde
+übernehmen. Melden Sie sich ab, läuft die App wieder rein lokal wie zuvor.
+
+**Was wird dabei übertragen?** Nur zwei Dinge, und beide sind ausschließlich
+für Ihre bestätigten Freunde sichtbar (das erzwingt der Server selbst, nicht
+nur die App): Ihre eigenen **Check-ins** (Biername, Brauerei, Stil, Bewertung,
+Notiz, Ortsname) und Ihre **aktiven Sessions** (Ortsname, Nachricht,
+Koordinaten, Ablaufzeit). Sessions sind nur sichtbar, solange sie laufen –
+nach dem automatischen Ende verschwindet der Standort. Gespeichert wird das
+beim Dienstleister Supabase auf Servern in der EU. Alle Details stehen in der
+[Datenschutzerklärung](../PRIVACY.md), Abschnitt 4d.
+
+## Grenzen der Beta – ehrlich gesagt
+
+- **Abgemeldet sind die Freunde weiterhin Demo-Daten.** Ohne Konto sind die
+  drei Freunde samt ihrer Aktivität Beispielfiguren auf Ihrem Gerät, damit
+  die App von Anfang an lebendig wirkt. **Angemeldet** gilt das nicht mehr:
+  Dann sind Freunde, Live-Karte und Feed echt.
+- **Noch nicht fertig in der Beta:** „Prost!" und Kommentare auf
+  Online-Check-ins von Freunden, die Konto-Löschung direkt in der App (in
+  der Beta auf Anfrage möglich) und Push-Benachrichtigungen bei
+  geschlossener App – Beacons erscheinen live, solange die App offen ist.
 - **Der GitHub-Abgleich ist eine Einbahnstraße.** Die App liest die
   gemeinsame Bier-Liste nur; sie lädt nie etwas über Sie hoch.
   Bier-Vorschläge laufen bewusst über das separate Issue-Formular, das Sie
   selbst aktiv absenden.
-- **Kein Gerätewechsel-Komfort.** Weil alles nur lokal liegt, wandern Ihre
-  Daten beim Wechsel auf ein neues Handy nicht automatisch mit. Die Kehrseite
-  der Privatsphäre – ein Sync kommt mit Version 2.
+- **Kein voller Gerätewechsel-Komfort.** Mit Konto werden neue Check-ins für
+  Freunde gespiegelt – der bestehende lokale Alt-Bestand (Tagebuch,
+  Abzeichen, Wunschliste) wandert aber noch nicht automatisch ins Konto.
+  Ein Upload-Assistent dafür steht auf der Roadmap.

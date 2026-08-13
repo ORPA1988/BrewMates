@@ -1,7 +1,8 @@
 name: brewmates
 description: "BrewMates – Bier entdecken, Freunde treffen. Untappd × Beer with Me."
 publish_to: "none"
-version: 1.2.0+3
+# Beta-Phase: 0.x bis zum offiziellen 1.0-Store-Release (versionCode zählt weiter)
+version: 0.9.0-beta+4
 
 environment:
   sdk: ^3.5.0
@@ -38,6 +39,9 @@ dependencies:
   # mobile_scanner 6+/geolocator 14+ verlangen neuere AGP/Kotlin/compileSdk.
   mobile_scanner: ^5.2.3
   geolocator: ^13.0.2
+
+  # Online-Stufe (Beta): Konten, echte Freunde, Live-Beacon
+  supabase_flutter: ^2.8.0
 
 dev_dependencies:
   flutter_test:

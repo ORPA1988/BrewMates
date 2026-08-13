@@ -1,6 +1,6 @@
 # Datenschutzerklärung für BrewMates
 
-**Stand: 13. August 2026 — gilt für BrewMates ab Version 1.2**
+**Stand: 13. August 2026 — gilt für BrewMates ab Version 1.2 bzw. Online-Beta 0.9**
 
 ## 1. Kurzfassung
 
@@ -11,7 +11,9 @@ App stellt genau drei rein lesende Netzwerkverbindungen her: Kartenkacheln
 von der OpenStreetMap Foundation, die redaktionelle Bier-/Brauerei-
 Datenbank von GitHub und – nur beim Scannen unbekannter Barcodes – eine
 Produktabfrage bei Open Food Facts. Kamera und GPS arbeiten rein lokal
-(Abschnitte 4b und 4c).
+(Abschnitte 4b und 4c). Optional (Beta): Wer ein Konto anlegt, teilt
+Check-ins und aktive Sessions ausschließlich mit bestätigten Freunden über
+den Auftragsverarbeiter Supabase (EU) – Details in Abschnitt 4d.
 
 ## 2. Verantwortlicher
 
@@ -97,14 +99,46 @@ Standort dabei ausschließlich **lokal auf dem Gerät** gespeichert und
 verlässt es nicht. Grundsätze: Der Standort wird nur während einer
 aktiven Session verwendet, jede Session endet automatisch, es wird keine
 Standort-Historie angelegt. Die Standort-Berechtigung ist optional — ohne
-sie wählen Sie den Ort einfach von Hand.
+sie wählen Sie den Ort einfach von Hand. Zum optionalen Teilen von Sessions
+mit bestätigten Freunden im Online-Modus siehe Abschnitt 4d.
+
+## 4d. Online-Modus (optional, Beta)
+
+Seit der Online-Beta (v0.9) können Sie freiwillig ein Benutzerkonto
+anlegen. Ohne Konto ändert sich nichts — die App läuft weiterhin
+vollständig lokal, wie in den Abschnitten 3 bis 4c beschrieben.
+
+Bei der Registrierung werden folgende Daten bei unserem
+Auftragsverarbeiter **Supabase** (Server-Region EU) gespeichert:
+E-Mail-Adresse, Passwort (gehasht durch Supabase Auth), Nutzername,
+Anzeigename und Avatar-Emoji.
+
+Bei aktivem Online-Modus überträgt die App zusätzlich an Supabase:
+
+- Ihre eigenen **Check-ins** (Biername, Brauerei, Stil, Bewertung, Notiz,
+  Ortsname),
+- Ihre **aktiven Sessions** (Ortsname, Nachricht, Koordinaten, Ablaufzeit).
+
+Diese Inhalte sind **ausschließlich für von Ihnen bestätigte Freunde
+sichtbar**; das wird serverseitig durch Row Level Security erzwungen.
+Sessions sind dabei nur sichtbar, solange sie aktiv sind — nach dem
+automatischen Ende verschwindet der Standort.
+
+Wenn Sie sich abmelden, endet die Übertragung. Die Löschung des Kontos ist
+in der Beta auf Anfrage möglich (Kontakt siehe Ziffer 9), ab Version 1.0
+direkt in der App. Rechtsgrundlage ist die Bereitstellung der von Ihnen
+gewünschten Funktionen (Art. 6 Abs. 1 lit. b DSGVO). Für die Verarbeitung
+durch Supabase gilt deren Datenschutzerklärung:
+<https://supabase.com/privacy>
 
 ## 5. Was BrewMates NICHT tut
 
-- keine Benutzerkonten, keine Registrierung,
+- keine verpflichtenden Benutzerkonten — das Konto für den Online-Modus
+  ist freiwillig (Abschnitt 4d),
 - keine Analyse-, Tracking- oder Werbe-SDKs,
 - keine Übertragung von Standort-, Nutzungs- oder Profildaten an uns oder
-  Dritte (mit Ausnahme des unter Ziffer 4 beschriebenen Kachelabrufs),
+  Dritte (mit Ausnahme des unter Ziffer 4 beschriebenen Kachelabrufs und —
+  nur mit Konto — des unter Ziffer 4d beschriebenen Online-Modus),
 - kein Auslesen von Kontakten, Fotos oder anderen Gerätedaten über den
   Funktionsumfang der App hinaus.
 
@@ -112,7 +146,8 @@ sie wählen Sie den Ort einfach von Hand.
 
 Da alle Daten lokal gespeichert sind, löschen Sie sämtliche Daten, indem Sie
 die App deinstallieren (bzw. unter Android zusätzlich über
-„App-Info → Speicher → Daten löschen").
+„App-Info → Speicher → Daten löschen"). Für das optionale Konto im
+Online-Modus gilt zusätzlich die Konto-Löschung nach Abschnitt 4d.
 
 ## 7. Ihre Rechte
 
