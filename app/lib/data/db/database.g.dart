@@ -1206,6 +1206,12 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       defaultValue: const Constant(''));
+  static const VerificationMeta _imageUrlMeta =
+      const VerificationMeta('imageUrl');
+  @override
+  late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
+      'image_url', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1219,7 +1225,8 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
         isUserSubmitted,
         descriptionCommunity,
         communityRating,
-        barcodes
+        barcodes,
+        imageUrl
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1296,6 +1303,10 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
       context.handle(_barcodesMeta,
           barcodes.isAcceptableOrUnknown(data['barcodes']!, _barcodesMeta));
     }
+    if (data.containsKey('image_url')) {
+      context.handle(_imageUrlMeta,
+          imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta));
+    }
     return context;
   }
 
@@ -1329,6 +1340,8 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
           DriftSqlType.double, data['${effectivePrefix}community_rating']),
       barcodes: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}barcodes'])!,
+      imageUrl: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}image_url']),
     );
   }
 
@@ -1357,6 +1370,9 @@ class Beer extends DataClass implements Insertable<Beer> {
 
   /// Kommagetrennte EAN-Barcodes (8 oder 13 Ziffern), z. B. "90034107".
   final String barcodes;
+
+  /// Etikett-/Produktfoto als URL (Open Food Facts, CC-BY-SA – nur verlinkt).
+  final String? imageUrl;
   const Beer(
       {required this.id,
       required this.breweryId,
@@ -1369,7 +1385,8 @@ class Beer extends DataClass implements Insertable<Beer> {
       required this.isUserSubmitted,
       this.descriptionCommunity,
       this.communityRating,
-      required this.barcodes});
+      required this.barcodes,
+      this.imageUrl});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1395,6 +1412,9 @@ class Beer extends DataClass implements Insertable<Beer> {
       map['community_rating'] = Variable<double>(communityRating);
     }
     map['barcodes'] = Variable<String>(barcodes);
+    if (!nullToAbsent || imageUrl != null) {
+      map['image_url'] = Variable<String>(imageUrl);
+    }
     return map;
   }
 
@@ -1418,6 +1438,9 @@ class Beer extends DataClass implements Insertable<Beer> {
           ? const Value.absent()
           : Value(communityRating),
       barcodes: Value(barcodes),
+      imageUrl: imageUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imageUrl),
     );
   }
 
@@ -1438,6 +1461,7 @@ class Beer extends DataClass implements Insertable<Beer> {
           serializer.fromJson<String?>(json['descriptionCommunity']),
       communityRating: serializer.fromJson<double?>(json['communityRating']),
       barcodes: serializer.fromJson<String>(json['barcodes']),
+      imageUrl: serializer.fromJson<String?>(json['imageUrl']),
     );
   }
   @override
@@ -1456,6 +1480,7 @@ class Beer extends DataClass implements Insertable<Beer> {
       'descriptionCommunity': serializer.toJson<String?>(descriptionCommunity),
       'communityRating': serializer.toJson<double?>(communityRating),
       'barcodes': serializer.toJson<String>(barcodes),
+      'imageUrl': serializer.toJson<String?>(imageUrl),
     };
   }
 
@@ -1471,7 +1496,8 @@ class Beer extends DataClass implements Insertable<Beer> {
           bool? isUserSubmitted,
           Value<String?> descriptionCommunity = const Value.absent(),
           Value<double?> communityRating = const Value.absent(),
-          String? barcodes}) =>
+          String? barcodes,
+          Value<String?> imageUrl = const Value.absent()}) =>
       Beer(
         id: id ?? this.id,
         breweryId: breweryId ?? this.breweryId,
@@ -1489,6 +1515,7 @@ class Beer extends DataClass implements Insertable<Beer> {
             ? communityRating.value
             : this.communityRating,
         barcodes: barcodes ?? this.barcodes,
+        imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
       );
   Beer copyWithCompanion(BeersCompanion data) {
     return Beer(
@@ -1513,6 +1540,7 @@ class Beer extends DataClass implements Insertable<Beer> {
           ? data.communityRating.value
           : this.communityRating,
       barcodes: data.barcodes.present ? data.barcodes.value : this.barcodes,
+      imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
     );
   }
 
@@ -1530,7 +1558,8 @@ class Beer extends DataClass implements Insertable<Beer> {
           ..write('isUserSubmitted: $isUserSubmitted, ')
           ..write('descriptionCommunity: $descriptionCommunity, ')
           ..write('communityRating: $communityRating, ')
-          ..write('barcodes: $barcodes')
+          ..write('barcodes: $barcodes, ')
+          ..write('imageUrl: $imageUrl')
           ..write(')'))
         .toString();
   }
@@ -1548,7 +1577,8 @@ class Beer extends DataClass implements Insertable<Beer> {
       isUserSubmitted,
       descriptionCommunity,
       communityRating,
-      barcodes);
+      barcodes,
+      imageUrl);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1564,7 +1594,8 @@ class Beer extends DataClass implements Insertable<Beer> {
           other.isUserSubmitted == this.isUserSubmitted &&
           other.descriptionCommunity == this.descriptionCommunity &&
           other.communityRating == this.communityRating &&
-          other.barcodes == this.barcodes);
+          other.barcodes == this.barcodes &&
+          other.imageUrl == this.imageUrl);
 }
 
 class BeersCompanion extends UpdateCompanion<Beer> {
@@ -1580,6 +1611,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
   final Value<String?> descriptionCommunity;
   final Value<double?> communityRating;
   final Value<String> barcodes;
+  final Value<String?> imageUrl;
   final Value<int> rowid;
   const BeersCompanion({
     this.id = const Value.absent(),
@@ -1594,6 +1626,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     this.descriptionCommunity = const Value.absent(),
     this.communityRating = const Value.absent(),
     this.barcodes = const Value.absent(),
+    this.imageUrl = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   BeersCompanion.insert({
@@ -1609,6 +1642,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     this.descriptionCommunity = const Value.absent(),
     this.communityRating = const Value.absent(),
     this.barcodes = const Value.absent(),
+    this.imageUrl = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         breweryId = Value(breweryId),
@@ -1627,6 +1661,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     Expression<String>? descriptionCommunity,
     Expression<double>? communityRating,
     Expression<String>? barcodes,
+    Expression<String>? imageUrl,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1643,6 +1678,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
         'description_community': descriptionCommunity,
       if (communityRating != null) 'community_rating': communityRating,
       if (barcodes != null) 'barcodes': barcodes,
+      if (imageUrl != null) 'image_url': imageUrl,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1660,6 +1696,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       Value<String?>? descriptionCommunity,
       Value<double?>? communityRating,
       Value<String>? barcodes,
+      Value<String?>? imageUrl,
       Value<int>? rowid}) {
     return BeersCompanion(
       id: id ?? this.id,
@@ -1674,6 +1711,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       descriptionCommunity: descriptionCommunity ?? this.descriptionCommunity,
       communityRating: communityRating ?? this.communityRating,
       barcodes: barcodes ?? this.barcodes,
+      imageUrl: imageUrl ?? this.imageUrl,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1718,6 +1756,9 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     if (barcodes.present) {
       map['barcodes'] = Variable<String>(barcodes.value);
     }
+    if (imageUrl.present) {
+      map['image_url'] = Variable<String>(imageUrl.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1739,6 +1780,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
           ..write('descriptionCommunity: $descriptionCommunity, ')
           ..write('communityRating: $communityRating, ')
           ..write('barcodes: $barcodes, ')
+          ..write('imageUrl: $imageUrl, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5236,6 +5278,7 @@ typedef $$BeersTableCreateCompanionBuilder = BeersCompanion Function({
   Value<String?> descriptionCommunity,
   Value<double?> communityRating,
   Value<String> barcodes,
+  Value<String?> imageUrl,
   Value<int> rowid,
 });
 typedef $$BeersTableUpdateCompanionBuilder = BeersCompanion Function({
@@ -5251,6 +5294,7 @@ typedef $$BeersTableUpdateCompanionBuilder = BeersCompanion Function({
   Value<String?> descriptionCommunity,
   Value<double?> communityRating,
   Value<String> barcodes,
+  Value<String?> imageUrl,
   Value<int> rowid,
 });
 
@@ -5343,6 +5387,9 @@ class $$BeersTableFilterComposer extends Composer<_$AppDatabase, $BeersTable> {
 
   ColumnFilters<String> get barcodes => $composableBuilder(
       column: $table.barcodes, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get imageUrl => $composableBuilder(
+      column: $table.imageUrl, builder: (column) => ColumnFilters(column));
 
   $$BreweriesTableFilterComposer get breweryId {
     final $$BreweriesTableFilterComposer composer = $composerBuilder(
@@ -5453,6 +5500,9 @@ class $$BeersTableOrderingComposer
   ColumnOrderings<String> get barcodes => $composableBuilder(
       column: $table.barcodes, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get imageUrl => $composableBuilder(
+      column: $table.imageUrl, builder: (column) => ColumnOrderings(column));
+
   $$BreweriesTableOrderingComposer get breweryId {
     final $$BreweriesTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -5515,6 +5565,9 @@ class $$BeersTableAnnotationComposer
 
   GeneratedColumn<String> get barcodes =>
       $composableBuilder(column: $table.barcodes, builder: (column) => column);
+
+  GeneratedColumn<String> get imageUrl =>
+      $composableBuilder(column: $table.imageUrl, builder: (column) => column);
 
   $$BreweriesTableAnnotationComposer get breweryId {
     final $$BreweriesTableAnnotationComposer composer = $composerBuilder(
@@ -5615,6 +5668,7 @@ class $$BeersTableTableManager extends RootTableManager<
             Value<String?> descriptionCommunity = const Value.absent(),
             Value<double?> communityRating = const Value.absent(),
             Value<String> barcodes = const Value.absent(),
+            Value<String?> imageUrl = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               BeersCompanion(
@@ -5630,6 +5684,7 @@ class $$BeersTableTableManager extends RootTableManager<
             descriptionCommunity: descriptionCommunity,
             communityRating: communityRating,
             barcodes: barcodes,
+            imageUrl: imageUrl,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -5645,6 +5700,7 @@ class $$BeersTableTableManager extends RootTableManager<
             Value<String?> descriptionCommunity = const Value.absent(),
             Value<double?> communityRating = const Value.absent(),
             Value<String> barcodes = const Value.absent(),
+            Value<String?> imageUrl = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               BeersCompanion.insert(
@@ -5660,6 +5716,7 @@ class $$BeersTableTableManager extends RootTableManager<
             descriptionCommunity: descriptionCommunity,
             communityRating: communityRating,
             barcodes: barcodes,
+            imageUrl: imageUrl,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

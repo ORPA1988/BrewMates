@@ -82,6 +82,9 @@ class Beers extends Table {
   /// Kommagetrennte EAN-Barcodes (8 oder 13 Ziffern), z. B. "90034107".
   TextColumn get barcodes => text().withDefault(const Constant(''))();
 
+  /// Etikett-/Produktfoto als URL (Open Food Facts, CC-BY-SA – nur verlinkt).
+  TextColumn get imageUrl => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -261,7 +264,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -289,6 +292,10 @@ class AppDatabase extends _$AppDatabase {
           if (from < 3) {
             // v3: Barcodes für den Scanner.
             await m.addColumn(beers, beers.barcodes);
+          }
+          if (from < 4) {
+            // v4: Etikett-Bilder (Open Food Facts) für die Community-DB.
+            await m.addColumn(beers, beers.imageUrl);
           }
         },
       );

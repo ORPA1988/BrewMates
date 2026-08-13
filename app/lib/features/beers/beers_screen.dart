@@ -143,12 +143,25 @@ class _BeerTile extends ConsumerWidget {
     final brewery = item.brewery;
     final onWishlist = ref.watch(onWishlistProvider(beer.id)).valueOrNull ?? false;
 
+    final fallbackEmoji = Text(
+      beer.isAlcoholFree ? '💧' : '🍺',
+      style: const TextStyle(fontSize: 28),
+    );
+
     return Card(
       child: ListTile(
-        leading: Text(
-          beer.isAlcoholFree ? '💧' : '🍺',
-          style: const TextStyle(fontSize: 28),
-        ),
+        leading: beer.imageUrl == null
+            ? fallbackEmoji
+            : ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: Image.network(
+                  beer.imageUrl!,
+                  width: 44,
+                  height: 44,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => fallbackEmoji,
+                ),
+              ),
         title: Text(beer.name),
         subtitle: Text(
           '${brewery.name}, ${brewery.country} · ${beer.style}'

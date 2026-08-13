@@ -59,12 +59,35 @@ class _BeerDetailBody extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Kopf
-          Text(
-            beer.isAlcoholFree ? '💧' : '🍺',
-            style: const TextStyle(fontSize: 56),
-            textAlign: TextAlign.center,
-          ),
+          // Kopf: Etikett-Foto (Open Food Facts), sonst Emoji
+          if (beer.imageUrl != null) ...[
+            Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  beer.imageUrl!,
+                  height: 180,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => Text(
+                    beer.isAlcoholFree ? '💧' : '🍺',
+                    style: const TextStyle(fontSize: 56),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Bild: Open Food Facts (CC-BY-SA)',
+              style: theme.textTheme.labelSmall
+                  ?.copyWith(color: theme.colorScheme.outline),
+              textAlign: TextAlign.center,
+            ),
+          ] else
+            Text(
+              beer.isAlcoholFree ? '💧' : '🍺',
+              style: const TextStyle(fontSize: 56),
+              textAlign: TextAlign.center,
+            ),
           const SizedBox(height: 8),
           Text(
             beer.name,

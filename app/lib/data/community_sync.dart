@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 
 import 'db/database.dart';
 
-/// Synchronisiert die redaktionelle Community-Datenbank (österreichische
-/// Biere & Brauereien) in die lokale DB.
+/// Synchronisiert die redaktionelle Community-Datenbank (Biere & Brauereien
+/// aus Österreich und Bayern) in die lokale DB.
 ///
 /// Quellen, in dieser Reihenfolge:
 /// 1. Gebündelte Assets (`assets/data/*.json`) – funktioniert offline,
@@ -26,6 +26,12 @@ class CommunitySync {
 
   static const _repoRaw =
       'https://raw.githubusercontent.com/ORPA1988/BrewMates/main/app/assets/data';
+
+  /// Regionen-Dateipaare (Brauereien, Biere) – Reihenfolge: Brauereien
+  /// zuerst, damit die Fremdschlüssel der Biere immer auflösbar sind.
+  static const breweryFiles = ['breweries-at.json', 'breweries-by.json'];
+  static const beerFiles = ['beers-at.json', 'beers-by.json'];
+
   static const beersAsset = 'assets/data/beers-at.json';
   static const breweriesAsset = 'assets/data/breweries-at.json';
 
@@ -33,32 +39,68 @@ class CommunitySync {
   /// `cache: false`: der Future-Cache von rootBundle kann in Widget-Tests
   /// ein nie fertig werdendes Future aus einer früheren Test-Zone liefern.
   Future<int> importBundledData() async {
+    var imported = 0;
+    for (final file in breweryFiles) {
+      final jsonString = await _loadAsset('assets/data/$file');
+      if (jsonString == null) continue;
+      final rows = parseBreweries(jsonString);
+      await db.upsertCommunityData(breweryRows: rows, beerRows: const []);
+      imported += rows.length;
+    }
+    for (final file in beerFiles) {
+      final jsonString = await _loadAsset('assets/data/$file');
+      if (jsonString == null) continue;
+      final rows = parseBeers(jsonString);
+      await db.upsertCommunityData(breweryRows: const [], beerRows: rows);
+      imported += rows.length;
+    }
+    return imported;
+  }
+
+  Future<String?> _loadAsset(String asset) async {
     try {
-      final breweriesJson =
-          await rootBundle.loadString(breweriesAsset, cache: false);
-      final beersJson = await rootBundle.loadString(beersAsset, cache: false);
-      return await _importJson(breweriesJson, beersJson);
+      return await rootBundle.loadString(asset, cache: false);
     } catch (_) {
-      // Assets fehlen (z. B. in Unit-Tests ohne Binding) – kein Fehler.
-      return 0;
+      // Asset fehlt (z. B. in Unit-Tests ohne Binding) – kein Fehler.
+      return null;
     }
   }
 
   /// Neueste Fassung von GitHub laden. Gibt die Anzahl importierter
   /// Einträge zurück; wirft bei Netzwerkfehlern eine Exception.
+  /// Fehlt eine einzelne Datei auf GitHub (404, z. B. neue Region noch
+  /// nicht gemergt), wird sie übersprungen statt den Sync abzubrechen.
   Future<int> syncFromGitHub() async {
-    final breweriesRes = await _client
-        .get(Uri.parse('$_repoRaw/breweries-at.json'))
-        .timeout(const Duration(seconds: 10));
-    final beersRes = await _client
-        .get(Uri.parse('$_repoRaw/beers-at.json'))
-        .timeout(const Duration(seconds: 10));
-    if (breweriesRes.statusCode != 200 || beersRes.statusCode != 200) {
-      throw http.ClientException(
-          'GitHub-Sync fehlgeschlagen (${breweriesRes.statusCode}/${beersRes.statusCode})');
+    var imported = 0;
+    var fetched = 0;
+    for (final file in breweryFiles) {
+      final body = await _fetch(file);
+      if (body == null) continue;
+      final rows = parseBreweries(body);
+      await db.upsertCommunityData(breweryRows: rows, beerRows: const []);
+      imported += rows.length;
+      fetched++;
     }
-    return _importJson(
-        utf8.decode(breweriesRes.bodyBytes), utf8.decode(beersRes.bodyBytes));
+    for (final file in beerFiles) {
+      final body = await _fetch(file);
+      if (body == null) continue;
+      final rows = parseBeers(body);
+      await db.upsertCommunityData(breweryRows: const [], beerRows: rows);
+      imported += rows.length;
+      fetched++;
+    }
+    if (fetched == 0) {
+      throw http.ClientException('GitHub-Sync fehlgeschlagen (keine Datei)');
+    }
+    return imported;
+  }
+
+  Future<String?> _fetch(String file) async {
+    final res = await _client
+        .get(Uri.parse('$_repoRaw/$file'))
+        .timeout(const Duration(seconds: 10));
+    if (res.statusCode != 200) return null;
+    return utf8.decode(res.bodyBytes);
   }
 
   /// Wie [syncFromGitHub], aber still: bei fehlender Verbindung passiert
@@ -69,14 +111,6 @@ class CommunitySync {
     } catch (_) {
       // offline – gebündelte/lokale Daten bleiben gültig.
     }
-  }
-
-  Future<int> _importJson(String breweriesJson, String beersJson) async {
-    final breweryRows = parseBreweries(breweriesJson);
-    final beerRows = parseBeers(beersJson);
-    await db.upsertCommunityData(
-        breweryRows: breweryRows, beerRows: beerRows);
-    return breweryRows.length + beerRows.length;
   }
 
   static List<BreweriesCompanion> parseBreweries(String jsonString) {
@@ -123,6 +157,7 @@ class CommunitySync {
           barcodes: Value(
               ((b['barcodes'] as List?)?.cast<String>() ?? const [])
                   .join(',')),
+          imageUrl: Value(b['image_url'] as String?),
         ),
     ];
   }

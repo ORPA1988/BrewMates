@@ -196,6 +196,38 @@ void main() {
     expect(rows.single.barcodes.value, '90034107,9003400304939');
   });
 
+  test('parseBeers übernimmt Etikett-Bild-URLs (image_url)', () async {
+    const beersJson = '''
+    {"version":3,"updated":"2026-08-13","beers":[{
+      "id":"at-bild-test","brewery_id":"at-test","name":"Bild-Bier",
+      "style":"Pils","abv":5.0,"ibu":null,"is_alcohol_free":false,
+      "barcodes":["90034107"],
+      "image_url":"https://images.openfoodfacts.org/images/products/test.jpg",
+      "description_manufacturer":null,
+      "description_community":null,"community_rating":null}]}''';
+    final rows = CommunitySync.parseBeers(beersJson);
+    expect(rows.single.imageUrl.value,
+        'https://images.openfoodfacts.org/images/products/test.jpg');
+    // Ohne image_url bleibt das Feld null (kein Pflichtfeld).
+    const ohneBild = '''
+    {"version":3,"updated":"2026-08-13","beers":[{
+      "id":"at-ohne-bild","brewery_id":"at-test","name":"Ohne Bild",
+      "style":"Pils","abv":5.0,"ibu":null,"is_alcohol_free":false,
+      "description_manufacturer":null,
+      "description_community":null,"community_rating":null}]}''';
+    expect(CommunitySync.parseBeers(ohneBild).single.imageUrl.value, isNull);
+  });
+
+  test('Gebündelte Bayern-Datenbank wird importiert', () async {
+    await CommunitySync(db).importBundledData();
+
+    final augustiner = await db.watchBrewery('de-by-augustiner').first;
+    expect(augustiner, isNotNull);
+    expect(augustiner!.country, 'Deutschland');
+    expect(augustiner.latitude, isNotNull);
+
+  });
+
   test('Gebündelte DB: Stiegl-Goldbräu ist per Barcode auffindbar',
       () async {
     await CommunitySync(db).importBundledData();

@@ -9,8 +9,8 @@ Es gibt keine Benutzerkonten, keine Server des Anbieters, keine Analyse-
 oder Werbe-SDKs und keine Übertragung personenbezogener Daten an uns. Die
 App stellt genau drei rein lesende Netzwerkverbindungen her: Kartenkacheln
 von der OpenStreetMap Foundation, die redaktionelle Bier-/Brauerei-
-Datenbank von GitHub und – nur beim Scannen unbekannter Barcodes – eine
-Produktabfrage bei Open Food Facts. Kamera und GPS arbeiten rein lokal
+Datenbank von GitHub und – beim Scannen unbekannter Barcodes sowie zum
+Anzeigen von Etikett-Fotos – Abfragen bei Open Food Facts. Kamera und GPS arbeiten rein lokal
 (Abschnitte 4b und 4c). Beta: Die Nutzung setzt ein Benutzerkonto voraus;
 Check-ins und aktive Sessions werden ausschließlich mit bestätigten
 Freunden über den Auftragsverarbeiter Supabase (EU) geteilt – Details in
@@ -88,7 +88,15 @@ Ist ein gescannter Barcode in der lokalen Datenbank nicht bekannt, fragt
 die App den Barcode (nur die Ziffernfolge, keine weiteren Daten) bei der
 freien Produktdatenbank **Open Food Facts** an
 (`world.openfoodfacts.org`); dabei werden technisch bedingt Ihre
-IP-Adresse und technische Anfragedaten an deren Server übertragen. Es
+IP-Adresse und technische Anfragedaten an deren Server übertragen.
+
+Zusätzlich zeigt die App bei Bieren aus der redaktionellen Datenbank
+Etikett-Fotos an, die als Links auf die Bildserver von Open Food Facts
+(`images.openfoodfacts.org`) hinterlegt sind. Beim Anzeigen eines solchen
+Fotos werden — wie bei jedem Bildabruf im Internet — Ihre IP-Adresse und
+technische Anfragedaten an Open Food Facts übertragen; es werden keine
+Daten von Ihrem Gerät gesendet. Die Fotos stehen unter der Lizenz
+CC-BY-SA und werden nur verlinkt, nicht in der App gespeichert. Es
 gilt die Datenschutzerklärung von Open Food Facts:
 <https://world.openfoodfacts.org/privacy>
 
