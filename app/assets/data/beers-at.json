@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-08-12",
+  "updated": "2026-08-13",
   "beers": [
     {
       "id": "at-stiegl-goldbraeu",
@@ -15,6 +15,7 @@
         "90034558",
         "90034695"
       ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90034107/front.4.400.jpg",
       "description_manufacturer": "Das Salzburger Flaggschiff von Stiegl: ein mild gehopftes, goldfarbenes Märzen mit feiner Malznote, gebraut als ausgewogenes Bier für jeden Tag.",
       "description_community": "Gilt als der süffige österreichische Standard; unaufgeregt, sauber und sehr trinkbar, ohne geschmacklich groß aufzufallen.",
       "community_rating": 3.3
@@ -45,6 +46,7 @@
       "barcodes": [
         "9003400304939"
       ],
+      "image_url": "https://images.openfoodfacts.org/images/products/900/340/030/4939/front_de.3.400.jpg",
       "description_manufacturer": "Naturtrübes Weissbier nach bayerischer Art aus Salzburg, mit fruchtigen Bananen- und Nelkennoten aus der obergärigen Hefe.",
       "description_community": "Wird als erfrischendes, unkompliziertes Weissbier geschätzt; kein bayerischer Klassiker, aber ein verlässlicher Durstlöscher im Biergarten.",
       "community_rating": 3.4
@@ -60,6 +62,7 @@
       "barcodes": [
         "90034077"
       ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90034077/front_fr.3.400.jpg",
       "description_manufacturer": "Unfiltriertes Bio-Zwickl mit natürlicher Hefetrübung, das Stiegl als besonders naturbelassenes und bekömmliches Bier positioniert.",
       "description_community": "Angenehm mild und hefig-weich; viele halten es für das interessanteste Bier im Stiegl-Kernsortiment.",
       "community_rating": 3.5
@@ -72,6 +75,11 @@
       "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
+      "barcodes": [
+        "9003402293200",
+        "9003402193807"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/900/340/229/3200/front_de.3.400.jpg",
       "description_manufacturer": "Das alkoholfreie Lager von Stiegl, gebraut für vollen Biergeschmack ohne Alkohol – als Alternative für Sport und Alltag gedacht.",
       "description_community": "Eines der besser bewerteten alkoholfreien Biere Österreichs; malzig-süßlich, aber erstaunlich biernah.",
       "community_rating": 3.1
@@ -89,6 +97,7 @@
         "90076343",
         "90076091"
       ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90076343/front_de.17.400.jpg",
       "description_manufacturer": "Das klassische Wiener Helle der Ottakringer Brauerei: mild, rund und auf hohe Trinkbarkeit ausgelegt – ein Stück Wiener Wirtshauskultur.",
       "description_community": "Das typische Wiener Wirtshaus- und Gastgartenbier, oft schlicht als '16er Blech' aus der Dose kultig; süffig, aber geschmacklich schlicht.",
       "community_rating": 3.1
@@ -101,6 +110,10 @@
       "abv": 5.3,
       "ibu": null,
       "is_alcohol_free": false,
+      "barcodes": [
+        "9007600303242"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/900/760/030/3242/front_en.3.400.jpg",
       "description_manufacturer": "Ein bernsteinfarbenes Lager in Anlehnung an den historischen Wiener Bierstil, mit betonter Malznote und kräftigerem Körper als das Helle.",
       "description_community": "Wird als charaktervollere Alternative zum Hellen geschätzt; schöne Karamellmalznote, die dem Wiener-Lager-Erbe gerecht wird.",
       "community_rating": 3.4
@@ -137,6 +150,11 @@
       "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
+      "barcodes": [
+        "90076503",
+        "90076527"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90076503/front_de.28.400.jpg",
       "description_manufacturer": "Das alkoholfreie Bier der Ottakringer Brauerei mit augenzwinkerndem Wiener Namen, gebraut als vollwertige Bieralternative ohne Alkohol.",
       "description_community": "Vor allem wegen des Namens Kult; geschmacklich ein durchschnittliches Alkoholfreies mit süßlicher Würzenote.",
       "community_rating": 2.9
@@ -154,6 +172,7 @@
         "9001511100617",
         "90288050"
       ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90129018/front_de.14.400.jpg",
       "description_manufacturer": "Das meistverkaufte Bier der Marke Gösser: ein goldgelbes Märzen aus der Steiermark, das mit dem Slogan vom besten Bier des Landes als österreichische Institution vermarktet wird.",
       "description_community": "Allgegenwärtiges Standardbier in ganz Österreich; süffig und unauffällig, in Blindverkostungen meist im Mittelfeld.",
       "community_rating": 3.2
@@ -193,6 +212,7 @@
       "barcodes": [
         "90129063"
       ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90129063/front.4.400.jpg",
       "description_manufacturer": "Ein dunkles, mildes Bier mit süßlicher Malznote und niedrigem Alkoholgehalt, das an die Klostertradition des Stifts Göss anknüpft.",
       "description_community": "Süßlich-malziges Dunkles, das polarisiert: für die einen ein gemütliches Dessertbier, für andere zu süß und zu leicht.",
       "community_rating": 3.0
@@ -208,6 +228,7 @@
       "barcodes": [
         "9028800602270"
       ],
+      "image_url": "https://images.openfoodfacts.org/images/products/902/880/060/2270/front_de.9.400.jpg",
       "description_manufacturer": "Das alkoholfreie Vollbier von Gösser, das mit vollem Geschmack und natürlichen Rohstoffen als vollwertige Alternative beworben wird.",
       "description_community": "Eines der verbreitetsten Alkoholfreien in Österreich; ordentlich, aber mit der stiltypisch süßlichen Würzenote.",
       "community_rating": 3.0
@@ -224,6 +245,7 @@
         "90031779",
         "9028800632161"
       ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90031779/front_de.18.400.jpg",
       "description_manufacturer": "Das hopfenbetonte Aushängeschild aus Zipf: ein helles Vollbier mit Naturhopfen, das die Brauerei als besonders urtypisch und herb-frisch positioniert.",
       "description_community": "Für viele das hopfigste unter den österreichischen Standardbieren; trocken, herb und erfrischend, ein Klassiker im oberösterreichischen Wirtshaus.",
       "community_rating": 3.4
@@ -248,6 +270,10 @@
       "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
+      "barcodes": [
+        "9028800140796"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/902/880/014/0796/front_en.3.400.jpg",
       "description_manufacturer": "Alkoholfreies Helles aus Zipf, das mit frischem, hellem Biergeschmack und der typischen Zipfer Hopfennote wirbt.",
       "description_community": "Frisch und vergleichsweise schlank für ein Alkoholfreies; gute Wahl, wenn es hopfig statt süß sein soll.",
       "community_rating": 3.1
@@ -263,6 +289,7 @@
       "barcodes": [
         "9001511400618"
       ],
+      "image_url": "https://images.openfoodfacts.org/images/products/900/151/140/0618/front_de.12.400.jpg",
       "description_manufacturer": "Das 'bierige Bier' aus Graz: ein mildes, süffiges Märzen, das als geselliges Alltagsbier und Sponsor-Bier des steirischen Fußballs bekannt ist.",
       "description_community": "Steirisches Standardbier mit treuer Stammkundschaft; mild und süffig, von Kritikern als austauschbar empfunden.",
       "community_rating": 3.0
@@ -291,6 +318,7 @@
         "9003100151024",
         "90031274"
       ],
+      "image_url": "https://images.openfoodfacts.org/images/products/900/310/015/1024/front_de.3.400.jpg",
       "description_manufacturer": "Das klassische Lager aus Schwechat, das sich auf die Braupioniertradition von Anton Dreher beruft: hell, mild und auf Trinkfreude ausgelegt.",
       "description_community": "Ein unaufgeregtes Wiener Umland-Lager mit historischem Nimbus; süffig, aber ohne Ecken und Kanten.",
       "community_rating": 3.0
@@ -327,6 +355,10 @@
       "abv": 5.3,
       "ibu": null,
       "is_alcohol_free": false,
+      "barcodes": [
+        "9003100159020"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/900/310/015/9020/front_de.10.400.jpg",
       "description_manufacturer": "Das traditionsreiche Premiumbier aus Wieselburg mit kräftiger goldener Farbe und betonter Malzigkeit, gebraut nach überlieferter Rezeptur.",
       "description_community": "Im Mostviertel fest verwurzelt; wird als ehrliches, malzbetontes Traditionsbier beschrieben.",
       "community_rating": 3.2
@@ -354,6 +386,7 @@
       "barcodes": [
         "9002803000233"
       ],
+      "image_url": "https://images.openfoodfacts.org/images/products/900/280/300/0233/front_de.12.400.jpg",
       "description_manufacturer": "Das Aushängeschild der Kärntner Privatbrauerei Hirt: ein feinherbes Pils mit eigenem Quellwasser und langer Reifung gebraut.",
       "description_community": "Gilt vielen als eines der besten Pils Österreichs; angenehm herb, sauber und mit gutem Ruf weit über Kärnten hinaus.",
       "community_rating": 3.6
@@ -390,6 +423,10 @@
       "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
+      "barcodes": [
+        "90145056"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90145056/front_de.4.400.jpg",
       "description_manufacturer": "Das Hauptbier der genossenschaftlich organisierten Brauerei Murau: ein süffiges Märzen aus dem obersteirischen Bergland, gebraut mit regionalen Rohstoffen.",
       "description_community": "In der Obersteiermark die klare Nummer eins; sauberes, frisches Märzen, das bei Bierprämierungen regelmäßig gut abschneidet.",
       "community_rating": 3.4
@@ -474,6 +511,10 @@
       "abv": 5.4,
       "ibu": null,
       "is_alcohol_free": false,
+      "barcodes": [
+        "9013500008101"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/901/350/000/8101/front_de.3.400.jpg",
       "description_manufacturer": "Das bekannteste Bier der Dornbirner Mohrenbrauerei: ein bernsteinfarbenes Spezialbier mit kräftiger Malznote, das in Vorarlberg als Landesklassiker gilt.",
       "description_community": "In Vorarlberg das Bier schlechthin; malzig-würzig und mit starker regionaler Identität, außerhalb des Ländles kaum zu bekommen.",
       "community_rating": 3.4
@@ -582,6 +623,9 @@
       "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
+      "barcodes": [
+        "90083204"
+      ],
       "description_manufacturer": "Das Bio-Zwickl der Brauerei Weitra, benannt nach dem Stadtgründer Hadmar von Kuenring: unfiltriert, bernsteinfarben und aus biologischen Rohstoffen der ältesten Braustadt Österreichs.",
       "description_community": "Bio-Pionier unter den österreichischen Bieren; malzig-hefig mit Charakter, bei Kennern des Waldviertels hoch angesehen.",
       "community_rating": 3.6
@@ -609,6 +653,7 @@
       "barcodes": [
         "90104015"
       ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90104015/front_de.4.400.jpg",
       "description_manufacturer": "Das Premiumbier der Braucommune Freistadt, der historischen Bürgerbrauerei des Mühlviertels: goldgelb, feinwürzig und mit regionalen Rohstoffen gebraut.",
       "description_community": "Aushängeschild der genossenschaftlichen Braucommune; ausgewogen und sauber, im Mühlviertel die erste Wahl.",
       "community_rating": 3.4
@@ -633,6 +678,10 @@
       "abv": 9.7,
       "ibu": null,
       "is_alcohol_free": false,
+      "barcodes": [
+        "9120041150678"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/912/004/115/0678/front_fr.15.400.jpg",
       "description_manufacturer": "Das dunkle Starkbier des Trappistenstifts Engelszell, gebraut mit eigenem Honig: Österreichs Beitrag zur exklusiven Familie der Trappistenbiere.",
       "description_community": "Als einziges österreichisches Trappisten-Quadrupel eine Rarität; schwer, süß und honigbetont, die Meinungen über die Balance gehen auseinander.",
       "community_rating": 3.3
@@ -645,6 +694,10 @@
       "abv": 6.9,
       "ibu": null,
       "is_alcohol_free": false,
+      "barcodes": [
+        "9120041150685"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/912/004/115/0685/front.3.400.jpg",
       "description_manufacturer": "Ein bernsteinfarbenes Trappistenbier aus dem Stift Engelszell nach belgischem Vorbild, mit fruchtiger Hefenote und würzigem Charakter.",
       "description_community": "Zugänglicher als der Gregorius; fruchtig-würzig, wenn auch nicht auf dem Niveau der belgischen Vorbilder.",
       "community_rating": 3.3
@@ -657,6 +710,10 @@
       "abv": 5.5,
       "ibu": null,
       "is_alcohol_free": false,
+      "barcodes": [
+        "9120041150784"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/912/004/115/0784/front.3.400.jpg",
       "description_manufacturer": "Das helle, leichteste Trappistenbier aus Engelszell: blond, hopfenbetont und als zugängliches Klosterbier für jeden Tag gedacht.",
       "description_community": "Das süffigste der drei Engelszeller; leicht, blumig-hopfig und ein netter Einstieg in die Trappistenwelt.",
       "community_rating": 3.3
@@ -693,6 +750,10 @@
       "abv": 7.3,
       "ibu": null,
       "is_alcohol_free": false,
+      "barcodes": [
+        "9120053280288"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/912/005/328/0288/front_sk.6.400.jpg",
       "description_manufacturer": "Das kräftig gehopfte India Pale Ale von Bevog mit intensiven Frucht- und Harznoten amerikanischer Hopfensorten.",
       "description_community": "Bei Hopfenfans hoch angesehen; intensiv fruchtig mit kerniger Bittere, regelmäßig unter den besten IPAs des Landes genannt.",
       "community_rating": 3.8
