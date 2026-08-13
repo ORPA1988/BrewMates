@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
 
+import '../../core/app_update.dart';
+import '../../core/config.dart';
 import '../../data/online/online_service.dart';
 import '../../data/providers.dart';
+import '../../widgets/update_dialog.dart';
 
 const List<String> _avatarEmojis = [
   '🍺',
@@ -401,6 +405,30 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     }
   }
 
+  /// Manueller Update-Check (der automatische läuft beim App-Start).
+  Future<void> _checkForUpdates() async {
+    setState(() => _busy = true);
+    try {
+      final client = http.Client();
+      UpdateInfo? update;
+      try {
+        update = await checkForUpdate(client,
+            currentVersion: AppConfig.appVersion);
+      } finally {
+        client.close();
+      }
+      if (!mounted) return;
+      if (update == null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Du bist aktuell ✓ (${AppConfig.appVersion})')));
+      } else {
+        await showUpdateDialog(context, update);
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   Future<void> _googleSignIn(OnlineService online) async {
     setState(() => _busy = true);
     try {
@@ -569,6 +597,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           onPressed: () => context.push('/friends'),
           icon: const Icon(Icons.group_outlined),
           label: const Text('Freunde verwalten'),
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          onPressed: _busy ? null : () async => _checkForUpdates(),
+          icon: const Icon(Icons.system_update_alt, size: 18),
+          label: const Text('Nach Updates suchen'),
         ),
         const SizedBox(height: 8),
         OutlinedButton.icon(

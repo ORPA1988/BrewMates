@@ -1,12 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 import 'package:drift/drift.dart' show Value;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart' show User;
 
+import '../core/app_update.dart';
+import '../core/config.dart';
 import '../domain/account_level.dart';
 import '../domain/badges.dart';
 import '../domain/challenges.dart';
@@ -317,6 +322,26 @@ final venueSearchProvider = StreamProvider.family<List<Venue>, String>(
 
 final venueProvider = StreamProvider.family<Venue?, String>(
     (ref, id) => ref.watch(databaseProvider).watchVenue(id));
+
+// ============================================================================
+// Automatischer Update-Check (GitHub-Releases; nur Android relevant)
+// ============================================================================
+
+/// Prüft einmal pro App-Start, ob ein neueres Release existiert.
+/// null = aktuell/offline/kein Android. In Tests via override abschaltbar.
+final updateInfoProvider = FutureProvider<UpdateInfo?>((ref) async {
+  if (kIsWeb || !Platform.isAndroid) return null;
+  final client = http.Client();
+  try {
+    return await checkForUpdate(client,
+        currentVersion: AppConfig.appVersion);
+  } finally {
+    client.close();
+  }
+});
+
+/// Update-Hinweis auf Home wurde weggewischt (bis zum nächsten App-Start).
+final updateDismissedProvider = StateProvider<bool>((ref) => false);
 
 // ============================================================================
 // Vertrauensstufen (Account-Levelsystem, Migration 0013)

@@ -7,6 +7,7 @@ import '../../data/db/database.dart';
 import '../../data/providers.dart';
 import '../../widgets/checkin_card.dart';
 import '../../widgets/session_card.dart';
+import '../../widgets/update_dialog.dart';
 
 /// Startbildschirm: die zwei Hero-Aktionen der App —
 /// „🍺 Bier scannen" und „🍻 Zusammenkommen!" — plus ein kompakter
@@ -34,6 +35,37 @@ class HomeScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
+          // ------------------------------------------------------------------
+          // Update-Hinweis (automatischer Check gegen GitHub-Releases)
+          // ------------------------------------------------------------------
+          ...() {
+            final update = ref.watch(updateInfoProvider).valueOrNull;
+            if (update == null || ref.watch(updateDismissedProvider)) {
+              return const <Widget>[];
+            }
+            return [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                child: Card(
+                  color: Theme.of(context).colorScheme.tertiaryContainer,
+                  child: ListTile(
+                    leading: const Text('🔄', style: TextStyle(fontSize: 24)),
+                    title: Text('Update ${update.version} verfügbar'),
+                    subtitle: const Text('Antippen für Details & Download'),
+                    trailing: IconButton(
+                      tooltip: 'Später',
+                      icon: const Icon(Icons.close),
+                      onPressed: () => ref
+                          .read(updateDismissedProvider.notifier)
+                          .state = true,
+                    ),
+                    onTap: () async => showUpdateDialog(context, update),
+                  ),
+                ),
+              ),
+            ];
+          }(),
+
           // ------------------------------------------------------------------
           // Hero-Aktionen
           // ------------------------------------------------------------------
