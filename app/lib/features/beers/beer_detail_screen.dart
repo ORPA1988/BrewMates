@@ -44,6 +44,42 @@ class _BeerDetailBody extends ConsumerWidget {
 
   final BeerWithBrewery item;
 
+  Future<void> _flagNotABeer(
+      BuildContext context, WidgetRef ref, Beer beer) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Als „kein Bier" melden?'),
+        content: const Text(
+            'Melde diesen Community-Eintrag, wenn hinter dem Barcode gar '
+            'kein Bier steckt. Übersteigen die Meldungen die echten '
+            'Check-ins deutlich, wird der Eintrag automatisch entfernt.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Abbrechen'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Melden'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    final online = await ref.read(onlineServiceProvider.future);
+    if (online == null || !context.mounted) return;
+    final barcode = beer.barcodes.split(',').first.trim();
+    final counted = await online.flagBeerNotABeer(barcode);
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(counted
+          ? 'Danke, Meldung gezählt.'
+          : 'Meldung nicht möglich (offline, schon gemeldet oder '
+              'redaktioneller Eintrag).'),
+    ));
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final beer = item.beer;
@@ -134,6 +170,30 @@ class _BeerDetailBody extends ConsumerWidget {
             Text(beer.descriptionCommunity!,
                 style: theme.textTheme.bodyMedium),
           ],
+          // Echte Community-Bewertung (aggregiert über alle Nutzer) hat
+          // Vorrang; die redaktionelle Einschätzung bleibt als klar
+          // gekennzeichneter Übergang sichtbar, solange sie existiert.
+          ...switch (
+              ref.watch(onlineRatingStatsProvider(beer.id)).valueOrNull) {
+            (final avg, final count) => [
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    RatingStars(rating: avg, size: 18),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '${avg.toStringAsFixed(2)} · $count echte '
+                        'Community-Bewertung${count == 1 ? '' : 'en'} '
+                        '(alle BrewMates)',
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            null => const <Widget>[],
+          },
           if (beer.communityRating != null) ...[
             const SizedBox(height: 12),
             Row(
@@ -205,6 +265,21 @@ class _BeerDetailBody extends ConsumerWidget {
               ),
             ],
           ),
+          // Community-Validierung: von Nutzern eingetragene Biere kann
+          // jeder als „kein Bier" melden; übersteigen die Meldungen die
+          // geloggten Check-ins um 10, entfernt der Server den Eintrag.
+          if (beer.isUserSubmitted &&
+              beer.barcodes.trim().isNotEmpty &&
+              ref.watch(isSignedInProvider)) ...[
+            const SizedBox(height: 12),
+            Center(
+              child: TextButton.icon(
+                icon: const Icon(Icons.flag_outlined, size: 18),
+                label: const Text('Das ist kein Bier? Melden'),
+                onPressed: () async => _flagNotABeer(context, ref, beer),
+              ),
+            ),
+          ],
           if (myCheckins.isNotEmpty) ...[
             const SizedBox(height: 24),
             Text('Dein Verlauf', style: theme.textTheme.titleMedium),

@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/providers.dart';
@@ -45,6 +48,7 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
   final _descriptionController = TextEditingController();
   bool _isAlcoholFree = false;
   bool _saving = false;
+  Uint8List? _photoBytes;
 
   @override
   void initState() {
@@ -125,29 +129,75 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
     }
   }
 
+  Future<void> _pickPhoto(ImageSource source) async {
+    try {
+      final file = await ImagePicker().pickImage(
+        source: source,
+        maxWidth: 1280,
+        imageQuality: 80,
+      );
+      if (file == null) return;
+      final bytes = await file.readAsBytes();
+      if (mounted) setState(() => _photoBytes = bytes);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Foto konnte nicht geladen werden.')));
+      }
+    }
+  }
+
   Future<void> _save() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     setState(() => _saving = true);
     try {
       final abvText = _abvController.text.trim().replaceAll(',', '.');
       final description = _descriptionController.text.trim();
+      final abv = abvText.isEmpty ? null : double.tryParse(abvText);
       final id = await ref.read(actionsProvider).addBeer(
             name: _nameController.text,
             style: _styleController.text,
             breweryName: _breweryController.text,
             breweryCountry: _countryController.text,
             breweryCity: _cityController.text,
-            abv: abvText.isEmpty ? null : double.tryParse(abvText),
+            abv: abv,
             isAlcoholFree: _isAlcoholFree,
             description: description.isEmpty ? null : description,
             barcode: widget.initialBarcode,
           );
       if (!mounted) return;
-      await _offerCommunityProposal();
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Danke! Dein Bier ist drin 🍺')),
+
+      // Angemeldet → direkt in die gemeinsame Community-DB (Supabase);
+      // abgemeldet → wie bisher GitHub-Vorschlag anbieten.
+      final online = await ref.read(onlineServiceProvider.future);
+      String? onlineError;
+      var wentOnline = false;
+      if (online != null && online.currentUser != null) {
+        wentOnline = true;
+        onlineError = await online.submitCommunityBeer(
+          name: _nameController.text,
+          style: _styleController.text,
+          breweryName: _breweryController.text,
+          country: _countryController.text,
+          city: _cityController.text,
+          abv: abv,
+          isAlcoholFree: _isAlcoholFree,
+          description: description.isEmpty ? null : description,
+          barcode: widget.initialBarcode,
+          photoBytes: _photoBytes,
         );
+      } else {
+        await _offerCommunityProposal();
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(!wentOnline
+              ? 'Danke! Dein Bier ist drin 🍺'
+              : onlineError == null
+                  ? 'Danke! Dein Bier ist drin – auch in der '
+                      'Community-DB für alle 🍺'
+                  : 'Lokal gespeichert. Online: $onlineError'),
+        ));
         context.pushReplacement('/beer/$id');
       }
     } finally {
@@ -174,6 +224,51 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
                       'Wird gespeichert – der nächste Scan erkennt das Bier '
                       'sofort.'),
                 ),
+              ),
+              const SizedBox(height: 12),
+            ],
+            // Foto vom Bier/Etikett – landet mit dem Eintrag in der
+            // Community-DB (angemeldet), damit alle das Bier erkennen.
+            if (_photoBytes != null) ...[
+              Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.memory(
+                      _photoBytes!,
+                      height: 180,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  IconButton.filledTonal(
+                    tooltip: 'Foto entfernen',
+                    icon: const Icon(Icons.close),
+                    onPressed: () => setState(() => _photoBytes = null),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+            ] else ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () async => _pickPhoto(ImageSource.camera),
+                      icon: const Icon(Icons.photo_camera_outlined),
+                      label: const Text('Foto aufnehmen'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () async => _pickPhoto(ImageSource.gallery),
+                      icon: const Icon(Icons.photo_library_outlined),
+                      label: const Text('Aus Galerie'),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
             ],

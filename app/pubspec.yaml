@@ -40,6 +40,9 @@ dependencies:
   mobile_scanner: ^5.2.3
   geolocator: ^13.0.2
 
+  # Bier-Foto für Community-Einträge (gepinnt passend zur 3.24-Toolchain)
+  image_picker: ^1.1.2
+
   # Online-Stufe (Beta): Konten, echte Freunde, Live-Beacon
   supabase_flutter: ^2.8.0
 

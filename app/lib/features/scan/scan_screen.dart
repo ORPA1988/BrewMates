@@ -59,6 +59,25 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       switch (result) {
         case LocalBeerFound(:final beer):
           await _showFoundSheet(beer);
+        case CommunityBeerFound(:final ean, :final beer):
+          // Von einem anderen Nutzer eingetragen → lokal übernehmen,
+          // dann wie ein lokaler Treffer bestätigen.
+          await ref.read(actionsProvider).addBeer(
+                name: beer.name,
+                style: beer.style,
+                breweryName: beer.breweryName ?? 'Unbekannte Brauerei',
+                breweryCountry: beer.breweryCountry ?? '',
+                breweryCity: beer.breweryCity ?? '',
+                abv: beer.abv,
+                isAlcoholFree: beer.isAlcoholFree,
+                description: beer.description,
+                barcode: ean,
+              );
+          final imported = await ref
+              .read(databaseProvider)
+              .findBeerByBarcode(ean);
+          if (!mounted) return;
+          if (imported != null) await _showFoundSheet(imported);
         case OffProductFound(:final ean, :final name, :final brand):
           context.pushReplacement(Uri(
             path: '/beers/add',

@@ -79,8 +79,10 @@ niemals Voraussetzung.
       Session in Sekunden auf ihrer Karte — seit Beta 0.9
 - [ ] **Push-Benachrichtigungen** (FCM): „Anna hat eine Session gestartet – alle
       willkommen!"
-- [ ] **Aggregierte echte Community-Bewertungen**, die die redaktionelle
-      `community_rating` schrittweise ersetzen (klar gekennzeichneter Übergang)
+- [x] **Aggregierte echte Community-Bewertungen**, die die redaktionelle
+      `community_rating` schrittweise ersetzen (klar gekennzeichneter
+      Übergang) — RPC `beer_rating_stats` (nur Aggregat, keine Identitäten),
+      Anzeige im Bier-Detail oberhalb der redaktionellen Einschätzung
 - [x] **Blockieren & Melden serverseitig** (durchsetzbar, nicht nur lokal) —
       Migration 0009: `blocks`-/`reports`-Tabellen, Blockierung wirkt über
       `are_friends` in allen RLS-Policies; UI im Freunde-Screen
@@ -102,7 +104,9 @@ Kosten trägt (siehe [docs/09](09-wachstum-und-geschaeftsmodell.md)).
 - [ ] **Empfehlungen**: „Das könnte dir schmecken" auf Basis eigener Bewertungen
 - [ ] **Jahresrückblick** („Dein Bierjahr") mit teilbarem Bild-Export
 - [ ] **Etikett-Foto-KI** als Ausbau des Scanners: Kein Barcode? Foto vom
-      Etikett genügt
+      Etikett genügt — *Vorstufe fertig: Foto + EAN landen beim Anlegen
+      direkt in der Community-DB (Migration 0010), die Community validiert
+      über Check-ins vs. „Kein Bier"-Meldungen (±10-Regel)*
 - [ ] **Crews** (Gruppen) mit Crew-Feed und Crew-Beacons
 - [ ] **Monetarisierung gemäß docs/09**: Premium („BrewMates Pro") zuerst,
       Werbung nur optional und dezent – Kernfunktionen bleiben gratis

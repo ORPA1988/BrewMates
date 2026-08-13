@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../../data/db/database.dart';
+import '../../data/online/online_service.dart';
 
-/// Ergebnis der Barcode-Suche (Reihenfolge: lokale DB → Open Food Facts).
+/// Ergebnis der Barcode-Suche (Reihenfolge: lokale DB →
+/// Online-Community-DB → Open Food Facts).
 sealed class BarcodeLookupResult {
   const BarcodeLookupResult();
 }
@@ -14,6 +16,15 @@ class LocalBeerFound extends BarcodeLookupResult {
   const LocalBeerFound(this.beer);
 
   final BeerWithBrewery beer;
+}
+
+/// Von einem anderen Nutzer direkt in die Online-Community-DB eingetragen →
+/// lokal übernehmen und einchecken.
+class CommunityBeerFound extends BarcodeLookupResult {
+  const CommunityBeerFound({required this.ean, required this.beer});
+
+  final String ean;
+  final RemoteBeer beer;
 }
 
 /// Produkt bei Open Food Facts gefunden → Anlegen-Formular vorbefüllen.
@@ -34,11 +45,14 @@ class BarcodeUnknown extends BarcodeLookupResult {
 
 /// Pure Lookup-Logik, getrennt von der Scanner-UI (testbar ohne Kamera).
 class BarcodeLookup {
-  BarcodeLookup(this.db, {http.Client? client})
+  BarcodeLookup(this.db, {http.Client? client, this.communityLookup})
       : _client = client ?? http.Client();
 
   final AppDatabase db;
   final http.Client _client;
+
+  /// Optionaler Blick in die Online-Community-DB (null = offline/Tests).
+  final Future<RemoteBeer?> Function(String ean)? communityLookup;
 
   static const _offBase = 'https://world.openfoodfacts.org/api/v2/product';
   static const userAgent = 'BrewMates/1.2 (github.com/ORPA1988/BrewMates)';
@@ -50,6 +64,18 @@ class BarcodeLookup {
   Future<BarcodeLookupResult> lookup(String ean) async {
     final local = await db.findBeerByBarcode(ean);
     if (local != null) return LocalBeerFound(local);
+
+    if (communityLookup != null) {
+      try {
+        final remote = await communityLookup!(ean)
+            .timeout(const Duration(seconds: 5));
+        if (remote != null) {
+          return CommunityBeerFound(ean: ean, beer: remote);
+        }
+      } catch (_) {
+        // Offline/abgemeldet – weiter mit Open Food Facts.
+      }
+    }
 
     try {
       final response = await _client.get(

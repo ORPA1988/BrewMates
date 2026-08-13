@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -67,6 +68,33 @@ class RemoteSession {
   final double? longitude;
   final DateTime startedAt;
   final DateTime expiresAt;
+}
+
+/// Community-Bier aus der Supabase-Datenbank (per Barcode gefunden).
+class RemoteBeer {
+  const RemoteBeer({
+    required this.name,
+    required this.style,
+    this.breweryName,
+    this.breweryCountry,
+    this.breweryCity,
+    this.abv,
+    this.isAlcoholFree = false,
+    this.description,
+    this.labelUrl,
+    this.barcode,
+  });
+
+  final String name;
+  final String style;
+  final String? breweryName;
+  final String? breweryCountry;
+  final String? breweryCity;
+  final double? abv;
+  final bool isAlcoholFree;
+  final String? description;
+  final String? labelUrl;
+  final String? barcode;
 }
 
 /// Check-in eines Freundes (denormalisiert, ohne lokale Bier-FK).
@@ -699,6 +727,152 @@ class OnlineService {
         'created_at': c.createdAt.toUtc().toIso8601String(),
       });
     } catch (_) {}
+  }
+
+  // --------------------------------------------------------------------------
+  // Community-Bierdatenbank (Migration 0010): Nutzer tragen neue Biere mit
+  // Foto + EAN direkt ein; die Community validiert über Check-ins („geloggt")
+  // und „Kein Bier"-Meldungen.
+  // --------------------------------------------------------------------------
+
+  /// Bier per Barcode in der Community-DB suchen (nur angemeldet, RLS).
+  Future<RemoteBeer?> communityBeerByBarcode(String ean) async {
+    if (currentUser == null) return null;
+    try {
+      final row = await _client
+          .from('beers')
+          .select('name, style, abv, is_alcohol_free, description, '
+              'label_url, barcode, brewery:breweries(name, country, city)')
+          .eq('barcode', ean)
+          .maybeSingle();
+      if (row == null) return null;
+      final brewery = row['brewery'] as Map<String, dynamic>?;
+      return RemoteBeer(
+        name: row['name'] as String,
+        style: (row['style'] as String?) ?? 'Bier',
+        breweryName: brewery?['name'] as String?,
+        breweryCountry: brewery?['country'] as String?,
+        breweryCity: brewery?['city'] as String?,
+        abv: (row['abv'] as num?)?.toDouble(),
+        isAlcoholFree: (row['is_alcohol_free'] as bool?) ?? false,
+        description: row['description'] as String?,
+        labelUrl: row['label_url'] as String?,
+        barcode: row['barcode'] as String?,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Neues Bier direkt in die Community-DB eintragen (unverifiziert; die
+  /// Brauerei wird per Name wiederverwendet oder mit angelegt, das Foto
+  /// landet im öffentlichen beer-photos-Bucket).
+  Future<String?> submitCommunityBeer({
+    required String name,
+    required String style,
+    required String breweryName,
+    String? country,
+    String? city,
+    double? abv,
+    bool isAlcoholFree = false,
+    String? description,
+    String? barcode,
+    Uint8List? photoBytes,
+  }) async {
+    final me = currentUser;
+    if (me == null) return 'Nicht angemeldet.';
+    try {
+      String? breweryId;
+      final existing = await _client
+          .from('breweries')
+          .select('id')
+          .ilike('name', breweryName.trim())
+          .maybeSingle();
+      breweryId = existing?['id'] as String?;
+      if (breweryId == null) {
+        final inserted = await _client
+            .from('breweries')
+            .insert({
+              'name': breweryName.trim(),
+              'country': country?.trim(),
+              'city': city?.trim(),
+              'created_by': me.id,
+            })
+            .select('id')
+            .single();
+        breweryId = inserted['id'] as String;
+      }
+
+      String? photoUrl;
+      if (photoBytes != null) {
+        final path = '${me.id}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+        await _client.storage.from('beer-photos').uploadBinary(
+              path,
+              photoBytes,
+              fileOptions: const FileOptions(contentType: 'image/jpeg'),
+            );
+        photoUrl = _client.storage.from('beer-photos').getPublicUrl(path);
+      }
+
+      await _client.from('beers').insert({
+        'brewery_id': breweryId,
+        'name': name.trim(),
+        'style': style.trim(),
+        'abv': abv,
+        'is_alcohol_free': isAlcoholFree,
+        'description':
+            (description == null || description.trim().isEmpty)
+                ? null
+                : description.trim(),
+        'label_url': photoUrl,
+        'barcode': barcode,
+        'created_by': me.id,
+      });
+      return null;
+    } on StorageException {
+      return 'Foto-Upload fehlgeschlagen – Bier bitte nochmal speichern.';
+    } on PostgrestException catch (e) {
+      if (e.code == '23505') {
+        return 'Diesen Barcode gibt es schon in der Community-DB.';
+      }
+      return 'Eintragen fehlgeschlagen.';
+    } catch (_) {
+      return 'Keine Verbindung.';
+    }
+  }
+
+  /// „Kein Bier"-Meldung: true = gezählt. Übersteigen die Meldungen die
+  /// geloggten Check-ins um ≥ 10, entfernt der Server den Eintrag.
+  Future<bool> flagBeerNotABeer(String barcode) async {
+    if (currentUser == null) return false;
+    try {
+      final result = await _client
+          .rpc('flag_beer_by_barcode', params: {'p_barcode': barcode});
+      return result == true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Aggregierte echte Community-Bewertung (Ø + Anzahl) über die
+  /// Online-Check-ins ALLER Nutzer – nur das Aggregat, keine Identitäten.
+  Future<(double, int)?> beerRatingStats(
+      String beerName, String? breweryName) async {
+    if (currentUser == null) return null;
+    try {
+      final rows = await _client.rpc('beer_rating_stats', params: {
+        'p_beer_name': beerName,
+        'p_brewery_name': breweryName,
+      });
+      if (rows is! List || rows.isEmpty) return null;
+      final row = rows.first as Map<String, dynamic>;
+      final avg = (row['rating_avg'] as num?)?.toDouble();
+      final count = (row['rating_count'] as num?)?.toInt() ?? 0;
+      if (avg == null || count == 0) return null;
+      return (avg, count);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<List<RemoteCheckin>> friendCheckins({int limit = 50}) async {
