@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/account/account_screen.dart';
+import '../features/admin/admin_screen.dart';
 import '../features/beers/add_beer_screen.dart';
 import '../features/beers/beer_detail_screen.dart';
 import '../features/beers/beers_screen.dart';
@@ -98,6 +99,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/friends',
         builder: (_, __) => const FriendsScreen(),
+      ),
+      GoRoute(
+        path: '/admin',
+        builder: (_, __) => const AdminScreen(),
       ),
       GoRoute(
         path: '/profile/badges',

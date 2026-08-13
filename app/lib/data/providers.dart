@@ -123,6 +123,24 @@ final onlineFriendsProvider =
   return online.friends();
 });
 
+/// Bin ich Admin? (Rollen vergibt nur ein Admin; der erste Admin wird
+/// serverseitig per E-Mail-Bootstrap gesetzt.)
+final isAdminProvider = FutureProvider<bool>((ref) async {
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) return false;
+  return online.amIAdmin();
+});
+
+/// Meine freigeschalteten Funktionen (premium, moderation, …).
+final myFeaturesProvider = FutureProvider<Map<String, bool>>((ref) async {
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  final user = online?.currentUser;
+  if (online == null || user == null) return const {};
+  return online.featuresOf(user.id);
+});
+
 final friendRequestsProvider =
     FutureProvider<List<FriendRequest>>((ref) async {
   ref.watch(onlineUserProvider);

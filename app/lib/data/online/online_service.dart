@@ -301,6 +301,95 @@ class OnlineService {
   }
 
   // --------------------------------------------------------------------------
+  // Rollen & Funktionen (Admin-Modell)
+  // --------------------------------------------------------------------------
+
+  /// Rolle eines Nutzers ('admin' | 'moderator' | null). RLS: eigene Rolle
+  /// sieht jeder, fremde nur Admins.
+  Future<String?> roleOf(String profileId) async {
+    try {
+      final row = await _client
+          .from('user_roles')
+          .select('role')
+          .eq('profile_id', profileId)
+          .maybeSingle();
+      return row?['role'] as String?;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<bool> amIAdmin() async {
+    final me = currentUser;
+    if (me == null) return false;
+    return await roleOf(me.id) == 'admin';
+  }
+
+  /// Freigeschaltete Funktionen eines Nutzers (z. B. premium, moderation).
+  Future<Map<String, bool>> featuresOf(String profileId) async {
+    try {
+      final rows = await _client
+          .from('user_features')
+          .select('feature, enabled')
+          .eq('profile_id', profileId);
+      return {
+        for (final r in rows) r['feature'] as String: r['enabled'] as bool,
+      };
+    } catch (_) {
+      return const {};
+    }
+  }
+
+  /// Admin: Rolle setzen (null = entziehen). Serverseitig via RLS auf
+  /// Admins beschränkt – der Client-Aufruf allein genügt nie.
+  Future<String?> adminSetRole(String profileId, String? role) async {
+    try {
+      if (role == null) {
+        await _client
+            .from('user_roles')
+            .delete()
+            .eq('profile_id', profileId);
+      } else {
+        await _client.from('user_roles').upsert({
+          'profile_id': profileId,
+          'role': role,
+          'granted_by': currentUser?.id,
+        });
+      }
+      return null;
+    } on PostgrestException catch (e) {
+      if (e.code == '42501') return 'Nur Admins dürfen Rollen vergeben.';
+      return 'Rollenänderung fehlgeschlagen.';
+    } catch (_) {
+      return 'Keine Verbindung.';
+    }
+  }
+
+  /// Admin: Funktion für einen Nutzer aktivieren/deaktivieren.
+  Future<String?> adminSetFeature(
+      String profileId, String feature, bool enabled) async {
+    final clean = feature.trim().toLowerCase();
+    if (!RegExp(r'^[a-z0-9_]{2,40}$').hasMatch(clean)) {
+      return 'Funktionsname: 2–40 Zeichen, a–z, 0–9, _';
+    }
+    try {
+      await _client.from('user_features').upsert({
+        'profile_id': profileId,
+        'feature': clean,
+        'enabled': enabled,
+        'granted_by': currentUser?.id,
+        'updated_at': DateTime.now().toUtc().toIso8601String(),
+      });
+      return null;
+    } on PostgrestException catch (e) {
+      if (e.code == '42501') return 'Nur Admins dürfen Funktionen schalten.';
+      return 'Änderung fehlgeschlagen.';
+    } catch (_) {
+      return 'Keine Verbindung.';
+    }
+  }
+
+  // --------------------------------------------------------------------------
   // Freunde
   // --------------------------------------------------------------------------
 

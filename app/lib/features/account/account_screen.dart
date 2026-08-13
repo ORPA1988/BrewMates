@@ -351,6 +351,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final profile = ref.watch(myRemoteProfileProvider).valueOrNull;
+    final myFeatures =
+        ref.watch(myFeaturesProvider).valueOrNull ?? const <String, bool>{};
+    final isAdmin = ref.watch(isAdminProvider).valueOrNull ?? false;
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -426,6 +429,28 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           ),
         ),
         const SizedBox(height: 16),
+        if (myFeatures['premium'] == true) ...[
+          Card(
+            color: scheme.tertiaryContainer,
+            child: ListTile(
+              leading: const Text('⭐', style: TextStyle(fontSize: 24)),
+              title: Text(
+                'Premium aktiv',
+                style: theme.textTheme.titleSmall
+                    ?.copyWith(color: scheme.onTertiaryContainer),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+        if (isAdmin) ...[
+          FilledButton.tonalIcon(
+            onPressed: () => context.push('/admin'),
+            icon: const Text('🛡', style: TextStyle(fontSize: 18)),
+            label: const Text('Admin-Bereich'),
+          ),
+          const SizedBox(height: 8),
+        ],
         FilledButton.icon(
           onPressed: () => context.push('/friends'),
           icon: const Icon(Icons.group_outlined),
@@ -436,6 +461,14 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           onPressed: _busy ? null : () async => _signOut(online),
           icon: const Icon(Icons.logout),
           label: const Text('Abmelden'),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Du bleibst angemeldet, bis du dich abmeldest – auch nach '
+          'App-Updates.',
+          textAlign: TextAlign.center,
+          style: theme.textTheme.bodySmall
+              ?.copyWith(color: scheme.onSurfaceVariant),
         ),
       ],
     );

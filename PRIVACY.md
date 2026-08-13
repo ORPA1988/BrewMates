@@ -124,6 +124,12 @@ sichtbar**; das wird serverseitig durch Row Level Security erzwungen.
 Sessions sind dabei nur sichtbar, solange sie aktiv sind — nach dem
 automatischen Ende verschwindet der Standort.
 
+Zusätzlich werden für die Funktionssteuerung eine etwaige Rolle
+(z. B. Administrator/Moderation) und freigeschaltete Zusatzfunktionen
+(z. B. Premium) Ihrem Konto zugeordnet gespeichert. Ihre Anmeldung bleibt
+auf dem Gerät bestehen („eingeloggt bleiben"), bis Sie sich aktiv
+abmelden.
+
 Wenn Sie sich abmelden, endet die Übertragung. Die Löschung des Kontos ist
 in der Beta auf Anfrage möglich (Kontakt siehe Ziffer 9), ab Version 1.0
 direkt in der App. Rechtsgrundlage ist die Bereitstellung der von Ihnen

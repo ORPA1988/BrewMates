@@ -30,6 +30,16 @@ Projekt: `swlqkwlpnxwthbneblww` (EU, eu-central-1).
    Bis dahin zeigt der Google-Knopf in der App eine verständliche Meldung;
    E-Mail + Passwort funktioniert sofort.
 
+**Rollen & Funktionen (Migration 0006):** `user_roles` (admin/moderator)
+und `user_features` (premium, moderation, beta_features, …) — schreiben
+dürfen ausschließlich Admins, serverseitig per RLS erzwungen (bewusst
+getrennt von `profiles`, damit niemand sich selbst befördern kann). Der
+erste Admin wird automatisch beim Registrieren des Projektinhaber-Kontos
+(E-Mail-Abgleich im Auth-Trigger) gesetzt; weitere Admins ernennt er im
+Admin-Bereich der App. Sessions bleiben dauerhaft angemeldet (persistiert
++ Auto-Refresh), bis der Nutzer sich aktiv abmeldet — auch über
+App-Updates hinweg.
+
 **Kontomodell (Stand der Technik):** Die unveränderliche Konto-Identität
 ist `auth.users.id` (UUID) plus die kurze Anzeige-`account_no`. Daran
 hängen die Anmeldeverfahren (E-Mail, Google, später Telefon) als
