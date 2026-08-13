@@ -85,14 +85,30 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          if (selected == null) ..._buildSearch() else ...[
+          if (selected == null)
+            ..._buildSearch()
+          else ...[
             Card(
               margin: EdgeInsets.zero,
               child: ListTile(
-                leading: Text(
-                  selected.beer.isAlcoholFree ? '💧' : '🍺',
-                  style: const TextStyle(fontSize: 28),
-                ),
+                leading: selected.beer.imageUrl == null
+                    ? Text(
+                        selected.beer.isAlcoholFree ? '💧' : '🍺',
+                        style: const TextStyle(fontSize: 28),
+                      )
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(6),
+                        child: Image.network(
+                          selected.beer.imageUrl!,
+                          width: 44,
+                          height: 44,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Text(
+                            selected.beer.isAlcoholFree ? '💧' : '🍺',
+                            style: const TextStyle(fontSize: 28),
+                          ),
+                        ),
+                      ),
                 title: Text(selected.beer.name),
                 subtitle: Text(
                   '${selected.brewery.name} · ${selected.beer.style}'
@@ -119,8 +135,7 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
               child: Text(
                 '🍻 Wird deiner Session im '
                 '${session.venueName ?? 'Unbekannt'} zugeordnet',
-                style: TextStyle(
-                    color: theme.colorScheme.onSecondaryContainer),
+                style: TextStyle(color: theme.colorScheme.onSecondaryContainer),
               ),
             ),
           ],
@@ -171,10 +186,8 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
             emptySelectionAllowed: true,
             multiSelectionEnabled: false,
             segments: const [
-              ButtonSegment(
-                  value: ServingStyle.draft, label: Text('Fass')),
-              ButtonSegment(
-                  value: ServingStyle.bottle, label: Text('Flasche')),
+              ButtonSegment(value: ServingStyle.draft, label: Text('Fass')),
+              ButtonSegment(value: ServingStyle.bottle, label: Text('Flasche')),
               ButtonSegment(value: ServingStyle.can, label: Text('Dose')),
               ButtonSegment(
                   value: ServingStyle.growler, label: Text('Growler')),
@@ -205,9 +218,8 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
           FilledButton(
             style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16)),
-            onPressed: selected == null || _saving
-                ? null
-                : () => _save(selected),
+            onPressed:
+                selected == null || _saving ? null : () => _save(selected),
             child: const Text('Speichern'),
           ),
         ],
@@ -216,10 +228,9 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
   }
 
   List<Widget> _buildSearch() {
-    final results = ref
-            .watch(beersProvider((search: _search, style: null)))
-            .valueOrNull ??
-        const <BeerWithBrewery>[];
+    final results =
+        ref.watch(beersProvider((search: _search, style: null))).valueOrNull ??
+            const <BeerWithBrewery>[];
     return [
       TextField(
         onChanged: (value) => setState(() => _search = value),

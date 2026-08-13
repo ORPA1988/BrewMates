@@ -96,7 +96,7 @@ void main() {
   });
 
   testWidgets('Scanner (Desktop-Fallback): EAN aus der Community-DB '
-      'führt direkt zum Check-in', (tester) async {
+      'zeigt den Treffer und führt zum Check-in', (tester) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
 
@@ -110,6 +110,14 @@ void main() {
         find.widgetWithText(TextField, 'EAN eintippen (8 oder 13 Ziffern)'),
         '90034107');
     await tester.tap(find.text('Suchen'));
+    await tester.pumpAndSettle();
+
+    // Treffer-Bestätigung (Bottom Sheet) zeigt das erkannte Bier …
+    expect(find.text('Gefunden! 🎯'), findsOneWidget);
+    expect(find.textContaining('Stiegl-Goldbräu'), findsWidgets);
+
+    // … und „Einchecken" führt zum Check-in mit vorausgewähltem Bier.
+    await tester.tap(find.text('Einchecken'));
     await tester.pumpAndSettle();
 
     expect(find.text('Bier einchecken'), findsOneWidget);

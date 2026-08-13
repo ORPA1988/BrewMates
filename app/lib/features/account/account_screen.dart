@@ -39,6 +39,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   bool _busy = false;
   String? _error;
   bool _needsConfirmation = false;
+  bool _usernamePromptShown = false;
 
   @override
   void dispose() {
@@ -78,9 +79,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     if (err == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(_mode == _AuthMode.signUp
-              ? 'Willkommen! 🍻'
-              : 'Angemeldet 🍻'),
+          content: Text(
+              _mode == _AuthMode.signUp ? 'Willkommen! 🍻' : 'Angemeldet 🍻'),
         ),
       );
       // Kommt man über das Anmelde-Gate, gibt es nichts zu poppen.
@@ -107,14 +107,31 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     await online.signOut();
     if (!mounted) return;
     setState(() => _busy = false);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Abgemeldet. Bis bald! 👋')));
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Abgemeldet. Bis bald! 👋')));
   }
 
   @override
   Widget build(BuildContext context) {
     final onlineAsync = ref.watch(onlineServiceProvider);
     final user = ref.watch(onlineUserProvider).valueOrNull;
+
+    // Frisch per Google angemeldet? Dann hat das Konto noch einen
+    // Platzhalter-Nutzernamen — einmalig direkt zur Namenswahl einladen,
+    // statt zu warten, bis jemand die Hinweis-Karte entdeckt.
+    ref.listen(myRemoteProfileProvider, (_, next) {
+      final profile = next.valueOrNull;
+      final online = ref.read(onlineServiceProvider).valueOrNull;
+      if (profile != null &&
+          profile.hasPlaceholderUsername &&
+          !_usernamePromptShown &&
+          online != null) {
+        _usernamePromptShown = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _changeUsername(online);
+        });
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(title: const Text('Konto')),
@@ -354,8 +371,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             child: const Text('Abbrechen'),
           ),
           FilledButton(
-            onPressed: () =>
-                Navigator.of(dialogContext).pop(controller.text),
+            onPressed: () => Navigator.of(dialogContext).pop(controller.text),
             child: const Text('Speichern'),
           ),
         ],
@@ -366,8 +382,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final err = await online.updateUsername(newName);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(err ?? 'Nutzername geändert – Prost, @'
-            '${newName.trim().toLowerCase()}! 🍻')));
+        content: Text(err ??
+            'Nutzername geändert – Prost, @'
+                '${newName.trim().toLowerCase()}! 🍻')));
     ref.invalidate(myRemoteProfileProvider);
   }
 

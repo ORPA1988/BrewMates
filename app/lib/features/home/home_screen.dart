@@ -20,11 +20,17 @@ class HomeScreen extends ConsumerWidget {
     final mySession = ref.watch(myActiveSessionProvider).valueOrNull;
     final sessions = ref.watch(activeSessionsProvider).valueOrNull ??
         const <SessionDetails>[];
-    final feed = ref.watch(feedProvider).valueOrNull ??
-        const <CheckinDetails>[];
+    final feed =
+        ref.watch(feedProvider).valueOrNull ?? const <CheckinDetails>[];
+    // Persönliche Begrüßung, sobald das Online-Profil da ist —
+    // offline/abgemeldet bleibt es beim App-Namen.
+    final profile = ref.watch(myRemoteProfileProvider).valueOrNull;
+    final title = profile == null
+        ? 'BrewMates'
+        : 'Servus, ${profile.displayName}! ${profile.avatarEmoji}';
 
     return Scaffold(
-      appBar: AppBar(title: const Text('BrewMates')),
+      appBar: AppBar(title: Text(title)),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
@@ -103,8 +109,7 @@ class HomeScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            for (final details in feed.take(3))
-              CheckinCard(details: details),
+            for (final details in feed.take(3)) CheckinCard(details: details),
             const SizedBox(height: 16),
           ],
         ],
@@ -214,8 +219,7 @@ class _ActiveBeaconCard extends ConsumerWidget {
                 ),
               ),
               TextButton(
-                onPressed: () =>
-                    ref.read(actionsProvider).endMySession(),
+                onPressed: () => ref.read(actionsProvider).endMySession(),
                 child: const Text('Beenden'),
               ),
             ],

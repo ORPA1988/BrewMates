@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../data/db/database.dart';
 import '../../data/providers.dart';
+import '../../widgets/rating_stars.dart';
 import 'barcode_lookup.dart';
 
 /// Hero-Funktion „🍺 Bier scannen": Kamera-Scan auf Android/iOS,
@@ -56,7 +58,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       if (!mounted) return;
       switch (result) {
         case LocalBeerFound(:final beer):
-          context.pushReplacement('/checkin?beer=${beer.beer.id}');
+          await _showFoundSheet(beer);
         case OffProductFound(:final ean, :final name, :final brand):
           context.pushReplacement(Uri(
             path: '/beers/add',
@@ -74,6 +76,101 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
     } finally {
       if (mounted) setState(() => _busy = false);
     }
+  }
+
+  /// Treffer-Bestätigung: zeigt das erkannte Bier (mit Etikett-Foto,
+  /// falls vorhanden), bevor es weitergeht — so sieht man sofort, ob der
+  /// Scan das richtige Produkt erwischt hat. „Weiter scannen" bleibt hier.
+  Future<void> _showFoundSheet(BeerWithBrewery found) async {
+    final beer = found.beer;
+    final theme = Theme.of(context);
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Gefunden! 🎯', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  if (beer.imageUrl != null)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        beer.imageUrl!,
+                        width: 64,
+                        height: 64,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Text(
+                          beer.isAlcoholFree ? '💧' : '🍺',
+                          style: const TextStyle(fontSize: 40),
+                        ),
+                      ),
+                    )
+                  else
+                    Text(
+                      beer.isAlcoholFree ? '💧' : '🍺',
+                      style: const TextStyle(fontSize: 40),
+                    ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(beer.name,
+                            style: theme.textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold)),
+                        Text(
+                          '${found.brewery.name} · ${beer.style}'
+                          '${beer.abv != null ? ' · ${beer.abv} %' : ''}',
+                          style: theme.textTheme.bodySmall,
+                        ),
+                        if (beer.communityRating != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: RatingStars(
+                                rating: beer.communityRating!, size: 16),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              FilledButton.icon(
+                onPressed: () {
+                  Navigator.of(sheetContext).pop();
+                  context.pushReplacement('/checkin?beer=${beer.id}');
+                },
+                icon: const Text('✅'),
+                label: const Text('Einchecken'),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(sheetContext).pop();
+                      context.pushReplacement('/beer/${beer.id}');
+                    },
+                    child: const Text('Details ansehen'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(sheetContext).pop(),
+                    child: const Text('Weiter scannen'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -131,8 +228,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
                       ),
                     ),
                   ),
-                  if (_busy)
-                    const Center(child: CircularProgressIndicator()),
+                  if (_busy) const Center(child: CircularProgressIndicator()),
                 ],
               ),
             )
@@ -168,8 +264,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: Text(_error!,
-                          style:
-                              TextStyle(color: theme.colorScheme.error)),
+                          style: TextStyle(color: theme.colorScheme.error)),
                     ),
                   Row(
                     children: [
