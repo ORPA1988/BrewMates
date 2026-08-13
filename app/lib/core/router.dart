@@ -7,6 +7,7 @@ import '../data/providers.dart';
 import '../features/account/account_screen.dart';
 import '../features/admin/admin_screen.dart';
 import '../features/beers/add_beer_screen.dart';
+import '../features/venues/venue_edit_screen.dart';
 import '../features/beers/beer_detail_screen.dart';
 import '../features/beers/beers_screen.dart';
 import '../features/beers/brewery_detail_screen.dart';
@@ -115,6 +116,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/brewery/:id',
         builder: (_, state) =>
             BreweryDetailScreen(breweryId: state.pathParameters['id']!),
+      ),
+      // Gasthäuser (gemeinsame Datenbank)
+      GoRoute(
+        path: '/venues/add',
+        builder: (_, state) => VenueEditScreen(
+          initialName: state.uri.queryParameters['name'],
+        ),
+      ),
+      GoRoute(
+        path: '/venue/:id/edit',
+        builder: (_, state) =>
+            VenueEditScreen(venueId: state.pathParameters['id']!),
       ),
       // Online-Beta
       GoRoute(

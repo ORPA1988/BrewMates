@@ -6,6 +6,7 @@ import '../../data/db/database.dart';
 import '../../data/providers.dart';
 import '../../widgets/badge_celebration.dart';
 import '../../widgets/rating_stars.dart';
+import '../../widgets/venue_picker.dart';
 
 /// Bier einchecken: Auswahl → Bewertung → Geschmack/Serving/Ort/Notiz.
 class CheckinScreen extends ConsumerStatefulWidget {
@@ -29,6 +30,19 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
   bool _venuePrefilled = false;
   bool _saving = false;
 
+  /// Gewähltes Gasthaus aus der gemeinsamen DB (null = Freitext).
+  String? _venueId;
+
+  Future<void> _pickVenue() async {
+    final selection =
+        await showVenuePicker(context, initialQuery: _venueController.text);
+    if (selection == null || !mounted) return;
+    setState(() {
+      _venueId = selection.venueId;
+      _venueController.text = selection.venueName;
+    });
+  }
+
   @override
   void dispose() {
     _venueController.dispose();
@@ -45,6 +59,7 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
             rating: _rating,
             note: _noteController.text,
             venueName: venue.isEmpty ? null : venue,
+            venueId: venue.isEmpty ? null : _venueId,
             flavorTags: _tags.toList(),
             servingStyle: _serving,
           );
@@ -77,6 +92,7 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
       _venuePrefilled = true;
       if (_venueController.text.isEmpty && session.venueName != null) {
         _venueController.text = session.venueName!;
+        _venueId = session.venueId;
       }
     }
 
@@ -199,11 +215,18 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
           const SizedBox(height: 16),
           TextField(
             controller: _venueController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Wo trinkst du es? (optional)',
-              prefixIcon: Icon(Icons.place_outlined),
-              border: OutlineInputBorder(),
+              prefixIcon: const Icon(Icons.place_outlined),
+              border: const OutlineInputBorder(),
+              suffixIcon: IconButton(
+                tooltip: 'Gasthaus aus der Datenbank wählen',
+                icon: const Icon(Icons.storefront_outlined),
+                onPressed: () async => _pickVenue(),
+              ),
             ),
+            // Manuelle Eingabe löst die Verknüpfung zum DB-Gasthaus.
+            onChanged: (_) => _venueId = null,
           ),
           const SizedBox(height: 12),
           TextField(

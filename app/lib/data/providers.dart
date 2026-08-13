@@ -11,6 +11,7 @@ import '../features/scan/barcode_lookup.dart';
 import 'community_sync.dart';
 import 'db/database.dart';
 import 'location_service.dart';
+import 'venue_sync.dart';
 import 'online/online_service.dart';
 import 'online/remote_mapping.dart';
 
@@ -281,6 +282,34 @@ final _syncTickProvider = Provider<int>((ref) {
   return now.millisecondsSinceEpoch ~/ (5 * 60 * 1000);
 });
 
+// ============================================================================
+// Gasthäuser (gemeinsame Datenbank; Cache in Drift, Wahrheit in Supabase)
+// ============================================================================
+
+final venueSyncServiceProvider =
+    Provider<VenueSync>((ref) => VenueSync(ref.watch(databaseProvider)));
+
+/// Automatischer Cache-Abgleich der Gasthaus-DB: bei Anmeldung und im
+/// 5-Minuten-Takt (gleicher Takt wie der Check-in-Sync); die AppShell hält
+/// den Provider am Leben. Rückgabe: zuletzt übernommene Zeilen.
+final venueSyncProvider = FutureProvider<int>((ref) async {
+  ref.watch(_syncTickProvider);
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null || online.currentUser == null) return 0;
+  final imported = await ref.read(venueSyncServiceProvider).sync(online);
+  return imported;
+});
+
+final venuesWithLocationProvider = StreamProvider<List<Venue>>(
+    (ref) => ref.watch(databaseProvider).watchVenuesWithLocation());
+
+final venueSearchProvider = StreamProvider.family<List<Venue>, String>(
+    (ref, query) => ref.watch(databaseProvider).watchVenueSearch(query));
+
+final venueProvider = StreamProvider.family<Venue?, String>(
+    (ref, id) => ref.watch(databaseProvider).watchVenue(id));
+
 /// Automatischer Konto-Abgleich: überträgt offline entstandene Check-ins,
 /// sobald Konto und Verbindung da sind – bei Anmeldung, nach jedem lokalen
 /// Check-in (Tagebuch-Stream) und alle 5 Minuten als Nachzügler-Retry.
@@ -423,7 +452,9 @@ final badgeProgressProvider = FutureProvider<List<BadgeProgress>>((ref) async {
   final me = await ref.watch(meProvider.future);
   ref.watch(myDiaryProvider);
   ref.watch(myBadgesProvider);
-  return BadgeEngine(ref.watch(databaseProvider)).progressList(me.id);
+  final online = await ref.watch(onlineServiceProvider.future);
+  return BadgeEngine(ref.watch(databaseProvider)).progressList(me.id,
+      onlineUserId: online?.currentUser?.id);
 });
 
 final profileStatsProvider = FutureProvider<ProfileStats>((ref) async {
@@ -455,6 +486,16 @@ class BrewActions {
     return (online != null && online.currentUser != null) ? online : null;
   }
 
+  /// Abzeichen auswerten (inkl. Datenpflege-Badges, die die Supabase-UUID
+  /// brauchen). Auch von Screens nutzbar, z. B. nach dem Anlegen eines
+  /// Gasthauses.
+  Future<List<BadgeDef>> evaluateBadges() async {
+    final me = await _me();
+    final online = await _online();
+    return BadgeEngine(_db)
+        .evaluate(me.id, onlineUserId: online?.currentUser?.id);
+  }
+
   /// Check-in speichern. Läuft die aktive eigene Session, wird der Check-in
   /// ihr automatisch zugeordnet. Gibt neu verdiente Abzeichen zurück.
   Future<List<BadgeDef>> createCheckin({
@@ -462,6 +503,7 @@ class BrewActions {
     double? rating,
     String? note,
     String? venueName,
+    String? venueId,
     List<String> flavorTags = const [],
     ServingStyle? servingStyle,
   }) async {
@@ -474,6 +516,7 @@ class BrewActions {
           profileId: me.id,
           beerId: beerId,
           sessionId: Value(session?.id),
+          venueId: Value(venueId ?? session?.venueId),
           venueName: Value(venueName ?? session?.venueName),
           rating: Value(rating),
           note: Value((note ?? '').trim().isEmpty ? null : note!.trim()),
@@ -492,13 +535,15 @@ class BrewActions {
         }
       }
     }
-    return BadgeEngine(_db).evaluate(me.id);
+    return BadgeEngine(_db).evaluate(me.id,
+        onlineUserId: (await _online())?.currentUser?.id);
   }
 
   /// Session starten („der eine Tap"). Gibt neu verdiente Abzeichen zurück.
   /// [venueName] darf fehlen (Beacon „unterwegs" mit reiner GPS-Position).
   Future<List<BadgeDef>> startSession({
     String? venueName,
+    String? venueId,
     String? message,
     required SessionVisibility visibility,
     required Duration autoEnd,
@@ -516,6 +561,7 @@ class BrewActions {
     await _db.into(_db.sessions).insert(SessionsCompanion.insert(
           id: sessionId,
           hostId: me.id,
+          venueId: Value(venueId),
           venueName: Value(venueName),
           message: Value((message ?? '').trim().isEmpty ? null : message),
           visibility: visibility,
@@ -534,7 +580,8 @@ class BrewActions {
         if (row != null) unawaited(online.upsertSession(row));
       }
     }
-    return BadgeEngine(_db).evaluate(me.id);
+    return BadgeEngine(_db).evaluate(me.id,
+        onlineUserId: (await _online())?.currentUser?.id);
   }
 
   Future<void> endMySession() async {
@@ -560,7 +607,8 @@ class BrewActions {
     } else {
       await _db.joinSession(sessionId, me.id, ParticipantKind.joined);
     }
-    return BadgeEngine(_db).evaluate(me.id);
+    return BadgeEngine(_db).evaluate(me.id,
+        onlineUserId: (await _online())?.currentUser?.id);
   }
 
   /// Fern-Prost auf eine Session (lokal oder online).
@@ -580,7 +628,8 @@ class BrewActions {
   Future<List<BadgeDef>> toggleToast(String checkinId) async {
     final me = await _me();
     await _db.toggleToast(checkinId, me.id);
-    return BadgeEngine(_db).evaluate(me.id);
+    return BadgeEngine(_db).evaluate(me.id,
+        onlineUserId: (await _online())?.currentUser?.id);
   }
 
   Future<void> addComment(String checkinId, String body) async {

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/external_links.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
 
@@ -111,6 +112,19 @@ class _BreweryDetails extends ConsumerWidget {
                 .replaceFirst(RegExp('^https?://(www\\.)?'), '')),
           ),
         ],
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          onPressed: () => launchUrl(
+            googleMapsSearchUri(
+              lat: brewery.latitude,
+              lng: brewery.latitude == null ? null : brewery.longitude,
+              query: '${brewery.name}, ${brewery.city}',
+            ),
+            mode: LaunchMode.externalApplication,
+          ),
+          icon: const Icon(Icons.map_outlined, size: 18),
+          label: const Text('In Google Maps öffnen'),
+        ),
         if (brewery.notes != null) ...[
           const SizedBox(height: 12),
           Text('Über die Brauerei', style: theme.textTheme.titleMedium),

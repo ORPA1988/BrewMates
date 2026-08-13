@@ -89,9 +89,31 @@ class Beers extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Gemeinsame Gasthaus-Datenbank (online-first, Supabase = Wahrheit;
+/// diese Tabelle ist der lokale Cache für Karte, Picker und Offline-Anzeige).
+class Venues extends Table {
+  TextColumn get id => text()(); // Supabase-UUID
+  TextColumn get name => text()();
+  TextColumn get category => text().withDefault(const Constant('gasthaus'))();
+  TextColumn get address => text().nullable()();
+  TextColumn get city => text().nullable()();
+  RealColumn get latitude => real().nullable()();
+  RealColumn get longitude => real().nullable()();
+  TextColumn get openingHours => text().nullable()();
+  RealColumn get priceHalfL => real().nullable()();
+  RealColumn get priceThirdL => real().nullable()();
+  BoolColumn get verified => boolean().withDefault(const Constant(false))();
+  TextColumn get createdBy => text().nullable()();
+  DateTimeColumn get updatedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 class Sessions extends Table {
   TextColumn get id => text()();
   TextColumn get hostId => text().references(Profiles, #id)();
+  TextColumn get venueId => text().nullable()();
   TextColumn get venueName => text().nullable()();
   TextColumn get message => text().nullable()();
   TextColumn get visibility => textEnum<SessionVisibility>()();
@@ -120,6 +142,7 @@ class Checkins extends Table {
   TextColumn get profileId => text().references(Profiles, #id)();
   TextColumn get beerId => text().references(Beers, #id)();
   TextColumn get sessionId => text().nullable()();
+  TextColumn get venueId => text().nullable()();
   TextColumn get venueName => text().nullable()();
   RealColumn get rating => real().nullable()();
   TextColumn get note => text().nullable()();
@@ -248,6 +271,7 @@ class ProfileStats {
   Profiles,
   Breweries,
   Beers,
+  Venues,
   Sessions,
   SessionParticipants,
   Checkins,
@@ -264,7 +288,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -352,6 +376,14 @@ class AppDatabase extends _$AppDatabase {
                       t.id.like('brewery-%') &
                       t.id.isNotIn(usedBreweryIds)))
                 .go();
+          }
+          if (from < 6) {
+            // v6: Gasthaus-Cache (gemeinsame Venue-DB aus Supabase) und
+            // Venue-Verknüpfung an Check-ins/Sessions (venueName bleibt
+            // als denormalisierter Anzeigename erhalten).
+            await m.createTable(venues);
+            await m.addColumn(checkins, checkins.venueId);
+            await m.addColumn(sessions, sessions.venueId);
           }
         },
       );
@@ -755,6 +787,47 @@ class AppDatabase extends _$AppDatabase {
       .watch();
 
   /// Upsert aus der Community-Datenbank (GitHub-JSON).
+  // ---------------------------------------------------------------------
+  // Gasthäuser (lokaler Cache der gemeinsamen Supabase-Venue-DB)
+  // ---------------------------------------------------------------------
+
+  /// Cache-Abgleich aus Supabase (idempotent per Upsert).
+  Future<void> upsertVenues(List<VenuesCompanion> rows) async {
+    if (rows.isEmpty) return;
+    await batch((b) => b.insertAllOnConflictUpdate(venues, rows));
+  }
+
+  /// Jüngster bekannter Stand – Grundlage für Delta-Sync über updated_at.
+  Future<DateTime?> latestVenueUpdate() async {
+    final row = await (selectOnly(venues)
+          ..addColumns([venues.updatedAt.max()]))
+        .getSingle();
+    return row.read(venues.updatedAt.max());
+  }
+
+  Stream<List<Venue>> watchVenuesWithLocation() => (select(venues)
+        ..where((t) => t.latitude.isNotNull() & t.longitude.isNotNull())
+        ..orderBy([(t) => OrderingTerm.asc(t.name)]))
+      .watch();
+
+  Stream<List<Venue>> watchVenueSearch(String query) {
+    final term = query.trim().toLowerCase();
+    final q = select(venues)
+      ..orderBy([(t) => OrderingTerm.asc(t.name)])
+      ..limit(30);
+    if (term.isNotEmpty) {
+      q.where((t) =>
+          t.name.lower().like('%$term%') | t.city.lower().like('%$term%'));
+    }
+    return q.watch();
+  }
+
+  Future<Venue?> venueById(String id) =>
+      (select(venues)..where((t) => t.id.equals(id))).getSingleOrNull();
+
+  Stream<Venue?> watchVenue(String id) =>
+      (select(venues)..where((t) => t.id.equals(id))).watchSingleOrNull();
+
   Future<void> upsertCommunityData({
     required List<BreweriesCompanion> breweryRows,
     required List<BeersCompanion> beerRows,

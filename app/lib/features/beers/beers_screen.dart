@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
+import '../../data/venue_sync.dart';
+import '../../widgets/place_quick_sheet.dart';
 
 /// Entdecken: Bier-Datenbank durchsuchen und filtern.
 class BeersScreen extends ConsumerStatefulWidget {
@@ -15,6 +17,7 @@ class BeersScreen extends ConsumerStatefulWidget {
 
 class _BeersScreenState extends ConsumerState<BeersScreen> {
   String _search = '';
+  bool _cheapestFirst = false;
   String? _style;
   bool _alcoholFreeOnly = false;
   bool _syncing = false;
@@ -45,6 +48,16 @@ class _BeersScreenState extends ConsumerState<BeersScreen> {
     final beersAsync =
         ref.watch(beersProvider((search: _search, style: _style)));
     // Brauerei-Treffer erscheinen nur bei aktiver Suche als eigene Sektion.
+    // Gasthaus-Treffer nur bei aktiver Suche (sonst dominiert die Bierliste).
+    final venueHits = _search.trim().length >= 2
+        ? (ref.watch(venueSearchProvider(_search)).valueOrNull ??
+            const <Venue>[])
+        : const <Venue>[];
+    final sortedVenues = [...venueHits];
+    if (_cheapestFirst) {
+      sortedVenues.sort((a, b) => (a.priceHalfL ?? double.infinity)
+          .compareTo(b.priceHalfL ?? double.infinity));
+    }
     final breweryHits = ref.watch(brewerySearchProvider(_search)).valueOrNull ??
         const <Brewery>[];
 
@@ -145,7 +158,9 @@ class _BeersScreenState extends ConsumerState<BeersScreen> {
                       .where((b) => b.brewery.country == _country)
                       .toList();
                 }
-                if (visible.isEmpty && breweryHits.isEmpty) {
+                if (visible.isEmpty &&
+                    breweryHits.isEmpty &&
+                    sortedVenues.isEmpty) {
                   return const _EmptyResults();
                 }
                 // Pull-to-Refresh = Datenbank von GitHub aktualisieren
@@ -156,6 +171,31 @@ class _BeersScreenState extends ConsumerState<BeersScreen> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.only(bottom: 24),
                     children: [
+                      if (sortedVenues.isNotEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                    'Gasthäuser (${sortedVenues.length})',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall),
+                              ),
+                              // Preis-Radar: günstigstes 0,5 l zuerst.
+                              FilterChip(
+                                label: const Text('🍺 günstig zuerst'),
+                                selected: _cheapestFirst,
+                                onSelected: (v) =>
+                                    setState(() => _cheapestFirst = v),
+                              ),
+                            ],
+                          ),
+                        ),
+                        for (final venue in sortedVenues)
+                          _VenueTile(venue: venue),
+                      ],
                       if (breweryHits.isNotEmpty) ...[
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
@@ -246,8 +286,42 @@ class _BreweryTile extends StatelessWidget {
         title: Text(brewery.name),
         subtitle: Text('${brewery.city}, ${brewery.country}'
             '${brewery.founded != null ? ' · seit ${brewery.founded}' : ''}'),
-        trailing: const Icon(Icons.chevron_right),
+        trailing: IconButton(
+          tooltip: 'Schnellansicht',
+          icon: const Icon(Icons.map_outlined),
+          onPressed: () async => showPlaceQuickSheet(
+              context, PlaceQuickData.fromBrewery(brewery)),
+        ),
         onTap: () => context.push('/brewery/${brewery.id}'),
+      ),
+    );
+  }
+}
+
+class _VenueTile extends StatelessWidget {
+  const _VenueTile({required this.venue});
+
+  final Venue venue;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Card(
+      child: ListTile(
+        leading: Text(venueCategoryEmoji(venue.category),
+            style: const TextStyle(fontSize: 26)),
+        title: Text(venue.name),
+        subtitle: Text([
+          venueCategoryLabel(venue.category),
+          if (venue.city != null && venue.city!.isNotEmpty) venue.city!,
+          if (venue.priceHalfL != null)
+            '0,5 l € ${venue.priceHalfL!.toStringAsFixed(2)}',
+        ].join(' · ')),
+        trailing: venue.verified
+            ? Icon(Icons.verified_outlined, size: 20, color: scheme.primary)
+            : null,
+        onTap: () async =>
+            showPlaceQuickSheet(context, PlaceQuickData.fromVenue(venue)),
       ),
     );
   }
