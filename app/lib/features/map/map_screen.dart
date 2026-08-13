@@ -233,6 +233,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   selected: _showVenues,
                   onSelected: (v) => setState(() => _showVenues = v),
                 ),
+                const SizedBox(height: 4),
+                ActionChip(
+                  label: const Text('📋 Gasthaus-Liste'),
+                  onPressed: () => context.push('/venues'),
+                ),
               ],
             ),
           ),

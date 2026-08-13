@@ -308,6 +308,10 @@ final venueSyncProvider = FutureProvider<int>((ref) async {
 final venuesWithLocationProvider = StreamProvider<List<Venue>>(
     (ref) => ref.watch(databaseProvider).watchVenuesWithLocation());
 
+/// Alle Gasthäuser aus dem Cache (Gasthausliste; Sortierung macht die UI).
+final allVenuesProvider = StreamProvider<List<Venue>>(
+    (ref) => ref.watch(databaseProvider).watchAllVenues());
+
 final venueSearchProvider = StreamProvider.family<List<Venue>, String>(
     (ref, query) => ref.watch(databaseProvider).watchVenueSearch(query));
 

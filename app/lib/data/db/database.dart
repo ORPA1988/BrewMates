@@ -831,6 +831,10 @@ class AppDatabase extends _$AppDatabase {
         ..orderBy([(t) => OrderingTerm.asc(t.name)]))
       .watch();
 
+  /// Komplette Gasthausliste (Sortierung übernimmt die UI).
+  Stream<List<Venue>> watchAllVenues() =>
+      (select(venues)..orderBy([(t) => OrderingTerm.asc(t.name)])).watch();
+
   Stream<List<Venue>> watchVenueSearch(String query) {
     final term = query.trim().toLowerCase();
     final q = select(venues)
