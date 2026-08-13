@@ -83,7 +83,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               : 'Angemeldet 🍻'),
         ),
       );
-      context.pop();
+      // Kommt man über das Anmelde-Gate, gibt es nichts zu poppen.
+      if (context.canPop()) {
+        context.pop();
+      } else {
+        context.go('/home');
+      }
       return;
     }
     setState(() {
@@ -137,6 +142,29 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        // Beta-Gate: die App gehört eindeutig zu einem Konto.
+        Card(
+          color: scheme.primaryContainer,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                const Text('🍻', style: TextStyle(fontSize: 28)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Willkommen bei BrewMates! Für die Beta brauchst du ein '
+                    'Konto – einmal anmelden genügt, du bleibst dauerhaft '
+                    'eingeloggt.',
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(color: scheme.onPrimaryContainer),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
         SegmentedButton<_AuthMode>(
           segments: const [
             ButtonSegment(

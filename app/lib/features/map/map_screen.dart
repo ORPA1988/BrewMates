@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +8,10 @@ import 'package:latlong2/latlong.dart';
 
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
+
+/// Formulierung des Aktiv-Zählers rechts oben – zentral anpassbar.
+String activeUsersLabel(int n) =>
+    n == 1 ? '🍻 1 weiterer BrewMate aktiv' : '🍻 $n weitere BrewMates aktiv';
 
 /// Live-Karte: aktive Sessions bestätigter Freunde (Privatsphäre-Modell
 /// siehe docs/04-datenmodell.md) plus optionale Ebene mit österreichischen
@@ -19,9 +25,33 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   bool _showBreweries = true;
+  Timer? _boundsDebounce;
+  final _mapController = MapController();
 
   // Wien – Fokusmarkt Österreich.
   static const _fallbackCenter = LatLng(48.2082, 16.3738);
+
+  @override
+  void dispose() {
+    _boundsDebounce?.cancel();
+    _mapController.dispose();
+    super.dispose();
+  }
+
+  /// Sichtbaren Ausschnitt (entprellt) melden – Grundlage für den
+  /// „x weitere BrewMates aktiv"-Zähler.
+  void _reportBounds(LatLngBounds bounds) {
+    _boundsDebounce?.cancel();
+    _boundsDebounce = Timer(const Duration(milliseconds: 400), () {
+      if (!mounted) return;
+      ref.read(mapBoundsProvider.notifier).state = (
+        minLat: bounds.south,
+        minLng: bounds.west,
+        maxLat: bounds.north,
+        maxLng: bounds.east,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +71,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       body: Stack(
         children: [
           FlutterMap(
+            mapController: _mapController,
             options: MapOptions(
               initialCenter: located.isNotEmpty
                   ? LatLng(located.first.session.latitude!,
                       located.first.session.longitude!)
                   : _fallbackCenter,
               initialZoom: located.isNotEmpty ? 13 : 7,
+              onMapReady: () =>
+                  _reportBounds(_mapController.camera.visibleBounds),
+              onMapEvent: (event) => _reportBounds(event.camera.visibleBounds),
             ),
             children: [
               TileLayer(
@@ -61,12 +95,48 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
             ],
           ),
-          // Ebenen-Umschalter + Datenschutz-Hinweis.
+          // Aktiv-Zähler rechts oben: Freunde stehen als Pins auf der
+          // Karte, alle übrigen aktiven Nutzer im Ausschnitt erscheinen
+          // nur als Zahl – nie mit Position.
+          if ((ref.watch(otherActiveCountProvider).valueOrNull ?? 0) > 0)
+            Positioned(
+              top: 12,
+              right: 12,
+              child: Material(
+                color: theme.colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(16),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          'Wer nicht mit dir befreundet ist, wird nur '
+                          'gezählt – nie auf der Karte verortet.'),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 6),
+                    child: Text(
+                      activeUsersLabel(
+                          ref.watch(otherActiveCountProvider).valueOrNull ??
+                              0),
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: theme.colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          // Ebenen-Umschalter + Datenschutz-Hinweis (links, damit der
+          // Aktiv-Zähler rechts Platz hat).
           Positioned(
             top: 12,
-            left: 0,
-            right: 0,
+            left: 12,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   padding:

@@ -123,6 +123,34 @@ final onlineFriendsProvider =
   return online.friends();
 });
 
+/// Sichtbarer Kartenausschnitt (von der Karte gesetzt, entprellt).
+typedef MapBounds = ({
+  double minLat,
+  double minLng,
+  double maxLat,
+  double maxLng,
+});
+
+final mapBoundsProvider = StateProvider<MapBounds?>((ref) => null);
+
+/// Anzahl aktiver Nicht-Freunde im Kartenausschnitt („x weitere BrewMates
+/// aktiv"). Aktualisiert bei Kartenbewegung und über die 30-s-Clock.
+final otherActiveCountProvider = FutureProvider<int>((ref) async {
+  final bounds = ref.watch(mapBoundsProvider);
+  ref.watch(clockProvider);
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (bounds == null || online == null || online.currentUser == null) {
+    return 0;
+  }
+  return online.countOtherActiveSessions(
+    minLat: bounds.minLat,
+    minLng: bounds.minLng,
+    maxLat: bounds.maxLat,
+    maxLng: bounds.maxLng,
+  );
+});
+
 /// Bin ich Admin? (Rollen vergibt nur ein Admin; der erste Admin wird
 /// serverseitig per E-Mail-Bootstrap gesetzt.)
 final isAdminProvider = FutureProvider<bool>((ref) async {

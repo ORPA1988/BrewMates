@@ -562,6 +562,29 @@ class OnlineService {
         id: id, username: 'unbekannt', displayName: 'BrewMate', avatarEmoji: '🍺');
   }
 
+  /// Anzahl aktiver Sessions von NICHT-Freunden im Kartenausschnitt.
+  /// Serverseitige Aggregatfunktion – liefert nur eine Zahl, nie Positionen.
+  Future<int> countOtherActiveSessions({
+    required double minLat,
+    required double minLng,
+    required double maxLat,
+    required double maxLng,
+  }) async {
+    if (currentUser == null) return 0;
+    try {
+      final result =
+          await _client.rpc<dynamic>('count_other_active_sessions', params: {
+        'min_lat': minLat,
+        'min_lng': minLng,
+        'max_lat': maxLat,
+        'max_lng': maxLng,
+      });
+      return (result as num?)?.toInt() ?? 0;
+    } catch (_) {
+      return 0;
+    }
+  }
+
   Future<void> joinSession(String sessionId, {required bool joined}) async {
     final me = currentUser;
     if (me == null) return;

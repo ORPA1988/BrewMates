@@ -11,9 +11,10 @@ App stellt genau drei rein lesende Netzwerkverbindungen her: Kartenkacheln
 von der OpenStreetMap Foundation, die redaktionelle Bier-/Brauerei-
 Datenbank von GitHub und – nur beim Scannen unbekannter Barcodes – eine
 Produktabfrage bei Open Food Facts. Kamera und GPS arbeiten rein lokal
-(Abschnitte 4b und 4c). Optional (Beta): Wer ein Konto anlegt, teilt
-Check-ins und aktive Sessions ausschließlich mit bestätigten Freunden über
-den Auftragsverarbeiter Supabase (EU) – Details in Abschnitt 4d.
+(Abschnitte 4b und 4c). Beta: Die Nutzung setzt ein Benutzerkonto voraus;
+Check-ins und aktive Sessions werden ausschließlich mit bestätigten
+Freunden über den Auftragsverarbeiter Supabase (EU) geteilt – Details in
+Abschnitt 4d.
 
 ## 2. Verantwortlicher
 
@@ -104,9 +105,10 @@ mit bestätigten Freunden im Online-Modus siehe Abschnitt 4d.
 
 ## 4d. Online-Modus (optional, Beta)
 
-Seit der Online-Beta (v0.9) können Sie freiwillig ein Benutzerkonto
-anlegen. Ohne Konto ändert sich nichts — die App läuft weiterhin
-vollständig lokal, wie in den Abschnitten 3 bis 4c beschrieben.
+Seit der Online-Beta (v0.9) ist die App eindeutig einem Benutzerkonto
+zugeordnet: Für die Nutzung der Beta ist ein Konto erforderlich (ab
+v0.9.2 führt der erste App-Start zur Anmeldung). Die lokalen
+Speichergrundsätze der Abschnitte 3 bis 4c gelten unverändert.
 
 Bei der Registrierung werden folgende Daten bei unserem
 Auftragsverarbeiter **Supabase** (Server-Region EU) gespeichert:
@@ -139,8 +141,8 @@ durch Supabase gilt deren Datenschutzerklärung:
 
 ## 5. Was BrewMates NICHT tut
 
-- keine verpflichtenden Benutzerkonten — das Konto für den Online-Modus
-  ist freiwillig (Abschnitt 4d),
+- kein Konto ohne Ihr Zutun — das Konto legen Sie selbst an; in der Beta
+  ist es Voraussetzung für die Nutzung (Abschnitt 4d),
 - keine Analyse-, Tracking- oder Werbe-SDKs,
 - keine Übertragung von Standort-, Nutzungs- oder Profildaten an uns oder
   Dritte (mit Ausnahme des unter Ziffer 4 beschriebenen Kachelabrufs und —

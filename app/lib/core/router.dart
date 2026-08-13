@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../data/providers.dart';
 
 import '../features/account/account_screen.dart';
 import '../features/admin/admin_screen.dart';
@@ -23,8 +26,30 @@ import '../features/session/start_session_screen.dart';
 import '../features/shell/app_shell.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
+  // Meldet Auth-Änderungen an den Router, damit das Anmelde-Gate
+  // sofort greift bzw. sich sofort öffnet.
+  final refresh = ValueNotifier(0);
+  ref.onDispose(refresh.dispose);
+  ref.listen(onlineServiceProvider, (_, __) => refresh.value++);
+  ref.listen(onlineUserProvider, (_, __) => refresh.value++);
+
   return GoRouter(
     initialLocation: '/home',
+    refreshListenable: refresh,
+    // Konto-Pflicht (Beta): Ist der Online-Modus konfiguriert und niemand
+    // angemeldet, führt jeder Weg zuerst zum Konto-Screen. Einmal
+    // anmelden genügt – die Sitzung bleibt dauerhaft bestehen.
+    redirect: (context, state) {
+      final online = ref.read(onlineServiceProvider);
+      final user = ref.read(onlineUserProvider);
+      final configured = online.valueOrNull != null;
+      final resolved = online.hasValue && (user.hasValue || user.hasError);
+      final signedIn = user.valueOrNull != null;
+      if (configured && resolved && !signedIn) {
+        return state.matchedLocation == '/account' ? null : '/account';
+      }
+      return null;
+    },
     routes: [
       // Haupt-Tabs innerhalb der adaptiven Shell
       // (Tab-Bar auf Mobilgeräten, Navigation-Rail auf Windows/Desktop).

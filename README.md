@@ -46,7 +46,7 @@ funktionieren normal). Der lokale Kern (Funktionsumfang der Version 1.2) ist
 - ✅ **12 Abzeichen** mit grafischer Galerie und Fortschrittsanzeige (belohnt Vielfalt, nie Menge)
 - ✅ **Statistiken, Tagebuch, Wunschliste**, Feed mit Toasts & Kommentaren
 - ✅ Drei Demo-Freunde mit Aktivität, damit die App ab Sekunde 1 lebt (nur abgemeldet)
-- 🧪 **Online-Beta (optional)**: Konto anlegen, Freunde per Nutzername hinzufügen, Live-Beacons und Feed echter Freunde (Supabase, EU; ohne Konto läuft alles lokal wie bisher)
+- 🧪 **Online-Beta**: Konto-Pflicht ab v0.9.2 (einmal anmelden, dauerhaft eingeloggt), Freunde per Nutzername, Live-Beacons und Feed echter Freunde (Supabase, EU); Karte zeigt Freunde mit Standort, alle übrigen aktiven Nutzer nur als Zähler rechts oben
 
 **🇦🇹 Fokus: Österreich.** Die App bringt eine redaktionelle Datenbank mit **57 österreichischen Bieren** (Beschreibungen laut Brauerei + Community-Erfahrungen + Bewertung) und **26 Brauereistandorten** mit Detailinfos (Eigentümer, Gründungsjahr, Kennzahlen soweit öffentlich) mit — gepflegt direkt in diesem Repository (`app/assets/data/`), von der App beim Start via GitHub aktualisiert und auf der Karte sichtbar. Neue Biere schlägst du direkt aus der App vor ([Anleitung](CONTRIBUTING.md)).
 
