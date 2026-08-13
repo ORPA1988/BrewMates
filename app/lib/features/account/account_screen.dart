@@ -334,20 +334,20 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     );
   }
 
-  /// Upload-Assistent: überträgt lokale Alt-Check-ins einmalig ins Konto.
-  /// Demo-/Seed-Daten (ohne UUID) bleiben lokal; mehrfaches Ausführen ist
-  /// dank Upsert unbedenklich.
-  Widget _buildUploadAssistant(OnlineService online) {
+  /// Sync-Status: Check-ins, die offline entstanden sind, überträgt die App
+  /// automatisch (Anmeldung, neuer Check-in, 5-Minuten-Retry). Die Karte
+  /// zeigt den Stand und bietet einen manuellen Anstoß als Fallback.
+  Widget _buildSyncStatus(OnlineService online) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final pending = ref.watch(pendingCheckinUploadProvider).valueOrNull;
-    if (pending == null) return const SizedBox.shrink();
-    if (pending.isEmpty) {
+    if (pending == null || pending.isEmpty) {
       return Card(
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Text(
-            '✅ Alle lokalen Check-ins sind in deinem Konto.',
+            '🔄 Deine Check-ins werden automatisch mit deinem Konto '
+            'abgeglichen – auch wenn sie unterwegs ohne Internet entstehen.',
             style: theme.textTheme.bodyMedium,
           ),
         ),
@@ -360,20 +360,20 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('📦 Alt-Daten übertragen', style: theme.textTheme.titleSmall),
+            Text('🔄 Abgleich ausstehend', style: theme.textTheme.titleSmall),
             const SizedBox(height: 4),
             Text(
               '${pending.length} '
-              '${pending.length == 1 ? 'lokaler Check-in liegt' : 'lokale Check-ins liegen'} '
-              'noch nicht in deinem Konto. Nach der Übertragung sehen '
-              'bestätigte Freunde sie in ihrem Feed.',
+              '${pending.length == 1 ? 'Check-in wartet' : 'Check-ins warten'} '
+              'auf die Übertragung ins Konto. Das passiert automatisch, '
+              'sobald wieder Verbindung besteht.',
               style: theme.textTheme.bodyMedium,
             ),
             const SizedBox(height: 8),
-            FilledButton.icon(
-              onPressed: _busy ? null : () async => _uploadLegacy(online),
+            OutlinedButton.icon(
+              onPressed: _busy ? null : () async => _syncNow(online),
               icon: const Icon(Icons.cloud_upload_outlined),
-              label: const Text('Jetzt übertragen'),
+              label: const Text('Jetzt synchronisieren'),
             ),
           ],
         ),
@@ -381,7 +381,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     );
   }
 
-  Future<void> _uploadLegacy(OnlineService online) async {
+  Future<void> _syncNow(OnlineService online) async {
     setState(() => _busy = true);
     try {
       final pending =
@@ -392,7 +392,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       ref.invalidate(pendingCheckinUploadProvider);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(uploaded == null
-            ? 'Übertragung fehlgeschlagen – bitte später erneut versuchen.'
+            ? 'Gerade keine Verbindung – die App überträgt automatisch, '
+                'sobald es wieder klappt.'
             : '$uploaded Check-in${uploaded == 1 ? '' : 's'} übertragen 🍻'),
       ));
     } finally {
@@ -540,7 +541,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        _buildUploadAssistant(online),
+        _buildSyncStatus(online),
         const SizedBox(height: 16),
         if (myFeatures['premium'] == true) ...[
           Card(

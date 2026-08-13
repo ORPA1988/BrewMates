@@ -69,12 +69,13 @@ niemals Voraussetzung.
       RLS-Policies scharf geschaltet
 - [x] **Konten** — E-Mail + Passwort seit Beta 0.9 (Google/Apple-Login später);
       die App bleibt ohne Konto weiter voll als lokales Tagebuch nutzbar
-- [x] **Migration lokale Daten → Konto**: Upload-Assistent im Konto-Screen
-      überträgt den lokalen Alt-Bestand an Check-ins einmalig und
-      nachvollziehbar (Anzahl sichtbar, idempotent per Upsert; Demo-Daten
-      bleiben lokal). Abzeichen leiten sich aus Check-ins ab, die
-      Wunschliste bleibt bewusst lokal, solange das Online-Schema keine
-      denormalisierte Wunschliste kennt
+- [x] **Migration lokale Daten → Konto**: automatischer Abgleich statt
+      Einmal-Assistent — offline entstandene Check-ins überträgt die App
+      selbstständig (bei Anmeldung, nach jedem Check-in, alle 5 Minuten
+      als Retry; idempotent per Upsert, Demo-Daten bleiben lokal), der
+      Konto-Screen zeigt den Sync-Status samt manuellem Anstoß. Abzeichen
+      leiten sich aus Check-ins ab, die Wunschliste bleibt bewusst lokal,
+      solange das Online-Schema keine denormalisierte Wunschliste kennt
 - [x] **Echte Freundschaften** — seit Beta 0.9 per Nutzername-Suche (Anfrage,
       Bestätigung); QR-Code-Einladung später
 - [x] **Live-Beacon über Geräte hinweg** (Supabase Realtime): Freunde sehen die

@@ -30,6 +30,9 @@ class AppShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isWide = MediaQuery.sizeOf(context).width >= 800;
     final mySession = ref.watch(myActiveSessionProvider).valueOrNull;
+    // Hält den automatischen Konto-Abgleich am Leben: offline entstandene
+    // Check-ins werden nachgereicht, sobald Verbindung und Konto da sind.
+    ref.watch(checkinAutoSyncProvider);
 
     final body = Column(
       children: [

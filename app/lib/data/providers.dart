@@ -252,21 +252,50 @@ final myDiaryProvider = StreamProvider<List<CheckinDetails>>((ref) {
   return ref.watch(databaseProvider).watchFeed(onlyProfileId: me.id);
 });
 
-/// Upload-Assistent: lokale Alt-Check-ins, die noch nicht im Online-Konto
-/// liegen (null = Status gerade nicht feststellbar, z. B. offline).
+/// Lokale Check-ins, die noch nicht im Online-Konto liegen – z. B. weil sie
+/// offline entstanden sind (null = Status gerade nicht feststellbar).
 final pendingCheckinUploadProvider =
     FutureProvider<List<CheckinDetails>?>((ref) async {
   if (!ref.watch(isSignedInProvider)) return null;
   final online = await ref.watch(onlineServiceProvider.future);
   if (online == null) return null;
+  final diary = await ref.watch(myDiaryProvider.future);
+  final candidates = [
+    for (final d in diary)
+      if (OnlineService.isUploadable(d)) d,
+  ];
+  if (candidates.isEmpty) return const [];
   final remoteIds = await online.myRemoteCheckinIds();
   if (remoteIds == null) return null;
-  final diary = await ref.watch(myDiaryProvider.future);
   return [
-    for (final d in diary)
-      if (OnlineService.isUploadable(d) && !remoteIds.contains(d.checkin.id))
-        d,
+    for (final d in candidates)
+      if (!remoteIds.contains(d.checkin.id)) d,
   ];
+});
+
+/// 30-Sekunden-Uhr auf einen 5-Minuten-Sync-Takt heruntergeteilt: Der Wert
+/// ändert sich nur alle 5 Minuten, Abhängige laufen also nicht bei jedem
+/// Uhr-Tick neu.
+final _syncTickProvider = Provider<int>((ref) {
+  final now = ref.watch(clockProvider).valueOrNull ?? DateTime.now();
+  return now.millisecondsSinceEpoch ~/ (5 * 60 * 1000);
+});
+
+/// Automatischer Konto-Abgleich: überträgt offline entstandene Check-ins,
+/// sobald Konto und Verbindung da sind – bei Anmeldung, nach jedem lokalen
+/// Check-in (Tagebuch-Stream) und alle 5 Minuten als Nachzügler-Retry.
+/// Dank Upsert über die Client-UUIDs idempotent; die AppShell hält den
+/// Provider am Leben. Rückgabe: zuletzt übertragene Anzahl.
+final checkinAutoSyncProvider = FutureProvider<int>((ref) async {
+  ref.watch(_syncTickProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null || online.currentUser == null) return 0;
+  final pending =
+      await ref.watch(pendingCheckinUploadProvider.future) ?? const [];
+  if (pending.isEmpty) return 0;
+  final uploaded = await online.uploadLocalCheckins(pending) ?? 0;
+  if (uploaded > 0) ref.invalidate(pendingCheckinUploadProvider);
+  return uploaded;
 });
 
 final toastCountProvider = StreamProvider.family<int, String>(
