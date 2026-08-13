@@ -59,7 +59,14 @@ class CommunitySync {
 
   Future<String?> _loadAsset(String asset) async {
     try {
-      return await rootBundle.loadString(asset, cache: false);
+      // Bewusst load() + eigenes Dekodieren statt loadString(): loadString
+      // lagert Assets über 50 KiB zum Dekodieren in einen Isolate aus,
+      // dessen Antwort in Widget-Tests nie eintrifft – der Import hinge
+      // dann für immer. Die JSON-Dateien sind klein genug, um sie direkt
+      // auf dem UI-Isolate zu dekodieren.
+      final data = await rootBundle.load(asset);
+      return utf8.decode(
+          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
     } catch (_) {
       // Asset fehlt (z. B. in Unit-Tests ohne Binding) – kein Fehler.
       return null;

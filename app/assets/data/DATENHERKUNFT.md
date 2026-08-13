@@ -1,6 +1,6 @@
 # Datenherkunft
 
-Die Community-Datenbank umfasst vier Dateien: `beers-at.json` und `breweries-at.json` (Österreich, 57 Biere / 26 Brauereien) sowie `beers-by.json` und `breweries-by.json` (Bayern, 58 Biere / 23 Brauereien). Biere und Brauereien sind über das Feld `brewery_id` miteinander verknüpft.
+Die Community-Datenbank umfasst vier Dateien: `beers-at.json` und `breweries-at.json` (Österreich, 68 Biere / 34 Brauereien) sowie `beers-by.json` und `breweries-by.json` (Bayern, 72 Biere / 33 Brauereien). Biere und Brauereien sind über das Feld `brewery_id` miteinander verknüpft.
 
 Die Bier- und Brauereidaten stammen aus dem Trainingswissen eines KI-Modells (Stand ca. 2025) und wurden redaktionell zusammengestellt — ohne Gewähr auf Vollständigkeit oder Richtigkeit einzelner Angaben (z. B. Alkoholgehalt oder Sortimentsstand). Das Feld `community_rating` ist eine konservative redaktionelle Schätzung auf Basis des allgemeinen Rufs der Biere und kein gemessener oder von einer Plattform übernommener Wert. Beschreibungstexte sind Paraphrasen und keine wörtlichen Zitate der Brauereien. Korrekturen und Ergänzungen sind ausdrücklich willkommen — bitte per GitHub-Issue melden.
 

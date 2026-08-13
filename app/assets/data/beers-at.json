@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "updated": "2026-08-13",
   "beers": [
     {
@@ -797,6 +797,164 @@
       "description_manufacturer": "Das goldene Bio-Ale des Brauhauses Gusswerk aus Salzburg: obergärig, aromatisch und als handwerkliche Bio-Alternative zu den Salzburger Lagerbieren positioniert.",
       "description_community": "Angenehm fruchtig-frisches Bio-Ale; steht für die handwerkliche Salzburger Bioschiene und wird von Craft-Einsteigern gerne gewählt.",
       "community_rating": 3.5
+    },
+    {
+      "id": "at-grieskirchner-pils",
+      "brewery_id": "at-grieskirchner",
+      "name": "Grieskirchner Pils",
+      "style": "Pils",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9010300000052"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/901/030/000/0052/front_de.3.400.jpg",
+      "description_manufacturer": "Das hopfenbetonte Aushängeschild aus Grieskirchen: schlank, trocken und spürbar herber als die meisten österreichischen Lagerbiere.",
+      "description_community": "Für Fans herber Biere einer der wenigen echten Pils-Klassiker Österreichs; knochentrocken und erfrischend bitter.",
+      "community_rating": 3.5
+    },
+    {
+      "id": "at-rieder-maerzen",
+      "brewery_id": "at-rieder",
+      "name": "Rieder Märzen",
+      "style": "Märzen",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das Standardbier der Innviertler Braugenossenschaft: goldgelb, malzbetont und auf Süffigkeit gebraut.",
+      "description_community": "Solides, ehrliches Innviertler Märzen – unaufgeregt und gut trinkbar, im Kern ein Wirtshausbier.",
+      "community_rating": 3.3
+    },
+    {
+      "id": "at-baumgartner-maerzen",
+      "brewery_id": "at-baumgartner",
+      "name": "Baumgartner Märzen",
+      "style": "Märzen",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Der Schärdinger Klassiker: ein mildes, rundes Märzen mit sanfter Malzsüße, seit Generationen das Alltagsbier des Innviertels.",
+      "description_community": "Im Innviertel Kult und dort in vielen Wirtshäusern Standard; weich, süffig und angenehm unspektakulär.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "at-schlaegl-doppelbock",
+      "brewery_id": "at-schlaegl",
+      "name": "Schlägl Doppelbock",
+      "style": "Doppelbock",
+      "abv": 8.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Kräftiger dunkler Doppelbock der Stiftsbrauerei: viel Malz, Noten von Dörrobst und Karamell, wärmend im Abgang.",
+      "description_community": "Einer der angesehensten Starkbiere Österreichs; komplex und vollmundig, ideal als Winter- und Fastenbier.",
+      "community_rating": 3.9
+    },
+    {
+      "id": "at-schlaegl-bio-roggen",
+      "brewery_id": "at-schlaegl",
+      "name": "Schlägl Bio Roggen",
+      "style": "Roggenbier",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Obergäriges Spezialbier mit Bio-Roggen aus dem Mühlviertel: leicht säuerlich-würzig, mit brotiger Malznote und feiner Fruchtigkeit.",
+      "description_community": "Seltener Bierstil, den kaum jemand sonst in Österreich braut; erfrischend anders und ein Aushängeschild der Stiftsbrauerei.",
+      "community_rating": 3.8
+    },
+    {
+      "id": "at-raschhofer-maerzen",
+      "brewery_id": "at-raschhofer",
+      "name": "Raschhofer Märzen",
+      "style": "Märzen",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das klassische Märzen der Altheimer Familienbrauerei: hell, mild gehopft und auf Trinkbarkeit ausgelegt.",
+      "description_community": "Regionaler Standard im westlichen Innviertel; sauber gebraut und süffig.",
+      "community_rating": 3.2
+    },
+    {
+      "id": "at-hofstettner-granitbock",
+      "brewery_id": "at-hofstettner",
+      "name": "Hofstettner Granitbock",
+      "style": "Bock",
+      "abv": 7.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "In ausgehöhlten Granittrögen offen vergorener Bock nach historischem Vorbild: malzig-komplex mit karamelligen und leicht rauchigen Anklängen.",
+      "description_community": "Ein Unikat der österreichischen Bierszene und international beachtet; wuchtig, vielschichtig und absolut probierenswert.",
+      "community_rating": 4.1
+    },
+    {
+      "id": "at-hofstettner-kuebelbier",
+      "brewery_id": "at-hofstettner",
+      "name": "Hofstettner Kübelbier",
+      "style": "Zwickl",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Unfiltriertes Zwickl der ältesten Brauerei Österreichs, benannt nach dem früher üblichen Ausschank im Kübel: naturtrüb, mild und malzaromatisch.",
+      "description_community": "Süffiges, ehrliches Kellerbier mit Geschichte; im Mühlviertel ein Klassiker.",
+      "community_rating": 3.7
+    },
+    {
+      "id": "at-starkenberger-maerzen",
+      "brewery_id": "at-starkenberger",
+      "name": "Starkenberger Märzen",
+      "style": "Märzen",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das Tiroler Standardbier der Schlossbrauerei: hellgolden, mild und mit weichem Tiroler Bergwasser gebraut.",
+      "description_community": "Im Tiroler Oberland verbreitetes, gut trinkbares Märzen; solide Basis des Starkenberger-Sortiments.",
+      "community_rating": 3.2
+    },
+    {
+      "id": "at-eggenberg-hopfenkoenig",
+      "brewery_id": "at-eggenberg",
+      "name": "Eggenberger Hopfenkönig",
+      "style": "Pils",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das hopfenbetonte Premium-Pils von Schloss Eggenberg: strohgelb, schlank und mit deutlicher, eleganter Bittere.",
+      "description_community": "Gilt seit Jahrzehnten als eines der besten Pilsbiere Österreichs; trocken, spritzig und fein gehopft.",
+      "community_rating": 3.8
+    },
+    {
+      "id": "at-eggenberg-samichlaus",
+      "brewery_id": "at-eggenberg",
+      "name": "Samichlaus Classic",
+      "style": "Doppelbock",
+      "abv": 14.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "0608782502288"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/060/878/250/2288/front_fr.6.400.jpg",
+      "description_manufacturer": "Nur einmal im Jahr am 6. Dezember eingebraut und zehn Monate gereift: ein extrem starkes, likörartiges Lagerbier mit Noten von Dörrobst, Karamell und Portwein.",
+      "description_community": "Legendäres Sammler- und Digestif-Bier, das lange als stärkstes Lagerbier der Welt galt; nichts für nebenbei, aber ein Erlebnis.",
+      "community_rating": 4.0
     }
   ]
 }

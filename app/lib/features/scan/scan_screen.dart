@@ -54,7 +54,19 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       await ref
           .read(communityBootstrapProvider.future)
           .timeout(const Duration(seconds: 5), onTimeout: () {});
-      final result = await ref.read(barcodeLookupProvider).lookup(ean);
+      var result = await ref.read(barcodeLookupProvider).lookup(ean);
+      if (result is! LocalBeerFound) {
+        // Der 5-Sekunden-Deckel oben kann beim allerersten Scan nach der
+        // Installation zuschlagen, während der Import der gebündelten DB
+        // noch läuft. Bevor „unbekannt" gemeldet wird: Import (rein lokal,
+        // kein Netz) fertig abwarten und genau einmal lokal nachschlagen.
+        try {
+          await ref.read(communityBootstrapProvider.future);
+          final localRetry =
+              await ref.read(databaseProvider).findBeerByBarcode(ean);
+          if (localRetry != null) result = LocalBeerFound(localRetry);
+        } catch (_) {}
+      }
       if (!mounted) return;
       switch (result) {
         case LocalBeerFound(:final beer):

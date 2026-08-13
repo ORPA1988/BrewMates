@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "updated": "2026-08-13",
   "beers": [
     {
@@ -877,6 +877,216 @@
       "description_manufacturer": "Das Hefeweißbier der Privatbrauerei Hofmühl aus Eichstätt, mit weichem Juraquellwasser gebraut und als regionale Weißbierspezialität positioniert.",
       "description_community": "Süffiges, fruchtig-mildes Weißbier aus dem Altmühltal; regional sehr beliebt, überregional ein Geheimtipp.",
       "community_rating": 3.5
+    },
+    {
+      "id": "de-by-weltenburger-barock-dunkel",
+      "brewery_id": "de-by-weltenburger",
+      "name": "Weltenburger Kloster Barock Dunkel",
+      "style": "Dunkles",
+      "abv": 4.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "4010223013318"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/401/022/301/3318/front_de.5.400.jpg",
+      "description_manufacturer": "Das Aushängeschild der ältesten Klosterbrauerei der Welt: kastanienbraun, weich und malzaromatisch mit Noten von Brotkruste und Karamell.",
+      "description_community": "Mehrfacher Weltmeister seiner Kategorie und für viele das Referenz-Dunkel schlechthin; samtig und enorm ausgewogen.",
+      "community_rating": 4.2
+    },
+    {
+      "id": "de-by-weltenburger-anno-1050",
+      "brewery_id": "de-by-weltenburger",
+      "name": "Weltenburger Anno 1050",
+      "style": "Märzen",
+      "abv": 5.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "4010223014315"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/401/022/301/4315/front_de.3.400.jpg",
+      "description_manufacturer": "Bernsteinfarbenes Jubiläumsbier im Märzenstil: kräftig malzig, rund und mit feiner Hopfenbalance.",
+      "description_community": "Festbier-Charakter für jeden Tag; malzbetont, kräftig und gefährlich süffig.",
+      "community_rating": 3.9
+    },
+    {
+      "id": "de-by-oettinger-pils",
+      "brewery_id": "de-by-oettinger",
+      "name": "Oettinger Pils",
+      "style": "Pils",
+      "abv": 4.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "4014086010569"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/401/408/601/0569/front_de.17.400.jpg",
+      "description_manufacturer": "Das meistverkaufte Bier der Marke: ein schlankes, herbes Pils ohne Schnörkel, konsequent auf den günstigen Preis gebraut.",
+      "description_community": "Deutschlands bekanntestes Discount-Pils; niemand erwartet Wunder, aber fürs Geld erstaunlich sauber.",
+      "community_rating": 2.6
+    },
+    {
+      "id": "de-by-oettinger-helles",
+      "brewery_id": "de-by-oettinger",
+      "name": "Oettinger Original Helles",
+      "style": "Helles",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Mildes, goldgelbes Helles der Oettinger-Range: leicht malzig, wenig Bittere, einfach trinkbar.",
+      "description_community": "Basis-Helles zum Kampfpreis; unkompliziert und mild, mehr Durstlöscher als Genussbier.",
+      "community_rating": 2.6
+    },
+    {
+      "id": "de-by-gutmann-hefeweizen",
+      "brewery_id": "de-by-gutmann",
+      "name": "Gutmann Hefeweizen",
+      "style": "Hefeweizen",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "4030439001008"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/403/043/900/1008/front_de.16.400.jpg",
+      "description_manufacturer": "Flaschenvergorenes Hefeweizen des Altmühltaler Spezialisten: fruchtig nach Banane, feinwürzig nach Nelke, cremig und hochspritzig.",
+      "description_community": "Für viele das beste Hefeweizen Bayerns und fester Kult in der fränkisch-oberbayerischen Gastronomie; saftig, frisch, süffig.",
+      "community_rating": 4.3
+    },
+    {
+      "id": "de-by-gutmann-hefeweizen-alkoholfrei",
+      "brewery_id": "de-by-gutmann",
+      "name": "Gutmann Hefeweizen Alkoholfrei",
+      "style": "Hefeweizen",
+      "abv": 0.4,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": [
+        "4030439008007"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/403/043/900/8007/front_en.7.400.jpg",
+      "description_manufacturer": "Alkoholfreies Hefeweizen mit vollem Weißbiergeschmack: fruchtig, isotonisch und deutlich näher am Original als die meisten Alkoholfreien.",
+      "description_community": "Regelmäßig Testsieger unter den alkoholfreien Weißbieren; erfrischend und erstaunlich vollmundig.",
+      "community_rating": 4.0
+    },
+    {
+      "id": "de-by-meckatzer-weiss-gold",
+      "brewery_id": "de-by-meckatzer",
+      "name": "Meckatzer Weiss-Gold",
+      "style": "Spezial Hell",
+      "abv": 4.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das Allgäuer Spezialbier des Hauses: goldgelb, außergewöhnlich mild und weich, mit feiner Malzsüße und dezenter Hopfung.",
+      "description_community": "Süffigkeits-Geheimtipp aus dem Westallgäu mit treuer Anhängerschaft; rund, sanft und harmonisch.",
+      "community_rating": 3.9
+    },
+    {
+      "id": "de-by-allgaeuer-bueble-edelbraeu",
+      "brewery_id": "de-by-allgaeuer",
+      "name": "Allgäuer Büble Bier Edelbräu",
+      "style": "Helles",
+      "abv": 4.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das bekannteste Bier des Allgäuer Brauhauses: ein mildes, goldenes Edelbräu mit dem Büble als Markenzeichen.",
+      "description_community": "Sympathisches, weiches Helles mit Alpen-Image; verlässlich und gut trinkbar.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "de-by-zoetler-bayrisch-hell",
+      "brewery_id": "de-by-zoetler",
+      "name": "Zötler Bayrisch Hell",
+      "style": "Helles",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das Helle der ältesten Familienbrauerei der Welt: mild, süffig und mit weichem Alpenwasser vom Grünten gebraut.",
+      "description_community": "Ehrliches Allgäuer Hell mit viel Tradition im Rücken; unaufgeregt und sauber.",
+      "community_rating": 3.3
+    },
+    {
+      "id": "de-by-arcobraeu-mooser-liesl",
+      "brewery_id": "de-by-arcobraeu",
+      "name": "Arcobräu Mooser Liesl",
+      "style": "Helles",
+      "abv": 5.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das Dorfbier aus Moos, das zum Kult wurde: ein kerniges, vollmundiges Helles mit spürbarer Malzbasis.",
+      "description_community": "Vom niederbayerischen Geheimtipp zum überregionalen Phänomen; kräftiger als viele Münchner Helle und sehr süffig.",
+      "community_rating": 3.9
+    },
+    {
+      "id": "de-by-kneitinger-bock",
+      "brewery_id": "de-by-kneitinger",
+      "name": "Kneitinger Bock",
+      "style": "Bock",
+      "abv": 6.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "4021817000188"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/402/181/700/0188/front_de.3.400.jpg",
+      "description_manufacturer": "Dunkler Traditionsbock der Regensburger Stiftungsbrauerei: malzig-kräftig mit Röst- und Karamellnoten, seit 1530er-Tradition jeden Herbst angestochen.",
+      "description_community": "Der Bock-Anstich Anfang Oktober ist in Regensburg Volksfest; wuchtig, warm und würzig – ein fränkisch-bayerischer Klassiker.",
+      "community_rating": 4.0
+    },
+    {
+      "id": "de-by-st-georgen-kellerbier",
+      "brewery_id": "de-by-st-georgen",
+      "name": "St. GeorgenBräu Kellerbier",
+      "style": "Kellerbier",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Unfiltriertes fränkisches Kellerbier aus Buttenheim: bernsteinfarben, hopfig-herb und ungespundet weich.",
+      "description_community": "Ein Maßstab des Stils, weit über Franken hinaus erhältlich; kernig, frisch und wunderbar unpoliert.",
+      "community_rating": 4.0
+    },
+    {
+      "id": "de-by-crew-republic-foundation-11",
+      "brewery_id": "de-by-crew-republic",
+      "name": "CREW Republic Foundation 11",
+      "style": "Pale Ale",
+      "abv": 5.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "42232506"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/000/004/223/2506/front_fr.3.400.jpg",
+      "description_manufacturer": "Das German Pale Ale der Münchner Craft-Pioniere: tropisch-fruchtige Hopfung auf schlankem Malzkörper, kompromisslos aromatisch.",
+      "description_community": "Einstiegsdroge in die deutsche Craft-Welt; zitrisch, frisch und zuverlässig gut.",
+      "community_rating": 3.8
+    },
+    {
+      "id": "de-by-crew-republic-easy",
+      "brewery_id": "de-by-crew-republic",
+      "name": "CREW Republic Easy",
+      "style": "Session IPA",
+      "abv": 3.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Leichtes Session IPA mit viel Aromahopfen bei wenig Alkohol: fruchtig, herb und ausdrücklich auf Trinkbarkeit gebaut.",
+      "description_community": "Viel Hopfenaroma ohne schweren Kopf; ideales Sommer-Craftbier.",
+      "community_rating": 3.6
     }
   ]
 }

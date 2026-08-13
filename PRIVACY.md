@@ -127,12 +127,22 @@ Bei aktivem Online-Modus überträgt die App zusätzlich an Supabase:
 
 - Ihre eigenen **Check-ins** (Biername, Brauerei, Stil, Bewertung, Notiz,
   Ortsname),
-- Ihre **aktiven Sessions** (Ortsname, Nachricht, Koordinaten, Ablaufzeit).
+- Ihre **aktiven Sessions** (Ortsname, Nachricht, Koordinaten, Ablaufzeit),
+- von Ihnen **eingetragene Community-Biere** (Bierdaten, Barcode und —
+  falls Sie eines aufnehmen — ein Produktfoto; das Foto ist als Teil der
+  gemeinsamen Bierdatenbank **öffentlich** abrufbar, bitte fotografieren
+  Sie nur die Flasche bzw. das Etikett),
+- Ihre **Blockierungen** (sichtbar nur für Sie selbst), **Meldungen** von
+  Profilen (einsehbar durch die Moderation) und „Kein Bier"-Meldungen zu
+  Community-Einträgen.
 
-Diese Inhalte sind **ausschließlich für von Ihnen bestätigte Freunde
-sichtbar**; das wird serverseitig durch Row Level Security erzwungen.
-Sessions sind dabei nur sichtbar, solange sie aktiv sind — nach dem
-automatischen Ende verschwindet der Standort.
+Check-ins und Sessions sind **ausschließlich für von Ihnen bestätigte
+Freunde sichtbar**; das wird serverseitig durch Row Level Security
+erzwungen. Sessions sind dabei nur sichtbar, solange sie aktiv sind —
+nach dem automatischen Ende verschwindet der Standort. Blockieren Sie
+jemanden, sehen Sie beide gegenseitig keine Inhalte mehr — auch das
+setzt der Server durch. In Bewertungs-Durchschnitte zu einem Bier fließt
+Ihre Bewertung nur als anonymes Aggregat (Schnitt und Anzahl) ein.
 
 Zusätzlich werden für die Funktionssteuerung eine etwaige Rolle
 (z. B. Administrator/Moderation) und freigeschaltete Zusatzfunktionen
