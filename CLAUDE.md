@@ -7,7 +7,7 @@ Fokus Österreich + Bayern. Antworte dem Nutzer auf Deutsch.
 
 - **Branch**: PR #2 (`claude/multi-platform-app-design-7lm758`) ist in
   `main` gemerged; neue Arbeit startet auf frischen Branches von `main`.
-  Version `0.9.5-beta+9`, Release v0.9.5-beta veröffentlicht (Beta 0.x bis
+  Version `0.9.6-beta+10`, Release v0.9.6-beta veröffentlicht (Beta 0.x bis
   zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU). Migrationen
   `supabase/migrations/0001–0013` sind LIVE (0011 Gasthäuser, 0012
