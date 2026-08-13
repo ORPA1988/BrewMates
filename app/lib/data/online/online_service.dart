@@ -875,6 +875,79 @@ class OnlineService {
     }
   }
 
+  // --------------------------------------------------------------------------
+  // Upload-Assistent (Roadmap Stufe B): lokale Alt-Check-ins einmalig und
+  // nachvollziehbar ins Konto übertragen. Idempotent per Upsert über die
+  // clientseitig erzeugten UUIDs – mehrfaches Ausführen schadet nie.
+  // --------------------------------------------------------------------------
+
+  static final _uuidPattern = RegExp(
+      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-'
+      r'[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$');
+
+  /// Nur echte, in der App entstandene Check-ins sind übertragbar –
+  /// Demo-/Seed-Einträge tragen keine UUID und bleiben lokal.
+  static bool isUploadable(local.CheckinDetails details) =>
+      _uuidPattern.hasMatch(details.checkin.id);
+
+  /// Upsert-Zeile für einen lokalen Check-in (denormalisiert, identisch zum
+  /// Live-Spiegeln in [insertCheckin]). Statisch und pur, damit der
+  /// Assistent ohne Supabase testbar bleibt. null = nicht übertragbar.
+  static Map<String, dynamic>? uploadRow(
+      local.CheckinDetails details, String profileId) {
+    if (!isUploadable(details)) return null;
+    final c = details.checkin;
+    return {
+      'id': c.id,
+      'profile_id': profileId,
+      'session_id': null,
+      'beer_name': details.beer.name,
+      'brewery_name': details.brewery.name,
+      'beer_style': details.beer.style,
+      'is_alcohol_free': details.beer.isAlcoholFree,
+      'rating': c.rating,
+      'note': c.note,
+      'venue_name': c.venueName,
+      'visibility': 'friends',
+      'created_at': c.createdAt.toUtc().toIso8601String(),
+    };
+  }
+
+  /// IDs der eigenen Check-ins, die bereits online liegen
+  /// (null = gerade nicht feststellbar, z. B. offline).
+  Future<Set<String>?> myRemoteCheckinIds() async {
+    final me = currentUser;
+    if (me == null) return null;
+    try {
+      final rows =
+          await _client.from('checkins').select('id').eq('profile_id', me.id);
+      return {for (final r in rows) r['id'] as String};
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Überträgt die übergebenen Check-ins in Blöcken zu 50.
+  /// Rückgabe: Anzahl übertragener Einträge, null bei Verbindungsfehler.
+  Future<int?> uploadLocalCheckins(List<local.CheckinDetails> items) async {
+    final me = currentUser;
+    if (me == null) return null;
+    final rows = [
+      for (final d in items)
+        if (uploadRow(d, me.id) case final row?) row,
+    ];
+    try {
+      for (var i = 0; i < rows.length; i += 50) {
+        await _client
+            .from('checkins')
+            .upsert(rows.sublist(i, i + 50 > rows.length ? rows.length : i + 50));
+      }
+      return rows.length;
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<List<RemoteCheckin>> friendCheckins({int limit = 50}) async {
     final me = currentUser;
     if (me == null) return const [];

@@ -334,6 +334,72 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     );
   }
 
+  /// Upload-Assistent: überträgt lokale Alt-Check-ins einmalig ins Konto.
+  /// Demo-/Seed-Daten (ohne UUID) bleiben lokal; mehrfaches Ausführen ist
+  /// dank Upsert unbedenklich.
+  Widget _buildUploadAssistant(OnlineService online) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final pending = ref.watch(pendingCheckinUploadProvider).valueOrNull;
+    if (pending == null) return const SizedBox.shrink();
+    if (pending.isEmpty) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Text(
+            '✅ Alle lokalen Check-ins sind in deinem Konto.',
+            style: theme.textTheme.bodyMedium,
+          ),
+        ),
+      );
+    }
+    return Card(
+      color: scheme.secondaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('📦 Alt-Daten übertragen', style: theme.textTheme.titleSmall),
+            const SizedBox(height: 4),
+            Text(
+              '${pending.length} '
+              '${pending.length == 1 ? 'lokaler Check-in liegt' : 'lokale Check-ins liegen'} '
+              'noch nicht in deinem Konto. Nach der Übertragung sehen '
+              'bestätigte Freunde sie in ihrem Feed.',
+              style: theme.textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 8),
+            FilledButton.icon(
+              onPressed: _busy ? null : () async => _uploadLegacy(online),
+              icon: const Icon(Icons.cloud_upload_outlined),
+              label: const Text('Jetzt übertragen'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _uploadLegacy(OnlineService online) async {
+    setState(() => _busy = true);
+    try {
+      final pending =
+          await ref.read(pendingCheckinUploadProvider.future) ?? const [];
+      if (pending.isEmpty) return;
+      final uploaded = await online.uploadLocalCheckins(pending);
+      if (!mounted) return;
+      ref.invalidate(pendingCheckinUploadProvider);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(uploaded == null
+            ? 'Übertragung fehlgeschlagen – bitte später erneut versuchen.'
+            : '$uploaded Check-in${uploaded == 1 ? '' : 's'} übertragen 🍻'),
+      ));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   Future<void> _googleSignIn(OnlineService online) async {
     setState(() => _busy = true);
     try {
@@ -473,6 +539,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             ),
           ),
         ),
+        const SizedBox(height: 8),
+        _buildUploadAssistant(online),
         const SizedBox(height: 16),
         if (myFeatures['premium'] == true) ...[
           Card(

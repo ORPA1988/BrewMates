@@ -252,6 +252,23 @@ final myDiaryProvider = StreamProvider<List<CheckinDetails>>((ref) {
   return ref.watch(databaseProvider).watchFeed(onlyProfileId: me.id);
 });
 
+/// Upload-Assistent: lokale Alt-Check-ins, die noch nicht im Online-Konto
+/// liegen (null = Status gerade nicht feststellbar, z. B. offline).
+final pendingCheckinUploadProvider =
+    FutureProvider<List<CheckinDetails>?>((ref) async {
+  if (!ref.watch(isSignedInProvider)) return null;
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) return null;
+  final remoteIds = await online.myRemoteCheckinIds();
+  if (remoteIds == null) return null;
+  final diary = await ref.watch(myDiaryProvider.future);
+  return [
+    for (final d in diary)
+      if (OnlineService.isUploadable(d) && !remoteIds.contains(d.checkin.id))
+        d,
+  ];
+});
+
 final toastCountProvider = StreamProvider.family<int, String>(
     (ref, checkinId) => ref.watch(databaseProvider).watchToastCount(checkinId));
 
