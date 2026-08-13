@@ -2,12 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../data/online/online_service.dart';
 import '../../data/providers.dart';
 
 /// Bekannte Funktions-Vorschläge (Schlüssel → Icon + Anzeigename).
 const List<({String key, String icon, String label})> _knownFeatures = [
+  // Vertrauensstufen-Overrides (Migration 0013): setzen die automatische
+  // Punkte-Stufe außer Kraft.
+  (key: 'trust_level_2', icon: '🍺', label: 'Stufe Stammgast (Override)'),
+  (key: 'trust_level_3', icon: '🎓', label: 'Stufe Bierkenner (Override)'),
+  (key: 'edit_lock', icon: '🔒', label: 'Datenpflege sperren'),
   (key: 'premium', icon: '⭐', label: 'Premium'),
   (key: 'moderation', icon: '🛠', label: 'Moderation'),
   (key: 'beta_features', icon: '🧪', label: 'Beta-Funktionen'),
@@ -258,6 +264,17 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
               'Änderungen gelten sofort.',
               style: theme.textTheme.bodyMedium
                   ?.copyWith(color: scheme.onSurfaceVariant),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              child: ListTile(
+                leading: const Text('🏆', style: TextStyle(fontSize: 24)),
+                title: const Text('Challenges verwalten'),
+                subtitle: const Text(
+                    'Herausforderungen mit Belohnungs-Abzeichen anlegen'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/admin/challenges'),
+              ),
             ),
             const SizedBox(height: 16),
 

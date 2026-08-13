@@ -27,17 +27,30 @@ class BadgeContext {
     required this.myCheckins,
     required this.mySessionCount,
     required this.toastsGiven,
+    this.venuesCreatedWithLocation = 0,
   });
 
   final List<CheckinDetails> myCheckins;
   final int mySessionCount;
   final int toastsGiven;
 
-  static Future<BadgeContext> load(AppDatabase db, String profileId) async {
+  /// Von mir angelegte Gasthäuser mit Kartenposition (aus dem Venue-Cache;
+  /// [onlineUserId] ist die Supabase-UUID – offline bleibt der Zähler 0).
+  final int venuesCreatedWithLocation;
+
+  static Future<BadgeContext> load(AppDatabase db, String profileId,
+      {String? onlineUserId}) async {
+    var venuesCreated = 0;
+    if (onlineUserId != null) {
+      final venues = await db.watchVenuesWithLocation().first;
+      venuesCreated =
+          venues.where((v) => v.createdBy == onlineUserId).length;
+    }
     return BadgeContext(
       myCheckins: await db.myCheckinsDetailed(profileId),
       mySessionCount: await db.countMySessions(profileId),
       toastsGiven: await db.countToastsGiven(profileId),
+      venuesCreatedWithLocation: venuesCreated,
     );
   }
 }
@@ -151,6 +164,27 @@ final List<BadgeDef> allBadges = [
     target: 25,
     progressOf: (c) => c.myCheckins.map((x) => x.beer.id).toSet().length,
   ),
+  // Datenpflege: die gemeinsame Gasthaus-DB lebt von Beiträgen.
+  BadgeDef(
+    slug: 'kartograph',
+    name: 'Kartograph',
+    description: '3 Gasthäuser mit Kartenposition angelegt',
+    emoji: '🗺',
+    target: 3,
+    progressOf: (c) => c.venuesCreatedWithLocation,
+  ),
+  BadgeDef(
+    slug: 'wirt-fluesterer',
+    name: 'Wirt-Flüsterer',
+    description: 'In 5 Gasthäusern aus der gemeinsamen DB eingecheckt',
+    emoji: '🤝',
+    target: 5,
+    progressOf: (c) => c.myCheckins
+        .map((x) => x.checkin.venueId)
+        .whereType<String>()
+        .toSet()
+        .length,
+  ),
 ];
 
 class BadgeProgress {
@@ -175,8 +209,10 @@ class BadgeEngine {
 
   /// Wertet alle Abzeichen aus und vergibt neu erreichte.
   /// Gibt die NEU verdienten Abzeichen zurück (für die Gratulations-UI).
-  Future<List<BadgeDef>> evaluate(String profileId) async {
-    final ctx = await BadgeContext.load(db, profileId);
+  Future<List<BadgeDef>> evaluate(String profileId,
+      {String? onlineUserId}) async {
+    final ctx =
+        await BadgeContext.load(db, profileId, onlineUserId: onlineUserId);
     final earned = await db.earnedBadgeSlugs(profileId);
     final newlyEarned = <BadgeDef>[];
     for (final badge in allBadges) {
@@ -190,8 +226,10 @@ class BadgeEngine {
   }
 
   /// Fortschritt aller Abzeichen für die Galerie-Ansicht.
-  Future<List<BadgeProgress>> progressList(String profileId) async {
-    final ctx = await BadgeContext.load(db, profileId);
+  Future<List<BadgeProgress>> progressList(String profileId,
+      {String? onlineUserId}) async {
+    final ctx =
+        await BadgeContext.load(db, profileId, onlineUserId: onlineUserId);
     final earnedRows = await (db.select(db.userBadges)
           ..where((t) => t.profileId.equals(profileId)))
         .get();

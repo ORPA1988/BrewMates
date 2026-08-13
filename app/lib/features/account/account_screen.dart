@@ -334,6 +334,73 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     );
   }
 
+  /// Sync-Status: Check-ins, die offline entstanden sind, überträgt die App
+  /// automatisch (Anmeldung, neuer Check-in, 5-Minuten-Retry). Die Karte
+  /// zeigt den Stand und bietet einen manuellen Anstoß als Fallback.
+  Widget _buildSyncStatus(OnlineService online) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final pending = ref.watch(pendingCheckinUploadProvider).valueOrNull;
+    if (pending == null || pending.isEmpty) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Text(
+            '🔄 Deine Check-ins werden automatisch mit deinem Konto '
+            'abgeglichen – auch wenn sie unterwegs ohne Internet entstehen.',
+            style: theme.textTheme.bodyMedium,
+          ),
+        ),
+      );
+    }
+    return Card(
+      color: scheme.secondaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('🔄 Abgleich ausstehend', style: theme.textTheme.titleSmall),
+            const SizedBox(height: 4),
+            Text(
+              '${pending.length} '
+              '${pending.length == 1 ? 'Check-in wartet' : 'Check-ins warten'} '
+              'auf die Übertragung ins Konto. Das passiert automatisch, '
+              'sobald wieder Verbindung besteht.',
+              style: theme.textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: _busy ? null : () async => _syncNow(online),
+              icon: const Icon(Icons.cloud_upload_outlined),
+              label: const Text('Jetzt synchronisieren'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _syncNow(OnlineService online) async {
+    setState(() => _busy = true);
+    try {
+      final pending =
+          await ref.read(pendingCheckinUploadProvider.future) ?? const [];
+      if (pending.isEmpty) return;
+      final uploaded = await online.uploadLocalCheckins(pending);
+      if (!mounted) return;
+      ref.invalidate(pendingCheckinUploadProvider);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(uploaded == null
+            ? 'Gerade keine Verbindung – die App überträgt automatisch, '
+                'sobald es wieder klappt.'
+            : '$uploaded Check-in${uploaded == 1 ? '' : 's'} übertragen 🍻'),
+      ));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   Future<void> _googleSignIn(OnlineService online) async {
     setState(() => _busy = true);
     try {
@@ -473,6 +540,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             ),
           ),
         ),
+        const SizedBox(height: 8),
+        _buildSyncStatus(online),
         const SizedBox(height: 16),
         if (myFeatures['premium'] == true) ...[
           Card(

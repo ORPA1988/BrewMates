@@ -1,20 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../data/db/database.dart';
 import '../../data/location_service.dart';
 import '../../data/providers.dart';
+import '../../data/venue_sync.dart';
 import '../../widgets/badge_celebration.dart';
-
-/// Venue-Schnellauswahl, solange es noch kein echtes GPS gibt.
-const List<String> _venueSuggestions = [
-  'Hopfengarten',
-  'Craft Corner',
-  'Biergarten am See',
-  'Zum Goldenen Fass',
-  'Zuhause',
-];
+import '../../widgets/venue_picker.dart';
 
 /// „Der eine Tap": Session starten (siehe docs/05-ui-screens.md, Screen 2).
 class StartSessionScreen extends ConsumerStatefulWidget {
@@ -33,6 +29,53 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
   bool _shareLocation = true;
   String? _venueError;
   bool _submitting = false;
+
+  /// Gewähltes Gasthaus aus der gemeinsamen DB (null = Freitext).
+  String? _venueId;
+
+  /// „Bist du hier?" – nächstgelegenes Gasthaus aus dem Cache (< 150 m).
+  Venue? _nearbySuggestion;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_suggestNearestVenue());
+  }
+
+  Future<void> _suggestNearestVenue() async {
+    final location =
+        await ref.read(locationServiceProvider).getCurrentPosition();
+    if (location is! LocationGranted || !mounted) return;
+    final venues =
+        await ref.read(databaseProvider).watchVenuesWithLocation().first;
+    const distance = Distance();
+    Venue? best;
+    var bestMeters = 150.0;
+    for (final venue in venues) {
+      final meters = distance(
+        LatLng(location.latitude, location.longitude),
+        LatLng(venue.latitude!, venue.longitude!),
+      );
+      if (meters < bestMeters) {
+        best = venue;
+        bestMeters = meters;
+      }
+    }
+    if (mounted && best != null) {
+      setState(() => _nearbySuggestion = best);
+    }
+  }
+
+  Future<void> _pickVenue() async {
+    final selection =
+        await showVenuePicker(context, initialQuery: _venueController.text);
+    if (selection == null || !mounted) return;
+    setState(() {
+      _venueId = selection.venueId;
+      _venueController.text = selection.venueName;
+      _venueError = null;
+    });
+  }
 
   @override
   void dispose() {
@@ -70,6 +113,7 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
     try {
       final earned = await ref.read(actionsProvider).startSession(
             venueName: venue,
+            venueId: _venueId,
             message: _messageController.text,
             visibility: _visibility,
             autoEnd: _autoEnd,
@@ -113,7 +157,11 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
               border: const OutlineInputBorder(),
             ),
             onChanged: (_) {
-              if (_venueError != null) setState(() => _venueError = null);
+              // Manuelle Eingabe löst die Verknüpfung zum DB-Gasthaus.
+              setState(() {
+                _venueId = null;
+                _venueError = null;
+              });
             },
           ),
           const SizedBox(height: 8),
@@ -121,14 +169,31 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
             spacing: 8,
             runSpacing: 4,
             children: [
-              for (final venue in _venueSuggestions)
+              if (_nearbySuggestion != null)
                 ActionChip(
-                  label: Text(venue),
+                  avatar: const Icon(Icons.near_me, size: 16),
+                  label: Text('Bist du hier? '
+                      '${venueCategoryEmoji(_nearbySuggestion!.category)} '
+                      '${_nearbySuggestion!.name}'),
                   onPressed: () => setState(() {
-                    _venueController.text = venue;
+                    _venueId = _nearbySuggestion!.id;
+                    _venueController.text = _nearbySuggestion!.name;
                     _venueError = null;
                   }),
                 ),
+              ActionChip(
+                avatar: const Icon(Icons.storefront_outlined, size: 16),
+                label: const Text('Gasthaus wählen'),
+                onPressed: () async => _pickVenue(),
+              ),
+              ActionChip(
+                label: const Text('Zuhause'),
+                onPressed: () => setState(() {
+                  _venueId = null;
+                  _venueController.text = 'Zuhause';
+                  _venueError = null;
+                }),
+              ),
             ],
           ),
           const SizedBox(height: 16),

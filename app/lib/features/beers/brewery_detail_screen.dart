@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/external_links.dart';
+import '../../core/format.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
 
@@ -111,6 +113,19 @@ class _BreweryDetails extends ConsumerWidget {
                 .replaceFirst(RegExp('^https?://(www\\.)?'), '')),
           ),
         ],
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          onPressed: () => launchUrl(
+            googleMapsSearchUri(
+              lat: brewery.latitude,
+              lng: brewery.latitude == null ? null : brewery.longitude,
+              query: '${brewery.name}, ${brewery.city}',
+            ),
+            mode: LaunchMode.externalApplication,
+          ),
+          icon: const Icon(Icons.map_outlined, size: 18),
+          label: const Text('In Google Maps öffnen'),
+        ),
         if (brewery.notes != null) ...[
           const SizedBox(height: 12),
           Text('Über die Brauerei', style: theme.textTheme.titleMedium),
@@ -120,11 +135,35 @@ class _BreweryDetails extends ConsumerWidget {
         if (brewery.dataStatus != null) ...[
           const SizedBox(height: 8),
           Text(
-            'ℹ️ ${brewery.dataStatus!} – Korrekturen gerne als GitHub-Issue.',
+            'ℹ️ ${brewery.dataStatus!}',
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
           ),
         ],
+        const SizedBox(height: 8),
+        // Redaktionelle Community-Brauereien sind in-app read-only –
+        // Korrekturen laufen über die GitHub-Pipeline; selbst angelegte
+        // (UUID) sind direkt bearbeitbar.
+        if (isUuid(brewery.id))
+          OutlinedButton.icon(
+            onPressed: () => context.push('/brewery/${brewery.id}/edit'),
+            icon: const Icon(Icons.edit_outlined, size: 18),
+            label: const Text('Bearbeiten (nur auf deinem Gerät)'),
+          )
+        else
+          OutlinedButton.icon(
+            onPressed: () async => launchUrl(
+              communityIssueUri(
+                subject: brewery.name,
+                body: 'Brauerei: ${brewery.name} (${brewery.city}, '
+                    '${brewery.country})\n\n'
+                    'Was stimmt nicht bzw. was fehlt?\n',
+              ),
+              mode: LaunchMode.externalApplication,
+            ),
+            icon: const Icon(Icons.rate_review_outlined, size: 18),
+            label: const Text('Korrektur vorschlagen'),
+          ),
         const SizedBox(height: 16),
         Text('Biere (${beers.length})', style: theme.textTheme.titleMedium),
         const SizedBox(height: 4),

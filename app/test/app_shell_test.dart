@@ -39,15 +39,16 @@ Future<void> _windDown(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('Home zeigt die zwei Hero-Aktionen und aktive Sessions',
+  testWidgets('Home zeigt die zwei Hero-Aktionen – ohne Demo-Daten',
       (tester) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
 
     expect(find.text('Bier scannen'), findsOneWidget);
     expect(find.text('Zusammenkommen!'), findsOneWidget);
-    expect(find.text('Gerade unterwegs 🍻'), findsOneWidget);
-    expect(find.textContaining('Anna'), findsWidgets);
+    // Keine Demo-Sessions/-Freunde mehr: die Abschnitte bleiben leer.
+    expect(find.text('Gerade unterwegs 🍻'), findsNothing);
+    expect(find.textContaining('Anna'), findsNothing);
 
     await _windDown(tester);
   });
@@ -153,10 +154,10 @@ void main() {
     await tester.tap(find.text('Ohne Scannen einchecken'));
     await tester.pumpAndSettle();
 
-    // Bier suchen und auswählen.
-    await tester.enterText(find.byType(TextField).first, 'Asahi');
+    // Bier suchen und auswählen (aus der gebündelten Community-DB).
+    await tester.enterText(find.byType(TextField).first, 'Goldbräu');
     await tester.pumpAndSettle();
-    await tester.tap(find.textContaining('Asahi Super Dry').first);
+    await tester.tap(find.textContaining('Stiegl-Goldbräu').first);
     await tester.pumpAndSettle();
 
     // Zum Speichern-Button scrollen und speichern.

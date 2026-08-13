@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
+import '../../domain/account_level.dart';
 import '../../domain/badges.dart';
+import '../../widgets/badge_celebration.dart';
 
 const List<String> _avatarEmojis = [
   '🍺',
@@ -23,6 +25,53 @@ const List<String> _avatarEmojis = [
 /// Tagebuch, Wunschliste und Über-Sektion.
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
+
+  /// Erklär-Dialog: Punktformel und was jede Stufe darf.
+  Future<void> _showLevelInfo(BuildContext context, int level) async {
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        final theme = Theme.of(dialogContext);
+        return AlertDialog(
+          title: const Text('Vertrauensstufen'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Punkte sammelst du durch Datenpflege:\n'
+                  '• 1 Punkt pro Check-in\n'
+                  '• 5 Punkte pro angelegtem Bier oder Gasthaus\n'
+                  '• 2 Punkte pro gepflegter Änderung',
+                  style: theme.textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 12),
+                for (final l in [1, 2, 3, 4, 5]) ...[
+                  Text(
+                    '${levelEmoji(l)} ${levelName(l)}'
+                    '${l == 2 ? ' (ab $stammgastPoints P.)' : ''}'
+                    '${l == 3 ? ' (ab $bierkennerPoints P.)' : ''}'
+                    '${l == level ? '  ← du' : ''}',
+                    style: theme.textTheme.titleSmall,
+                  ),
+                  for (final perk in levelPerks(l))
+                    Text('   • $perk', style: theme.textTheme.bodySmall),
+                  const SizedBox(height: 6),
+                ],
+              ],
+            ),
+          ),
+          actions: [
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Alles klar 🍻'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> _showEditDialog(
       BuildContext context, WidgetRef ref, Profile me) async {
@@ -178,6 +227,56 @@ class ProfileScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 16),
+
+          // ------------------------------------------------------------------
+          // Vertrauensstufe (Datenpflege-Levelsystem; nur angemeldet)
+          // ------------------------------------------------------------------
+          ...() {
+            final info = ref.watch(accountLevelProvider).valueOrNull;
+            if (info == null) return const <Widget>[];
+            // Wartende Level-Up-Feier zeigen (einmalig).
+            final pendingLevelUp = ref.watch(levelUpProvider);
+            if (pendingLevelUp != null) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                final item = ref.read(levelUpProvider);
+                if (item == null) return;
+                ref.read(levelUpProvider.notifier).state = null;
+                showCelebration(context, [item]);
+              });
+            }
+            final hint = nextLevelHint(
+                AccountLevelInfo(level: info.level, points: info.points));
+            return [
+              Card(
+                child: ListTile(
+                  leading: Text(levelEmoji(info.level),
+                      style: const TextStyle(fontSize: 24)),
+                  title: Text(
+                      'Vertrauensstufe: ${levelName(info.level)} · '
+                      '${info.points} Punkte'),
+                  subtitle: hint == null ? null : Text(hint),
+                  trailing: const Icon(Icons.info_outline),
+                  onTap: () async => _showLevelInfo(context, info.level),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ];
+          }(),
+
+          // ------------------------------------------------------------------
+          // Challenges-Einstieg
+          // ------------------------------------------------------------------
+          Card(
+            child: ListTile(
+              leading: const Text('🏆', style: TextStyle(fontSize: 24)),
+              title: const Text('Challenges'),
+              subtitle:
+                  const Text('Herausforderungen mit Belohnungs-Abzeichen'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/profile/challenges'),
+            ),
+          ),
+          const SizedBox(height: 8),
 
           // ------------------------------------------------------------------
           // Abzeichen-Vorschau

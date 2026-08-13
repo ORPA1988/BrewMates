@@ -70,6 +70,59 @@ class HomeScreen extends ConsumerWidget {
           ),
 
           // ------------------------------------------------------------------
+          // Aktive Challenge (kompakt; Tap → alle Challenges)
+          // ------------------------------------------------------------------
+          ...() {
+            final challenges =
+                ref.watch(challengeProgressProvider).valueOrNull ?? const [];
+            final open = [
+              for (final c in challenges)
+                if (!c.completed && c.def.isActiveAt(DateTime.now())) c,
+            ];
+            if (open.isEmpty) return const <Widget>[];
+            final item = open.first;
+            return [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: Card(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () => context.push('/profile/challenges'),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        children: [
+                          Text(item.def.emoji,
+                              style: const TextStyle(fontSize: 24)),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Challenge: ${item.def.title}',
+                                    style: theme.textTheme.titleSmall),
+                                const SizedBox(height: 4),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: LinearProgressIndicator(
+                                      value: item.fraction, minHeight: 6),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Text('${item.progress}/${item.def.target}',
+                              style: theme.textTheme.labelLarge),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ];
+          }(),
+
+          // ------------------------------------------------------------------
           // Gerade unterwegs
           // ------------------------------------------------------------------
           if (sessions.isNotEmpty) ...[

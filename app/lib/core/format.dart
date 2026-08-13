@@ -23,3 +23,12 @@ String remaining(DateTime until) {
   if (diff.inHours >= 1) return '${diff.inHours} h ${diff.inMinutes % 60} min';
   return '${diff.inMinutes} min';
 }
+
+/// UUID-Erkennung: nutzererstellte Datensätze tragen UUIDs, redaktionelle
+/// Community-Daten sprechende IDs (z. B. `at-stiegl`). Entscheidet u. a.,
+/// ob ein Datensatz in-app bearbeitbar ist.
+final RegExp _uuidPattern = RegExp(
+    r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-'
+    r'[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$');
+
+bool isUuid(String value) => _uuidPattern.hasMatch(value);

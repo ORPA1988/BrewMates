@@ -596,6 +596,7 @@ class OnlineService {
       await _client.from('sessions').upsert({
         'id': session.id,
         'host_id': me.id,
+        'venue_id': session.venueId,
         'venue_name': session.venueName,
         'message': session.message,
         'visibility': 'friends',
@@ -716,6 +717,7 @@ class OnlineService {
         'id': c.id,
         'profile_id': me.id,
         'session_id': null,
+        'venue_id': c.venueId,
         'beer_name': details.beer.name,
         'brewery_name': details.brewery.name,
         'beer_style': details.beer.style,
@@ -870,6 +872,330 @@ class OnlineService {
       final count = (row['rating_count'] as num?)?.toInt() ?? 0;
       if (avg == null || count == 0) return null;
       return (avg, count);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // Gasthäuser (gemeinsame Datenbank, Migration 0011). Online-first:
+  // Supabase ist die Wahrheit, die App hält einen Drift-Cache für Karte,
+  // Picker und Offline-Anzeige.
+  // --------------------------------------------------------------------------
+
+  static const _venueCols =
+      'id, name, category, address, city, latitude, longitude, '
+      'opening_hours, price_half_l, price_third_l, verified, created_by, '
+      'updated_at';
+
+  /// Venues seit [since] (Delta über updated_at); null = offline/abgemeldet.
+  Future<List<Map<String, dynamic>>?> fetchVenues({DateTime? since}) async {
+    if (currentUser == null) return null;
+    try {
+      var query = _client.from('venues').select(_venueCols);
+      if (since != null) {
+        query = query.gt('updated_at', since.toUtc().toIso8601String());
+      }
+      final rows = await query.order('updated_at', ascending: true).limit(500);
+      return rows.cast<Map<String, dynamic>>();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Legt ein Gasthaus an. Rückgabe: (venueId, Fehlermeldung) – genau eines
+  /// von beiden ist gesetzt.
+  Future<(String?, String?)> createVenue({
+    required String name,
+    required String category,
+    String? address,
+    String? city,
+    double? latitude,
+    double? longitude,
+    String? openingHours,
+    double? priceHalfL,
+    double? priceThirdL,
+  }) async {
+    final me = currentUser;
+    if (me == null) return (null, 'Nicht angemeldet.');
+    try {
+      final row = await _client
+          .from('venues')
+          .insert({
+            'name': name.trim(),
+            'category': category,
+            'address': _emptyToNull(address),
+            'city': _emptyToNull(city),
+            'latitude': latitude,
+            'longitude': longitude,
+            'opening_hours': _emptyToNull(openingHours),
+            'price_half_l': priceHalfL,
+            'price_third_l': priceThirdL,
+            'created_by': me.id,
+          })
+          .select('id')
+          .single();
+      return (row['id'] as String, null);
+    } on PostgrestException catch (e) {
+      if (e.code == '23505') {
+        return (null, 'Dieses Gasthaus gibt es in dem Ort schon.');
+      }
+      return (null, 'Anlegen fehlgeschlagen.');
+    } catch (_) {
+      return (null, 'Keine Verbindung – Gasthaus-Pflege braucht Internet.');
+    }
+  }
+
+  /// Aktualisiert Felder eines Gasthauses; RLS entscheidet, ob erlaubt.
+  Future<String?> updateVenue(String id, Map<String, dynamic> patch) async {
+    if (currentUser == null) return 'Nicht angemeldet.';
+    try {
+      await _client.from('venues').update(patch).eq('id', id);
+      return null;
+    } on PostgrestException catch (e) {
+      if (e.code == '42501') {
+        return 'Dafür reicht deine Vertrauensstufe noch nicht.';
+      }
+      if (e.code == '23505') {
+        return 'Dieses Gasthaus gibt es in dem Ort schon.';
+      }
+      return 'Speichern fehlgeschlagen.';
+    } catch (_) {
+      return 'Keine Verbindung – Gasthaus-Pflege braucht Internet.';
+    }
+  }
+
+  static String? _emptyToNull(String? value) {
+    final trimmed = value?.trim();
+    return (trimmed == null || trimmed.isEmpty) ? null : trimmed;
+  }
+
+  // --------------------------------------------------------------------------
+  // Vertrauensstufen & Datenpflege (Migration 0013)
+  // --------------------------------------------------------------------------
+
+  /// Eigene Vertrauensstufe + Punktestand; null = offline/abgemeldet.
+  Future<({int level, int points})?> myAccountLevelInfo() async {
+    if (currentUser == null) return null;
+    try {
+      final rows = await _client.rpc('my_account_level_info');
+      if (rows is! List || rows.isEmpty) return null;
+      final row = rows.first as Map<String, dynamic>;
+      return (
+        level: (row['level'] as num?)?.toInt() ?? 1,
+        points: (row['points'] as num?)?.toInt() ?? 0,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Community-Bier (Supabase) bearbeiten; RLS/Level entscheiden.
+  Future<String?> updateCommunityBeer(
+      String barcode, Map<String, dynamic> patch) async {
+    if (currentUser == null) return 'Nicht angemeldet.';
+    try {
+      await _client.from('beers').update(patch).eq('barcode', barcode);
+      return null;
+    } on PostgrestException catch (e) {
+      if (e.code == '42501') {
+        return 'Dafür reicht deine Vertrauensstufe noch nicht '
+            '(Stammgast ab 25 Punkten).';
+      }
+      return 'Online-Speichern fehlgeschlagen.';
+    } catch (_) {
+      return 'Keine Verbindung – lokal ist die Änderung gespeichert.';
+    }
+  }
+
+  /// Änderungsverlauf eines Datensatzes (Audit-Log aus Migration 0013).
+  Future<List<({String? username, String action, Map<String, dynamic> changes, DateTime createdAt})>>
+      editHistory(String entity, String entityId, {int limit = 10}) async {
+    if (currentUser == null) return const [];
+    try {
+      final rows = await _client
+          .from('edit_log')
+          .select('action, changes, created_at, '
+              'profile:profiles!edit_log_profile_id_fkey(username)')
+          .eq('entity', entity)
+          .eq('entity_id', entityId)
+          .order('created_at', ascending: false)
+          .limit(limit);
+      return [
+        for (final r in rows)
+          (
+            username:
+                (r['profile'] as Map<String, dynamic>?)?['username'] as String?,
+            action: r['action'] as String,
+            changes: (r['changes'] as Map<String, dynamic>?) ?? const {},
+            createdAt: DateTime.parse(r['created_at'] as String).toLocal(),
+          ),
+      ];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // Challenges (Migration 0012): Admins legen sie an, alle sehen sie;
+  // Abschlüsse sind für Freunde sichtbar.
+  // --------------------------------------------------------------------------
+
+  static const _challengeCols =
+      'id, title, description, emoji, rule, starts_at, ends_at';
+
+  /// Alle Challenges (aktive + vergangene); null = offline/abgemeldet.
+  Future<List<Map<String, dynamic>>?> listChallenges() async {
+    if (currentUser == null) return null;
+    try {
+      final rows = await _client
+          .from('challenges')
+          .select(_challengeCols)
+          .order('ends_at', ascending: false)
+          .limit(100);
+      return rows.cast<Map<String, dynamic>>();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<String?> createChallenge({
+    required String title,
+    required String description,
+    required String emoji,
+    required Map<String, dynamic> rule,
+    required DateTime startsAt,
+    required DateTime endsAt,
+  }) async {
+    final me = currentUser;
+    if (me == null) return 'Nicht angemeldet.';
+    try {
+      await _client.from('challenges').insert({
+        'title': title.trim(),
+        'description': description.trim(),
+        'emoji': emoji,
+        'rule': rule,
+        'starts_at': startsAt.toUtc().toIso8601String(),
+        'ends_at': endsAt.toUtc().toIso8601String(),
+        'created_by': me.id,
+      });
+      return null;
+    } on PostgrestException catch (e) {
+      if (e.code == '42501') return 'Nur Admins können Challenges anlegen.';
+      return 'Anlegen fehlgeschlagen.';
+    } catch (_) {
+      return 'Keine Verbindung.';
+    }
+  }
+
+  Future<String?> deleteChallenge(String id) async {
+    try {
+      await _client.from('challenges').delete().eq('id', id);
+      return null;
+    } catch (_) {
+      return 'Löschen fehlgeschlagen.';
+    }
+  }
+
+  /// Abschluss melden (idempotent per Primärschlüssel).
+  Future<void> completeChallenge(String challengeId) async {
+    final me = currentUser;
+    if (me == null) return;
+    try {
+      await _client.from('challenge_completions').upsert({
+        'challenge_id': challengeId,
+        'profile_id': me.id,
+      });
+    } catch (_) {}
+  }
+
+  /// Wer hat's geschafft? (RLS filtert auf mich + Freunde.)
+  Future<List<RemoteProfile>> challengeCompletions(String challengeId) async {
+    if (currentUser == null) return const [];
+    try {
+      final rows = await _client
+          .from('challenge_completions')
+          .select('profile:profiles!challenge_completions_profile_id_fkey'
+              '($_profileCols)')
+          .eq('challenge_id', challengeId);
+      return [
+        for (final r in rows)
+          RemoteProfile.fromRow(r['profile'] as Map<String, dynamic>),
+      ];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // Upload-Assistent (Roadmap Stufe B): lokale Alt-Check-ins einmalig und
+  // nachvollziehbar ins Konto übertragen. Idempotent per Upsert über die
+  // clientseitig erzeugten UUIDs – mehrfaches Ausführen schadet nie.
+  // --------------------------------------------------------------------------
+
+  static final _uuidPattern = RegExp(
+      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-'
+      r'[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$');
+
+  /// Nur echte, in der App entstandene Check-ins sind übertragbar –
+  /// Demo-/Seed-Einträge tragen keine UUID und bleiben lokal.
+  static bool isUploadable(local.CheckinDetails details) =>
+      _uuidPattern.hasMatch(details.checkin.id);
+
+  /// Upsert-Zeile für einen lokalen Check-in (denormalisiert, identisch zum
+  /// Live-Spiegeln in [insertCheckin]). Statisch und pur, damit der
+  /// Assistent ohne Supabase testbar bleibt. null = nicht übertragbar.
+  static Map<String, dynamic>? uploadRow(
+      local.CheckinDetails details, String profileId) {
+    if (!isUploadable(details)) return null;
+    final c = details.checkin;
+    return {
+      'id': c.id,
+      'profile_id': profileId,
+      'session_id': null,
+      'venue_id': c.venueId,
+      'beer_name': details.beer.name,
+      'brewery_name': details.brewery.name,
+      'beer_style': details.beer.style,
+      'is_alcohol_free': details.beer.isAlcoholFree,
+      'rating': c.rating,
+      'note': c.note,
+      'venue_name': c.venueName,
+      'visibility': 'friends',
+      'created_at': c.createdAt.toUtc().toIso8601String(),
+    };
+  }
+
+  /// IDs der eigenen Check-ins, die bereits online liegen
+  /// (null = gerade nicht feststellbar, z. B. offline).
+  Future<Set<String>?> myRemoteCheckinIds() async {
+    final me = currentUser;
+    if (me == null) return null;
+    try {
+      final rows =
+          await _client.from('checkins').select('id').eq('profile_id', me.id);
+      return {for (final r in rows) r['id'] as String};
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Überträgt die übergebenen Check-ins in Blöcken zu 50.
+  /// Rückgabe: Anzahl übertragener Einträge, null bei Verbindungsfehler.
+  Future<int?> uploadLocalCheckins(List<local.CheckinDetails> items) async {
+    final me = currentUser;
+    if (me == null) return null;
+    final rows = [
+      for (final d in items)
+        if (uploadRow(d, me.id) case final row?) row,
+    ];
+    try {
+      for (var i = 0; i < rows.length; i += 50) {
+        await _client
+            .from('checkins')
+            .upsert(rows.sublist(i, i + 50 > rows.length ? rows.length : i + 50));
+      }
+      return rows.length;
     } catch (_) {
       return null;
     }

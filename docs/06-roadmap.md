@@ -69,10 +69,13 @@ niemals Voraussetzung.
       RLS-Policies scharf geschaltet
 - [x] **Konten** — E-Mail + Passwort seit Beta 0.9 (Google/Apple-Login später);
       die App bleibt ohne Konto weiter voll als lokales Tagebuch nutzbar
-- [ ] **Migration lokale Daten → Konto**: Upload-Assistent, der Check-ins,
-      Abzeichen, Wunschliste & Co. einmalig und nachvollziehbar ins Konto
-      überträgt — *teilweise: neue Check-ins werden seit der Beta für Freunde
-      gespiegelt, der Alt-Bestand wird noch nicht übertragen*
+- [x] **Migration lokale Daten → Konto**: automatischer Abgleich statt
+      Einmal-Assistent — offline entstandene Check-ins überträgt die App
+      selbstständig (bei Anmeldung, nach jedem Check-in, alle 5 Minuten
+      als Retry; idempotent per Upsert, Demo-Daten bleiben lokal), der
+      Konto-Screen zeigt den Sync-Status samt manuellem Anstoß. Abzeichen
+      leiten sich aus Check-ins ab, die Wunschliste bleibt bewusst lokal,
+      solange das Online-Schema keine denormalisierte Wunschliste kennt
 - [x] **Echte Freundschaften** — seit Beta 0.9 per Nutzername-Suche (Anfrage,
       Bestätigung); QR-Code-Einladung später
 - [x] **Live-Beacon über Geräte hinweg** (Supabase Realtime): Freunde sehen die
@@ -99,7 +102,12 @@ Beacons erhalten binnen 30 Minuten eine Reaktion („Prost!" oder „Bin dabei!"
 Ziel: Gründe, jede Woche zurückzukommen – und ein Modell, das die laufenden
 Kosten trägt (siehe [docs/09](09-wachstum-und-geschaeftsmodell.md)).
 
-- [ ] **Venues & Tap-Listen** für verifizierte Betreiber („Was läuft gerade vom Fass?")
+- [ ] **Venues & Tap-Listen** für verifizierte Betreiber („Was läuft gerade
+      vom Fass?") — *Fundament fertig: gemeinsame Gasthaus-DB (Supabase, 0011)
+      mit Preisen (0,5 l/0,3 l), Öffnungszeiten, Kategorien, Karte,
+      Schnellansicht, Google-Maps-Link, Venue-Picker in Session/Check-in und
+      Vertrauensstufen-Datenpflege (0013 inkl. Audit-Log); Tap-Listen und
+      Betreiber-Verifizierung stehen noch aus*
 - [ ] **Geplante Sessions & Events** (Einladungen, Erinnerungen, Kalender-Export)
 - [ ] **Empfehlungen**: „Das könnte dir schmecken" auf Basis eigener Bewertungen
 - [ ] **Jahresrückblick** („Dein Bierjahr") mit teilbarem Bild-Export

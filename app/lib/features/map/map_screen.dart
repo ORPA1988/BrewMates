@@ -8,6 +8,8 @@ import 'package:latlong2/latlong.dart';
 
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
+import '../../data/venue_sync.dart';
+import '../../widgets/place_quick_sheet.dart';
 
 /// Formulierung des Aktiv-Zählers rechts oben – zentral anpassbar.
 String activeUsersLabel(int n) =>
@@ -25,6 +27,7 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   bool _showBreweries = true;
+  bool _showVenues = true;
   Timer? _boundsDebounce;
   final _mapController = MapController();
 
@@ -78,6 +81,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ? (ref.watch(breweriesWithLocationProvider).valueOrNull ??
             const <Brewery>[])
         : const <Brewery>[];
+    final venues = _showVenues
+        ? (ref.watch(venuesWithLocationProvider).valueOrNull ??
+            const <Venue>[])
+        : const <Venue>[];
+    // Bearbeiten im Quick-Sheet: Ersteller immer, sonst ab Stammgast –
+    // die RLS bleibt die eigentliche Durchsetzung.
+    final myUid = ref.watch(onlineUserProvider).valueOrNull?.id;
+    final myLevel =
+        ref.watch(accountLevelProvider).valueOrNull?.level ?? 0;
+    bool canEditVenue(Venue v) =>
+        myUid != null && (v.createdBy == myUid || myLevel >= 2);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Karte')),
@@ -106,8 +120,47 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 markers: [
                   for (final b in breweries)
                     _zoom < _labelZoom
-                        ? _breweryDot(context, b)
-                        : _breweryMarker(context, b),
+                        ? _placeDot(
+                            context,
+                            lat: b.latitude!,
+                            lng: b.longitude!,
+                            color: theme.colorScheme.tertiary,
+                            onTap: () => showPlaceQuickSheet(
+                                context, PlaceQuickData.fromBrewery(b)),
+                          )
+                        : _placeMarker(
+                            context,
+                            lat: b.latitude!,
+                            lng: b.longitude!,
+                            emoji: '🏭',
+                            label: b.name,
+                            onTap: () => showPlaceQuickSheet(
+                                context, PlaceQuickData.fromBrewery(b)),
+                          ),
+                  for (final v in venues)
+                    _zoom < _labelZoom
+                        ? _placeDot(
+                            context,
+                            lat: v.latitude!,
+                            lng: v.longitude!,
+                            color: theme.colorScheme.secondary,
+                            onTap: () => showPlaceQuickSheet(
+                                context, PlaceQuickData.fromVenue(v, canEdit: canEditVenue(v))),
+                          )
+                        : _placeMarker(
+                            context,
+                            lat: v.latitude!,
+                            lng: v.longitude!,
+                            emoji: venueCategoryEmoji(v.category),
+                            // Preis-Radar: ab Zoom 12 steht der 0,5-l-Preis
+                            // direkt am Namensschild.
+                            label: (_zoom >= 12 && v.priceHalfL != null)
+                                ? '${v.name} · '
+                                    '${v.priceHalfL!.toStringAsFixed(2)}'
+                                : v.name,
+                            onTap: () => showPlaceQuickSheet(
+                                context, PlaceQuickData.fromVenue(v, canEdit: canEditVenue(v))),
+                          ),
                   for (final d in located) _sessionMarker(context, d),
                 ],
               ),
@@ -174,6 +227,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   selected: _showBreweries,
                   onSelected: (v) => setState(() => _showBreweries = v),
                 ),
+                const SizedBox(height: 4),
+                FilterChip(
+                  label: const Text('🍽 Gasthäuser'),
+                  selected: _showVenues,
+                  onSelected: (v) => setState(() => _showVenues = v),
+                ),
               ],
             ),
           ),
@@ -221,21 +280,28 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     );
   }
 
-  /// Herausgezoomt: Brauerei nur als kleiner Punkt – bleibt antippbar,
-  /// beim Heranzoomen (ab Zoom [_labelZoom]) erscheinen Symbol + Name.
-  Marker _breweryDot(BuildContext context, Brewery b) {
+  /// Herausgezoomt: Ort (Brauerei/Gasthaus) nur als kleiner Punkt – bleibt
+  /// antippbar, beim Heranzoomen (ab Zoom [_labelZoom]) erscheinen
+  /// Symbol + Name. Tap öffnet die Schnellansicht.
+  Marker _placeDot(
+    BuildContext context, {
+    required double lat,
+    required double lng,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
     final theme = Theme.of(context);
     return Marker(
-      point: LatLng(b.latitude!, b.longitude!),
+      point: LatLng(lat, lng),
       width: 16,
       height: 16,
       alignment: Alignment.center,
       child: GestureDetector(
-        onTap: () => context.push('/brewery/${b.id}'),
+        onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: theme.colorScheme.tertiary,
+            color: color,
             border: Border.all(color: theme.colorScheme.surface, width: 2),
           ),
         ),
@@ -243,19 +309,26 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     );
   }
 
-  Marker _breweryMarker(BuildContext context, Brewery b) {
+  Marker _placeMarker(
+    BuildContext context, {
+    required double lat,
+    required double lng,
+    required String emoji,
+    required String label,
+    required VoidCallback onTap,
+  }) {
     final theme = Theme.of(context);
     return Marker(
-      point: LatLng(b.latitude!, b.longitude!),
+      point: LatLng(lat, lng),
       width: 90,
       height: 52,
       alignment: Alignment.center,
       child: GestureDetector(
-        onTap: () => context.push('/brewery/${b.id}'),
+        onTap: onTap,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('🏭', style: TextStyle(fontSize: 20)),
+            Text(emoji, style: const TextStyle(fontSize: 20)),
             Container(
               constraints: const BoxConstraints(maxWidth: 88),
               padding:
@@ -265,7 +338,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
-                b.name,
+                label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.labelSmall,

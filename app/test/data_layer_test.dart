@@ -9,15 +9,19 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late AppDatabase db;
 
-  setUp(() {
+  setUp(() async {
     db = AppDatabase.memory();
+    // Die Bier-Datenbank kommt seit dem Ende der Demo-Daten ausschließlich
+    // aus den gebündelten Community-Dateien (AT + Bayern).
+    await CommunitySync(db).importBundledData();
   });
 
   tearDown(() => db.close());
 
-  test('Seed liefert Bier-Datenbank, Freunde und Aktivität', () async {
+  test('Start ohne Demo-Daten: nur eigenes Profil, Biere aus Community-DB',
+      () async {
     final beers = await db.select(db.beers).get();
-    expect(beers.length, greaterThanOrEqualTo(30));
+    expect(beers.length, greaterThanOrEqualTo(100));
     expect(beers.where((b) => b.isAlcoholFree).length,
         greaterThanOrEqualTo(3));
 
@@ -25,15 +29,14 @@ void main() {
     expect(me.username, 'du');
     expect(me.isMe, isTrue);
 
-    final friends =
+    // Keine Demo-Freunde, keine Demo-Sessions, keine fremden Check-ins.
+    final others =
         await (db.select(db.profiles)..where((t) => t.isMe.equals(false)))
             .get();
-    expect(friends.length, 3);
-
-    // Annas Session ist aktiv und auf der Karte sichtbar.
+    expect(others, isEmpty);
     final active = await db.watchActiveSessions(DateTime.now()).first;
-    expect(active, isNotEmpty);
-    expect(active.first.host.username, 'anna_hops');
+    expect(active, isEmpty);
+    expect(await db.select(db.checkins).get(), isEmpty);
   });
 
   test('Erster Check-in vergibt „Erster Schluck" – genau einmal', () async {

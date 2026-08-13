@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/external_links.dart';
 import '../../core/format.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
@@ -91,7 +93,34 @@ class _BeerDetailBody extends ConsumerWidget {
         .toList();
 
     return Scaffold(
-      appBar: AppBar(title: Text(beer.name)),
+      appBar: AppBar(
+        title: Text(beer.name),
+        actions: [
+          // Nutzererstellte Biere sind in-app bearbeitbar; redaktionelle
+          // Community-Biere laufen über den GitHub-Korrektur-Vorschlag.
+          if (beer.isUserSubmitted)
+            IconButton(
+              tooltip: 'Bearbeiten',
+              icon: const Icon(Icons.edit_outlined),
+              onPressed: () => context.push('/beer/${beer.id}/edit'),
+            )
+          else
+            IconButton(
+              tooltip: 'Korrektur vorschlagen',
+              icon: const Icon(Icons.rate_review_outlined),
+              onPressed: () async => launchUrl(
+                communityIssueUri(
+                  subject: beer.name,
+                  body: 'Bier: ${beer.name}\n'
+                      'Brauerei: ${brewery.name}\n'
+                      'Stil: ${beer.style} · ABV: ${beer.abv ?? '–'} %\n\n'
+                      'Was stimmt nicht bzw. was fehlt?\n',
+                ),
+                mode: LaunchMode.externalApplication,
+              ),
+            ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

@@ -89,9 +89,31 @@ class Beers extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Gemeinsame Gasthaus-Datenbank (online-first, Supabase = Wahrheit;
+/// diese Tabelle ist der lokale Cache für Karte, Picker und Offline-Anzeige).
+class Venues extends Table {
+  TextColumn get id => text()(); // Supabase-UUID
+  TextColumn get name => text()();
+  TextColumn get category => text().withDefault(const Constant('gasthaus'))();
+  TextColumn get address => text().nullable()();
+  TextColumn get city => text().nullable()();
+  RealColumn get latitude => real().nullable()();
+  RealColumn get longitude => real().nullable()();
+  TextColumn get openingHours => text().nullable()();
+  RealColumn get priceHalfL => real().nullable()();
+  RealColumn get priceThirdL => real().nullable()();
+  BoolColumn get verified => boolean().withDefault(const Constant(false))();
+  TextColumn get createdBy => text().nullable()();
+  DateTimeColumn get updatedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 class Sessions extends Table {
   TextColumn get id => text()();
   TextColumn get hostId => text().references(Profiles, #id)();
+  TextColumn get venueId => text().nullable()();
   TextColumn get venueName => text().nullable()();
   TextColumn get message => text().nullable()();
   TextColumn get visibility => textEnum<SessionVisibility>()();
@@ -120,6 +142,7 @@ class Checkins extends Table {
   TextColumn get profileId => text().references(Profiles, #id)();
   TextColumn get beerId => text().references(Beers, #id)();
   TextColumn get sessionId => text().nullable()();
+  TextColumn get venueId => text().nullable()();
   TextColumn get venueName => text().nullable()();
   RealColumn get rating => real().nullable()();
   TextColumn get note => text().nullable()();
@@ -159,6 +182,22 @@ class UserBadges extends Table {
 
   @override
   Set<Column> get primaryKey => {profileId, badgeSlug};
+}
+
+/// Offline-Cache der Challenges (Supabase = Wahrheit). Bleibt auch nach
+/// Challenge-Ende erhalten, damit die Abzeichen-Galerie Titel/Emoji
+/// verdienter Challenge-Badges anzeigen kann.
+class ChallengeCache extends Table {
+  TextColumn get id => text()(); // Supabase-UUID
+  TextColumn get title => text()();
+  TextColumn get description => text().withDefault(const Constant(''))();
+  TextColumn get emoji => text().withDefault(const Constant('🏆'))();
+  TextColumn get ruleJson => text()();
+  DateTimeColumn get startsAt => dateTime()();
+  DateTimeColumn get endsAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 class WishlistItems extends Table {
@@ -248,6 +287,7 @@ class ProfileStats {
   Profiles,
   Breweries,
   Beers,
+  Venues,
   Sessions,
   SessionParticipants,
   Checkins,
@@ -255,6 +295,7 @@ class ProfileStats {
   Comments,
   UserBadges,
   WishlistItems,
+  ChallengeCache,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
@@ -264,7 +305,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -296,6 +337,74 @@ class AppDatabase extends _$AppDatabase {
           if (from < 4) {
             // v4: Etikett-Bilder (Open Food Facts) für die Community-DB.
             await m.addColumn(beers, beers.imageUrl);
+          }
+          if (from < 5) {
+            // v5: Demo-Daten entfernen – die Beta läuft mit echten Nutzern
+            // und der Community-DB. Eigene Inhalte bleiben unangetastet;
+            // Demo-Biere, an denen eigene Check-ins oder Wunschlisten-
+            // Einträge hängen, bleiben deshalb bewusst stehen.
+            const demoProfiles = ['anna', 'ben', 'clara'];
+            await (delete(toasts)
+                  ..where((t) => t.profileId.isIn(demoProfiles)))
+                .go();
+            await (delete(comments)
+                  ..where((t) => t.profileId.isIn(demoProfiles)))
+                .go();
+            await (delete(checkins)
+                  ..where((t) => t.profileId.isIn(demoProfiles)))
+                .go();
+            final demoSessions = await (selectOnly(sessions)
+                  ..addColumns([sessions.id])
+                  ..where(sessions.hostId.isIn(demoProfiles)))
+                .map((r) => r.read(sessions.id)!)
+                .get();
+            await (delete(sessionParticipants)
+                  ..where((t) =>
+                      t.profileId.isIn(demoProfiles) |
+                      t.sessionId.isIn(demoSessions)))
+                .go();
+            await (delete(sessions)
+                  ..where((t) => t.hostId.isIn(demoProfiles)))
+                .go();
+            await (delete(profiles)..where((t) => t.id.isIn(demoProfiles)))
+                .go();
+
+            final usedBeerIds = <String>{
+              ...await (selectOnly(checkins, distinct: true)
+                    ..addColumns([checkins.beerId]))
+                  .map((r) => r.read(checkins.beerId)!)
+                  .get(),
+              ...await (selectOnly(wishlistItems, distinct: true)
+                    ..addColumns([wishlistItems.beerId]))
+                  .map((r) => r.read(wishlistItems.beerId)!)
+                  .get(),
+            };
+            await (delete(beers)
+                  ..where((t) =>
+                      t.id.like('beer-%') &
+                      t.id.isNotIn(usedBeerIds.toList())))
+                .go();
+            final usedBreweryIds = await (selectOnly(beers, distinct: true)
+                  ..addColumns([beers.breweryId]))
+                .map((r) => r.read(beers.breweryId)!)
+                .get();
+            await (delete(breweries)
+                  ..where((t) =>
+                      t.id.like('brewery-%') &
+                      t.id.isNotIn(usedBreweryIds)))
+                .go();
+          }
+          if (from < 6) {
+            // v6: Gasthaus-Cache (gemeinsame Venue-DB aus Supabase) und
+            // Venue-Verknüpfung an Check-ins/Sessions (venueName bleibt
+            // als denormalisierter Anzeigename erhalten).
+            await m.createTable(venues);
+            await m.addColumn(checkins, checkins.venueId);
+            await m.addColumn(sessions, sessions.venueId);
+          }
+          if (from < 7) {
+            // v7: Offline-Cache für Challenges (Herausforderungen).
+            await m.createTable(challengeCache);
           }
         },
       );
@@ -699,6 +808,73 @@ class AppDatabase extends _$AppDatabase {
       .watch();
 
   /// Upsert aus der Community-Datenbank (GitHub-JSON).
+  // ---------------------------------------------------------------------
+  // Gasthäuser (lokaler Cache der gemeinsamen Supabase-Venue-DB)
+  // ---------------------------------------------------------------------
+
+  /// Cache-Abgleich aus Supabase (idempotent per Upsert).
+  Future<void> upsertVenues(List<VenuesCompanion> rows) async {
+    if (rows.isEmpty) return;
+    await batch((b) => b.insertAllOnConflictUpdate(venues, rows));
+  }
+
+  /// Jüngster bekannter Stand – Grundlage für Delta-Sync über updated_at.
+  Future<DateTime?> latestVenueUpdate() async {
+    final row = await (selectOnly(venues)
+          ..addColumns([venues.updatedAt.max()]))
+        .getSingle();
+    return row.read(venues.updatedAt.max());
+  }
+
+  Stream<List<Venue>> watchVenuesWithLocation() => (select(venues)
+        ..where((t) => t.latitude.isNotNull() & t.longitude.isNotNull())
+        ..orderBy([(t) => OrderingTerm.asc(t.name)]))
+      .watch();
+
+  Stream<List<Venue>> watchVenueSearch(String query) {
+    final term = query.trim().toLowerCase();
+    final q = select(venues)
+      ..orderBy([(t) => OrderingTerm.asc(t.name)])
+      ..limit(30);
+    if (term.isNotEmpty) {
+      q.where((t) =>
+          t.name.lower().like('%$term%') | t.city.lower().like('%$term%'));
+    }
+    return q.watch();
+  }
+
+  Future<Venue?> venueById(String id) =>
+      (select(venues)..where((t) => t.id.equals(id))).getSingleOrNull();
+
+  Stream<Venue?> watchVenue(String id) =>
+      (select(venues)..where((t) => t.id.equals(id))).watchSingleOrNull();
+
+  // ---------------------------------------------------------------------
+  // Challenges (Offline-Cache)
+  // ---------------------------------------------------------------------
+
+  Future<void> upsertChallengeCache(List<ChallengeCacheCompanion> rows) async {
+    if (rows.isEmpty) return;
+    await batch((b) => b.insertAllOnConflictUpdate(challengeCache, rows));
+  }
+
+  Future<List<ChallengeCacheData>> allCachedChallenges() =>
+      (select(challengeCache)
+            ..orderBy([(t) => OrderingTerm.desc(t.endsAt)]))
+          .get();
+
+  Future<ChallengeCacheData?> challengeCacheById(String id) =>
+      (select(challengeCache)..where((t) => t.id.equals(id)))
+          .getSingleOrNull();
+
+  /// Verdiente Challenge-Badges (Slug-Präfix `challenge-`).
+  Future<List<UserBadge>> earnedChallengeBadges(String profileId) =>
+      (select(userBadges)
+            ..where((t) =>
+                t.profileId.equals(profileId) &
+                t.badgeSlug.like('challenge-%')))
+          .get();
+
   Future<void> upsertCommunityData({
     required List<BreweriesCompanion> breweryRows,
     required List<BeersCompanion> beerRows,

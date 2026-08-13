@@ -6,7 +6,11 @@ import '../data/providers.dart';
 
 import '../features/account/account_screen.dart';
 import '../features/admin/admin_screen.dart';
+import '../features/admin/challenge_editor_screen.dart';
 import '../features/beers/add_beer_screen.dart';
+import '../features/beers/beer_edit_screen.dart';
+import '../features/beers/brewery_edit_screen.dart';
+import '../features/venues/venue_edit_screen.dart';
 import '../features/beers/beer_detail_screen.dart';
 import '../features/beers/beers_screen.dart';
 import '../features/beers/brewery_detail_screen.dart';
@@ -16,6 +20,7 @@ import '../features/friends/friends_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/map/map_screen.dart';
 import '../features/profile/badges_screen.dart';
+import '../features/profile/challenges_screen.dart';
 import '../features/profile/diary_screen.dart';
 import '../features/profile/profile_screen.dart';
 import '../features/profile/wishlist_screen.dart';
@@ -104,6 +109,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             BeerDetailScreen(beerId: state.pathParameters['id']!),
       ),
       GoRoute(
+        path: '/beer/:id/edit',
+        builder: (_, state) =>
+            BeerEditScreen(beerId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/brewery/:id/edit',
+        builder: (_, state) =>
+            BreweryEditScreen(breweryId: state.pathParameters['id']!),
+      ),
+      GoRoute(
         path: '/beers/add',
         builder: (_, state) => AddBeerScreen(
           initialBarcode: state.uri.queryParameters['ean'],
@@ -115,6 +130,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/brewery/:id',
         builder: (_, state) =>
             BreweryDetailScreen(breweryId: state.pathParameters['id']!),
+      ),
+      // Gasthäuser (gemeinsame Datenbank)
+      GoRoute(
+        path: '/venues/add',
+        builder: (_, state) => VenueEditScreen(
+          initialName: state.uri.queryParameters['name'],
+        ),
+      ),
+      GoRoute(
+        path: '/venue/:id/edit',
+        builder: (_, state) =>
+            VenueEditScreen(venueId: state.pathParameters['id']!),
       ),
       // Online-Beta
       GoRoute(
@@ -132,6 +159,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile/badges',
         builder: (_, __) => const BadgesScreen(),
+      ),
+      GoRoute(
+        path: '/profile/challenges',
+        builder: (_, __) => const ChallengesScreen(),
+      ),
+      GoRoute(
+        path: '/admin/challenges',
+        builder: (_, __) => const ChallengeEditorScreen(),
       ),
       GoRoute(
         path: '/profile/diary',
