@@ -58,6 +58,8 @@ class _BeersScreenState extends ConsumerState<BeersScreen> {
       sortedVenues.sort((a, b) => (a.priceHalfL ?? double.infinity)
           .compareTo(b.priceHalfL ?? double.infinity));
     }
+    final myUid = ref.watch(onlineUserProvider).valueOrNull?.id;
+    final myLevel = ref.watch(accountLevelProvider).valueOrNull?.level ?? 0;
     final breweryHits = ref.watch(brewerySearchProvider(_search)).valueOrNull ??
         const <Brewery>[];
 
@@ -194,7 +196,11 @@ class _BeersScreenState extends ConsumerState<BeersScreen> {
                           ),
                         ),
                         for (final venue in sortedVenues)
-                          _VenueTile(venue: venue),
+                          _VenueTile(
+                            venue: venue,
+                            canEdit: myUid != null &&
+                                (venue.createdBy == myUid || myLevel >= 2),
+                          ),
                       ],
                       if (breweryHits.isNotEmpty) ...[
                         Padding(
@@ -299,9 +305,10 @@ class _BreweryTile extends StatelessWidget {
 }
 
 class _VenueTile extends StatelessWidget {
-  const _VenueTile({required this.venue});
+  const _VenueTile({required this.venue, this.canEdit = false});
 
   final Venue venue;
+  final bool canEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -320,8 +327,8 @@ class _VenueTile extends StatelessWidget {
         trailing: venue.verified
             ? Icon(Icons.verified_outlined, size: 20, color: scheme.primary)
             : null,
-        onTap: () async =>
-            showPlaceQuickSheet(context, PlaceQuickData.fromVenue(venue)),
+        onTap: () async => showPlaceQuickSheet(
+            context, PlaceQuickData.fromVenue(venue, canEdit: canEdit)),
       ),
     );
   }

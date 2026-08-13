@@ -971,6 +971,72 @@ class OnlineService {
   }
 
   // --------------------------------------------------------------------------
+  // Vertrauensstufen & Datenpflege (Migration 0013)
+  // --------------------------------------------------------------------------
+
+  /// Eigene Vertrauensstufe + Punktestand; null = offline/abgemeldet.
+  Future<({int level, int points})?> myAccountLevelInfo() async {
+    if (currentUser == null) return null;
+    try {
+      final rows = await _client.rpc('my_account_level_info');
+      if (rows is! List || rows.isEmpty) return null;
+      final row = rows.first as Map<String, dynamic>;
+      return (
+        level: (row['level'] as num?)?.toInt() ?? 1,
+        points: (row['points'] as num?)?.toInt() ?? 0,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Community-Bier (Supabase) bearbeiten; RLS/Level entscheiden.
+  Future<String?> updateCommunityBeer(
+      String barcode, Map<String, dynamic> patch) async {
+    if (currentUser == null) return 'Nicht angemeldet.';
+    try {
+      await _client.from('beers').update(patch).eq('barcode', barcode);
+      return null;
+    } on PostgrestException catch (e) {
+      if (e.code == '42501') {
+        return 'Dafür reicht deine Vertrauensstufe noch nicht '
+            '(Stammgast ab 25 Punkten).';
+      }
+      return 'Online-Speichern fehlgeschlagen.';
+    } catch (_) {
+      return 'Keine Verbindung – lokal ist die Änderung gespeichert.';
+    }
+  }
+
+  /// Änderungsverlauf eines Datensatzes (Audit-Log aus Migration 0013).
+  Future<List<({String? username, String action, Map<String, dynamic> changes, DateTime createdAt})>>
+      editHistory(String entity, String entityId, {int limit = 10}) async {
+    if (currentUser == null) return const [];
+    try {
+      final rows = await _client
+          .from('edit_log')
+          .select('action, changes, created_at, '
+              'profile:profiles!edit_log_profile_id_fkey(username)')
+          .eq('entity', entity)
+          .eq('entity_id', entityId)
+          .order('created_at', ascending: false)
+          .limit(limit);
+      return [
+        for (final r in rows)
+          (
+            username:
+                (r['profile'] as Map<String, dynamic>?)?['username'] as String?,
+            action: r['action'] as String,
+            changes: (r['changes'] as Map<String, dynamic>?) ?? const {},
+            createdAt: DateTime.parse(r['created_at'] as String).toLocal(),
+          ),
+      ];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  // --------------------------------------------------------------------------
   // Challenges (Migration 0012): Admins legen sie an, alle sehen sie;
   // Abschlüsse sind für Freunde sichtbar.
   // --------------------------------------------------------------------------

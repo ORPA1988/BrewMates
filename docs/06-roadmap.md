@@ -102,7 +102,12 @@ Beacons erhalten binnen 30 Minuten eine Reaktion („Prost!" oder „Bin dabei!"
 Ziel: Gründe, jede Woche zurückzukommen – und ein Modell, das die laufenden
 Kosten trägt (siehe [docs/09](09-wachstum-und-geschaeftsmodell.md)).
 
-- [ ] **Venues & Tap-Listen** für verifizierte Betreiber („Was läuft gerade vom Fass?")
+- [ ] **Venues & Tap-Listen** für verifizierte Betreiber („Was läuft gerade
+      vom Fass?") — *Fundament fertig: gemeinsame Gasthaus-DB (Supabase, 0011)
+      mit Preisen (0,5 l/0,3 l), Öffnungszeiten, Kategorien, Karte,
+      Schnellansicht, Google-Maps-Link, Venue-Picker in Session/Check-in und
+      Vertrauensstufen-Datenpflege (0013 inkl. Audit-Log); Tap-Listen und
+      Betreiber-Verifizierung stehen noch aus*
 - [ ] **Geplante Sessions & Events** (Einladungen, Erinnerungen, Kalender-Export)
 - [ ] **Empfehlungen**: „Das könnte dir schmecken" auf Basis eigener Bewertungen
 - [ ] **Jahresrückblick** („Dein Bierjahr") mit teilbarem Bild-Export

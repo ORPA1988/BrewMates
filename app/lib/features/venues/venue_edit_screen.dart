@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/format.dart';
 import '../../data/db/database.dart';
 import '../../data/location_service.dart';
 import '../../data/providers.dart';
@@ -72,6 +73,19 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
     _latitude = venue.latitude;
     _longitude = venue.longitude;
   }
+
+  static String _fieldLabel(String column) => switch (column) {
+        'price_half_l' => 'den 0,5-l-Preis',
+        'price_third_l' => 'den 0,3-l-Preis',
+        'opening_hours' => 'die Öffnungszeiten',
+        'address' => 'die Adresse',
+        'city' => 'den Ort',
+        'name' => 'den Namen',
+        'category' => 'die Kategorie',
+        'latitude' || 'longitude' => 'die Position',
+        'verified' => 'den Verifiziert-Status',
+        _ => column,
+      };
 
   double? _parsePrice(String raw) {
     final text = raw.trim().replaceAll(',', '.').replaceAll('€', '').trim();
@@ -335,6 +349,60 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
               onPressed: _busy ? null : _save,
               child: Text(_isNew ? 'Gasthaus anlegen' : 'Speichern'),
             ),
+            // Änderungsverlauf (Audit-Log): wer hat zuletzt was gepflegt?
+            if (!_isNew) ...[
+              const SizedBox(height: 8),
+              ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                title: Text('Änderungsverlauf',
+                    style: theme.textTheme.titleSmall),
+                children: [
+                  FutureBuilder(
+                    future: ref
+                        .read(onlineServiceProvider.future)
+                        .then((online) => online == null
+                            ? Future.value(const [])
+                            : online.editHistory('venue', widget.venueId!)),
+                    builder: (context, snapshot) {
+                      final entries = snapshot.data ?? const [];
+                      if (snapshot.connectionState !=
+                          ConnectionState.done) {
+                        return const Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Center(
+                              child: CircularProgressIndicator()),
+                        );
+                      }
+                      if (entries.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Text('Noch keine Einträge (oder offline).'),
+                        );
+                      }
+                      return Column(
+                        children: [
+                          for (final e in entries)
+                            ListTile(
+                              dense: true,
+                              leading: Icon(
+                                  e.action == 'insert'
+                                      ? Icons.add_circle_outline
+                                      : Icons.edit_outlined,
+                                  size: 18),
+                              title: Text(
+                                '${e.username == null ? 'Jemand' : '@${e.username}'} '
+                                '${e.action == 'insert' ? 'hat den Eintrag angelegt' : 'hat ${e.changes.keys.map(_fieldLabel).join(', ')} geändert'}',
+                              ),
+                              subtitle:
+                                  Text(timeAgo(e.createdAt)),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: 8),
             Text(
               'Änderungen sind für alle BrewMates sichtbar. Bitte nur '

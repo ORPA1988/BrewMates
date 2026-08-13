@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart' show User;
 
+import '../domain/account_level.dart';
 import '../domain/badges.dart';
 import '../domain/challenges.dart';
 import '../features/scan/barcode_lookup.dart';
@@ -312,6 +313,41 @@ final venueSearchProvider = StreamProvider.family<List<Venue>, String>(
 
 final venueProvider = StreamProvider.family<Venue?, String>(
     (ref, id) => ref.watch(databaseProvider).watchVenue(id));
+
+// ============================================================================
+// Vertrauensstufen (Account-Levelsystem, Migration 0013)
+// ============================================================================
+
+/// Merkt sich die zuletzt gesehene Stufe, um Aufstiege zu erkennen.
+final _lastSeenLevelProvider = StateProvider<int?>((ref) => null);
+
+/// Eigene Vertrauensstufe + Punkte (null = offline/abgemeldet). Bei einem
+/// Aufstieg wird ein [CelebrationItem] in [levelUpProvider] hinterlegt.
+final accountLevelProvider =
+    FutureProvider<({int level, int points})?>((ref) async {
+  ref.watch(onlineUserProvider);
+  ref.watch(myDiaryProvider); // Punkte ändern sich mit Check-ins
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null || online.currentUser == null) return null;
+  final info = await online.myAccountLevelInfo();
+  if (info != null) {
+    final last = ref.read(_lastSeenLevelProvider);
+    if (last != null && info.level > last && info.level >= 2) {
+      ref.read(levelUpProvider.notifier).state = CelebrationItem(
+        emoji: levelEmoji(info.level),
+        name: levelName(info.level),
+        description:
+            'Neue Vertrauensstufe erreicht – danke für deine Datenpflege!',
+        headline: 'Stufenaufstieg! 🎖',
+      );
+    }
+    ref.read(_lastSeenLevelProvider.notifier).state = info.level;
+  }
+  return info;
+});
+
+/// Wartende Level-Up-Feier; die UI konsumiert und leert den Wert.
+final levelUpProvider = StateProvider<CelebrationItem?>((ref) => null);
 
 // ============================================================================
 // Challenges (Herausforderungen mit Belohnungs-Badge, Admin-gepflegt)

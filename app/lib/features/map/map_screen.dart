@@ -85,6 +85,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ? (ref.watch(venuesWithLocationProvider).valueOrNull ??
             const <Venue>[])
         : const <Venue>[];
+    // Bearbeiten im Quick-Sheet: Ersteller immer, sonst ab Stammgast –
+    // die RLS bleibt die eigentliche Durchsetzung.
+    final myUid = ref.watch(onlineUserProvider).valueOrNull?.id;
+    final myLevel =
+        ref.watch(accountLevelProvider).valueOrNull?.level ?? 0;
+    bool canEditVenue(Venue v) =>
+        myUid != null && (v.createdBy == myUid || myLevel >= 2);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Karte')),
@@ -138,7 +145,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                             lng: v.longitude!,
                             color: theme.colorScheme.secondary,
                             onTap: () => showPlaceQuickSheet(
-                                context, PlaceQuickData.fromVenue(v)),
+                                context, PlaceQuickData.fromVenue(v, canEdit: canEditVenue(v))),
                           )
                         : _placeMarker(
                             context,
@@ -152,7 +159,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                                     '${v.priceHalfL!.toStringAsFixed(2)}'
                                 : v.name,
                             onTap: () => showPlaceQuickSheet(
-                                context, PlaceQuickData.fromVenue(v)),
+                                context, PlaceQuickData.fromVenue(v, canEdit: canEditVenue(v))),
                           ),
                   for (final d in located) _sessionMarker(context, d),
                 ],

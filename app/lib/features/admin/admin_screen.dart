@@ -9,6 +9,11 @@ import '../../data/providers.dart';
 
 /// Bekannte Funktions-Vorschläge (Schlüssel → Icon + Anzeigename).
 const List<({String key, String icon, String label})> _knownFeatures = [
+  // Vertrauensstufen-Overrides (Migration 0013): setzen die automatische
+  // Punkte-Stufe außer Kraft.
+  (key: 'trust_level_2', icon: '🍺', label: 'Stufe Stammgast (Override)'),
+  (key: 'trust_level_3', icon: '🎓', label: 'Stufe Bierkenner (Override)'),
+  (key: 'edit_lock', icon: '🔒', label: 'Datenpflege sperren'),
   (key: 'premium', icon: '⭐', label: 'Premium'),
   (key: 'moderation', icon: '🛠', label: 'Moderation'),
   (key: 'beta_features', icon: '🧪', label: 'Beta-Funktionen'),

@@ -8,6 +8,8 @@ import '../features/account/account_screen.dart';
 import '../features/admin/admin_screen.dart';
 import '../features/admin/challenge_editor_screen.dart';
 import '../features/beers/add_beer_screen.dart';
+import '../features/beers/beer_edit_screen.dart';
+import '../features/beers/brewery_edit_screen.dart';
 import '../features/venues/venue_edit_screen.dart';
 import '../features/beers/beer_detail_screen.dart';
 import '../features/beers/beers_screen.dart';
@@ -105,6 +107,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/beer/:id',
         builder: (_, state) =>
             BeerDetailScreen(beerId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/beer/:id/edit',
+        builder: (_, state) =>
+            BeerEditScreen(beerId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/brewery/:id/edit',
+        builder: (_, state) =>
+            BreweryEditScreen(breweryId: state.pathParameters['id']!),
       ),
       GoRoute(
         path: '/beers/add',

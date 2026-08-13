@@ -10,7 +10,8 @@ Fokus Österreich + Bayern. Antworte dem Nutzer auf Deutsch.
   Version `0.9.5-beta+9`, Release v0.9.5-beta veröffentlicht (Beta 0.x bis
   zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU). Migrationen
-  `supabase/migrations/0001–0008` sind LIVE. Google-Login und
+  `supabase/migrations/0001–0013` sind LIVE (0011 Gasthäuser, 0012
+  Challenges, 0013 Vertrauensstufen + edit_log). Google-Login und
   E-Mail-Anmeldung (ohne Bestätigungspflicht) sind eingerichtet und
   funktionieren. Seit 0008 gilt: EXECUTE auf Funktionen wird von PUBLIC
   entzogen und pro Funktion gezielt gewährt — neue Funktionen brauchen in
@@ -49,4 +50,16 @@ mit 403 (Branch-Scope-Token). Der Lauf baut APK+AAB und veröffentlicht sie.
 - Karten-Wording zentral: `activeUsersLabel()` in
   `app/lib/features/map/map_screen.dart`.
 - Nicht-Freunde erscheinen auf der Karte NIE mit Position, nur als Zähler.
+- **Sync-Invariante**: Community-JSON-Datensätze (Biere mit
+  `isUserSubmitted == false`, Brauereien mit Nicht-UUID-ID) sind in der App
+  READ-ONLY — der GitHub-Sync überschreibt sie wholesale. In-App-Bearbeitung
+  gibt es nur für nutzererstellte Zeilen (UUIDs) und Gasthäuser (Supabase).
+  Korrekturen an Community-Daten laufen über „Korrektur vorschlagen"
+  (GitHub-Issue-Prefill, `core/external_links.dart`).
+- **Vertrauensstufen** (0013): 1 Neuling · 2 Stammgast (≥25 P.) ·
+  3 Bierkenner (≥100 P.) · 4 Moderator · 5 Admin; Overrides über
+  user_features (`trust_level_2/3`, `edit_lock`). RLS erzwingt, die UI
+  spiegelt (`accountLevelProvider`).
+- Beta-Einschränkungen (bewusst): Challenge-Abschlüsse ohne
+  Server-Re-Validierung; Gasthaus-Pflege nur online (keine Offline-Queue).
 - orpa-tech.at ist bewusst KEIN Bestandteil des Projekts.
