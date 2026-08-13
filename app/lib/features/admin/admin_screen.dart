@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../data/online/online_service.dart';
 import '../../data/providers.dart';
@@ -258,6 +259,17 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
               'Änderungen gelten sofort.',
               style: theme.textTheme.bodyMedium
                   ?.copyWith(color: scheme.onSurfaceVariant),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              child: ListTile(
+                leading: const Text('🏆', style: TextStyle(fontSize: 24)),
+                title: const Text('Challenges verwalten'),
+                subtitle: const Text(
+                    'Herausforderungen mit Belohnungs-Abzeichen anlegen'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/admin/challenges'),
+              ),
             ),
             const SizedBox(height: 16),
 

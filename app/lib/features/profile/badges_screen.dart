@@ -39,6 +39,29 @@ class BadgesScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+              // Challenge-Trophäen (aus abgeschlossenen Herausforderungen)
+              if ((ref.watch(earnedChallengeBadgesProvider).valueOrNull ??
+                      const [])
+                  .isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      children: [
+                        for (final trophy in ref
+                            .watch(earnedChallengeBadgesProvider)
+                            .valueOrNull!)
+                          Chip(
+                            avatar: Text(trophy.emoji),
+                            label: Text(trophy.title),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
               Expanded(
                 child: GridView.count(
                   padding: const EdgeInsets.all(16),

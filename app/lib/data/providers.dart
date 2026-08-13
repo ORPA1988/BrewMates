@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +8,9 @@ import 'package:uuid/uuid.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show User;
 
 import '../domain/badges.dart';
+import '../domain/challenges.dart';
 import '../features/scan/barcode_lookup.dart';
+import '../widgets/badge_celebration.dart';
 import 'community_sync.dart';
 import 'db/database.dart';
 import 'location_service.dart';
@@ -310,6 +313,82 @@ final venueSearchProvider = StreamProvider.family<List<Venue>, String>(
 final venueProvider = StreamProvider.family<Venue?, String>(
     (ref, id) => ref.watch(databaseProvider).watchVenue(id));
 
+// ============================================================================
+// Challenges (Herausforderungen mit Belohnungs-Badge, Admin-gepflegt)
+// ============================================================================
+
+/// Holt Challenges online, aktualisiert den Offline-Cache und liefert die
+/// Cache-Zeilen (offline: nur Cache). Aktualisiert bei Anmeldung und im
+/// 5-Minuten-Takt.
+final challengesProvider =
+    FutureProvider<List<ChallengeCacheData>>((ref) async {
+  ref.watch(_syncTickProvider);
+  ref.watch(onlineUserProvider);
+  final db = ref.watch(databaseProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online != null && online.currentUser != null) {
+    final rows = await online.listChallenges();
+    if (rows != null) {
+      await db.upsertChallengeCache([
+        for (final r in rows)
+          ChallengeCacheCompanion(
+            id: Value(r['id'] as String),
+            title: Value(r['title'] as String),
+            description: Value((r['description'] as String?) ?? ''),
+            emoji: Value((r['emoji'] as String?) ?? '🏆'),
+            ruleJson: Value(json.encode(r['rule'])),
+            startsAt:
+                Value(DateTime.parse(r['starts_at'] as String).toLocal()),
+            endsAt: Value(DateTime.parse(r['ends_at'] as String).toLocal()),
+          ),
+      ]);
+    }
+  }
+  return db.allCachedChallenges();
+});
+
+/// Fortschritt aller aktiven Challenges (abgeschlossene behalten Häkchen).
+final challengeProgressProvider =
+    FutureProvider<List<ChallengeProgress>>((ref) async {
+  final me = await ref.watch(meProvider.future);
+  ref.watch(myDiaryProvider);
+  ref.watch(myBadgesProvider);
+  await ref.watch(challengesProvider.future);
+  return ChallengeEngine(ref.watch(databaseProvider)).progressList(me.id);
+});
+
+/// Verdiente Challenge-Trophäen für die Abzeichen-Galerie; Titel/Emoji
+/// kommen aus dem Challenge-Cache (funktioniert auch nach Challenge-Ende).
+final earnedChallengeBadgesProvider = FutureProvider<
+    List<({String emoji, String title, DateTime awardedAt})>>((ref) async {
+  final me = await ref.watch(meProvider.future);
+  ref.watch(myBadgesProvider);
+  final db = ref.watch(databaseProvider);
+  final rows = await db.earnedChallengeBadges(me.id);
+  if (rows.isEmpty) return const [];
+  final cache = await db.allCachedChallenges();
+  return [
+    for (final row in rows)
+      () {
+        final idPrefix = row.badgeSlug.substring('challenge-'.length);
+        for (final c in cache) {
+          if (c.id.startsWith(idPrefix)) {
+            return (
+              emoji: c.emoji,
+              title: c.title,
+              awardedAt: row.awardedAt,
+            );
+          }
+        }
+        return (
+          emoji: '🏆',
+          title: 'Challenge',
+          awardedAt: row.awardedAt,
+        );
+      }(),
+  ];
+});
+
 /// Automatischer Konto-Abgleich: überträgt offline entstandene Check-ins,
 /// sobald Konto und Verbindung da sind – bei Anmeldung, nach jedem lokalen
 /// Check-in (Tagebuch-Stream) und alle 5 Minuten als Nachzügler-Retry.
@@ -498,7 +577,9 @@ class BrewActions {
 
   /// Check-in speichern. Läuft die aktive eigene Session, wird der Check-in
   /// ihr automatisch zugeordnet. Gibt neu verdiente Abzeichen zurück.
-  Future<List<BadgeDef>> createCheckin({
+  /// Check-in speichern. Gibt Feier-Einträge zurück: neu verdiente
+  /// Abzeichen UND neu abgeschlossene Challenges.
+  Future<List<CelebrationItem>> createCheckin({
     required String beerId,
     double? rating,
     String? note,
@@ -535,8 +616,21 @@ class BrewActions {
         }
       }
     }
-    return BadgeEngine(_db).evaluate(me.id,
-        onlineUserId: (await _online())?.currentUser?.id);
+    final badges = await BadgeEngine(_db)
+        .evaluate(me.id, onlineUserId: online?.currentUser?.id);
+    // Challenges prüfen: Abschluss lokal als Badge festhalten und
+    // best-effort online melden (idempotent; offline holt der nächste
+    // Durchlauf es nach).
+    final completed = await ChallengeEngine(_db).evaluate(me.id);
+    if (online != null) {
+      for (final def in completed) {
+        unawaited(online.completeChallenge(def.id));
+      }
+    }
+    return [
+      for (final b in badges) CelebrationItem.fromBadge(b),
+      for (final def in completed) CelebrationItem.fromChallenge(def),
+    ];
   }
 
   /// Session starten („der eine Tap"). Gibt neu verdiente Abzeichen zurück.

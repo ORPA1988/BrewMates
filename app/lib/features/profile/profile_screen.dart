@@ -180,6 +180,21 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 16),
 
           // ------------------------------------------------------------------
+          // Challenges-Einstieg
+          // ------------------------------------------------------------------
+          Card(
+            child: ListTile(
+              leading: const Text('🏆', style: TextStyle(fontSize: 24)),
+              title: const Text('Challenges'),
+              subtitle:
+                  const Text('Herausforderungen mit Belohnungs-Abzeichen'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/profile/challenges'),
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          // ------------------------------------------------------------------
           // Abzeichen-Vorschau
           // ------------------------------------------------------------------
           Card(

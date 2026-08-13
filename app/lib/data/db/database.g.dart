@@ -4828,6 +4828,389 @@ class WishlistItemsCompanion extends UpdateCompanion<WishlistItem> {
   }
 }
 
+class $ChallengeCacheTable extends ChallengeCache
+    with TableInfo<$ChallengeCacheTable, ChallengeCacheData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ChallengeCacheTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
+  static const VerificationMeta _emojiMeta = const VerificationMeta('emoji');
+  @override
+  late final GeneratedColumn<String> emoji = GeneratedColumn<String>(
+      'emoji', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('🏆'));
+  static const VerificationMeta _ruleJsonMeta =
+      const VerificationMeta('ruleJson');
+  @override
+  late final GeneratedColumn<String> ruleJson = GeneratedColumn<String>(
+      'rule_json', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _startsAtMeta =
+      const VerificationMeta('startsAt');
+  @override
+  late final GeneratedColumn<DateTime> startsAt = GeneratedColumn<DateTime>(
+      'starts_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _endsAtMeta = const VerificationMeta('endsAt');
+  @override
+  late final GeneratedColumn<DateTime> endsAt = GeneratedColumn<DateTime>(
+      'ends_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, title, description, emoji, ruleJson, startsAt, endsAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'challenge_cache';
+  @override
+  VerificationContext validateIntegrity(Insertable<ChallengeCacheData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    }
+    if (data.containsKey('emoji')) {
+      context.handle(
+          _emojiMeta, emoji.isAcceptableOrUnknown(data['emoji']!, _emojiMeta));
+    }
+    if (data.containsKey('rule_json')) {
+      context.handle(_ruleJsonMeta,
+          ruleJson.isAcceptableOrUnknown(data['rule_json']!, _ruleJsonMeta));
+    } else if (isInserting) {
+      context.missing(_ruleJsonMeta);
+    }
+    if (data.containsKey('starts_at')) {
+      context.handle(_startsAtMeta,
+          startsAt.isAcceptableOrUnknown(data['starts_at']!, _startsAtMeta));
+    } else if (isInserting) {
+      context.missing(_startsAtMeta);
+    }
+    if (data.containsKey('ends_at')) {
+      context.handle(_endsAtMeta,
+          endsAt.isAcceptableOrUnknown(data['ends_at']!, _endsAtMeta));
+    } else if (isInserting) {
+      context.missing(_endsAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ChallengeCacheData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ChallengeCacheData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      emoji: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}emoji'])!,
+      ruleJson: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}rule_json'])!,
+      startsAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}starts_at'])!,
+      endsAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}ends_at'])!,
+    );
+  }
+
+  @override
+  $ChallengeCacheTable createAlias(String alias) {
+    return $ChallengeCacheTable(attachedDatabase, alias);
+  }
+}
+
+class ChallengeCacheData extends DataClass
+    implements Insertable<ChallengeCacheData> {
+  final String id;
+  final String title;
+  final String description;
+  final String emoji;
+  final String ruleJson;
+  final DateTime startsAt;
+  final DateTime endsAt;
+  const ChallengeCacheData(
+      {required this.id,
+      required this.title,
+      required this.description,
+      required this.emoji,
+      required this.ruleJson,
+      required this.startsAt,
+      required this.endsAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['title'] = Variable<String>(title);
+    map['description'] = Variable<String>(description);
+    map['emoji'] = Variable<String>(emoji);
+    map['rule_json'] = Variable<String>(ruleJson);
+    map['starts_at'] = Variable<DateTime>(startsAt);
+    map['ends_at'] = Variable<DateTime>(endsAt);
+    return map;
+  }
+
+  ChallengeCacheCompanion toCompanion(bool nullToAbsent) {
+    return ChallengeCacheCompanion(
+      id: Value(id),
+      title: Value(title),
+      description: Value(description),
+      emoji: Value(emoji),
+      ruleJson: Value(ruleJson),
+      startsAt: Value(startsAt),
+      endsAt: Value(endsAt),
+    );
+  }
+
+  factory ChallengeCacheData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ChallengeCacheData(
+      id: serializer.fromJson<String>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String>(json['description']),
+      emoji: serializer.fromJson<String>(json['emoji']),
+      ruleJson: serializer.fromJson<String>(json['ruleJson']),
+      startsAt: serializer.fromJson<DateTime>(json['startsAt']),
+      endsAt: serializer.fromJson<DateTime>(json['endsAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String>(description),
+      'emoji': serializer.toJson<String>(emoji),
+      'ruleJson': serializer.toJson<String>(ruleJson),
+      'startsAt': serializer.toJson<DateTime>(startsAt),
+      'endsAt': serializer.toJson<DateTime>(endsAt),
+    };
+  }
+
+  ChallengeCacheData copyWith(
+          {String? id,
+          String? title,
+          String? description,
+          String? emoji,
+          String? ruleJson,
+          DateTime? startsAt,
+          DateTime? endsAt}) =>
+      ChallengeCacheData(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        emoji: emoji ?? this.emoji,
+        ruleJson: ruleJson ?? this.ruleJson,
+        startsAt: startsAt ?? this.startsAt,
+        endsAt: endsAt ?? this.endsAt,
+      );
+  ChallengeCacheData copyWithCompanion(ChallengeCacheCompanion data) {
+    return ChallengeCacheData(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      description:
+          data.description.present ? data.description.value : this.description,
+      emoji: data.emoji.present ? data.emoji.value : this.emoji,
+      ruleJson: data.ruleJson.present ? data.ruleJson.value : this.ruleJson,
+      startsAt: data.startsAt.present ? data.startsAt.value : this.startsAt,
+      endsAt: data.endsAt.present ? data.endsAt.value : this.endsAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ChallengeCacheData(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('emoji: $emoji, ')
+          ..write('ruleJson: $ruleJson, ')
+          ..write('startsAt: $startsAt, ')
+          ..write('endsAt: $endsAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, title, description, emoji, ruleJson, startsAt, endsAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ChallengeCacheData &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.emoji == this.emoji &&
+          other.ruleJson == this.ruleJson &&
+          other.startsAt == this.startsAt &&
+          other.endsAt == this.endsAt);
+}
+
+class ChallengeCacheCompanion extends UpdateCompanion<ChallengeCacheData> {
+  final Value<String> id;
+  final Value<String> title;
+  final Value<String> description;
+  final Value<String> emoji;
+  final Value<String> ruleJson;
+  final Value<DateTime> startsAt;
+  final Value<DateTime> endsAt;
+  final Value<int> rowid;
+  const ChallengeCacheCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.emoji = const Value.absent(),
+    this.ruleJson = const Value.absent(),
+    this.startsAt = const Value.absent(),
+    this.endsAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ChallengeCacheCompanion.insert({
+    required String id,
+    required String title,
+    this.description = const Value.absent(),
+    this.emoji = const Value.absent(),
+    required String ruleJson,
+    required DateTime startsAt,
+    required DateTime endsAt,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        title = Value(title),
+        ruleJson = Value(ruleJson),
+        startsAt = Value(startsAt),
+        endsAt = Value(endsAt);
+  static Insertable<ChallengeCacheData> custom({
+    Expression<String>? id,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<String>? emoji,
+    Expression<String>? ruleJson,
+    Expression<DateTime>? startsAt,
+    Expression<DateTime>? endsAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (emoji != null) 'emoji': emoji,
+      if (ruleJson != null) 'rule_json': ruleJson,
+      if (startsAt != null) 'starts_at': startsAt,
+      if (endsAt != null) 'ends_at': endsAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ChallengeCacheCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? title,
+      Value<String>? description,
+      Value<String>? emoji,
+      Value<String>? ruleJson,
+      Value<DateTime>? startsAt,
+      Value<DateTime>? endsAt,
+      Value<int>? rowid}) {
+    return ChallengeCacheCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      emoji: emoji ?? this.emoji,
+      ruleJson: ruleJson ?? this.ruleJson,
+      startsAt: startsAt ?? this.startsAt,
+      endsAt: endsAt ?? this.endsAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (emoji.present) {
+      map['emoji'] = Variable<String>(emoji.value);
+    }
+    if (ruleJson.present) {
+      map['rule_json'] = Variable<String>(ruleJson.value);
+    }
+    if (startsAt.present) {
+      map['starts_at'] = Variable<DateTime>(startsAt.value);
+    }
+    if (endsAt.present) {
+      map['ends_at'] = Variable<DateTime>(endsAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ChallengeCacheCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('emoji: $emoji, ')
+          ..write('ruleJson: $ruleJson, ')
+          ..write('startsAt: $startsAt, ')
+          ..write('endsAt: $endsAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4843,6 +5226,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $CommentsTable comments = $CommentsTable(this);
   late final $UserBadgesTable userBadges = $UserBadgesTable(this);
   late final $WishlistItemsTable wishlistItems = $WishlistItemsTable(this);
+  late final $ChallengeCacheTable challengeCache = $ChallengeCacheTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4858,7 +5242,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         toasts,
         comments,
         userBadges,
-        wishlistItems
+        wishlistItems,
+        challengeCache
       ];
 }
 
@@ -9370,6 +9755,210 @@ typedef $$WishlistItemsTableProcessedTableManager = ProcessedTableManager<
     (WishlistItem, $$WishlistItemsTableReferences),
     WishlistItem,
     PrefetchHooks Function({bool profileId, bool beerId})>;
+typedef $$ChallengeCacheTableCreateCompanionBuilder = ChallengeCacheCompanion
+    Function({
+  required String id,
+  required String title,
+  Value<String> description,
+  Value<String> emoji,
+  required String ruleJson,
+  required DateTime startsAt,
+  required DateTime endsAt,
+  Value<int> rowid,
+});
+typedef $$ChallengeCacheTableUpdateCompanionBuilder = ChallengeCacheCompanion
+    Function({
+  Value<String> id,
+  Value<String> title,
+  Value<String> description,
+  Value<String> emoji,
+  Value<String> ruleJson,
+  Value<DateTime> startsAt,
+  Value<DateTime> endsAt,
+  Value<int> rowid,
+});
+
+class $$ChallengeCacheTableFilterComposer
+    extends Composer<_$AppDatabase, $ChallengeCacheTable> {
+  $$ChallengeCacheTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get emoji => $composableBuilder(
+      column: $table.emoji, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get ruleJson => $composableBuilder(
+      column: $table.ruleJson, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get startsAt => $composableBuilder(
+      column: $table.startsAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get endsAt => $composableBuilder(
+      column: $table.endsAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$ChallengeCacheTableOrderingComposer
+    extends Composer<_$AppDatabase, $ChallengeCacheTable> {
+  $$ChallengeCacheTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get emoji => $composableBuilder(
+      column: $table.emoji, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get ruleJson => $composableBuilder(
+      column: $table.ruleJson, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get startsAt => $composableBuilder(
+      column: $table.startsAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get endsAt => $composableBuilder(
+      column: $table.endsAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$ChallengeCacheTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ChallengeCacheTable> {
+  $$ChallengeCacheTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<String> get emoji =>
+      $composableBuilder(column: $table.emoji, builder: (column) => column);
+
+  GeneratedColumn<String> get ruleJson =>
+      $composableBuilder(column: $table.ruleJson, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startsAt =>
+      $composableBuilder(column: $table.startsAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endsAt =>
+      $composableBuilder(column: $table.endsAt, builder: (column) => column);
+}
+
+class $$ChallengeCacheTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ChallengeCacheTable,
+    ChallengeCacheData,
+    $$ChallengeCacheTableFilterComposer,
+    $$ChallengeCacheTableOrderingComposer,
+    $$ChallengeCacheTableAnnotationComposer,
+    $$ChallengeCacheTableCreateCompanionBuilder,
+    $$ChallengeCacheTableUpdateCompanionBuilder,
+    (
+      ChallengeCacheData,
+      BaseReferences<_$AppDatabase, $ChallengeCacheTable, ChallengeCacheData>
+    ),
+    ChallengeCacheData,
+    PrefetchHooks Function()> {
+  $$ChallengeCacheTableTableManager(
+      _$AppDatabase db, $ChallengeCacheTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ChallengeCacheTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ChallengeCacheTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ChallengeCacheTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> title = const Value.absent(),
+            Value<String> description = const Value.absent(),
+            Value<String> emoji = const Value.absent(),
+            Value<String> ruleJson = const Value.absent(),
+            Value<DateTime> startsAt = const Value.absent(),
+            Value<DateTime> endsAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              ChallengeCacheCompanion(
+            id: id,
+            title: title,
+            description: description,
+            emoji: emoji,
+            ruleJson: ruleJson,
+            startsAt: startsAt,
+            endsAt: endsAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String title,
+            Value<String> description = const Value.absent(),
+            Value<String> emoji = const Value.absent(),
+            required String ruleJson,
+            required DateTime startsAt,
+            required DateTime endsAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              ChallengeCacheCompanion.insert(
+            id: id,
+            title: title,
+            description: description,
+            emoji: emoji,
+            ruleJson: ruleJson,
+            startsAt: startsAt,
+            endsAt: endsAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$ChallengeCacheTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $ChallengeCacheTable,
+    ChallengeCacheData,
+    $$ChallengeCacheTableFilterComposer,
+    $$ChallengeCacheTableOrderingComposer,
+    $$ChallengeCacheTableAnnotationComposer,
+    $$ChallengeCacheTableCreateCompanionBuilder,
+    $$ChallengeCacheTableUpdateCompanionBuilder,
+    (
+      ChallengeCacheData,
+      BaseReferences<_$AppDatabase, $ChallengeCacheTable, ChallengeCacheData>
+    ),
+    ChallengeCacheData,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -9396,4 +9985,6 @@ class $AppDatabaseManager {
       $$UserBadgesTableTableManager(_db, _db.userBadges);
   $$WishlistItemsTableTableManager get wishlistItems =>
       $$WishlistItemsTableTableManager(_db, _db.wishlistItems);
+  $$ChallengeCacheTableTableManager get challengeCache =>
+      $$ChallengeCacheTableTableManager(_db, _db.challengeCache);
 }

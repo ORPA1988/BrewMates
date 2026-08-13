@@ -971,6 +971,97 @@ class OnlineService {
   }
 
   // --------------------------------------------------------------------------
+  // Challenges (Migration 0012): Admins legen sie an, alle sehen sie;
+  // Abschlüsse sind für Freunde sichtbar.
+  // --------------------------------------------------------------------------
+
+  static const _challengeCols =
+      'id, title, description, emoji, rule, starts_at, ends_at';
+
+  /// Alle Challenges (aktive + vergangene); null = offline/abgemeldet.
+  Future<List<Map<String, dynamic>>?> listChallenges() async {
+    if (currentUser == null) return null;
+    try {
+      final rows = await _client
+          .from('challenges')
+          .select(_challengeCols)
+          .order('ends_at', ascending: false)
+          .limit(100);
+      return rows.cast<Map<String, dynamic>>();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<String?> createChallenge({
+    required String title,
+    required String description,
+    required String emoji,
+    required Map<String, dynamic> rule,
+    required DateTime startsAt,
+    required DateTime endsAt,
+  }) async {
+    final me = currentUser;
+    if (me == null) return 'Nicht angemeldet.';
+    try {
+      await _client.from('challenges').insert({
+        'title': title.trim(),
+        'description': description.trim(),
+        'emoji': emoji,
+        'rule': rule,
+        'starts_at': startsAt.toUtc().toIso8601String(),
+        'ends_at': endsAt.toUtc().toIso8601String(),
+        'created_by': me.id,
+      });
+      return null;
+    } on PostgrestException catch (e) {
+      if (e.code == '42501') return 'Nur Admins können Challenges anlegen.';
+      return 'Anlegen fehlgeschlagen.';
+    } catch (_) {
+      return 'Keine Verbindung.';
+    }
+  }
+
+  Future<String?> deleteChallenge(String id) async {
+    try {
+      await _client.from('challenges').delete().eq('id', id);
+      return null;
+    } catch (_) {
+      return 'Löschen fehlgeschlagen.';
+    }
+  }
+
+  /// Abschluss melden (idempotent per Primärschlüssel).
+  Future<void> completeChallenge(String challengeId) async {
+    final me = currentUser;
+    if (me == null) return;
+    try {
+      await _client.from('challenge_completions').upsert({
+        'challenge_id': challengeId,
+        'profile_id': me.id,
+      });
+    } catch (_) {}
+  }
+
+  /// Wer hat's geschafft? (RLS filtert auf mich + Freunde.)
+  Future<List<RemoteProfile>> challengeCompletions(String challengeId) async {
+    if (currentUser == null) return const [];
+    try {
+      final rows = await _client
+          .from('challenge_completions')
+          .select('profile:profiles!challenge_completions_profile_id_fkey'
+              '($_profileCols)')
+          .eq('challenge_id', challengeId);
+      return [
+        for (final r in rows)
+          RemoteProfile.fromRow(r['profile'] as Map<String, dynamic>),
+      ];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  // --------------------------------------------------------------------------
   // Upload-Assistent (Roadmap Stufe B): lokale Alt-Check-ins einmalig und
   // nachvollziehbar ins Konto übertragen. Idempotent per Upsert über die
   // clientseitig erzeugten UUIDs – mehrfaches Ausführen schadet nie.

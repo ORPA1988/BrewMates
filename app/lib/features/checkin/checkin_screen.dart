@@ -66,7 +66,7 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
       if (!mounted) return;
       final messenger = ScaffoldMessenger.of(context);
       if (earned.isNotEmpty) {
-        await showBadgeCelebration(context, earned);
+        await showCelebration(context, earned);
         if (!mounted) return;
       }
       messenger.showSnackBar(

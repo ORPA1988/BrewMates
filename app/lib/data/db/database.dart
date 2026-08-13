@@ -184,6 +184,22 @@ class UserBadges extends Table {
   Set<Column> get primaryKey => {profileId, badgeSlug};
 }
 
+/// Offline-Cache der Challenges (Supabase = Wahrheit). Bleibt auch nach
+/// Challenge-Ende erhalten, damit die Abzeichen-Galerie Titel/Emoji
+/// verdienter Challenge-Badges anzeigen kann.
+class ChallengeCache extends Table {
+  TextColumn get id => text()(); // Supabase-UUID
+  TextColumn get title => text()();
+  TextColumn get description => text().withDefault(const Constant(''))();
+  TextColumn get emoji => text().withDefault(const Constant('🏆'))();
+  TextColumn get ruleJson => text()();
+  DateTimeColumn get startsAt => dateTime()();
+  DateTimeColumn get endsAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 class WishlistItems extends Table {
   TextColumn get profileId => text().references(Profiles, #id)();
   TextColumn get beerId => text().references(Beers, #id)();
@@ -279,6 +295,7 @@ class ProfileStats {
   Comments,
   UserBadges,
   WishlistItems,
+  ChallengeCache,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
@@ -288,7 +305,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -384,6 +401,10 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(venues);
             await m.addColumn(checkins, checkins.venueId);
             await m.addColumn(sessions, sessions.venueId);
+          }
+          if (from < 7) {
+            // v7: Offline-Cache für Challenges (Herausforderungen).
+            await m.createTable(challengeCache);
           }
         },
       );
@@ -827,6 +848,32 @@ class AppDatabase extends _$AppDatabase {
 
   Stream<Venue?> watchVenue(String id) =>
       (select(venues)..where((t) => t.id.equals(id))).watchSingleOrNull();
+
+  // ---------------------------------------------------------------------
+  // Challenges (Offline-Cache)
+  // ---------------------------------------------------------------------
+
+  Future<void> upsertChallengeCache(List<ChallengeCacheCompanion> rows) async {
+    if (rows.isEmpty) return;
+    await batch((b) => b.insertAllOnConflictUpdate(challengeCache, rows));
+  }
+
+  Future<List<ChallengeCacheData>> allCachedChallenges() =>
+      (select(challengeCache)
+            ..orderBy([(t) => OrderingTerm.desc(t.endsAt)]))
+          .get();
+
+  Future<ChallengeCacheData?> challengeCacheById(String id) =>
+      (select(challengeCache)..where((t) => t.id.equals(id)))
+          .getSingleOrNull();
+
+  /// Verdiente Challenge-Badges (Slug-Präfix `challenge-`).
+  Future<List<UserBadge>> earnedChallengeBadges(String profileId) =>
+      (select(userBadges)
+            ..where((t) =>
+                t.profileId.equals(profileId) &
+                t.badgeSlug.like('challenge-%')))
+          .get();
 
   Future<void> upsertCommunityData({
     required List<BreweriesCompanion> breweryRows,
