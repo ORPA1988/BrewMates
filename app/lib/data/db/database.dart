@@ -264,7 +264,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -296,6 +296,62 @@ class AppDatabase extends _$AppDatabase {
           if (from < 4) {
             // v4: Etikett-Bilder (Open Food Facts) für die Community-DB.
             await m.addColumn(beers, beers.imageUrl);
+          }
+          if (from < 5) {
+            // v5: Demo-Daten entfernen – die Beta läuft mit echten Nutzern
+            // und der Community-DB. Eigene Inhalte bleiben unangetastet;
+            // Demo-Biere, an denen eigene Check-ins oder Wunschlisten-
+            // Einträge hängen, bleiben deshalb bewusst stehen.
+            const demoProfiles = ['anna', 'ben', 'clara'];
+            await (delete(toasts)
+                  ..where((t) => t.profileId.isIn(demoProfiles)))
+                .go();
+            await (delete(comments)
+                  ..where((t) => t.profileId.isIn(demoProfiles)))
+                .go();
+            await (delete(checkins)
+                  ..where((t) => t.profileId.isIn(demoProfiles)))
+                .go();
+            final demoSessions = await (selectOnly(sessions)
+                  ..addColumns([sessions.id])
+                  ..where(sessions.hostId.isIn(demoProfiles)))
+                .map((r) => r.read(sessions.id)!)
+                .get();
+            await (delete(sessionParticipants)
+                  ..where((t) =>
+                      t.profileId.isIn(demoProfiles) |
+                      t.sessionId.isIn(demoSessions)))
+                .go();
+            await (delete(sessions)
+                  ..where((t) => t.hostId.isIn(demoProfiles)))
+                .go();
+            await (delete(profiles)..where((t) => t.id.isIn(demoProfiles)))
+                .go();
+
+            final usedBeerIds = <String>{
+              ...await (selectOnly(checkins, distinct: true)
+                    ..addColumns([checkins.beerId]))
+                  .map((r) => r.read(checkins.beerId)!)
+                  .get(),
+              ...await (selectOnly(wishlistItems, distinct: true)
+                    ..addColumns([wishlistItems.beerId]))
+                  .map((r) => r.read(wishlistItems.beerId)!)
+                  .get(),
+            };
+            await (delete(beers)
+                  ..where((t) =>
+                      t.id.like('beer-%') &
+                      t.id.isNotIn(usedBeerIds.toList())))
+                .go();
+            final usedBreweryIds = await (selectOnly(beers, distinct: true)
+                  ..addColumns([beers.breweryId]))
+                .map((r) => r.read(beers.breweryId)!)
+                .get();
+            await (delete(breweries)
+                  ..where((t) =>
+                      t.id.like('brewery-%') &
+                      t.id.isNotIn(usedBreweryIds)))
+                .go();
           }
         },
       );

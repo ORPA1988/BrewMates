@@ -16,7 +16,14 @@ void main() {
   tearDown(() => db.close());
 
   Future<void> insertBeerWithBarcode(String id, String barcodes) async {
-    final brewery = (await db.select(db.breweries).get()).first;
+    // Seit dem Ende der Demo-Daten startet die DB leer – eigene
+    // Test-Brauerei anlegen statt eine geseedete zu erwarten.
+    final brewery = await db.getOrCreateBrewery(
+      id: 'test-brauerei',
+      name: 'Testbrauerei',
+      country: 'Österreich',
+      city: 'Wien',
+    );
     await db.into(db.beers).insert(BeersCompanion.insert(
           id: id,
           breweryId: brewery.id,
