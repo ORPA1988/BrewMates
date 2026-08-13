@@ -34,23 +34,24 @@ KI-Unterstützung deutlich schneller** (erfahrungsgemäß etwa halbe bis drittel
 
 ---
 
-## Stufe A — v1.2 „Scan & Beacon" *(in Umsetzung; ca. 3–5 Wochen, mit KI-Unterstützung deutlich schneller)*
+## Stufe A — „Scan & Beacon" *(✅ abgeschlossen mit Beta 0.9)*
 
 Ziel: Die zwei Hero-Aktionen funktionieren Ende-zu-Ende – komplett local-first,
 ohne Konto, ohne Backend.
 
-- [ ] **Neuer Home-Screen** mit den zwei Hero-Buttons „🍺 Bier scannen" und
+- [x] **Neuer Home-Screen** mit den zwei Hero-Buttons „🍺 Bier scannen" und
       „🍻 Zusammenkommen!"; Navigation: **Home, Feed, Karte, Entdecken, Profil**
-- [ ] **Barcode-Scanner** (`mobile_scanner`, EAN-8/EAN-13; Windows als
-      Entwickler-Target: manuelle EAN-Eingabe statt Kamera)
-- [ ] **Lookup-Kette**: lokale Bier-DB → Open Food Facts → vorausgefülltes
+- [x] **Barcode-Scanner** (`mobile_scanner`, EAN-8/EAN-13; manuelle
+      EAN-Eingabe überall verfügbar und einziger Weg auf Desktop)
+- [x] **Lookup-Kette**: lokale Bier-DB → Open Food Facts → vorausgefülltes
       Anlegen-Formular, wenn das Bier nirgends bekannt ist
-- [ ] **Echtes GPS** (`geolocator`) für Beacon & Sessions: sauberer
-      Berechtigungs-Flow, Fallback auf manuelle Venue-Wahl, wenn Standort
-      verweigert oder nicht verfügbar
-- [ ] **Barcodes in der Bier-DB**: Schema v3 für `beers-at.json`,
-      Barcode-Feld im Issue-Formular für Bier-Vorschläge
-- [ ] **Release v1.2.0** als APK über GitHub Releases (CI-Workflow wie gehabt)
+- [x] **Echtes GPS** (`geolocator`) für Beacon & Sessions: Berechtigungs-Flow
+      in `data/location_service.dart`, Fallback auf manuelle Venue-Wahl
+- [x] **Barcodes in der Bier-DB** — kam bereits mit Schema v2 von
+      `beers-at.json` (`barcodes`-Array), EAN-Feld im Issue-Formular existiert
+- [x] **Releases als APK über GitHub Releases** — Workflow `release.yml` per
+      workflow_dispatch; Versionierung läuft als Beta 0.9.x bis zum
+      Play-Store-1.0 (statt der ursprünglich geplanten v1.2.0)
 
 **Exit-Kriterium:** Ein gescanntes österreichisches Supermarkt-Bier landet in
 unter 15 Sekunden als Check-in; der Beacon zeigt die echte eigene Position auf
