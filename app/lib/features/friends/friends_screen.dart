@@ -73,10 +73,111 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
   Future<void> _refresh() async {
     ref.invalidate(friendRequestsProvider);
     ref.invalidate(onlineFriendsProvider);
+    ref.invalidate(blockedProfilesProvider);
     await Future.wait([
       ref.read(friendRequestsProvider.future),
       ref.read(onlineFriendsProvider.future),
+      ref.read(blockedProfilesProvider.future),
     ]);
+  }
+
+  Future<void> _block(RemoteProfile profile) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('@${profile.username} blockieren?'),
+        content: const Text(
+            'Ihr seht gegenseitig keine Check-ins, Sessions und Profile '
+            'mehr; eine bestehende Freundschaft wird entfernt. Du kannst '
+            'die Blockierung hier jederzeit aufheben.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Abbrechen'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Blockieren'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    final online = await ref.read(onlineServiceProvider.future);
+    if (online == null || !mounted) return;
+    final err = await online.blockProfile(profile.id);
+    if (!mounted) return;
+    await _refresh();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(err ?? '@${profile.username} blockiert.')));
+  }
+
+  Future<void> _unblock(RemoteProfile profile) async {
+    final online = await ref.read(onlineServiceProvider.future);
+    if (online == null) return;
+    await online.unblockProfile(profile.id);
+    if (!mounted) return;
+    await _refresh();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Blockierung von @${profile.username} aufgehoben.')));
+  }
+
+  Future<void> _report(RemoteProfile profile) async {
+    final controller = TextEditingController();
+    final reason = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('@${profile.username} melden'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          maxLines: 3,
+          decoration: const InputDecoration(
+            labelText: 'Was ist das Problem?',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Abbrechen'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(controller.text),
+            child: const Text('Melden'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (reason == null) return;
+    final online = await ref.read(onlineServiceProvider.future);
+    if (online == null || !mounted) return;
+    final err = await online.reportProfile(profile.id, reason);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(err ?? 'Danke, wir schauen uns das an. 🕵️')));
+  }
+
+  /// Überlauf-Menü mit Melden/Blockieren – an Freunden wie Suchtreffern.
+  Widget _moderationMenu(RemoteProfile profile) {
+    return PopupMenuButton<String>(
+      tooltip: 'Mehr',
+      onSelected: (action) async {
+        switch (action) {
+          case 'report':
+            await _report(profile);
+          case 'block':
+            await _block(profile);
+        }
+      },
+      itemBuilder: (context) => const [
+        PopupMenuItem(value: 'report', child: Text('Melden')),
+        PopupMenuItem(value: 'block', child: Text('Blockieren')),
+      ],
+    );
   }
 
   @override
@@ -116,6 +217,8 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
     final requests =
         ref.watch(friendRequestsProvider).valueOrNull ?? const [];
     final friends = ref.watch(onlineFriendsProvider).valueOrNull;
+    final blocked =
+        ref.watch(blockedProfilesProvider).valueOrNull ?? const [];
 
     return Scaffold(
       appBar: AppBar(title: const Text('Freunde')),
@@ -197,9 +300,15 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
                 ),
                 title: Text(profile.displayName),
                 subtitle: Text('@${profile.username}'),
-                trailing: TextButton(
-                  onPressed: () async => _sendRequest(profile),
-                  child: const Text('+ Anfrage'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextButton(
+                      onPressed: () async => _sendRequest(profile),
+                      child: const Text('+ Anfrage'),
+                    ),
+                    _moderationMenu(profile),
+                  ],
                 ),
               ),
             const SizedBox(height: 16),
@@ -234,7 +343,30 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
                   ),
                   title: Text(friend.displayName),
                   subtitle: Text('@${friend.username}'),
+                  trailing: _moderationMenu(friend),
                 ),
+
+            // ------------------------------------------------------------------
+            // Blockierte Nutzer (nur sichtbar, wenn es welche gibt)
+            // ------------------------------------------------------------------
+            if (blocked.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Text('Blockiert', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 4),
+              for (final profile in blocked)
+                ListTile(
+                  leading: CircleAvatar(
+                    child: Text(profile.avatarEmoji,
+                        style: const TextStyle(fontSize: 20)),
+                  ),
+                  title: Text(profile.displayName),
+                  subtitle: Text('@${profile.username}'),
+                  trailing: TextButton(
+                    onPressed: () async => _unblock(profile),
+                    child: const Text('Aufheben'),
+                  ),
+                ),
+            ],
           ],
         ),
       ),

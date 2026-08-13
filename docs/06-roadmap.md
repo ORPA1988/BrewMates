@@ -81,7 +81,9 @@ niemals Voraussetzung.
       willkommen!"
 - [ ] **Aggregierte echte Community-Bewertungen**, die die redaktionelle
       `community_rating` schrittweise ersetzen (klar gekennzeichneter Übergang)
-- [ ] **Blockieren & Melden serverseitig** (durchsetzbar, nicht nur lokal)
+- [x] **Blockieren & Melden serverseitig** (durchsetzbar, nicht nur lokal) —
+      Migration 0009: `blocks`-/`reports`-Tabellen, Blockierung wirkt über
+      `are_friends` in allen RLS-Policies; UI im Freunde-Screen
 - [x] **Neue Datenschutzerklärung** — PRIVACY.md um Abschnitt 4d
       (Online-Modus) ergänzt; Konto-Löschung in der Beta auf Anfrage, in-App
       ab v1.0; Standort-Regeln unverändert streng

@@ -480,6 +480,83 @@ class OnlineService {
   }
 
   // --------------------------------------------------------------------------
+  // Blockieren & Melden (serverseitig durchgesetzt, Migration 0009)
+  // --------------------------------------------------------------------------
+
+  /// Blockiert ein Profil. Entfernt zugleich eine bestehende Freundschaft
+  /// bzw. offene Anfrage in beide Richtungen; die Unsichtbarkeit von
+  /// Sessions/Check-ins erzwingt danach die RLS serverseitig.
+  Future<String?> blockProfile(String profileId) async {
+    final me = currentUser;
+    if (me == null) return 'Nicht angemeldet.';
+    try {
+      await _client.from('blocks').insert({
+        'blocker_id': me.id,
+        'blocked_id': profileId,
+      });
+    } on PostgrestException catch (e) {
+      if (e.code != '23505') return 'Blockieren fehlgeschlagen.';
+      // 23505 = war schon blockiert – Freundschaft trotzdem aufräumen.
+    } catch (_) {
+      return 'Keine Verbindung.';
+    }
+    try {
+      await _client.from('friendships').delete().or(
+          'and(requester_id.eq.${me.id},addressee_id.eq.$profileId),'
+          'and(requester_id.eq.$profileId,addressee_id.eq.${me.id})');
+    } catch (_) {}
+    return null;
+  }
+
+  Future<void> unblockProfile(String profileId) async {
+    final me = currentUser;
+    if (me == null) return;
+    try {
+      await _client
+          .from('blocks')
+          .delete()
+          .eq('blocker_id', me.id)
+          .eq('blocked_id', profileId);
+    } catch (_) {}
+  }
+
+  /// Eigene Blockliste (nur der Blockierende sieht sie – RLS).
+  Future<List<RemoteProfile>> blockedProfiles() async {
+    final me = currentUser;
+    if (me == null) return const [];
+    try {
+      final rows = await _client
+          .from('blocks')
+          .select('blocked:profiles!blocks_blocked_id_fkey($_profileCols)')
+          .eq('blocker_id', me.id);
+      return [
+        for (final r in rows)
+          RemoteProfile.fromRow(r['blocked'] as Map<String, dynamic>),
+      ];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Meldet ein Profil (Bearbeitung durch Admins im Admin-Bereich).
+  Future<String?> reportProfile(String profileId, String reason) async {
+    final me = currentUser;
+    if (me == null) return 'Nicht angemeldet.';
+    final trimmed = reason.trim();
+    if (trimmed.length < 3) return 'Bitte begründe die Meldung kurz.';
+    try {
+      await _client.from('reports').insert({
+        'reporter_id': me.id,
+        'reported_id': profileId,
+        'reason': trimmed,
+      });
+      return null;
+    } catch (_) {
+      return 'Melden fehlgeschlagen.';
+    }
+  }
+
+  // --------------------------------------------------------------------------
   // Sessions (Live-Beacon)
   // --------------------------------------------------------------------------
 

@@ -123,6 +123,15 @@ final onlineFriendsProvider =
   return online.friends();
 });
 
+/// Eigene Blockliste (Migration 0009); leer, solange niemand blockiert ist.
+final blockedProfilesProvider =
+    FutureProvider<List<RemoteProfile>>((ref) async {
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) return const [];
+  return online.blockedProfiles();
+});
+
 /// Sichtbarer Kartenausschnitt (von der Karte gesetzt, entprellt).
 typedef MapBounds = ({
   double minLat,
