@@ -1,15 +1,17 @@
 # Datenschutzerklärung für BrewMates
 
-**Stand: 11. August 2026 — gilt für BrewMates Version 1.0**
+**Stand: 13. August 2026 — gilt für BrewMates ab Version 1.2**
 
 ## 1. Kurzfassung
 
 BrewMates speichert alle Nutzerdaten ausschließlich lokal auf Ihrem Gerät.
 Es gibt keine Benutzerkonten, keine Server des Anbieters, keine Analyse-
 oder Werbe-SDKs und keine Übertragung personenbezogener Daten an uns. Die
-App stellt genau zwei rein lesende Netzwerkverbindungen her: das Laden von
-Kartenkacheln von Servern der OpenStreetMap Foundation und das Laden der
-redaktionellen Bier-/Brauerei-Datenbank von GitHub.
+App stellt genau drei rein lesende Netzwerkverbindungen her: Kartenkacheln
+von der OpenStreetMap Foundation, die redaktionelle Bier-/Brauerei-
+Datenbank von GitHub und – nur beim Scannen unbekannter Barcodes – eine
+Produktabfrage bei Open Food Facts. Kamera und GPS arbeiten rein lokal
+(Abschnitte 4b und 4c).
 
 ## 2. Verantwortlicher
 
@@ -69,6 +71,33 @@ dabei **nicht** übertragen. Wenn Sie freiwillig ein Bier für die
 gemeinsame Datenbank vorschlagen, öffnet die App lediglich die
 GitHub-Webseite mit einem vorausgefüllten Formular in Ihrem Browser; das
 Absenden erfolgt dort mit Ihrem eigenen GitHub-Konto.
+
+## 4b. Kamera (Barcode-Scanner)
+
+Die Funktion „Bier scannen" nutzt die Kamera Ihres Geräts ausschließlich,
+um den Strichcode (EAN) einer Flasche oder Dose zu erkennen. Die
+Verarbeitung der Kamerabilder erfolgt vollständig **lokal auf dem Gerät**;
+es werden keine Fotos gespeichert und keine Bilder übertragen. Die
+Kamera-Berechtigung ist optional — Sie können den Barcode jederzeit auch
+von Hand eintippen.
+
+Ist ein gescannter Barcode in der lokalen Datenbank nicht bekannt, fragt
+die App den Barcode (nur die Ziffernfolge, keine weiteren Daten) bei der
+freien Produktdatenbank **Open Food Facts** an
+(`world.openfoodfacts.org`); dabei werden technisch bedingt Ihre
+IP-Adresse und technische Anfragedaten an deren Server übertragen. Es
+gilt die Datenschutzerklärung von Open Food Facts:
+<https://world.openfoodfacts.org/privacy>
+
+## 4c. Standort (Beacon & Sessions)
+
+Die Funktion „Zusammenkommen!" verwendet den GPS-Standort Ihres Geräts,
+um Ihre Session auf der Karte anzuzeigen. In Version 1.x wird der
+Standort dabei ausschließlich **lokal auf dem Gerät** gespeichert und
+verlässt es nicht. Grundsätze: Der Standort wird nur während einer
+aktiven Session verwendet, jede Session endet automatisch, es wird keine
+Standort-Historie angelegt. Die Standort-Berechtigung ist optional — ohne
+sie wählen Sie den Ort einfach von Hand.
 
 ## 5. Was BrewMates NICHT tut
 

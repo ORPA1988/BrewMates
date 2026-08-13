@@ -184,6 +184,40 @@ void main() {
     expect(goldbraeu, isNotEmpty);
   });
 
+  test('parseBeers übernimmt Barcodes aus der Community-DB', () async {
+    const beersJson = '''
+    {"version":2,"updated":"2026-08-12","beers":[{
+      "id":"at-barcode-test","brewery_id":"at-test","name":"Barcode-Bier",
+      "style":"Pils","abv":5.0,"ibu":null,"is_alcohol_free":false,
+      "barcodes":["90034107","9003400304939"],
+      "description_manufacturer":null,
+      "description_community":null,"community_rating":null}]}''';
+    final rows = CommunitySync.parseBeers(beersJson);
+    expect(rows.single.barcodes.value, '90034107,9003400304939');
+  });
+
+  test('Gebündelte DB: Stiegl-Goldbräu ist per Barcode auffindbar',
+      () async {
+    await CommunitySync(db).importBundledData();
+    final found = await db.findBeerByBarcode('90034107');
+    expect(found, isNotNull);
+    expect(found!.beer.name, contains('Goldbräu'));
+
+    // Session ohne Venue (Beacon-Fall) ist gültig.
+    final me = await db.getMe();
+    await db.into(db.sessions).insert(SessionsCompanion.insert(
+          id: 'beacon-session',
+          hostId: me.id,
+          visibility: SessionVisibility.friends,
+          status: SessionStatus.active,
+          startedAt: DateTime.now(),
+          expiresAt: DateTime.now().add(const Duration(hours: 3)),
+        ));
+    final active = await db.getMyActiveSession(me.id, DateTime.now());
+    expect(active, isNotNull);
+    expect(active!.venueName, isNull);
+  });
+
   test('Community-Bier anlegen und finden', () async {
     final brewery = await db.getOrCreateBrewery(
       id: 'test-brewery',

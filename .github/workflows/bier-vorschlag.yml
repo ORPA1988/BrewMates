@@ -69,6 +69,7 @@ jobs:
               const stil = fields['Bierstil'] || '';
               const abvRaw = fields['Alkoholgehalt'] || '';
               const alkoholfreiRaw = fields['Alkoholfrei?'] || 'Nein';
+              const eanRaw = fields['EAN/Barcode'] || '';
               const beschreibung = fields['Beschreibung'] || '';
               const quelle = fields['Quelle'] || '';
 
@@ -79,6 +80,10 @@ jobs:
               const abvParsed = parseFloat(abvRaw.replace(',', '.').replace(/[^0-9.\-]/g, ''));
               const abv = Number.isFinite(abvParsed) ? abvParsed : null;
               const isAlcoholFree = alkoholfreiRaw.trim().toLowerCase().startsWith('ja');
+
+              // EAN: nur Ziffern behalten, nur Länge 8 oder 13 akzeptieren, sonst ignorieren
+              const eanDigits = eanRaw.replace(/[^0-9]/g, '');
+              const ean = (eanDigits.length === 8 || eanDigits.length === 13) ? eanDigits : '';
 
               const breweryId = 'at-' + slug(brauerei);
               const beerId = breweryId + '-' + slug(biername);
@@ -91,6 +96,7 @@ jobs:
                 abv: abv,
                 ibu: null,
                 is_alcohol_free: isAlcoholFree,
+                barcodes: ean ? [ean] : [],
                 description_manufacturer: null,
                 description_community: beschreibung || null,
                 community_rating: null,

@@ -7,24 +7,30 @@ import '../features/beers/beers_screen.dart';
 import '../features/beers/brewery_detail_screen.dart';
 import '../features/checkin/checkin_screen.dart';
 import '../features/feed/feed_screen.dart';
+import '../features/home/home_screen.dart';
 import '../features/map/map_screen.dart';
 import '../features/profile/badges_screen.dart';
 import '../features/profile/diary_screen.dart';
 import '../features/profile/profile_screen.dart';
 import '../features/profile/wishlist_screen.dart';
+import '../features/scan/scan_screen.dart';
+import '../features/session/beacon_screen.dart';
 import '../features/session/session_detail_screen.dart';
 import '../features/session/start_session_screen.dart';
 import '../features/shell/app_shell.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/feed',
+    initialLocation: '/home',
     routes: [
       // Haupt-Tabs innerhalb der adaptiven Shell
       // (Tab-Bar auf Mobilgeräten, Navigation-Rail auf Windows/Desktop).
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => AppShell(shell: shell),
         branches: [
+          StatefulShellBranch(routes: [
+            GoRoute(path: '/home', builder: (_, __) => const HomeScreen()),
+          ]),
           StatefulShellBranch(routes: [
             GoRoute(path: '/feed', builder: (_, __) => const FeedScreen()),
           ]),
@@ -39,6 +45,15 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: '/profile', builder: (_, __) => const ProfileScreen()),
           ]),
         ],
+      ),
+      // Hero-Aktionen
+      GoRoute(
+        path: '/scan',
+        builder: (_, __) => const ScanScreen(),
+      ),
+      GoRoute(
+        path: '/beacon',
+        builder: (_, __) => const BeaconScreen(),
       ),
       // Flows und Detailseiten außerhalb der Shell
       GoRoute(
@@ -62,7 +77,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/beers/add',
-        builder: (_, __) => const AddBeerScreen(),
+        builder: (_, state) => AddBeerScreen(
+          initialBarcode: state.uri.queryParameters['ean'],
+          initialName: state.uri.queryParameters['name'],
+          initialBrewery: state.uri.queryParameters['brewery'],
+        ),
       ),
       GoRoute(
         path: '/brewery/:id',

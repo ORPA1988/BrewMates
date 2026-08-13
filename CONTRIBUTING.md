@@ -10,6 +10,9 @@ Die App öffnet dann ein vorausgefülltes GitHub-Issue-Formular.
 Alternativ kannst du das Formular direkt auf GitHub ausfüllen:
 [🍺 Bier vorschlagen](../../issues/new?template=bier-vorschlag.yml)
 
+Im Formular kannst du optional auch den Barcode (EAN) der Flasche oder Dose
+angeben — die App erkennt gescannte Biere dann direkt.
+
 Nach dem Absenden erstellt ein Bot automatisch einen Pull Request mit deinem
 Vorschlag für die Bier-Datenbank (`app/assets/data/beers-at.json`). Ein
 Maintainer prüft den Eintrag (z. B. ob die Brauerei-ID stimmt) und merged ihn.

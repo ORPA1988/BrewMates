@@ -1198,6 +1198,14 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
   late final GeneratedColumn<double> communityRating = GeneratedColumn<double>(
       'community_rating', aliasedName, true,
       type: DriftSqlType.double, requiredDuringInsert: false);
+  static const VerificationMeta _barcodesMeta =
+      const VerificationMeta('barcodes');
+  @override
+  late final GeneratedColumn<String> barcodes = GeneratedColumn<String>(
+      'barcodes', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1210,7 +1218,8 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
         isAlcoholFree,
         isUserSubmitted,
         descriptionCommunity,
-        communityRating
+        communityRating,
+        barcodes
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1283,6 +1292,10 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
           communityRating.isAcceptableOrUnknown(
               data['community_rating']!, _communityRatingMeta));
     }
+    if (data.containsKey('barcodes')) {
+      context.handle(_barcodesMeta,
+          barcodes.isAcceptableOrUnknown(data['barcodes']!, _barcodesMeta));
+    }
     return context;
   }
 
@@ -1314,6 +1327,8 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
           DriftSqlType.string, data['${effectivePrefix}description_community']),
       communityRating: attachedDatabase.typeMapping.read(
           DriftSqlType.double, data['${effectivePrefix}community_rating']),
+      barcodes: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}barcodes'])!,
     );
   }
 
@@ -1339,6 +1354,9 @@ class Beer extends DataClass implements Insertable<Beer> {
 
   /// Redaktionelle Community-Bewertung (0–5) aus der Datenbank, kein Messwert.
   final double? communityRating;
+
+  /// Kommagetrennte EAN-Barcodes (8 oder 13 Ziffern), z. B. "90034107".
+  final String barcodes;
   const Beer(
       {required this.id,
       required this.breweryId,
@@ -1350,7 +1368,8 @@ class Beer extends DataClass implements Insertable<Beer> {
       required this.isAlcoholFree,
       required this.isUserSubmitted,
       this.descriptionCommunity,
-      this.communityRating});
+      this.communityRating,
+      required this.barcodes});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1375,6 +1394,7 @@ class Beer extends DataClass implements Insertable<Beer> {
     if (!nullToAbsent || communityRating != null) {
       map['community_rating'] = Variable<double>(communityRating);
     }
+    map['barcodes'] = Variable<String>(barcodes);
     return map;
   }
 
@@ -1397,6 +1417,7 @@ class Beer extends DataClass implements Insertable<Beer> {
       communityRating: communityRating == null && nullToAbsent
           ? const Value.absent()
           : Value(communityRating),
+      barcodes: Value(barcodes),
     );
   }
 
@@ -1416,6 +1437,7 @@ class Beer extends DataClass implements Insertable<Beer> {
       descriptionCommunity:
           serializer.fromJson<String?>(json['descriptionCommunity']),
       communityRating: serializer.fromJson<double?>(json['communityRating']),
+      barcodes: serializer.fromJson<String>(json['barcodes']),
     );
   }
   @override
@@ -1433,6 +1455,7 @@ class Beer extends DataClass implements Insertable<Beer> {
       'isUserSubmitted': serializer.toJson<bool>(isUserSubmitted),
       'descriptionCommunity': serializer.toJson<String?>(descriptionCommunity),
       'communityRating': serializer.toJson<double?>(communityRating),
+      'barcodes': serializer.toJson<String>(barcodes),
     };
   }
 
@@ -1447,7 +1470,8 @@ class Beer extends DataClass implements Insertable<Beer> {
           bool? isAlcoholFree,
           bool? isUserSubmitted,
           Value<String?> descriptionCommunity = const Value.absent(),
-          Value<double?> communityRating = const Value.absent()}) =>
+          Value<double?> communityRating = const Value.absent(),
+          String? barcodes}) =>
       Beer(
         id: id ?? this.id,
         breweryId: breweryId ?? this.breweryId,
@@ -1464,6 +1488,7 @@ class Beer extends DataClass implements Insertable<Beer> {
         communityRating: communityRating.present
             ? communityRating.value
             : this.communityRating,
+        barcodes: barcodes ?? this.barcodes,
       );
   Beer copyWithCompanion(BeersCompanion data) {
     return Beer(
@@ -1487,6 +1512,7 @@ class Beer extends DataClass implements Insertable<Beer> {
       communityRating: data.communityRating.present
           ? data.communityRating.value
           : this.communityRating,
+      barcodes: data.barcodes.present ? data.barcodes.value : this.barcodes,
     );
   }
 
@@ -1503,7 +1529,8 @@ class Beer extends DataClass implements Insertable<Beer> {
           ..write('isAlcoholFree: $isAlcoholFree, ')
           ..write('isUserSubmitted: $isUserSubmitted, ')
           ..write('descriptionCommunity: $descriptionCommunity, ')
-          ..write('communityRating: $communityRating')
+          ..write('communityRating: $communityRating, ')
+          ..write('barcodes: $barcodes')
           ..write(')'))
         .toString();
   }
@@ -1520,7 +1547,8 @@ class Beer extends DataClass implements Insertable<Beer> {
       isAlcoholFree,
       isUserSubmitted,
       descriptionCommunity,
-      communityRating);
+      communityRating,
+      barcodes);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1535,7 +1563,8 @@ class Beer extends DataClass implements Insertable<Beer> {
           other.isAlcoholFree == this.isAlcoholFree &&
           other.isUserSubmitted == this.isUserSubmitted &&
           other.descriptionCommunity == this.descriptionCommunity &&
-          other.communityRating == this.communityRating);
+          other.communityRating == this.communityRating &&
+          other.barcodes == this.barcodes);
 }
 
 class BeersCompanion extends UpdateCompanion<Beer> {
@@ -1550,6 +1579,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
   final Value<bool> isUserSubmitted;
   final Value<String?> descriptionCommunity;
   final Value<double?> communityRating;
+  final Value<String> barcodes;
   final Value<int> rowid;
   const BeersCompanion({
     this.id = const Value.absent(),
@@ -1563,6 +1593,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     this.isUserSubmitted = const Value.absent(),
     this.descriptionCommunity = const Value.absent(),
     this.communityRating = const Value.absent(),
+    this.barcodes = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   BeersCompanion.insert({
@@ -1577,6 +1608,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     this.isUserSubmitted = const Value.absent(),
     this.descriptionCommunity = const Value.absent(),
     this.communityRating = const Value.absent(),
+    this.barcodes = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         breweryId = Value(breweryId),
@@ -1594,6 +1626,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     Expression<bool>? isUserSubmitted,
     Expression<String>? descriptionCommunity,
     Expression<double>? communityRating,
+    Expression<String>? barcodes,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1609,6 +1642,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       if (descriptionCommunity != null)
         'description_community': descriptionCommunity,
       if (communityRating != null) 'community_rating': communityRating,
+      if (barcodes != null) 'barcodes': barcodes,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1625,6 +1659,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       Value<bool>? isUserSubmitted,
       Value<String?>? descriptionCommunity,
       Value<double?>? communityRating,
+      Value<String>? barcodes,
       Value<int>? rowid}) {
     return BeersCompanion(
       id: id ?? this.id,
@@ -1638,6 +1673,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       isUserSubmitted: isUserSubmitted ?? this.isUserSubmitted,
       descriptionCommunity: descriptionCommunity ?? this.descriptionCommunity,
       communityRating: communityRating ?? this.communityRating,
+      barcodes: barcodes ?? this.barcodes,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1679,6 +1715,9 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     if (communityRating.present) {
       map['community_rating'] = Variable<double>(communityRating.value);
     }
+    if (barcodes.present) {
+      map['barcodes'] = Variable<String>(barcodes.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1699,6 +1738,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
           ..write('isUserSubmitted: $isUserSubmitted, ')
           ..write('descriptionCommunity: $descriptionCommunity, ')
           ..write('communityRating: $communityRating, ')
+          ..write('barcodes: $barcodes, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5195,6 +5235,7 @@ typedef $$BeersTableCreateCompanionBuilder = BeersCompanion Function({
   Value<bool> isUserSubmitted,
   Value<String?> descriptionCommunity,
   Value<double?> communityRating,
+  Value<String> barcodes,
   Value<int> rowid,
 });
 typedef $$BeersTableUpdateCompanionBuilder = BeersCompanion Function({
@@ -5209,6 +5250,7 @@ typedef $$BeersTableUpdateCompanionBuilder = BeersCompanion Function({
   Value<bool> isUserSubmitted,
   Value<String?> descriptionCommunity,
   Value<double?> communityRating,
+  Value<String> barcodes,
   Value<int> rowid,
 });
 
@@ -5298,6 +5340,9 @@ class $$BeersTableFilterComposer extends Composer<_$AppDatabase, $BeersTable> {
   ColumnFilters<double> get communityRating => $composableBuilder(
       column: $table.communityRating,
       builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get barcodes => $composableBuilder(
+      column: $table.barcodes, builder: (column) => ColumnFilters(column));
 
   $$BreweriesTableFilterComposer get breweryId {
     final $$BreweriesTableFilterComposer composer = $composerBuilder(
@@ -5405,6 +5450,9 @@ class $$BeersTableOrderingComposer
       column: $table.communityRating,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get barcodes => $composableBuilder(
+      column: $table.barcodes, builder: (column) => ColumnOrderings(column));
+
   $$BreweriesTableOrderingComposer get breweryId {
     final $$BreweriesTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -5464,6 +5512,9 @@ class $$BeersTableAnnotationComposer
 
   GeneratedColumn<double> get communityRating => $composableBuilder(
       column: $table.communityRating, builder: (column) => column);
+
+  GeneratedColumn<String> get barcodes =>
+      $composableBuilder(column: $table.barcodes, builder: (column) => column);
 
   $$BreweriesTableAnnotationComposer get breweryId {
     final $$BreweriesTableAnnotationComposer composer = $composerBuilder(
@@ -5563,6 +5614,7 @@ class $$BeersTableTableManager extends RootTableManager<
             Value<bool> isUserSubmitted = const Value.absent(),
             Value<String?> descriptionCommunity = const Value.absent(),
             Value<double?> communityRating = const Value.absent(),
+            Value<String> barcodes = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               BeersCompanion(
@@ -5577,6 +5629,7 @@ class $$BeersTableTableManager extends RootTableManager<
             isUserSubmitted: isUserSubmitted,
             descriptionCommunity: descriptionCommunity,
             communityRating: communityRating,
+            barcodes: barcodes,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -5591,6 +5644,7 @@ class $$BeersTableTableManager extends RootTableManager<
             Value<bool> isUserSubmitted = const Value.absent(),
             Value<String?> descriptionCommunity = const Value.absent(),
             Value<double?> communityRating = const Value.absent(),
+            Value<String> barcodes = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               BeersCompanion.insert(
@@ -5605,6 +5659,7 @@ class $$BeersTableTableManager extends RootTableManager<
             isUserSubmitted: isUserSubmitted,
             descriptionCommunity: descriptionCommunity,
             communityRating: communityRating,
+            barcodes: barcodes,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

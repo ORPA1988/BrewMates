@@ -5,8 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 import '../domain/badges.dart';
+import '../features/scan/barcode_lookup.dart';
 import 'community_sync.dart';
 import 'db/database.dart';
+import 'location_service.dart';
 
 // ============================================================================
 // Infrastruktur
@@ -48,13 +50,25 @@ DateTime _now(Ref ref) =>
 final communitySyncProvider =
     Provider<CommunitySync>((ref) => CommunitySync(ref.watch(databaseProvider)));
 
-/// Läuft einmal beim App-Start: gebündelte Daten importieren, dann still
-/// die neueste Fassung von GitHub holen (offline kein Fehler).
+/// Läuft einmal beim App-Start. Das Future ist fertig, sobald die
+/// GEBÜNDELTEN Daten importiert sind (darauf darf z. B. der Scanner
+/// warten); der GitHub-Abgleich läuft danach im Hintergrund weiter.
 final communityBootstrapProvider = FutureProvider<void>((ref) async {
   final sync = ref.watch(communitySyncProvider);
   await sync.importBundledData();
-  await sync.syncSilently();
+  unawaited(sync.syncSilently());
 });
+
+// ============================================================================
+// Hero-Funktionen: Barcode-Lookup & Standort
+// ============================================================================
+
+final barcodeLookupProvider = Provider<BarcodeLookup>(
+    (ref) => BarcodeLookup(ref.watch(databaseProvider)));
+
+/// In Widget-Tests per overrideWithValue durch einen Fake ersetzen.
+final locationServiceProvider =
+    Provider<LocationService>((ref) => const LocationService());
 
 // ============================================================================
 // Profil & Freunde
@@ -231,8 +245,9 @@ class BrewActions {
   }
 
   /// Session starten („der eine Tap"). Gibt neu verdiente Abzeichen zurück.
+  /// [venueName] darf fehlen (Beacon „unterwegs" mit reiner GPS-Position).
   Future<List<BadgeDef>> startSession({
-    required String venueName,
+    String? venueName,
     String? message,
     required SessionVisibility visibility,
     required Duration autoEnd,
@@ -313,6 +328,7 @@ class BrewActions {
     double? abv,
     bool isAlcoholFree = false,
     String? description,
+    String? barcode,
   }) async {
     final brewery = await _db.getOrCreateBrewery(
       id: _uuid.v4(),
@@ -329,6 +345,7 @@ class BrewActions {
       abv: abv,
       isAlcoholFree: isAlcoholFree,
       description: description,
+      barcode: barcode,
     );
     return beerId;
   }

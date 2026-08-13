@@ -22,19 +22,20 @@ BrewMates kombiniert das Beste aus zwei Welten:
 | [05 – UI & Screen-Flows](docs/05-ui-screens.md) | Navigationsstruktur, Wireframes, Kern-Flows |
 | [06 – Roadmap](docs/06-roadmap.md) | MVP → v1.0 → v2.0 mit Meilensteinen |
 
-## 💡 Das Kernkonzept: die „Session"
+## 💡 Das Kernkonzept: zwei Buttons
 
-Die zentrale Innovation von BrewMates ist die **Bier-Session** – sie verschmilzt den
-Untappd-Check-in mit dem Beer-with-Me-Beacon:
+Der Startbildschirm besteht aus zwei großen Hero-Aktionen — alles andere gruppiert sich darum:
 
-1. Du startest eine Session („Ich bin im Biergarten am See 🍺").
-2. Deine Freunde bekommen eine Push-Benachrichtigung und sehen dich auf der Karte – sie können mit einem Tap „Bin dabei!" antworten oder virtuell anstoßen.
-3. Jedes Bier, das du während der Session trinkst, checkst du wie bei Untappd ein: Bewertung, Foto, Geschmacksnoten.
-4. Nach der Session hast du automatisch ein Tagebuch des Abends – und deine Statistiken & Abzeichen wachsen mit.
+1. **🍺 Bier scannen** — Barcode der Flasche/Dose scannen → Bier erkannt → bewerten und ins Tagebuch. Unbekannter Code? Erkennung über Open Food Facts oder in 30 Sekunden selbst anlegen (und der Community vorschlagen).
+2. **🍻 Zusammenkommen!** — ein Tap: deine Session startet mit echtem GPS-Standort, Freunde sehen dich auf der Karte, Botschaft: „Alle willkommen!" Nach 3 Stunden endet sie automatisch.
 
-## 🚀 Status: Version 1.0 (release-fähig)
+Jedes Bier während einer Session landet automatisch im gemeinsamen Abend-Album; Statistiken und Abzeichen wachsen mit.
 
-Version 1.0 ist **local-first** und voll funktionsfähig – ohne Konto, ohne Backend:
+## 🚀 Status: Version 1.2 (release-fähig)
+
+Version 1.2 ist **local-first** und voll funktionsfähig – ohne Konto, ohne Backend:
+
+- ✅ **Hero-Aktionen**: Barcode-Scanner (EAN-8/13, Open-Food-Facts-Fallback) und Ein-Tap-Beacon mit echtem GPS
 
 - ✅ **Sessions & Beacon**: Ein-Tap-Session mit Sichtbarkeit, Stealth-Modus, Auto-Ende, Live-Karte
 - ✅ **Check-ins**: Bewertung in 0,25er-Schritten, Geschmacks-Tags, Serving-Style, Venue, Notizen

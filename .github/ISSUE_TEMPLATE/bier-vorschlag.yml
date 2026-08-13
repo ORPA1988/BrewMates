@@ -49,6 +49,14 @@ body:
       placeholder: "z. B. 5,2"
     validations:
       required: false
+  - type: input
+    id: ean
+    attributes:
+      label: EAN/Barcode
+      description: "Strichcode der Flasche/Dose (8 oder 13 Ziffern, optional)"
+      placeholder: "z. B. 9008700100000"
+    validations:
+      required: false
   - type: dropdown
     id: alkoholfrei
     attributes:

@@ -2,6 +2,13 @@
     <!-- Internetzugriff wird ausschließlich zum Laden der
          OpenStreetMap-Kartenkacheln benötigt. -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Barcode-Scanner (Hero-Funktion „Bier scannen") -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <!-- GPS für den „Zusammenkommen!"-Beacon; Standort wird nur während
+         einer aktiven Session verwendet und bleibt in v1.x lokal. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <application
         android:label="BrewMates"
         android:name="${applicationName}"

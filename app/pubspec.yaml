@@ -1,7 +1,7 @@
 name: brewmates
 description: "BrewMates – Bier entdecken, Freunde treffen. Untappd × Beer with Me."
 publish_to: "none"
-version: 1.1.0+2
+version: 1.2.0+3
 
 environment:
   sdk: ^3.5.0
@@ -32,6 +32,12 @@ dependencies:
   # Community-Datenbank von GitHub laden / Vorschläge einreichen
   http: ^1.2.2
   url_launcher: ^6.3.0
+
+  # Hero-Funktionen: Barcode-Scanner + echtes GPS.
+  # Versionen bewusst auf die Flutter-3.24-Toolchain gepinnt:
+  # mobile_scanner 6+/geolocator 14+ verlangen neuere AGP/Kotlin/compileSdk.
+  mobile_scanner: ^5.2.3
+  geolocator: ^13.0.2
 
 dev_dependencies:
   flutter_test:
@@ -70,4 +76,4 @@ msix_config:
   identity_name: de.brewmates.app
   msix_version: 1.0.0.0
   logo_path: assets/icon/icon.png
-  capabilities: internetClient
+  capabilities: internetClient,location

@@ -30,10 +30,13 @@ class CommunitySync {
   static const breweriesAsset = 'assets/data/breweries-at.json';
 
   /// Import der gebündelten Dateien (offline, erste Installation).
+  /// `cache: false`: der Future-Cache von rootBundle kann in Widget-Tests
+  /// ein nie fertig werdendes Future aus einer früheren Test-Zone liefern.
   Future<int> importBundledData() async {
     try {
-      final breweriesJson = await rootBundle.loadString(breweriesAsset);
-      final beersJson = await rootBundle.loadString(beersAsset);
+      final breweriesJson =
+          await rootBundle.loadString(breweriesAsset, cache: false);
+      final beersJson = await rootBundle.loadString(beersAsset, cache: false);
       return await _importJson(breweriesJson, beersJson);
     } catch (_) {
       // Assets fehlen (z. B. in Unit-Tests ohne Binding) – kein Fehler.
@@ -44,9 +47,12 @@ class CommunitySync {
   /// Neueste Fassung von GitHub laden. Gibt die Anzahl importierter
   /// Einträge zurück; wirft bei Netzwerkfehlern eine Exception.
   Future<int> syncFromGitHub() async {
-    final breweriesRes =
-        await _client.get(Uri.parse('$_repoRaw/breweries-at.json'));
-    final beersRes = await _client.get(Uri.parse('$_repoRaw/beers-at.json'));
+    final breweriesRes = await _client
+        .get(Uri.parse('$_repoRaw/breweries-at.json'))
+        .timeout(const Duration(seconds: 10));
+    final beersRes = await _client
+        .get(Uri.parse('$_repoRaw/beers-at.json'))
+        .timeout(const Duration(seconds: 10));
     if (breweriesRes.statusCode != 200 || beersRes.statusCode != 200) {
       throw http.ClientException(
           'GitHub-Sync fehlgeschlagen (${breweriesRes.statusCode}/${beersRes.statusCode})');
@@ -114,6 +120,9 @@ class CommunitySync {
           description: Value(b['description_manufacturer'] as String?),
           descriptionCommunity: Value(b['description_community'] as String?),
           communityRating: Value((b['community_rating'] as num?)?.toDouble()),
+          barcodes: Value(
+              ((b['barcodes'] as List?)?.cast<String>() ?? const [])
+                  .join(',')),
         ),
     ];
   }

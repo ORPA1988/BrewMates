@@ -6,12 +6,35 @@ Menschen, die **nicht** programmieren.
 
 ## Was die App kann – in drei Sätzen
 
-BrewMates ist ein persönliches Bier-Tagebuch mit sozialem Dreh: Sie checken
-Biere ein, bewerten sie, sammeln Abzeichen und führen Wunschliste und
-Statistiken. Mit einer „Session" sagen Sie (in Version 1: Demo-)Freunden „Ich
-trinke gerade ein Bier – komm vorbei!" und sehen sie auf einer Karte. Die App
-läuft auf Android (die iOS-Variante bleibt technisch offen) und funktioniert
-komplett ohne Konto und ohne Anmeldung.
+BrewMates dreht sich um zwei große Knöpfe auf dem Startbildschirm:
+**„🍺 Bier scannen"** (Barcode der Flasche scannen → Bier erkannt → bewerten
+→ ins Tagebuch; dazu Abzeichen, Wunschliste, Statistiken) und
+**„🍻 Zusammenkommen!"** (ein Tap: Ihre Session startet mit echtem
+GPS-Standort, (in Version 1: Demo-)Freunde sehen Sie auf der Karte –
+Botschaft: „Alle willkommen!"). Die App läuft auf Android (die iOS-Variante
+bleibt technisch offen) und funktioniert komplett ohne Konto und ohne
+Anmeldung.
+
+### Was passiert beim Scannen?
+
+1. Kamera an, Strichcode in den Rahmen – die Erkennung läuft komplett auf
+   Ihrem Gerät, es werden keine Fotos gespeichert oder verschickt.
+2. Die App sucht den Code zuerst in ihrer lokalen Bier-Datenbank.
+3. Nur wenn er dort unbekannt ist, fragt sie die freie Produktdatenbank
+   **Open Food Facts** – übertragen wird dabei nur die Ziffernfolge des
+   Barcodes.
+4. Gefunden → Formular ist vorausgefüllt; nirgends bekannt → Sie legen das
+   Bier in 30 Sekunden selbst an (und können es der Community vorschlagen).
+   Kein Kamera-Zugriff gewünscht? Der Code lässt sich immer auch eintippen.
+
+### Was passiert beim „Zusammenkommen!"?
+
+Ein Tap: Die App fragt (einmalig) nach der Standort-Berechtigung, startet
+Ihre Session mit der Nachricht „Alle willkommen! 🍻" und zeigt Sie auf der
+Karte. Nach 3 Stunden endet die Session automatisch. In Version 1.x bleibt
+der Standort dabei **rein lokal auf dem Gerät** – erst mit der Online-Stufe
+(echte Freunde) wird er – nur für Freunde, nur während der Session – geteilt.
+Ohne Standort-Freigabe wählen Sie den Ort einfach von Hand.
 
 ## Wo welche Daten liegen – das Herzstück
 
@@ -25,6 +48,8 @@ er gespeichert ist und ob dafür eine Internetverbindung nötig ist.
 | **Die Karte** | Wird nicht gespeichert, sondern bei Bedarf Stück für Stück angezeigt | **Ja**, nur beim Öffnen der Karte: Kartenkacheln kommen von OpenStreetMap (tile.openstreetmap.org). Dabei wird technisch bedingt Ihre IP-Adresse übertragen – so wie bei jedem Webseiten-Aufruf |
 | **Die Bier- und Brauerei-Datenbank** (österreichische Biere und Brauereien) | Als Kopie fest in der App eingebaut **und** als gemeinsame „Stammliste" im GitHub-Repository (Ordner `app/assets/data/`) | **Ja, aber nur lesend**: Beim App-Start und auf Knopfdruck holt sich die App die aktuelle Liste von GitHub und frischt die lokale Kopie auf. Ohne Internet nutzt sie einfach die eingebaute Kopie |
 | **Die „Freunde"** in Version 1 | Demo-Daten auf Ihrem Gerät | **Nein.** Es sind Beispielpersonen, keine echten Menschen |
+| **Gescannte Barcodes** | Werden dem jeweiligen Bier in der lokalen Datenbank zugeordnet | **Nur bei unbekannten Codes**: Anfrage (nur die Ziffernfolge) an Open Food Facts (world.openfoodfacts.org) |
+| **Ihr GPS-Standort** (Beacon/Session) | Nur in der lokalen Datenbank, nur während einer aktiven Session, keine Historie | **Nein** (in Version 1.x verlässt der Standort das Gerät nicht) |
 
 ### „Offline-first" – die Notizbuch-Metapher
 

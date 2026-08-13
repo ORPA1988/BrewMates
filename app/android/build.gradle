@@ -1,3 +1,26 @@
+// Workaround: Plugins wie geolocator_android lesen `flutter.compileSdkVersion`
+// über die Projekt-Property-Kette; diese Map stellt die Werte bereit
+// (muss zu den Flutter-3.24-Defaults im :app-Modul passen).
+ext.flutter = [
+    compileSdkVersion: 34,
+    minSdkVersion    : 21,
+    targetSdkVersion : 34,
+]
+
+// geolocator_android liest die AGP-Version aus dem buildscript-Classpath;
+// mit dem reinen plugins-DSL des Flutter-Templates ist der leer und die
+// Plugin-Konfiguration scheitert („substring() on null"). Die Version hier
+// MUSS mit settings.gradle (com.android.application) übereinstimmen.
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.1.0")
+    }
+}
+
 allprojects {
     repositories {
         google()

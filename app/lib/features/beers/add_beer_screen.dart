@@ -16,8 +16,19 @@ const List<String> _kStyleSuggestions = [
 ];
 
 /// Community-Einreichung: fehlendes Bier in 30 Sekunden eintragen.
+/// Kommt der Nutzer vom Scanner, sind EAN (und ggf. Name/Brauerei aus
+/// Open Food Facts) bereits vorbefüllt.
 class AddBeerScreen extends ConsumerStatefulWidget {
-  const AddBeerScreen({super.key});
+  const AddBeerScreen({
+    super.key,
+    this.initialBarcode,
+    this.initialName,
+    this.initialBrewery,
+  });
+
+  final String? initialBarcode;
+  final String? initialName;
+  final String? initialBrewery;
 
   @override
   ConsumerState<AddBeerScreen> createState() => _AddBeerScreenState();
@@ -34,6 +45,17 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
   final _descriptionController = TextEditingController();
   bool _isAlcoholFree = false;
   bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialName != null) {
+      _nameController.text = widget.initialName!;
+    }
+    if (widget.initialBrewery != null) {
+      _breweryController.text = widget.initialBrewery!;
+    }
+  }
 
   @override
   void dispose() {
@@ -70,6 +92,7 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
       'ort': _cityController.text.trim(),
       'stil': _styleController.text.trim(),
       'abv': _abvController.text.trim(),
+      if (widget.initialBarcode != null) 'ean': widget.initialBarcode!,
       'beschreibung': _descriptionController.text.trim(),
     });
   }
@@ -117,6 +140,7 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
             abv: abvText.isEmpty ? null : double.tryParse(abvText),
             isAlcoholFree: _isAlcoholFree,
             description: description.isEmpty ? null : description,
+            barcode: widget.initialBarcode,
           );
       if (!mounted) return;
       await _offerCommunityProposal();
@@ -140,6 +164,19 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            if (widget.initialBarcode != null) ...[
+              Card(
+                margin: EdgeInsets.zero,
+                child: ListTile(
+                  leading: const Icon(Icons.qr_code_2),
+                  title: Text('Barcode ${widget.initialBarcode}'),
+                  subtitle: const Text(
+                      'Wird gespeichert – der nächste Scan erkennt das Bier '
+                      'sofort.'),
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
             TextFormField(
               controller: _nameController,
               textInputAction: TextInputAction.next,

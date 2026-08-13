@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/db/database.dart';
+import '../../data/location_service.dart';
 import '../../data/providers.dart';
 import '../../widgets/badge_celebration.dart';
 
@@ -51,12 +52,20 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
 
     final stealth = _visibility == SessionVisibility.private;
     final shareLocation = !stealth && _shareLocation;
-    // Demo-GPS: München-Mittelpunkt plus kleiner Venue-abhängiger Versatz,
-    // damit Marker auf der Karte nicht übereinanderliegen.
-    // Echtes GPS folgt mit geolocator.
-    final offset = venue.hashCode % 20;
-    final latitude = shareLocation ? 48.2082 + offset * 0.001 : null;
-    final longitude = shareLocation ? 16.3738 + offset * 0.0015 : null;
+    // Echtes GPS; ohne Berechtigung/Signal startet die Session ohne
+    // Karten-Pin (Venue-Name reicht).
+    double? latitude;
+    double? longitude;
+    if (shareLocation) {
+      final location =
+          await ref.read(locationServiceProvider).getCurrentPosition();
+      if (location
+          case LocationGranted(latitude: final lat, longitude: final lng)) {
+        latitude = lat;
+        longitude = lng;
+      }
+    }
+    if (!mounted) return;
 
     try {
       final earned = await ref.read(actionsProvider).startSession(
