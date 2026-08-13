@@ -17,17 +17,52 @@ class _BeersScreenState extends ConsumerState<BeersScreen> {
   String _search = '';
   String? _style;
   bool _alcoholFreeOnly = false;
+  bool _syncing = false;
+
+  /// Regions-Filter über das Land der Brauerei (null = alle).
+  String? _country;
+
+  Future<void> _syncNow() async {
+    setState(() => _syncing = true);
+    try {
+      final count = await ref.read(communitySyncProvider).syncFromGitHub();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Datenbank aktuell – $count Einträge geladen 🍺')));
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Kein Internet – lokale Datenbank bleibt gültig.')));
+    } finally {
+      if (mounted) setState(() => _syncing = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final styles = ref.watch(beerStylesProvider).valueOrNull ?? const <String>[];
+    final styles =
+        ref.watch(beerStylesProvider).valueOrNull ?? const <String>[];
     final beersAsync =
         ref.watch(beersProvider((search: _search, style: _style)));
+    // Brauerei-Treffer erscheinen nur bei aktiver Suche als eigene Sektion.
+    final breweryHits = ref.watch(brewerySearchProvider(_search)).valueOrNull ??
+        const <Brewery>[];
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Entdecken'),
         actions: [
+          IconButton(
+            icon: _syncing
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.sync),
+            tooltip: 'Datenbank von GitHub aktualisieren',
+            onPressed: _syncing ? null : _syncNow,
+          ),
           IconButton(
             icon: const Icon(Icons.add),
             tooltip: 'Bier hinzufügen',
@@ -56,8 +91,27 @@ class _BeersScreenState extends ConsumerState<BeersScreen> {
               children: [
                 ChoiceChip(
                   label: const Text('Alle'),
-                  selected: _style == null,
-                  onSelected: (_) => setState(() => _style = null),
+                  selected:
+                      _style == null && _country == null && !_alcoholFreeOnly,
+                  onSelected: (_) => setState(() {
+                    _style = null;
+                    _country = null;
+                    _alcoholFreeOnly = false;
+                  }),
+                ),
+                const SizedBox(width: 8),
+                FilterChip(
+                  label: const Text('🇦🇹 Österreich'),
+                  selected: _country == 'Österreich',
+                  onSelected: (value) =>
+                      setState(() => _country = value ? 'Österreich' : null),
+                ),
+                const SizedBox(width: 8),
+                FilterChip(
+                  label: const Text('🇩🇪 Bayern'),
+                  selected: _country == 'Deutschland',
+                  onSelected: (value) =>
+                      setState(() => _country = value ? 'Deutschland' : null),
                 ),
                 const SizedBox(width: 8),
                 FilterChip(
@@ -83,15 +137,43 @@ class _BeersScreenState extends ConsumerState<BeersScreen> {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) => Center(child: Text('Fehler: $error')),
               data: (beers) {
-                final visible = _alcoholFreeOnly
+                var visible = _alcoholFreeOnly
                     ? beers.where((b) => b.beer.isAlcoholFree).toList()
                     : beers;
-                if (visible.isEmpty) return const _EmptyResults();
-                return ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 24),
-                  itemCount: visible.length,
-                  itemBuilder: (context, index) =>
-                      _BeerTile(item: visible[index]),
+                if (_country != null) {
+                  visible = visible
+                      .where((b) => b.brewery.country == _country)
+                      .toList();
+                }
+                if (visible.isEmpty && breweryHits.isEmpty) {
+                  return const _EmptyResults();
+                }
+                // Pull-to-Refresh = Datenbank von GitHub aktualisieren
+                // (gleiche Aktion wie der Sync-Knopf oben).
+                return RefreshIndicator(
+                  onRefresh: _syncNow,
+                  child: ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.only(bottom: 24),
+                    children: [
+                      if (breweryHits.isNotEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                          child: Text('Brauereien (${breweryHits.length})',
+                              style: Theme.of(context).textTheme.titleSmall),
+                        ),
+                        for (final brewery in breweryHits)
+                          _BreweryTile(brewery: brewery),
+                        if (visible.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                            child: Text('Biere (${visible.length})',
+                                style: Theme.of(context).textTheme.titleSmall),
+                          ),
+                      ],
+                      for (final item in visible) _BeerTile(item: item),
+                    ],
+                  ),
                 );
               },
             ),
@@ -111,14 +193,28 @@ class _BeerTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final beer = item.beer;
     final brewery = item.brewery;
-    final onWishlist = ref.watch(onWishlistProvider(beer.id)).valueOrNull ?? false;
+    final onWishlist =
+        ref.watch(onWishlistProvider(beer.id)).valueOrNull ?? false;
+
+    final fallbackEmoji = Text(
+      beer.isAlcoholFree ? '💧' : '🍺',
+      style: const TextStyle(fontSize: 28),
+    );
 
     return Card(
       child: ListTile(
-        leading: Text(
-          beer.isAlcoholFree ? '💧' : '🍺',
-          style: const TextStyle(fontSize: 28),
-        ),
+        leading: beer.imageUrl == null
+            ? fallbackEmoji
+            : ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: Image.network(
+                  beer.imageUrl!,
+                  width: 44,
+                  height: 44,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => fallbackEmoji,
+                ),
+              ),
         title: Text(beer.name),
         subtitle: Text(
           '${brewery.name}, ${brewery.country} · ${beer.style}'
@@ -132,6 +228,26 @@ class _BeerTile extends ConsumerWidget {
           onPressed: () => ref.read(actionsProvider).toggleWishlist(beer.id),
         ),
         onTap: () => context.push('/beer/${beer.id}'),
+      ),
+    );
+  }
+}
+
+class _BreweryTile extends StatelessWidget {
+  const _BreweryTile({required this.brewery});
+
+  final Brewery brewery;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        leading: const Text('🏭', style: TextStyle(fontSize: 26)),
+        title: Text(brewery.name),
+        subtitle: Text('${brewery.city}, ${brewery.country}'
+            '${brewery.founded != null ? ' · seit ${brewery.founded}' : ''}'),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => context.push('/brewery/${brewery.id}'),
       ),
     );
   }

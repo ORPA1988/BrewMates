@@ -4,6 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'core/router.dart';
 import 'core/theme.dart';
+import 'data/providers.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +17,8 @@ class BrewMatesApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Einmalig: Community-Datenbank importieren und still aktualisieren.
+    ref.watch(communityBootstrapProvider);
     final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'BrewMates',

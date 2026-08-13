@@ -1,0 +1,1092 @@
+{
+  "version": 2,
+  "updated": "2026-08-13",
+  "beers": [
+    {
+      "id": "de-by-augustiner-lagerbier-hell",
+      "brewery_id": "de-by-augustiner",
+      "name": "Augustiner Lagerbier Hell",
+      "style": "Helles",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das untergärige Aushängeschild der ältesten Münchner Brauerei: ein mildes, süffiges Helles, das Augustiner bewusst ohne große Werbung als ehrliches Alltagsbier pflegt.",
+      "description_community": "Für viele das beste Helle Münchens; weich, malzig-rund mit dezenter Hopfennote und enorm süffig – der Maßstab, an dem andere Helle gemessen werden.",
+      "community_rating": 4.3,
+      "barcodes": [
+        "4105250022003"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/410/525/002/2003/front_de.23.400.jpg"
+    },
+    {
+      "id": "de-by-augustiner-edelstoff",
+      "brewery_id": "de-by-augustiner",
+      "name": "Augustiner Edelstoff",
+      "style": "Export Hell",
+      "abv": 5.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das helle Exportbier von Augustiner mit höherer Stammwürze, das die Brauerei als besonders feinen, spritzigen 'Edelstoff' für festliche Anlässe positioniert.",
+      "description_community": "Etwas kräftiger und süßlicher als das Hell, mit feiner Spritzigkeit; im Biergarten aus der Halbliterflasche ein Münchner Klassiker.",
+      "community_rating": 4.2,
+      "barcodes": [
+        "4105250024007"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/410/525/002/4007/front_de.45.400.jpg"
+    },
+    {
+      "id": "de-by-augustiner-weissbier",
+      "brewery_id": "de-by-augustiner",
+      "name": "Augustiner Weißbier",
+      "style": "Weissbier",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das obergärige Weißbier von Augustiner mit natürlicher Hefetrübung, gebraut als klassisch bayerische Ergänzung zum hellen Sortiment.",
+      "description_community": "Solides, eher schlankes Münchner Weißbier mit milder Banane und leichter Nelke; steht im Schatten des Hellen, ist aber sauber gemacht.",
+      "community_rating": 3.6,
+      "barcodes": [
+        "4105250028005",
+        "4105250028333"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/410/525/002/8005/front_de.8.400.jpg"
+    },
+    {
+      "id": "de-by-augustiner-dunkel",
+      "brewery_id": "de-by-augustiner",
+      "name": "Augustiner Dunkel",
+      "style": "Dunkles",
+      "abv": 5.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das dunkle Vollbier von Augustiner nach Münchner Brauart, mit dunklen Malzen eingebraut und als traditionsreiches Wirtshausbier gepflegt.",
+      "description_community": "Malzaromatisch mit Noten von Brotkruste und etwas Karamell, dabei trocken und gut trinkbar; ein unterschätzter Klassiker im Sortiment.",
+      "community_rating": 3.8,
+      "barcodes": [
+        "4105250023000"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/410/525/002/3000/front_de.9.400.jpg"
+    },
+    {
+      "id": "de-by-paulaner-hefe-weissbier",
+      "brewery_id": "de-by-paulaner",
+      "name": "Paulaner Hefe-Weißbier Naturtrüb",
+      "style": "Weissbier",
+      "abv": 5.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das meistverkaufte Weißbier Deutschlands: naturtrüb, obergärig und von Paulaner als fruchtig-frischer Weißbier-Standard mit Bananennote vermarktet.",
+      "description_community": "Sehr zugängliches Weißbier mit deutlicher Banane, milder Säure und cremigem Schaum; überall verfügbar und verlässlich, wenn auch wenig überraschend.",
+      "community_rating": 3.7,
+      "barcodes": [
+        "4066600641964",
+        "4066600641995"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/406/660/064/1964/front_de.52.400.jpg"
+    },
+    {
+      "id": "de-by-paulaner-muenchner-hell",
+      "brewery_id": "de-by-paulaner",
+      "name": "Paulaner Münchner Hell",
+      "style": "Helles",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das klassische Münchner Hell von Paulaner: mild gehopft, goldgelb und auf unkomplizierte Süffigkeit für den Alltag ausgelegt.",
+      "description_community": "Sauberes, mildes Helles mit weicher Malznote; unauffälliger als Augustiner oder Tegernseer, aber ein verlässlicher Durstlöscher.",
+      "community_rating": 3.4,
+      "barcodes": [
+        "4066600601333",
+        "4066600641100",
+        "4066600211815"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/406/660/060/1333/front_fr.4.400.jpg"
+    },
+    {
+      "id": "de-by-paulaner-salvator",
+      "brewery_id": "de-by-paulaner",
+      "name": "Paulaner Salvator",
+      "style": "Doppelbock",
+      "abv": 7.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Der Urvater aller Doppelböcke, seit dem 17. Jahrhundert nach dem Vorbild der Paulaner-Mönche gebraut; Mittelpunkt des Nockherberg-Starkbieranstichs.",
+      "description_community": "Kräftig malzig mit Dörrobst, Karamell und spürbarer Alkoholwärme, dabei erstaunlich trinkbar; das Referenz-Starkbier der Fastenzeit.",
+      "community_rating": 3.9,
+      "barcodes": [
+        "4066600611349",
+        "4066600641803"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/406/660/061/1349/front_fr.8.400.jpg"
+    },
+    {
+      "id": "de-by-paulaner-weissbier-0-0",
+      "brewery_id": "de-by-paulaner",
+      "name": "Paulaner Weißbier 0,0%",
+      "style": "Alkoholfreies Weissbier",
+      "abv": 0.0,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "description_manufacturer": "Das komplett alkoholfreie Weißbier von Paulaner, das mit vollem Weißbiergeschmack, isotonischen Eigenschaften und null Prozent Alkohol beworben wird.",
+      "description_community": "Eines der besseren komplett alkoholfreien Weißbiere; fruchtig und erfrischend, mit der stiltypischen süßlichen Würzenote im Abgang.",
+      "community_rating": 3.3,
+      "barcodes": [
+        "4066600202912"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/406/660/020/2912/front_en.3.400.jpg"
+    },
+    {
+      "id": "de-by-hacker-pschorr-muenchner-gold",
+      "brewery_id": "de-by-hacker-pschorr",
+      "name": "Hacker-Pschorr Münchner Gold",
+      "style": "Export Hell",
+      "abv": 5.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das goldene Exportbier von Hacker-Pschorr mit kräftigerer Stammwürze, das die Brauerei als 'Himmel der Bayern' im Glas bewirbt.",
+      "description_community": "Runder und malziger als ein Standard-Hell, mit feiner Honignote; bei Fans der Marke der heimliche Favorit.",
+      "community_rating": 3.6
+    },
+    {
+      "id": "de-by-hacker-pschorr-muenchner-hell",
+      "brewery_id": "de-by-hacker-pschorr",
+      "name": "Hacker-Pschorr Münchner Hell",
+      "style": "Helles",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das klassische Helle der Traditionsbrauerei Hacker-Pschorr: mild, goldgelb und nach Münchner Brauart auf Süffigkeit ausgelegt.",
+      "description_community": "Unaufgeregtes, weiches Helles; sauber gebraut, geschmacklich im Münchner Mittelfeld.",
+      "community_rating": 3.4,
+      "barcodes": [
+        "4004866361554",
+        "4004866221827"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/400/486/636/1554/front_en.7.400.jpg"
+    },
+    {
+      "id": "de-by-hacker-pschorr-hefe-weisse",
+      "brewery_id": "de-by-hacker-pschorr",
+      "name": "Hacker-Pschorr Hefe Weisse",
+      "style": "Weissbier",
+      "abv": 5.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das naturtrübe Hefeweißbier von Hacker-Pschorr, mit bernsteinfarbenem Glanz und fruchtig-würziger Hefearomatik als Münchner Weißbierklassiker positioniert.",
+      "description_community": "Etwas dunkler und malziger als viele Konkurrenten, mit schöner Balance aus Banane, Nelke und Karamell; wird oft unterschätzt.",
+      "community_rating": 3.7,
+      "barcodes": [
+        "4004866721600"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/400/486/672/1600/front_fr.7.400.jpg"
+    },
+    {
+      "id": "de-by-loewenbraeu-original",
+      "brewery_id": "de-by-loewenbraeu",
+      "name": "Löwenbräu Original",
+      "style": "Helles",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das klassische Münchner Hell von Löwenbräu, das die Brauerei mit ihrer über 600-jährigen Geschichte als weltbekanntes Original vermarktet.",
+      "description_community": "Ordentliches, mild-hopfiges Helles; international die bekannteste Münchner Marke, in München selbst eher im Schatten von Augustiner und Co.",
+      "community_rating": 3.2,
+      "barcodes": [
+        "4078600802443",
+        "4078600012972",
+        "40786179"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/407/860/080/2443/front_de.3.400.jpg"
+    },
+    {
+      "id": "de-by-loewenbraeu-triumphator",
+      "brewery_id": "de-by-loewenbraeu",
+      "name": "Löwenbräu Triumphator",
+      "style": "Doppelbock",
+      "abv": 7.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Der dunkle Doppelbock von Löwenbräu, seit über 100 Jahren als Starkbier für die Fastenzeit eingebraut.",
+      "description_community": "Malzig-süß mit Röst- und Dörrobstnoten; solider Münchner Doppelbock, der hinter Salvator und Celebrator zurücksteht.",
+      "community_rating": 3.5
+    },
+    {
+      "id": "de-by-hofbraeu-original",
+      "brewery_id": "de-by-hofbraeu-muenchen",
+      "name": "Hofbräu Original",
+      "style": "Helles",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das helle Vollbier des Staatlichen Hofbräuhauses München: würzig-frisch und untrennbar mit dem Hofbräuhaus am Platzl verbunden.",
+      "description_community": "Etwas herber und würziger als andere Münchner Helle; in der Maß im Hofbräuhaus Kult, aus der Flasche solide.",
+      "community_rating": 3.4,
+      "barcodes": [
+        "4005686001156",
+        "0675747001018"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/400/568/600/1156/front_fr.3.400.jpg"
+    },
+    {
+      "id": "de-by-hofbraeu-dunkel",
+      "brewery_id": "de-by-hofbraeu-muenchen",
+      "name": "Hofbräu Dunkel",
+      "style": "Dunkles",
+      "abv": 5.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das dunkle Traditionsbier von Hofbräu nach dem ältesten Bierstil Bayerns – das Bier, mit dem das Hofbräuhaus 1589 begann.",
+      "description_community": "Rund und malzig mit Noten von Brot und leichtem Karamell, dabei schlank im Abgang; ein ehrliches Münchner Dunkel.",
+      "community_rating": 3.6
+    },
+    {
+      "id": "de-by-hofbraeu-muenchner-weisse",
+      "brewery_id": "de-by-hofbraeu-muenchen",
+      "name": "Hofbräu Münchner Weisse",
+      "style": "Weissbier",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das naturtrübe Weißbier von Hofbräu München, das an das einstige königliche Weißbiermonopol der Brauerei anknüpft.",
+      "description_community": "Frisches, eher schlankes Weißbier mit milder Fruchtigkeit; unkompliziert und süffig.",
+      "community_rating": 3.4,
+      "barcodes": [
+        "4005686004157"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/400/568/600/4157/front_de.8.400.jpg"
+    },
+    {
+      "id": "de-by-spaten-muenchner-hell",
+      "brewery_id": "de-by-spaten",
+      "name": "Spaten Münchner Hell",
+      "style": "Helles",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das traditionsreiche Helle von Spaten – die Brauerei braute 1894 das erste Münchner Hell und beruft sich bis heute auf diese Pionierrolle.",
+      "description_community": "Historisch bedeutsam als das Ur-Hell; heute ein solides, mild-malziges Helles im Münchner Mittelfeld.",
+      "community_rating": 3.3,
+      "barcodes": [
+        "4072700005315",
+        "4072700005780"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/407/270/000/5315/front_de.33.400.jpg"
+    },
+    {
+      "id": "de-by-spaten-oktoberfestbier",
+      "brewery_id": "de-by-spaten",
+      "name": "Spaten Oktoberfestbier",
+      "style": "Festbier",
+      "abv": 5.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das offizielle Wiesnbier von Spaten mit höherer Stammwürze, das jedes Jahr zum Anstich 'O'zapft is!' auf dem Oktoberfest ausgeschenkt wird.",
+      "description_community": "Goldenes, kräftiges Festbier mit rundem Malzkörper; süffig, aber mit fast sechs Prozent tückisch – klassischer Wiesn-Geschmack.",
+      "community_rating": 3.6,
+      "barcodes": [
+        "4072700001089"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/407/270/000/1089/front_de.7.400.jpg"
+    },
+    {
+      "id": "de-by-spaten-franziskaner-hefe-weissbier",
+      "brewery_id": "de-by-spaten",
+      "name": "Franziskaner Hefe-Weissbier Naturtrüb",
+      "style": "Weissbier",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das naturtrübe Hefeweißbier der Marke Franziskaner aus dem Hause Spaten, mit dem Mönch auf dem Etikett als eines der bekanntesten Weißbiere weltweit vermarktet.",
+      "description_community": "Fruchtig-mildes Weißbier mit Banane und leichter Zitrusnote; sehr zugänglich und überall erhältlich, ein verlässlicher Standard.",
+      "community_rating": 3.6,
+      "barcodes": [
+        "4072700803829",
+        "4072700001126"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/407/270/080/3829/front_de.33.400.jpg"
+    },
+    {
+      "id": "de-by-spaten-franziskaner-alkoholfrei",
+      "brewery_id": "de-by-spaten",
+      "name": "Franziskaner Weissbier Alkoholfrei",
+      "style": "Alkoholfreies Weissbier",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "description_manufacturer": "Das alkoholfreie Weißbier von Franziskaner, das mit isotonischen Eigenschaften und vollem Weißbiergeschmack als Sportlergetränk beworben wird.",
+      "description_community": "Eines der verbreitetsten alkoholfreien Weißbiere; fruchtig-süßlich und erfrischend, geschmacklich nah am Original.",
+      "community_rating": 3.2,
+      "barcodes": [
+        "4072700311034",
+        "4072700318675",
+        "4072700802525"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/407/270/031/1034/front_fr.7.400.jpg"
+    },
+    {
+      "id": "de-by-erdinger-weissbier",
+      "brewery_id": "de-by-erdinger",
+      "name": "Erdinger Weißbier",
+      "style": "Weissbier",
+      "abv": 5.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das Flaggschiff der größten Weißbierbrauerei der Welt: traditionell flaschenvergoren und als fein-hefiges Weißbier mit mildem Charakter positioniert.",
+      "description_community": "Sehr mildes, eher neutrales Weißbier mit wenig Banane und Nelke; Kritiker finden es langweilig, Millionen Trinker gerade deshalb angenehm.",
+      "community_rating": 3.2,
+      "barcodes": [
+        "4002103000013",
+        "4002103000105",
+        "4002103295594"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/400/210/300/0013/front.3.400.jpg"
+    },
+    {
+      "id": "de-by-erdinger-alkoholfrei",
+      "brewery_id": "de-by-erdinger",
+      "name": "Erdinger Alkoholfrei",
+      "style": "Alkoholfreies Weissbier",
+      "abv": 0.4,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "description_manufacturer": "Der Pionier unter den alkoholfreien Weißbieren, den Erdinger mit isotonischen Eigenschaften und Vitaminen gezielt als Sportlergetränk vermarktet.",
+      "description_community": "Der Klassiker nach dem Sport; erfrischend, leicht malzig-süß und isotonisch – Marktführer und Maßstab der Kategorie.",
+      "community_rating": 3.4,
+      "barcodes": [
+        "4002103218852",
+        "4002103248118",
+        "4002103249559"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/400/210/321/8852/front_fr.3.400.jpg"
+    },
+    {
+      "id": "de-by-erdinger-urweisse",
+      "brewery_id": "de-by-erdinger",
+      "name": "Erdinger Urweisse",
+      "style": "Weissbier",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Die kräftigere, rustikalere Weißbier-Interpretation von Erdinger nach altbayerischer Art, mit dunklerem Malz und betonter Hefewürze.",
+      "description_community": "Deutlich charaktervoller als das Standard-Weißbier: würzig, malzig und mit schöner Hefearomatik – für viele das beste Erdinger.",
+      "community_rating": 3.6,
+      "barcodes": [
+        "4002103236122"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/400/210/323/6122/front_de.19.400.jpg"
+    },
+    {
+      "id": "de-by-ayinger-celebrator",
+      "brewery_id": "de-by-ayinger",
+      "name": "Ayinger Celebrator",
+      "style": "Doppelbock",
+      "abv": 6.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Der dunkle Doppelbock der Privatbrauerei Ayinger, international vielfach prämiert und mit dem markanten Ziegenbock-Anhänger an der Flasche als Aushängeschild vermarktet.",
+      "description_community": "Weltklasse-Doppelbock: tiefe Röst- und Dörrobstnoten, Schokolade und Karamell bei erstaunlicher Eleganz; regelmäßig unter den besten Böcken der Welt gelistet.",
+      "community_rating": 4.3
+    },
+    {
+      "id": "de-by-ayinger-braeuweisse",
+      "brewery_id": "de-by-ayinger",
+      "name": "Ayinger Bräuweisse",
+      "style": "Weissbier",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das helle Hefeweißbier aus Aying, das die Brauerei als spritzig-frischen Weißbierklassiker mit feiner Hefenote positioniert.",
+      "description_community": "Sehr sauberes, frisches Weißbier mit ausgewogener Banane-Nelke-Balance und lebendiger Kohlensäure; bei Kennern hoch angesehen.",
+      "community_rating": 3.9,
+      "barcodes": [
+        "4104170030204",
+        "4104170030211"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/410/417/003/0204/front_de.20.400.jpg"
+    },
+    {
+      "id": "de-by-ayinger-altbairisch-dunkel",
+      "brewery_id": "de-by-ayinger",
+      "name": "Ayinger Altbairisch Dunkel",
+      "style": "Dunkles",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das dunkle Traditionsbier von Ayinger nach altbayerischer Brauart, mit Münchner Malz und langer Reifung als klassisches Dorfwirtshausbier gepflegt.",
+      "description_community": "Vorbildliches bayerisches Dunkel: brotig-malzig mit Kaffee- und Karamellanklängen, dabei schlank und süffig.",
+      "community_rating": 3.9,
+      "barcodes": [
+        "4104170020700"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/410/417/002/0700/front_de.4.400.jpg"
+    },
+    {
+      "id": "de-by-andechs-doppelbock-dunkel",
+      "brewery_id": "de-by-andechs",
+      "name": "Andechser Doppelbock Dunkel",
+      "style": "Doppelbock",
+      "abv": 7.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das berühmte Starkbier der Klosterbrauerei Andechs, das die Benediktiner als Höhepunkt ihrer jahrhundertealten Brautradition auf dem Heiligen Berg positionieren.",
+      "description_community": "Legendärer Klosterbock: intensiv malzig mit Dörrpflaume, Karamell und feiner Röstnote, gefährlich süffig für über sieben Prozent; Pilgerziel für Bierfreunde.",
+      "community_rating": 4.3
+    },
+    {
+      "id": "de-by-andechs-spezial-hell",
+      "brewery_id": "de-by-andechs",
+      "name": "Andechser Spezial Hell",
+      "style": "Export Hell",
+      "abv": 5.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das kräftige helle Spezialbier vom Kloster Andechs mit betonter Stammwürze, gebraut als festliches Bier für Biergarten und Bräustüberl.",
+      "description_community": "Goldenes, vollmundiges Hell mit schöner Malzsüße und feiner Hopfenbalance; im Andechser Biergarten ein Pflichtbier.",
+      "community_rating": 4.0
+    },
+    {
+      "id": "de-by-andechs-weissbier-hefetrueb",
+      "brewery_id": "de-by-andechs",
+      "name": "Andechser Weißbier Hefetrüb",
+      "style": "Weissbier",
+      "abv": 5.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das naturtrübe Weißbier der Klosterbrauerei Andechs mit fruchtiger Hefearomatik, gebraut nach bayerischer Klostertradition.",
+      "description_community": "Frisches, fruchtiges Klosterweißbier mit schöner Banane und cremigem Mundgefühl; sehr ordentlich, wenn auch nicht auf Doppelbock-Niveau.",
+      "community_rating": 3.7,
+      "barcodes": [
+        "4013024001317"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/401/302/400/1317/front_de.17.400.jpg"
+    },
+    {
+      "id": "de-by-weihenstephan-hefeweissbier",
+      "brewery_id": "de-by-weihenstephan",
+      "name": "Weihenstephaner Hefeweissbier",
+      "style": "Weissbier",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das Weißbier der Bayerischen Staatsbrauerei Weihenstephan, der ältesten Brauerei der Welt; vielfach prämiert und als Weltreferenz des Stils vermarktet.",
+      "description_community": "Für viele das beste Hefeweizen der Welt: perfekte Balance aus Banane, Nelke und cremiger Textur; internationaler Referenzstandard.",
+      "community_rating": 4.2,
+      "barcodes": [
+        "4105120003903"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/410/512/000/3903/front.6.400.jpg"
+    },
+    {
+      "id": "de-by-weihenstephan-vitus",
+      "brewery_id": "de-by-weihenstephan",
+      "name": "Weihenstephaner Vitus",
+      "style": "Weizenbock",
+      "abv": 7.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Der helle Weizenbock von Weihenstephan, den die Staatsbrauerei als edlen, champagnerartig prickelnden Starkbier-Klassiker positioniert.",
+      "description_community": "Herausragender heller Weizenbock: intensive Frucht, Honig und Würze bei täuschend leichter Trinkbarkeit; mehrfach als eines der besten Biere der Welt ausgezeichnet.",
+      "community_rating": 4.3
+    },
+    {
+      "id": "de-by-weihenstephan-original-helles",
+      "brewery_id": "de-by-weihenstephan",
+      "name": "Weihenstephaner Original Helles",
+      "style": "Helles",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das klassische Helle der ältesten Brauerei der Welt: mild gehopft, fein-malzig und als Freisinger Alltagsklassiker positioniert.",
+      "description_community": "Sehr sauberes, weiches Helles mit dezenter Hopfenblume; gehört für viele zu den besten Hellen außerhalb Münchens.",
+      "community_rating": 3.9,
+      "barcodes": [
+        "4105120993150"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/410/512/099/3150/front_ru.3.400.jpg"
+    },
+    {
+      "id": "de-by-weihenstephan-korbinian",
+      "brewery_id": "de-by-weihenstephan",
+      "name": "Weihenstephaner Korbinian",
+      "style": "Doppelbock",
+      "abv": 7.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Der dunkle Doppelbock aus Weihenstephan, benannt nach dem Freisinger Bistumsgründer, mit kräftigem Malzkörper und langer Reifung.",
+      "description_community": "Satter, dunkler Doppelbock mit Schokolade, Feige und Karamell; steht nur knapp hinter Celebrator und Andechser.",
+      "community_rating": 4.1
+    },
+    {
+      "id": "de-by-schneider-weisse-tap7",
+      "brewery_id": "de-by-schneider-weisse",
+      "name": "Schneider Weisse TAP7 Mein Original",
+      "style": "Weissbier",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das Original von Schneider Weisse, seit 1872 nach unverändertem Rezept gebraut: bernsteinfarben und der Inbegriff des altbayerischen Weißbiers.",
+      "description_community": "Der Archetyp des bayerischen Weißbiers: würzig, malzig mit reifer Banane und Nelke, komplexer als die helle Konkurrenz; ein zeitloser Klassiker.",
+      "community_rating": 4.1,
+      "barcodes": [
+        "4003669016203"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/400/366/901/6203/front_de.25.400.jpg"
+    },
+    {
+      "id": "de-by-schneider-weisse-tap6-aventinus",
+      "brewery_id": "de-by-schneider-weisse",
+      "name": "Schneider Weisse TAP6 Unser Aventinus",
+      "style": "Weizenbock",
+      "abv": 8.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Der dunkle Weizenbock von Schneider, seit 1907 als Bayerns ältester Weizendoppelbock gebraut und international als Stilikone vermarktet.",
+      "description_community": "Weltklasse-Weizenbock: Dörrpflaume, Banane, Gewürznelke und Schokolade in perfekter Balance, wärmend und komplex; regelmäßig unter den besten Bieren Deutschlands.",
+      "community_rating": 4.4,
+      "barcodes": [
+        "4003669018337"
+      ]
+    },
+    {
+      "id": "de-by-schneider-weisse-tap3-alkoholfrei",
+      "brewery_id": "de-by-schneider-weisse",
+      "name": "Schneider Weisse TAP3 Mein Alkoholfreies",
+      "style": "Alkoholfreies Weissbier",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "description_manufacturer": "Das alkoholfreie Weißbier von Schneider Weisse, das mit vollem Weißbiercharakter und isotonischen Eigenschaften beworben wird.",
+      "description_community": "Gilt bei Kennern als eines der besten alkoholfreien Weißbiere: würzig und erstaunlich vollmundig statt wässrig.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "de-by-tegernseer-hell",
+      "brewery_id": "de-by-tegernseer",
+      "name": "Tegernseer Hell",
+      "style": "Helles",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das Helle des Herzoglichen Brauhauses Tegernsee: schlank, spritzig und als unkompliziertes Bier der Tegernseer Wirtshauskultur positioniert.",
+      "description_community": "Kultbier in ganz Oberbayern: leicht, trocken und extrem süffig – das klassische 'Feierabendbier', dem viele Münchner die Treue halten.",
+      "community_rating": 4.0,
+      "barcodes": [
+        "4022396000125"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/402/239/600/0125/front_en.16.400.jpg"
+    },
+    {
+      "id": "de-by-tegernseer-spezial",
+      "brewery_id": "de-by-tegernseer",
+      "name": "Tegernseer Spezial",
+      "style": "Export Hell",
+      "abv": 5.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das kräftigere Spezialbier aus Tegernsee mit höherer Stammwürze, als festlicheres Pendant zum Hellen gebraut.",
+      "description_community": "Runder und malziger als das Hell, mit feiner Süße; wird von Stammtrinkern gern zu besonderen Anlässen gewählt.",
+      "community_rating": 3.7,
+      "barcodes": [
+        "4022396000033"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/402/239/600/0033/front_en.7.400.jpg"
+    },
+    {
+      "id": "de-by-giesinger-muenchner-hell",
+      "brewery_id": "de-by-giesinger",
+      "name": "Giesinger Münchner Hell",
+      "style": "Helles",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das Helle der jungen Giesinger Bräu, die sich vom Garagen-Startup zur siebten Münchner Brauerei mit eigenem Tiefbrunnen entwickelt hat.",
+      "description_community": "Frisches, etwas hopfigeres Hell als die Traditionskonkurrenz; wird als gelungene moderne Interpretation des Münchner Stils gefeiert.",
+      "community_rating": 3.7,
+      "barcodes": [
+        "42268932"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/42268932/front_de.3.400.jpg"
+    },
+    {
+      "id": "de-by-giesinger-erhellung",
+      "brewery_id": "de-by-giesinger",
+      "name": "Giesinger Untergiesinger Erhellung",
+      "style": "Kellerbier",
+      "abv": 5.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das unfiltrierte, naturtrübe Kellerhell von Giesinger Bräu, das als charakterstarkes Aushängeschild der Brauerei vermarktet wird.",
+      "description_community": "Hefig-frisch mit schöner Hopfennote und weichem Trunk; für viele das beste Bier der Giesinger und ein moderner Münchner Liebling.",
+      "community_rating": 3.9,
+      "barcodes": [
+        "42268888"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/42268888/front_de.13.400.jpg"
+    },
+    {
+      "id": "de-by-riegele-herren-pils",
+      "brewery_id": "de-by-riegele",
+      "name": "Riegele Herren Pils",
+      "style": "Pils",
+      "abv": 4.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das feinherbe Pils des Brauhauses Riegele aus Augsburg, mit Aromahopfen gebraut und als elegantes Traditionspils positioniert.",
+      "description_community": "Sauberes, feinherbes Pils mit blumiger Hopfennote; die vielfach prämierte Augsburger Antwort auf den norddeutschen Stil.",
+      "community_rating": 3.6
+    },
+    {
+      "id": "de-by-riegele-commerzienrat-privat",
+      "brewery_id": "de-by-riegele",
+      "name": "Riegele Commerzienrat Riegele Privat",
+      "style": "Export Hell",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das Premium-Lager von Riegele, benannt nach dem einstigen Brauereichef Commerzienrat Sebastian Riegele, mit ausgesuchtem Malz und langer Reifung.",
+      "description_community": "Rundes, malzbetontes Lager mit feiner Hopfenbalance; mehrfach ausgezeichnet und der heimliche Star des Riegele-Kernsortiments.",
+      "community_rating": 3.7,
+      "barcodes": [
+        "40269139",
+        "40269221"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/40269139/front_de.5.400.jpg"
+    },
+    {
+      "id": "de-by-maisel-weisse-original",
+      "brewery_id": "de-by-maisel",
+      "name": "Maisel's Weisse Original",
+      "style": "Weissbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das bernsteinfarbene Hefeweißbier der Brauerei Gebr. Maisel aus Bayreuth, das als fränkischer Weißbierklassiker mit kräftiger Hefearomatik vermarktet wird.",
+      "description_community": "Charaktervolles Weißbier mit dunklerer Malznote, Banane und feiner Röstwürze; hebt sich angenehm von den milden Münchner Weißen ab.",
+      "community_rating": 3.7,
+      "barcodes": [
+        "4017300020009",
+        "40173351"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/401/730/002/0009/front_fr.8.400.jpg"
+    },
+    {
+      "id": "de-by-maisel-weisse-alkoholfrei",
+      "brewery_id": "de-by-maisel",
+      "name": "Maisel's Weisse Alkoholfrei",
+      "style": "Alkoholfreies Weissbier",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "description_manufacturer": "Das alkoholfreie Hefeweißbier von Maisel, das mit vollem Weißbiergeschmack und isotonischen Eigenschaften beworben wird.",
+      "description_community": "Fruchtig und vergleichsweise vollmundig für ein Alkoholfreies; gehört in Tests regelmäßig zu den besseren der Kategorie.",
+      "community_rating": 3.3,
+      "barcodes": [
+        "40173832"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/40173832/front_de.6.400.jpg"
+    },
+    {
+      "id": "de-by-kulmbacher-edelherb",
+      "brewery_id": "de-by-kulmbacher",
+      "name": "Kulmbacher Edelherb Premium Pils",
+      "style": "Pils",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das herbe Premium-Pils der Kulmbacher Brauerei, das mit feiner Hopfenbittere als fränkischer Pils-Klassiker positioniert wird.",
+      "description_community": "Kerniges, ordentlich herbes Pils mit trockenem Abgang; in Oberfranken allgegenwärtig und bei Freunden der Bittere geschätzt.",
+      "community_rating": 3.4,
+      "barcodes": [
+        "41016916"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/41016916/front_fr.15.400.jpg"
+    },
+    {
+      "id": "de-by-kulmbacher-eisbock",
+      "brewery_id": "de-by-kulmbacher",
+      "name": "Kulmbacher Eisbock",
+      "style": "Eisbock",
+      "abv": 9.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Der legendäre Eisbock aus Kulmbach, durch Ausfrieren konzentriert – die Brauerei beruft sich auf die Kulmbacher Eisbock-Tradition des 19. Jahrhunderts.",
+      "description_community": "Rarität mit Kultstatus: dickflüssig-malzig, Dörrobst, Süße und deutliche Alkoholwärme – eher Digestif als Durstlöscher.",
+      "community_rating": 3.8
+    },
+    {
+      "id": "de-by-mahrs-au",
+      "brewery_id": "de-by-mahrs",
+      "name": "Mahr's Bräu aU",
+      "style": "Kellerbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das 'aU' (ungespundetes Lagerbier) von Mahr's Bräu in Bamberg: unfiltriert, kohlensäurearm und als fränkisches Kellerbier-Original weltberühmt.",
+      "description_community": "Kult-Kellerbier mit Pilgerstatus: weich, malzig-hefig und mit erdiger Hopfennote, am besten frisch im Bamberger Schankraum; wurde international mehrfach zum besten Bier gekürt.",
+      "community_rating": 4.2
+    },
+    {
+      "id": "de-by-mahrs-hell",
+      "brewery_id": "de-by-mahrs",
+      "name": "Mahr's Bräu Hell",
+      "style": "Helles",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das milde Helle der Bamberger Traditionsbrauerei Mahr's, als süffiges Alltagsbier neben dem berühmten aU gebraut.",
+      "description_community": "Sauberes, weiches fränkisches Hell; steht im Schatten des aU, ist aber ein solides Wirtshausbier.",
+      "community_rating": 3.6
+    },
+    {
+      "id": "de-by-schlenkerla-maerzen",
+      "brewery_id": "de-by-schlenkerla",
+      "name": "Aecht Schlenkerla Rauchbier Märzen",
+      "style": "Rauchbier",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das weltberühmte Rauchbier der Bamberger Brauerei Heller-Trum, über Buchenholz geräuchert und seit Jahrhunderten unverändert als 'Aecht Schlenkerla' ausgeschenkt.",
+      "description_community": "Ikonisches Rauchbier: intensiver Schinken- und Lagerfeuercharakter über solidem Märzenkörper; polarisiert beim ersten Schluck, macht dann süchtig.",
+      "community_rating": 4.2
+    },
+    {
+      "id": "de-by-schlenkerla-urbock",
+      "brewery_id": "de-by-schlenkerla",
+      "name": "Aecht Schlenkerla Rauchbier Urbock",
+      "style": "Rauchbock",
+      "abv": 6.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Der geräucherte Bock von Schlenkerla, der ab Oktober aus dem Holzfass gezapft wird und die Rauchbiertradition mit Starkbierkraft verbindet.",
+      "description_community": "Noch tiefer und malziger als das Märzen, mit Rauch, Karamell und Dörrobst; für Rauchbierfans der Höhepunkt des Jahres.",
+      "community_rating": 4.2
+    },
+    {
+      "id": "de-by-schlenkerla-weizen",
+      "brewery_id": "de-by-schlenkerla",
+      "name": "Aecht Schlenkerla Rauchbier Weizen",
+      "style": "Rauchweizen",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das obergärige Rauchweizen von Schlenkerla, bei dem sich Buchenrauchmalz mit fruchtiger Weizenhefe verbindet – die ungewöhnlichste Spezialität des Hauses.",
+      "description_community": "Spannende Kombination aus Rauch, Banane und Nelke; milder geräuchert als das Märzen und ein guter Einstieg in die Rauchbierwelt.",
+      "community_rating": 3.9,
+      "barcodes": [
+        "4037458000159"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/403/745/800/0159/front_fr.5.400.jpg"
+    },
+    {
+      "id": "de-by-tucher-helles-hefe-weizen",
+      "brewery_id": "de-by-tucher",
+      "name": "Tucher Helles Hefe Weizen",
+      "style": "Weissbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das helle Hefeweizen der Nürnberger Traditionsbrauerei Tucher, mit fruchtiger Hefenote als fränkischer Weißbierklassiker vermarktet.",
+      "description_community": "Süffiges, fruchtbetontes Weizen mit deutlicher Banane; in Franken weit verbreitet und ein verlässlicher Standard.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "de-by-tucher-dunkles-hefe-weizen",
+      "brewery_id": "de-by-tucher",
+      "name": "Tucher Dunkles Hefe Weizen",
+      "style": "Dunkles Weissbier",
+      "abv": 5.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das dunkle Hefeweizen von Tucher mit karamellmalziger Note, als kräftigere Variante des hellen Weizens gebraut.",
+      "description_community": "Malzig-brotig mit Banane und leichtem Karamell; wird von manchen dem hellen Weizen vorgezogen.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "de-by-koenig-ludwig-weissbier-hell",
+      "brewery_id": "de-by-koenig-ludwig",
+      "name": "König Ludwig Weissbier Hell",
+      "style": "Weissbier",
+      "abv": 5.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das helle Hefeweißbier des Königlichen Brauhauses Kaltenberg unter Leitung des Hauses Wittelsbach, das mit königlicher Brautradition beworben wird.",
+      "description_community": "Mildes, fruchtiges Weißbier mit weicher Kohlensäure; sehr zugänglich und eines der meistverkauften Weißbiere Deutschlands.",
+      "community_rating": 3.4,
+      "barcodes": [
+        "4003304142205"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/400/330/414/2205/front_de.23.400.jpg"
+    },
+    {
+      "id": "de-by-koenig-ludwig-dunkel",
+      "brewery_id": "de-by-koenig-ludwig",
+      "name": "König Ludwig Dunkel",
+      "style": "Dunkles",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das dunkle Lager aus Kaltenberg nach königlich bayerischem Rezept, das als meistverkauftes dunkles Bier Deutschlands vermarktet wird.",
+      "description_community": "Zugängliches Dunkel mit milder Karamell- und Röstnote; für viele der Einstieg in dunkle Biere, Kennern mitunter zu glatt.",
+      "community_rating": 3.5,
+      "barcodes": [
+        "4003304122009",
+        "4003304168007"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/400/330/412/2009/front_de.15.400.jpg"
+    },
+    {
+      "id": "de-by-unertl-weissbier",
+      "brewery_id": "de-by-unertl",
+      "name": "Unertl Weißbier",
+      "style": "Weissbier",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das dunkle, ursprüngliche Weißbier der Familienbrauerei Unertl aus Haag in Oberbayern, mit eigener Hefe und als unverfälschtes bayerisches Original gepflegt.",
+      "description_community": "Rustikal-würziges Weißbier mit dunkler Malznote und kerniger Hefe; unter Weißbierkennern ein Geheimtipp mit treuer Fangemeinde.",
+      "community_rating": 3.8,
+      "barcodes": [
+        "42043362"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/42043362/front_de.3.400.jpg"
+    },
+    {
+      "id": "de-by-floetzinger-hell",
+      "brewery_id": "de-by-floetzinger",
+      "name": "Flötzinger Hell",
+      "style": "Helles",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das Helle der Flötzinger Brauerei, der letzten privaten Brauerei Rosenheims, das als süffiges Bier der Rosenheimer Wirtshaus- und Festkultur vermarktet wird.",
+      "description_community": "Weiches, mild-malziges Hell mit großem Rückhalt in der Region; auf dem Rosenheimer Herbstfest die erste Wahl.",
+      "community_rating": 3.6,
+      "barcodes": [
+        "4016843002008"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/401/684/300/2008/front_de.9.400.jpg"
+    },
+    {
+      "id": "de-by-hofmuehl-weissbier",
+      "brewery_id": "de-by-hofmuehl",
+      "name": "Hofmühl Weißbier",
+      "style": "Weissbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das Hefeweißbier der Privatbrauerei Hofmühl aus Eichstätt, mit weichem Juraquellwasser gebraut und als regionale Weißbierspezialität positioniert.",
+      "description_community": "Süffiges, fruchtig-mildes Weißbier aus dem Altmühltal; regional sehr beliebt, überregional ein Geheimtipp.",
+      "community_rating": 3.5
+    },
+    {
+      "id": "de-by-weltenburger-barock-dunkel",
+      "brewery_id": "de-by-weltenburger",
+      "name": "Weltenburger Kloster Barock Dunkel",
+      "style": "Dunkles",
+      "abv": 4.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "4010223013318"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/401/022/301/3318/front_de.5.400.jpg",
+      "description_manufacturer": "Das Aushängeschild der ältesten Klosterbrauerei der Welt: kastanienbraun, weich und malzaromatisch mit Noten von Brotkruste und Karamell.",
+      "description_community": "Mehrfacher Weltmeister seiner Kategorie und für viele das Referenz-Dunkel schlechthin; samtig und enorm ausgewogen.",
+      "community_rating": 4.2
+    },
+    {
+      "id": "de-by-weltenburger-anno-1050",
+      "brewery_id": "de-by-weltenburger",
+      "name": "Weltenburger Anno 1050",
+      "style": "Märzen",
+      "abv": 5.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "4010223014315"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/401/022/301/4315/front_de.3.400.jpg",
+      "description_manufacturer": "Bernsteinfarbenes Jubiläumsbier im Märzenstil: kräftig malzig, rund und mit feiner Hopfenbalance.",
+      "description_community": "Festbier-Charakter für jeden Tag; malzbetont, kräftig und gefährlich süffig.",
+      "community_rating": 3.9
+    },
+    {
+      "id": "de-by-oettinger-pils",
+      "brewery_id": "de-by-oettinger",
+      "name": "Oettinger Pils",
+      "style": "Pils",
+      "abv": 4.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "4014086010569"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/401/408/601/0569/front_de.17.400.jpg",
+      "description_manufacturer": "Das meistverkaufte Bier der Marke: ein schlankes, herbes Pils ohne Schnörkel, konsequent auf den günstigen Preis gebraut.",
+      "description_community": "Deutschlands bekanntestes Discount-Pils; niemand erwartet Wunder, aber fürs Geld erstaunlich sauber.",
+      "community_rating": 2.6
+    },
+    {
+      "id": "de-by-oettinger-helles",
+      "brewery_id": "de-by-oettinger",
+      "name": "Oettinger Original Helles",
+      "style": "Helles",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Mildes, goldgelbes Helles der Oettinger-Range: leicht malzig, wenig Bittere, einfach trinkbar.",
+      "description_community": "Basis-Helles zum Kampfpreis; unkompliziert und mild, mehr Durstlöscher als Genussbier.",
+      "community_rating": 2.6
+    },
+    {
+      "id": "de-by-gutmann-hefeweizen",
+      "brewery_id": "de-by-gutmann",
+      "name": "Gutmann Hefeweizen",
+      "style": "Hefeweizen",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "4030439001008"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/403/043/900/1008/front_de.16.400.jpg",
+      "description_manufacturer": "Flaschenvergorenes Hefeweizen des Altmühltaler Spezialisten: fruchtig nach Banane, feinwürzig nach Nelke, cremig und hochspritzig.",
+      "description_community": "Für viele das beste Hefeweizen Bayerns und fester Kult in der fränkisch-oberbayerischen Gastronomie; saftig, frisch, süffig.",
+      "community_rating": 4.3
+    },
+    {
+      "id": "de-by-gutmann-hefeweizen-alkoholfrei",
+      "brewery_id": "de-by-gutmann",
+      "name": "Gutmann Hefeweizen Alkoholfrei",
+      "style": "Hefeweizen",
+      "abv": 0.4,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": [
+        "4030439008007"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/403/043/900/8007/front_en.7.400.jpg",
+      "description_manufacturer": "Alkoholfreies Hefeweizen mit vollem Weißbiergeschmack: fruchtig, isotonisch und deutlich näher am Original als die meisten Alkoholfreien.",
+      "description_community": "Regelmäßig Testsieger unter den alkoholfreien Weißbieren; erfrischend und erstaunlich vollmundig.",
+      "community_rating": 4.0
+    },
+    {
+      "id": "de-by-meckatzer-weiss-gold",
+      "brewery_id": "de-by-meckatzer",
+      "name": "Meckatzer Weiss-Gold",
+      "style": "Spezial Hell",
+      "abv": 4.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das Allgäuer Spezialbier des Hauses: goldgelb, außergewöhnlich mild und weich, mit feiner Malzsüße und dezenter Hopfung.",
+      "description_community": "Süffigkeits-Geheimtipp aus dem Westallgäu mit treuer Anhängerschaft; rund, sanft und harmonisch.",
+      "community_rating": 3.9
+    },
+    {
+      "id": "de-by-allgaeuer-bueble-edelbraeu",
+      "brewery_id": "de-by-allgaeuer",
+      "name": "Allgäuer Büble Bier Edelbräu",
+      "style": "Helles",
+      "abv": 4.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das bekannteste Bier des Allgäuer Brauhauses: ein mildes, goldenes Edelbräu mit dem Büble als Markenzeichen.",
+      "description_community": "Sympathisches, weiches Helles mit Alpen-Image; verlässlich und gut trinkbar.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "de-by-zoetler-bayrisch-hell",
+      "brewery_id": "de-by-zoetler",
+      "name": "Zötler Bayrisch Hell",
+      "style": "Helles",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das Helle der ältesten Familienbrauerei der Welt: mild, süffig und mit weichem Alpenwasser vom Grünten gebraut.",
+      "description_community": "Ehrliches Allgäuer Hell mit viel Tradition im Rücken; unaufgeregt und sauber.",
+      "community_rating": 3.3
+    },
+    {
+      "id": "de-by-arcobraeu-mooser-liesl",
+      "brewery_id": "de-by-arcobraeu",
+      "name": "Arcobräu Mooser Liesl",
+      "style": "Helles",
+      "abv": 5.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das Dorfbier aus Moos, das zum Kult wurde: ein kerniges, vollmundiges Helles mit spürbarer Malzbasis.",
+      "description_community": "Vom niederbayerischen Geheimtipp zum überregionalen Phänomen; kräftiger als viele Münchner Helle und sehr süffig.",
+      "community_rating": 3.9
+    },
+    {
+      "id": "de-by-kneitinger-bock",
+      "brewery_id": "de-by-kneitinger",
+      "name": "Kneitinger Bock",
+      "style": "Bock",
+      "abv": 6.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "4021817000188"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/402/181/700/0188/front_de.3.400.jpg",
+      "description_manufacturer": "Dunkler Traditionsbock der Regensburger Stiftungsbrauerei: malzig-kräftig mit Röst- und Karamellnoten, seit 1530er-Tradition jeden Herbst angestochen.",
+      "description_community": "Der Bock-Anstich Anfang Oktober ist in Regensburg Volksfest; wuchtig, warm und würzig – ein fränkisch-bayerischer Klassiker.",
+      "community_rating": 4.0
+    },
+    {
+      "id": "de-by-st-georgen-kellerbier",
+      "brewery_id": "de-by-st-georgen",
+      "name": "St. GeorgenBräu Kellerbier",
+      "style": "Kellerbier",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Unfiltriertes fränkisches Kellerbier aus Buttenheim: bernsteinfarben, hopfig-herb und ungespundet weich.",
+      "description_community": "Ein Maßstab des Stils, weit über Franken hinaus erhältlich; kernig, frisch und wunderbar unpoliert.",
+      "community_rating": 4.0
+    },
+    {
+      "id": "de-by-crew-republic-foundation-11",
+      "brewery_id": "de-by-crew-republic",
+      "name": "CREW Republic Foundation 11",
+      "style": "Pale Ale",
+      "abv": 5.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "42232506"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/000/004/223/2506/front_fr.3.400.jpg",
+      "description_manufacturer": "Das German Pale Ale der Münchner Craft-Pioniere: tropisch-fruchtige Hopfung auf schlankem Malzkörper, kompromisslos aromatisch.",
+      "description_community": "Einstiegsdroge in die deutsche Craft-Welt; zitrisch, frisch und zuverlässig gut.",
+      "community_rating": 3.8
+    },
+    {
+      "id": "de-by-crew-republic-easy",
+      "brewery_id": "de-by-crew-republic",
+      "name": "CREW Republic Easy",
+      "style": "Session IPA",
+      "abv": 3.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Leichtes Session IPA mit viel Aromahopfen bei wenig Alkohol: fruchtig, herb und ausdrücklich auf Trinkbarkeit gebaut.",
+      "description_community": "Viel Hopfenaroma ohne schweren Kopf; ideales Sommer-Craftbier.",
+      "community_rating": 3.6
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,31 +9,93 @@ import 'package:latlong2/latlong.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
 
-/// Live-Karte: zeigt ausschließlich aktive Sessions bestätigter Freunde
-/// (Privatsphäre-Modell siehe docs/04-datenmodell.md).
-class MapScreen extends ConsumerWidget {
+/// Formulierung des Aktiv-Zählers rechts oben – zentral anpassbar.
+String activeUsersLabel(int n) =>
+    n == 1 ? '🍻 1 weiterer BrewMate aktiv' : '🍻 $n weitere BrewMates aktiv';
+
+/// Live-Karte: aktive Sessions bestätigter Freunde (Privatsphäre-Modell
+/// siehe docs/04-datenmodell.md) plus optionale, abschaltbare Ebene mit
+/// Brauereistandorten (Österreich + Bayern) aus der Community-Datenbank.
+class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MapScreen> createState() => _MapScreenState();
+}
+
+class _MapScreenState extends ConsumerState<MapScreen> {
+  bool _showBreweries = true;
+  Timer? _boundsDebounce;
+  final _mapController = MapController();
+
+  /// Aktueller Zoom (entprellt aktualisiert). Unterhalb von
+  /// [_labelZoom] werden Brauereien nur als Punkte gezeichnet –
+  /// bei ~50 Brauereien (AT + Bayern) wäre die Länder-Ansicht
+  /// sonst mit Namensschildern zugepflastert.
+  double _zoom = 7;
+  static const _labelZoom = 9.0;
+
+  // Wien – Fokusmarkt Österreich.
+  static const _fallbackCenter = LatLng(48.2082, 16.3738);
+
+  @override
+  void dispose() {
+    _boundsDebounce?.cancel();
+    _mapController.dispose();
+    super.dispose();
+  }
+
+  /// Sichtbaren Ausschnitt (entprellt) melden – Grundlage für den
+  /// „x weitere BrewMates aktiv"-Zähler und die Brauerei-Darstellung
+  /// (Punkt vs. Symbol mit Namen).
+  void _reportBounds(LatLngBounds bounds, double zoom) {
+    _boundsDebounce?.cancel();
+    _boundsDebounce = Timer(const Duration(milliseconds: 400), () {
+      if (!mounted) return;
+      ref.read(mapBoundsProvider.notifier).state = (
+        minLat: bounds.south,
+        minLng: bounds.west,
+        maxLat: bounds.north,
+        maxLng: bounds.east,
+      );
+      if ((zoom < _labelZoom) != (_zoom < _labelZoom)) {
+        setState(() => _zoom = zoom);
+      } else {
+        _zoom = zoom;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final sessions = ref.watch(activeSessionsProvider).valueOrNull ?? [];
     final located = sessions
-        .where((d) =>
-            d.session.latitude != null && d.session.longitude != null)
+        .where(
+            (d) => d.session.latitude != null && d.session.longitude != null)
         .toList();
+    final breweries = _showBreweries
+        ? (ref.watch(breweriesWithLocationProvider).valueOrNull ??
+            const <Brewery>[])
+        : const <Brewery>[];
 
     return Scaffold(
       appBar: AppBar(title: const Text('Karte')),
       body: Stack(
         children: [
           FlutterMap(
+            mapController: _mapController,
             options: MapOptions(
               initialCenter: located.isNotEmpty
                   ? LatLng(located.first.session.latitude!,
                       located.first.session.longitude!)
-                  : const LatLng(48.1374, 11.5755),
-              initialZoom: 13,
+                  : _fallbackCenter,
+              initialZoom: located.isNotEmpty ? 13 : 7,
+              onMapReady: () => _reportBounds(
+                  _mapController.camera.visibleBounds,
+                  _mapController.camera.zoom),
+              onMapEvent: (event) => _reportBounds(
+                  event.camera.visibleBounds, event.camera.zoom),
             ),
             children: [
               TileLayer(
@@ -40,29 +104,77 @@ class MapScreen extends ConsumerWidget {
               ),
               MarkerLayer(
                 markers: [
+                  for (final b in breweries)
+                    _zoom < _labelZoom
+                        ? _breweryDot(context, b)
+                        : _breweryMarker(context, b),
                   for (final d in located) _sessionMarker(context, d),
                 ],
               ),
             ],
           ),
-          // Datenschutz-Hinweis: was die Karte zeigt – und was nicht.
-          Positioned(
-            top: 12,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surface.withOpacity(0.9),
+          // Aktiv-Zähler rechts oben: Freunde stehen als Pins auf der
+          // Karte, alle übrigen aktiven Nutzer im Ausschnitt erscheinen
+          // nur als Zahl – nie mit Position.
+          if ((ref.watch(otherActiveCountProvider).valueOrNull ?? 0) > 0)
+            Positioned(
+              top: 12,
+              right: 12,
+              child: Material(
+                color: theme.colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(16),
+                child: InkWell(
                   borderRadius: BorderRadius.circular(16),
-                ),
-                child: Text(
-                  '🔒 Nur Freunde · nur während aktiver Sessions',
-                  style: theme.textTheme.labelSmall,
+                  onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          'Wer nicht mit dir befreundet ist, wird nur '
+                          'gezählt – nie auf der Karte verortet.'),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 6),
+                    child: Text(
+                      activeUsersLabel(
+                          ref.watch(otherActiveCountProvider).valueOrNull ??
+                              0),
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: theme.colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
               ),
+            ),
+          // Ebenen-Umschalter + Datenschutz-Hinweis (links, damit der
+          // Aktiv-Zähler rechts Platz hat).
+          Positioned(
+            top: 12,
+            left: 12,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    '🔒 Nur Freunde · nur während aktiver Sessions',
+                    style: theme.textTheme.labelSmall,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                FilterChip(
+                  label: const Text('🏭 Brauereien'),
+                  selected: _showBreweries,
+                  onSelected: (v) => setState(() => _showBreweries = v),
+                ),
+              ],
             ),
           ),
           Positioned(
@@ -105,6 +217,62 @@ class MapScreen extends ConsumerWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  /// Herausgezoomt: Brauerei nur als kleiner Punkt – bleibt antippbar,
+  /// beim Heranzoomen (ab Zoom [_labelZoom]) erscheinen Symbol + Name.
+  Marker _breweryDot(BuildContext context, Brewery b) {
+    final theme = Theme.of(context);
+    return Marker(
+      point: LatLng(b.latitude!, b.longitude!),
+      width: 16,
+      height: 16,
+      alignment: Alignment.center,
+      child: GestureDetector(
+        onTap: () => context.push('/brewery/${b.id}'),
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: theme.colorScheme.tertiary,
+            border: Border.all(color: theme.colorScheme.surface, width: 2),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Marker _breweryMarker(BuildContext context, Brewery b) {
+    final theme = Theme.of(context);
+    return Marker(
+      point: LatLng(b.latitude!, b.longitude!),
+      width: 90,
+      height: 52,
+      alignment: Alignment.center,
+      child: GestureDetector(
+        onTap: () => context.push('/brewery/${b.id}'),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('🏭', style: TextStyle(fontSize: 20)),
+            Container(
+              constraints: const BoxConstraints(maxWidth: 88),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface.withOpacity(0.85),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                b.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelSmall,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

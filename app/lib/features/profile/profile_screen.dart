@@ -220,6 +220,61 @@ class ProfileScreen extends ConsumerWidget {
           // ------------------------------------------------------------------
           // Navigation
           // ------------------------------------------------------------------
+          Builder(builder: (context) {
+            final signedIn = ref.watch(isSignedInProvider);
+            final friendCount = signedIn
+                ? ref.watch(onlineFriendsProvider).valueOrNull?.length
+                : null;
+            final requestCount = signedIn
+                ? (ref.watch(friendRequestsProvider).valueOrNull?.length ?? 0)
+                : 0;
+            return ListTile(
+              leading: const Text('👥', style: TextStyle(fontSize: 24)),
+              title: const Text('Freunde'),
+              subtitle: friendCount == null
+                  ? null
+                  : Text(friendCount == 1
+                      ? '1 Freund'
+                      : '$friendCount Freunde'),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (requestCount > 0)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: scheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        requestCount == 1
+                            ? '1 Anfrage offen'
+                            : '$requestCount Anfragen offen',
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: scheme.onPrimaryContainer),
+                      ),
+                    ),
+                  const Icon(Icons.chevron_right),
+                ],
+              ),
+              onTap: () => context.push('/friends'),
+            );
+          }),
+          Builder(builder: (context) {
+            final profile = ref.watch(isSignedInProvider)
+                ? ref.watch(myRemoteProfileProvider).valueOrNull
+                : null;
+            return ListTile(
+              leading: const Text('🔐', style: TextStyle(fontSize: 24)),
+              title: const Text('Konto'),
+              subtitle: Text(profile != null
+                  ? '@${profile.username} · online'
+                  : 'Anmelden für echte Freunde (Beta)'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/account'),
+            );
+          }),
           ListTile(
             leading: const Text('📖', style: TextStyle(fontSize: 24)),
             title: const Text('Tagebuch'),

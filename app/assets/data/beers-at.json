@@ -1,0 +1,960 @@
+{
+  "version": 3,
+  "updated": "2026-08-13",
+  "beers": [
+    {
+      "id": "at-stiegl-goldbraeu",
+      "brewery_id": "at-stiegl",
+      "name": "Stiegl-Goldbräu",
+      "style": "Märzen",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90034107",
+        "90034558",
+        "90034695"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90034107/front.4.400.jpg",
+      "description_manufacturer": "Das Salzburger Flaggschiff von Stiegl: ein mild gehopftes, goldfarbenes Märzen mit feiner Malznote, gebraut als ausgewogenes Bier für jeden Tag.",
+      "description_community": "Gilt als der süffige österreichische Standard; unaufgeregt, sauber und sehr trinkbar, ohne geschmacklich groß aufzufallen.",
+      "community_rating": 3.3
+    },
+    {
+      "id": "at-stiegl-pils",
+      "brewery_id": "at-stiegl",
+      "name": "Stiegl Pils",
+      "style": "Pils",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90034138"
+      ],
+      "description_manufacturer": "Ein schlankes, hopfenbetontes Pils aus Salzburg mit trockenem Abgang und feinherber Bittere.",
+      "description_community": "Solides österreichisches Pils; Kenner finden es weicher und weniger bitter als norddeutsche Vertreter des Stils.",
+      "community_rating": 3.2
+    },
+    {
+      "id": "at-stiegl-weisse",
+      "brewery_id": "at-stiegl",
+      "name": "Stiegl-Weisse",
+      "style": "Weissbier",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9003400304939"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/900/340/030/4939/front_de.3.400.jpg",
+      "description_manufacturer": "Naturtrübes Weissbier nach bayerischer Art aus Salzburg, mit fruchtigen Bananen- und Nelkennoten aus der obergärigen Hefe.",
+      "description_community": "Wird als erfrischendes, unkompliziertes Weissbier geschätzt; kein bayerischer Klassiker, aber ein verlässlicher Durstlöscher im Biergarten.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "at-stiegl-paracelsus-bio-zwickl",
+      "brewery_id": "at-stiegl",
+      "name": "Stiegl Paracelsus Bio-Zwickl",
+      "style": "Zwickl",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90034077"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90034077/front_fr.3.400.jpg",
+      "description_manufacturer": "Unfiltriertes Bio-Zwickl mit natürlicher Hefetrübung, das Stiegl als besonders naturbelassenes und bekömmliches Bier positioniert.",
+      "description_community": "Angenehm mild und hefig-weich; viele halten es für das interessanteste Bier im Stiegl-Kernsortiment.",
+      "community_rating": 3.5
+    },
+    {
+      "id": "at-stiegl-freibier",
+      "brewery_id": "at-stiegl",
+      "name": "Stiegl Freibier",
+      "style": "Alkoholfreies Lager",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": [
+        "9003402293200",
+        "9003402193807"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/900/340/229/3200/front_de.3.400.jpg",
+      "description_manufacturer": "Das alkoholfreie Lager von Stiegl, gebraut für vollen Biergeschmack ohne Alkohol – als Alternative für Sport und Alltag gedacht.",
+      "description_community": "Eines der besser bewerteten alkoholfreien Biere Österreichs; malzig-süßlich, aber erstaunlich biernah.",
+      "community_rating": 3.1
+    },
+    {
+      "id": "at-ottakringer-helles",
+      "brewery_id": "at-ottakringer",
+      "name": "Ottakringer Helles",
+      "style": "Helles",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9007600306915",
+        "90076343",
+        "90076091"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90076343/front_de.17.400.jpg",
+      "description_manufacturer": "Das klassische Wiener Helle der Ottakringer Brauerei: mild, rund und auf hohe Trinkbarkeit ausgelegt – ein Stück Wiener Wirtshauskultur.",
+      "description_community": "Das typische Wiener Wirtshaus- und Gastgartenbier, oft schlicht als '16er Blech' aus der Dose kultig; süffig, aber geschmacklich schlicht.",
+      "community_rating": 3.1
+    },
+    {
+      "id": "at-ottakringer-wiener-original",
+      "brewery_id": "at-ottakringer",
+      "name": "Ottakringer Wiener Original",
+      "style": "Wiener Lager",
+      "abv": 5.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9007600303242"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/900/760/030/3242/front_en.3.400.jpg",
+      "description_manufacturer": "Ein bernsteinfarbenes Lager in Anlehnung an den historischen Wiener Bierstil, mit betonter Malznote und kräftigerem Körper als das Helle.",
+      "description_community": "Wird als charaktervollere Alternative zum Hellen geschätzt; schöne Karamellmalznote, die dem Wiener-Lager-Erbe gerecht wird.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "at-ottakringer-zwickl-rot",
+      "brewery_id": "at-ottakringer",
+      "name": "Ottakringer Zwickl (rot)",
+      "style": "Zwickl",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Unfiltriertes, naturtrübes Zwickl aus Wien-Ottakring, das mit hefiger Frische und vollmundigem Geschmack beworben wird.",
+      "description_community": "Der heimliche Favorit vieler Wiener; hefig, weich und deutlich aromatischer als das Helle – in der roten Dose ein Klassiker.",
+      "community_rating": 3.5
+    },
+    {
+      "id": "at-ottakringer-gold-fassl-spezial",
+      "brewery_id": "at-ottakringer",
+      "name": "Ottakringer Gold Fassl Spezial",
+      "style": "Spezialbier",
+      "abv": 5.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das traditionsreiche Spezialbier von Ottakringer mit höherer Stammwürze, goldgelber Farbe und kräftig-malzigem Charakter.",
+      "description_community": "Ein Wiener Klassiker mit langer Geschichte; malzbetont und etwas kräftiger, wird von Stammtrinkern dem Hellen oft vorgezogen.",
+      "community_rating": 3.3
+    },
+    {
+      "id": "at-ottakringer-null-komma-josef",
+      "brewery_id": "at-ottakringer",
+      "name": "Ottakringer Null Komma Josef",
+      "style": "Alkoholfreies Lager",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": [
+        "90076503",
+        "90076527"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90076503/front_de.28.400.jpg",
+      "description_manufacturer": "Das alkoholfreie Bier der Ottakringer Brauerei mit augenzwinkerndem Wiener Namen, gebraut als vollwertige Bieralternative ohne Alkohol.",
+      "description_community": "Vor allem wegen des Namens Kult; geschmacklich ein durchschnittliches Alkoholfreies mit süßlicher Würzenote.",
+      "community_rating": 2.9
+    },
+    {
+      "id": "at-goesser-maerzen",
+      "brewery_id": "at-goesser",
+      "name": "Gösser Märzen",
+      "style": "Märzen",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90129018",
+        "9001511100617",
+        "90288050"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90129018/front_de.14.400.jpg",
+      "description_manufacturer": "Das meistverkaufte Bier der Marke Gösser: ein goldgelbes Märzen aus der Steiermark, das mit dem Slogan vom besten Bier des Landes als österreichische Institution vermarktet wird.",
+      "description_community": "Allgegenwärtiges Standardbier in ganz Österreich; süffig und unauffällig, in Blindverkostungen meist im Mittelfeld.",
+      "community_rating": 3.2
+    },
+    {
+      "id": "at-goesser-spezial",
+      "brewery_id": "at-goesser",
+      "name": "Gösser Spezial",
+      "style": "Spezialbier",
+      "abv": 5.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Ein kräftigeres, würzigeres Spezialbier mit höherer Stammwürze, das Gösser als Bier für besondere Anlässe positioniert.",
+      "description_community": "Von vielen als das beste reguläre Gösser angesehen; vollmundiger und würziger als das Märzen.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "at-goesser-zwickl",
+      "brewery_id": "at-goesser",
+      "name": "Gösser Zwickl",
+      "style": "Zwickl",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Naturtrübes, unfiltriertes Zwickl aus Göss mit feiner Hefenote, das die Brauerei als besonders naturbelassen bewirbt.",
+      "description_community": "Angenehm mild-hefiges Zwickl; wird als runder und interessanter als das Standard-Märzen wahrgenommen.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "at-goesser-stiftsbraeu",
+      "brewery_id": "at-goesser",
+      "name": "Gösser Stiftsbräu",
+      "style": "Dunkles",
+      "abv": 3.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90129063"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90129063/front.4.400.jpg",
+      "description_manufacturer": "Ein dunkles, mildes Bier mit süßlicher Malznote und niedrigem Alkoholgehalt, das an die Klostertradition des Stifts Göss anknüpft.",
+      "description_community": "Süßlich-malziges Dunkles, das polarisiert: für die einen ein gemütliches Dessertbier, für andere zu süß und zu leicht.",
+      "community_rating": 3.0
+    },
+    {
+      "id": "at-goesser-naturgold",
+      "brewery_id": "at-goesser",
+      "name": "Gösser NaturGold",
+      "style": "Alkoholfreies Vollbier",
+      "abv": 0.4,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": [
+        "9028800602270"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/902/880/060/2270/front_de.9.400.jpg",
+      "description_manufacturer": "Das alkoholfreie Vollbier von Gösser, das mit vollem Geschmack und natürlichen Rohstoffen als vollwertige Alternative beworben wird.",
+      "description_community": "Eines der verbreitetsten Alkoholfreien in Österreich; ordentlich, aber mit der stiltypisch süßlichen Würzenote.",
+      "community_rating": 3.0
+    },
+    {
+      "id": "at-zipfer-urtyp",
+      "brewery_id": "at-zipfer",
+      "name": "Zipfer Urtyp",
+      "style": "Helles Lager",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90031779",
+        "9028800632161"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90031779/front_de.18.400.jpg",
+      "description_manufacturer": "Das hopfenbetonte Aushängeschild aus Zipf: ein helles Vollbier mit Naturhopfen, das die Brauerei als besonders urtypisch und herb-frisch positioniert.",
+      "description_community": "Für viele das hopfigste unter den österreichischen Standardbieren; trocken, herb und erfrischend, ein Klassiker im oberösterreichischen Wirtshaus.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "at-zipfer-pils",
+      "brewery_id": "at-zipfer",
+      "name": "Zipfer Pils",
+      "style": "Pils",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Ein schlankes Pils mit betonter Hopfenbittere, das die Zipfer Brautradition der Naturhopfung fortführt.",
+      "description_community": "Solide und angenehm herb; steht im Schatten des Urtyp, wird aber von Pils-Fans als eines der besseren österreichischen Industrie-Pils genannt.",
+      "community_rating": 3.3
+    },
+    {
+      "id": "at-zipfer-hell-alkoholfrei",
+      "brewery_id": "at-zipfer",
+      "name": "Zipfer Hell Alkoholfrei",
+      "style": "Alkoholfreies Helles",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": [
+        "9028800140796"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/902/880/014/0796/front_en.3.400.jpg",
+      "description_manufacturer": "Alkoholfreies Helles aus Zipf, das mit frischem, hellem Biergeschmack und der typischen Zipfer Hopfennote wirbt.",
+      "description_community": "Frisch und vergleichsweise schlank für ein Alkoholfreies; gute Wahl, wenn es hopfig statt süß sein soll.",
+      "community_rating": 3.1
+    },
+    {
+      "id": "at-puntigamer-maerzen",
+      "brewery_id": "at-puntigamer",
+      "name": "Puntigamer Märzen",
+      "style": "Märzen",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9001511400618"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/900/151/140/0618/front_de.12.400.jpg",
+      "description_manufacturer": "Das 'bierige Bier' aus Graz: ein mildes, süffiges Märzen, das als geselliges Alltagsbier und Sponsor-Bier des steirischen Fußballs bekannt ist.",
+      "description_community": "Steirisches Standardbier mit treuer Stammkundschaft; mild und süffig, von Kritikern als austauschbar empfunden.",
+      "community_rating": 3.0
+    },
+    {
+      "id": "at-puntigamer-panther",
+      "brewery_id": "at-puntigamer",
+      "name": "Puntigamer Panther",
+      "style": "Starkbier",
+      "abv": 7.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das Starkbier aus Puntigam, benannt nach dem steirischen Wappentier, mit kräftigem Körper und deutlicher Malzsüße.",
+      "description_community": "Kräftig und süßlich; wird eher als Kuriosität und Winterbier getrunken denn als Alltagsbier.",
+      "community_rating": 3.1
+    },
+    {
+      "id": "at-schwechater-bier",
+      "brewery_id": "at-schwechater",
+      "name": "Schwechater Bier",
+      "style": "Helles Lager",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9003100151024",
+        "90031274"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/900/310/015/1024/front_de.3.400.jpg",
+      "description_manufacturer": "Das klassische Lager aus Schwechat, das sich auf die Braupioniertradition von Anton Dreher beruft: hell, mild und auf Trinkfreude ausgelegt.",
+      "description_community": "Ein unaufgeregtes Wiener Umland-Lager mit historischem Nimbus; süffig, aber ohne Ecken und Kanten.",
+      "community_rating": 3.0
+    },
+    {
+      "id": "at-schwechater-wiener-lager",
+      "brewery_id": "at-schwechater",
+      "name": "Schwechater Wiener Lager",
+      "style": "Wiener Lager",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Eine Hommage an das 1841 von Anton Dreher in Schwechat erfundene Wiener Lager: bernsteinfarben, malzaromatisch und nach historischem Vorbild gebraut.",
+      "description_community": "Bei Bierfreunden beliebt, weil hier der historische Wiener Stil von seiner Ursprungsbrauerei wiederbelebt wird; schön malzig mit trockenem Abgang.",
+      "community_rating": 3.6
+    },
+    {
+      "id": "at-schwechater-zwickl",
+      "brewery_id": "at-schwechater",
+      "name": "Schwechater Zwickl",
+      "style": "Zwickl",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Unfiltriertes, hopfiges Zwickl aus Schwechat, das mit natürlicher Trübung und frischem Kellercharakter beworben wird.",
+      "description_community": "Hat sich in Wiener Lokalen als beliebtes Fassbier etabliert; frisch, hefig und überraschend hopfig für ein Großbrauerei-Zwickl.",
+      "community_rating": 3.5
+    },
+    {
+      "id": "at-wieselburger-stammbraeu",
+      "brewery_id": "at-wieselburger",
+      "name": "Wieselburger Stammbräu",
+      "style": "Export-Lager",
+      "abv": 5.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9003100159020"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/900/310/015/9020/front_de.10.400.jpg",
+      "description_manufacturer": "Das traditionsreiche Premiumbier aus Wieselburg mit kräftiger goldener Farbe und betonter Malzigkeit, gebraut nach überlieferter Rezeptur.",
+      "description_community": "Im Mostviertel fest verwurzelt; wird als ehrliches, malzbetontes Traditionsbier beschrieben.",
+      "community_rating": 3.2
+    },
+    {
+      "id": "at-wieselburger-gold",
+      "brewery_id": "at-wieselburger",
+      "name": "Wieselburger Gold",
+      "style": "Helles Lager",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Ein mildes, goldgelbes Lager aus Wieselburg, das auf ausgewogene Süffigkeit setzt.",
+      "description_community": "Regionales Alltagsbier in Niederösterreich; mild und unkompliziert.",
+      "community_rating": 3.0
+    },
+    {
+      "id": "at-hirter-privat-pils",
+      "brewery_id": "at-hirter",
+      "name": "Hirter Privat Pils",
+      "style": "Pils",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9002803000233"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/900/280/300/0233/front_de.12.400.jpg",
+      "description_manufacturer": "Das Aushängeschild der Kärntner Privatbrauerei Hirt: ein feinherbes Pils mit eigenem Quellwasser und langer Reifung gebraut.",
+      "description_community": "Gilt vielen als eines der besten Pils Österreichs; angenehm herb, sauber und mit gutem Ruf weit über Kärnten hinaus.",
+      "community_rating": 3.6
+    },
+    {
+      "id": "at-hirter-morchl",
+      "brewery_id": "at-hirter",
+      "name": "Hirter Morchl",
+      "style": "Dunkles",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Ein dunkles Spezialbier aus Hirt mit Röstmalzcharakter und würziger Note, benannt nach einem alten Kärntner Ausdruck.",
+      "description_community": "Beliebtes dunkles Traditionsbier; schön röstmalzig, ohne süß oder schwer zu wirken.",
+      "community_rating": 3.5
+    },
+    {
+      "id": "at-hirter-1270",
+      "brewery_id": "at-hirter",
+      "name": "Hirter 1270",
+      "style": "Kellerbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Benannt nach dem Gründungsjahr der Brauerei: ein naturbelassenes, unfiltriertes Bier, das an die ursprüngliche Braukunst von Hirt erinnern soll.",
+      "description_community": "Wird als charaktervolles, hefig-frisches Kellerbier geschätzt und gerne direkt im Brauereigasthof getrunken.",
+      "community_rating": 3.5
+    },
+    {
+      "id": "at-murauer-maerzen",
+      "brewery_id": "at-murauer",
+      "name": "Murauer Märzen",
+      "style": "Märzen",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90145056"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90145056/front_de.4.400.jpg",
+      "description_manufacturer": "Das Hauptbier der genossenschaftlich organisierten Brauerei Murau: ein süffiges Märzen aus dem obersteirischen Bergland, gebraut mit regionalen Rohstoffen.",
+      "description_community": "In der Obersteiermark die klare Nummer eins; sauberes, frisches Märzen, das bei Bierprämierungen regelmäßig gut abschneidet.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "at-trumer-pils",
+      "brewery_id": "at-trumer",
+      "name": "Trumer Pils",
+      "style": "Pils",
+      "abv": 4.9,
+      "ibu": 26,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Die Trumer Privatbrauerei in Obertrum widmet sich ganz dem Pils: offen vergoren, lang gereift und mit feinperliger Rezenz als hochwertigstes Pils positioniert.",
+      "description_community": "International renommiertes Spezialisten-Pils; schlank, elegant und knochentrocken, für viele das beste Pils Österreichs.",
+      "community_rating": 3.6
+    },
+    {
+      "id": "at-augustiner-salzburg-maerzen",
+      "brewery_id": "at-augustiner-salzburg",
+      "name": "Augustiner Märzen (Müllner Bräu)",
+      "style": "Märzen",
+      "abv": 4.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das Märzen der Augustiner Bräu Kloster Mülln in Salzburg, aus dem Holzfass in den Steinkrug gezapft – gebraut nach klösterlicher Tradition seit 1621.",
+      "description_community": "Weniger wegen des Geschmacks als wegen des Gesamterlebnisses im Bräustübl legendär; mild, malzig und aus dem Holzfass besonders weich.",
+      "community_rating": 3.6
+    },
+    {
+      "id": "at-egger-maerzen",
+      "brewery_id": "at-egger",
+      "name": "Egger Märzen",
+      "style": "Märzen",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90151835"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/000/009/015/1835/front_de.12.400.jpg",
+      "description_manufacturer": "Das klassische Märzen der Privatbrauerei Egger aus Unterradlberg: mild, goldgelb und auf unkomplizierte Trinkbarkeit ausgelegt.",
+      "description_community": "Preisbewusstes, süffiges Standardbier aus Niederösterreich; unauffällig, aber solide.",
+      "community_rating": 2.9
+    },
+    {
+      "id": "at-egger-zwickl",
+      "brewery_id": "at-egger",
+      "name": "Egger Zwickl",
+      "style": "Zwickl",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Naturtrübes Zwickl von Egger, das mit unfiltrierter Naturbelassenheit und milder Hefenote beworben wird.",
+      "description_community": "Etwas mehr Charakter als das Märzen; mild-hefig und gut trinkbar.",
+      "community_rating": 3.1
+    },
+    {
+      "id": "at-zillertal-maerzen",
+      "brewery_id": "at-zillertal",
+      "name": "Zillertal Märzen",
+      "style": "Märzen",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das Standardbier der Zillertal Bier Brauerei in Zell am Ziller, gebraut mit Tiroler Bergwasser – die älteste Privatbrauerei Tirols.",
+      "description_community": "Im Zillertal allgegenwärtig; frisches, sauberes Märzen mit regionalem Sympathiebonus.",
+      "community_rating": 3.2
+    },
+    {
+      "id": "at-zillertal-weissbier",
+      "brewery_id": "at-zillertal",
+      "name": "Zillertal Weissbier",
+      "style": "Weissbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Naturtrübes Weissbier aus dem Zillertal mit fruchtig-hefigem Aroma, das die Brauerei als Spezialität neben ihren Lagerbieren führt.",
+      "description_community": "Beliebtes Après-Wander-Bier in Tirol; fruchtig und frisch, hält mit guten bayerischen Weissbieren aber nicht ganz mit.",
+      "community_rating": 3.3
+    },
+    {
+      "id": "at-mohrenbraeu-spezial",
+      "brewery_id": "at-mohrenbraeu",
+      "name": "Mohrenbräu Spezial",
+      "style": "Spezialbier",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9013500008101"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/901/350/000/8101/front_de.3.400.jpg",
+      "description_manufacturer": "Das bekannteste Bier der Dornbirner Mohrenbrauerei: ein bernsteinfarbenes Spezialbier mit kräftiger Malznote, das in Vorarlberg als Landesklassiker gilt.",
+      "description_community": "In Vorarlberg das Bier schlechthin; malzig-würzig und mit starker regionaler Identität, außerhalb des Ländles kaum zu bekommen.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "at-mohrenbraeu-kellerbier",
+      "brewery_id": "at-mohrenbraeu",
+      "name": "Mohrenbräu Kellerbier",
+      "style": "Kellerbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Unfiltriertes, naturtrübes Kellerbier aus Dornbirn, das mit ursprünglichem Braucharakter und feiner Hefenote beworben wird.",
+      "description_community": "Wird als süffige, hefige Alternative zum Spezial geschätzt; angenehm rustikal.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "at-fohrenburger-jubilaeum",
+      "brewery_id": "at-fohrenburger",
+      "name": "Fohrenburger Jubiläum",
+      "style": "Spezialbier",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das Premiumbier der Fohrenburg Brauerei in Bludenz: ein goldfarbenes, malzbetontes Spezialbier, das ursprünglich zum Brauereijubiläum eingebraut wurde.",
+      "description_community": "Der Fohrenburg-Klassiker im Oberland; rund und malzig, mit treuer Anhängerschaft im Raum Bludenz.",
+      "community_rating": 3.2
+    },
+    {
+      "id": "at-frastanzer-s-dunkle",
+      "brewery_id": "at-frastanzer",
+      "name": "das frastanzer s'dunkle",
+      "style": "Dunkles",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das dunkle Spezialbier der genossenschaftlichen Brauerei Frastanz mit kräftigem Röstmalzaroma, das als Vorarlberger Original vermarktet wird.",
+      "description_community": "Kultbier in Vorarlberg mit eigener Fangemeinde; röstig, würzig und deutlich charaktervoller als die üblichen Landesbiere.",
+      "community_rating": 3.6
+    },
+    {
+      "id": "at-schladminger-maerzen",
+      "brewery_id": "at-schladminger",
+      "name": "Schladminger Märzen",
+      "style": "Märzen",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das Standardbier der Schladminger Brauerei, gebraut mit Wasser aus den Schladminger Tauern und als frisches Bergbier positioniert.",
+      "description_community": "Solides Skigebiet- und Wirtshausbier der Region; frisch und unkompliziert.",
+      "community_rating": 3.1
+    },
+    {
+      "id": "at-schladminger-biozwickl",
+      "brewery_id": "at-schladminger",
+      "name": "Schladminger BioZwickl",
+      "style": "Zwickl",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Naturtrübes Bio-Zwickl aus Schladming, gebraut mit biologischen Rohstoffen und als naturbelassenes Bergbier beworben.",
+      "description_community": "Wird als das interessanteste Schladminger geschätzt; hefig-frisch mit sauberem Bio-Malzcharakter.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "at-villacher-maerzen",
+      "brewery_id": "at-villacher",
+      "name": "Villacher Märzen",
+      "style": "Märzen",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das klassische Märzen der Villacher Brauerei: mild und süffig, als Kärntner Lebensgefühl im Glas vermarktet.",
+      "description_community": "Kärntner Alltagsbier mit großer Verbreitung; mild, leicht und ohne besondere Höhen oder Tiefen.",
+      "community_rating": 3.0
+    },
+    {
+      "id": "at-schremser-edelmaerzen",
+      "brewery_id": "at-schremser",
+      "name": "Schremser Edelmärzen",
+      "style": "Märzen",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das Hauptbier der Waldviertler Familienbrauerei Schrems: ein Märzen mit weichem Granitwasser des Waldviertels gebraut und als regionales Naturprodukt positioniert.",
+      "description_community": "Ehrliches Kleinbrauerei-Märzen mit weichem Trunk; im Waldviertel fest verankert.",
+      "community_rating": 3.3
+    },
+    {
+      "id": "at-schremser-bio-roggenbier",
+      "brewery_id": "at-schremser",
+      "name": "Schremser Bio Roggenbier",
+      "style": "Roggenbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Eine Waldviertler Spezialität: obergäriges Bio-Bier mit hohem Roggenmalzanteil aus regionalem Anbau, würzig und naturtrüb.",
+      "description_community": "Seltener Stil, der Schrems über die Region hinaus bekannt gemacht hat; brotig-würzig und angenehm anders.",
+      "community_rating": 3.6
+    },
+    {
+      "id": "at-weitra-hadmar",
+      "brewery_id": "at-weitra",
+      "name": "Weitra Hadmar",
+      "style": "Zwickl",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90083204"
+      ],
+      "description_manufacturer": "Das Bio-Zwickl der Brauerei Weitra, benannt nach dem Stadtgründer Hadmar von Kuenring: unfiltriert, bernsteinfarben und aus biologischen Rohstoffen der ältesten Braustadt Österreichs.",
+      "description_community": "Bio-Pionier unter den österreichischen Bieren; malzig-hefig mit Charakter, bei Kennern des Waldviertels hoch angesehen.",
+      "community_rating": 3.6
+    },
+    {
+      "id": "at-zwettler-original",
+      "brewery_id": "at-zwettler",
+      "name": "Zwettler Original",
+      "style": "Märzen",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das meistgetrunkene Bier der Privatbrauerei Zwettl: ein goldgelbes, mild gehopftes Bier mit Waldviertler Braugerste und weichem Wasser.",
+      "description_community": "Verlässliches Waldviertler Standardbier; süffig und sauber, mit gutem Ruf als ehrliches Privatbrauerei-Bier.",
+      "community_rating": 3.3
+    },
+    {
+      "id": "at-freistaedter-ratsherrn-premium",
+      "brewery_id": "at-freistaedter",
+      "name": "Freistädter Ratsherrn Premium",
+      "style": "Premium Lager",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90104015"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/90104015/front_de.4.400.jpg",
+      "description_manufacturer": "Das Premiumbier der Braucommune Freistadt, der historischen Bürgerbrauerei des Mühlviertels: goldgelb, feinwürzig und mit regionalen Rohstoffen gebraut.",
+      "description_community": "Aushängeschild der genossenschaftlichen Braucommune; ausgewogen und sauber, im Mühlviertel die erste Wahl.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "at-freistaedter-rotschopf",
+      "brewery_id": "at-freistaedter",
+      "name": "Freistädter Rotschopf",
+      "style": "Rotbier",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Eine rötlich schimmernde Bierspezialität aus Freistadt mit karamellig-malzigem Charakter und kräftigerer Hopfung.",
+      "description_community": "Beliebte Spezialität neben dem Kernsortiment; karamellmalzig mit feiner Bittere, hebt sich wohltuend vom Einheitslager ab.",
+      "community_rating": 3.5
+    },
+    {
+      "id": "at-engelszell-gregorius",
+      "brewery_id": "at-engelszell",
+      "name": "Engelszell Gregorius",
+      "style": "Trappist Quadrupel",
+      "abv": 9.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120041150678"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/912/004/115/0678/front_fr.15.400.jpg",
+      "description_manufacturer": "Das dunkle Starkbier des Trappistenstifts Engelszell, gebraut mit eigenem Honig: Österreichs Beitrag zur exklusiven Familie der Trappistenbiere.",
+      "description_community": "Als einziges österreichisches Trappisten-Quadrupel eine Rarität; schwer, süß und honigbetont, die Meinungen über die Balance gehen auseinander.",
+      "community_rating": 3.3
+    },
+    {
+      "id": "at-engelszell-benno",
+      "brewery_id": "at-engelszell",
+      "name": "Engelszell Benno",
+      "style": "Trappist Tripel",
+      "abv": 6.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120041150685"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/912/004/115/0685/front.3.400.jpg",
+      "description_manufacturer": "Ein bernsteinfarbenes Trappistenbier aus dem Stift Engelszell nach belgischem Vorbild, mit fruchtiger Hefenote und würzigem Charakter.",
+      "description_community": "Zugänglicher als der Gregorius; fruchtig-würzig, wenn auch nicht auf dem Niveau der belgischen Vorbilder.",
+      "community_rating": 3.3
+    },
+    {
+      "id": "at-engelszell-nivard",
+      "brewery_id": "at-engelszell",
+      "name": "Engelszell Nivard",
+      "style": "Trappist Blond",
+      "abv": 5.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120041150784"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/912/004/115/0784/front.3.400.jpg",
+      "description_manufacturer": "Das helle, leichteste Trappistenbier aus Engelszell: blond, hopfenbetont und als zugängliches Klosterbier für jeden Tag gedacht.",
+      "description_community": "Das süffigste der drei Engelszeller; leicht, blumig-hopfig und ein netter Einstieg in die Trappistenwelt.",
+      "community_rating": 3.3
+    },
+    {
+      "id": "at-bevog-tak-pale-ale",
+      "brewery_id": "at-bevog",
+      "name": "Bevog Tak Pale Ale",
+      "style": "Pale Ale",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das hopfenaromatische Pale Ale der Craft-Brauerei Bevog aus Bad Radkersburg, mit Zitrus- und Tropenfruchtnoten als moderner Allrounder positioniert.",
+      "description_community": "Einer der österreichischen Craft-Klassiker; fruchtig-hopfig, ausgewogen und sehr trinkbar.",
+      "community_rating": 3.7
+    },
+    {
+      "id": "at-bevog-ond-smoked-porter",
+      "brewery_id": "at-bevog",
+      "name": "Bevog Ond Smoked Porter",
+      "style": "Smoked Porter",
+      "abv": 6.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Ein dunkles Porter mit Rauchmalz von Bevog: röstig, schokoladig und mit dezenter Rauchnote als charakterstarke Spezialität gebraut.",
+      "description_community": "Wird für die gelungene Balance aus Röstaromen und feinem Rauch gelobt; eines der bekanntesten dunklen Craft-Biere Österreichs.",
+      "community_rating": 3.8
+    },
+    {
+      "id": "at-bevog-kramah-ipa",
+      "brewery_id": "at-bevog",
+      "name": "Bevog Kramah IPA",
+      "style": "IPA",
+      "abv": 7.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120053280288"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/912/005/328/0288/front_sk.6.400.jpg",
+      "description_manufacturer": "Das kräftig gehopfte India Pale Ale von Bevog mit intensiven Frucht- und Harznoten amerikanischer Hopfensorten.",
+      "description_community": "Bei Hopfenfans hoch angesehen; intensiv fruchtig mit kerniger Bittere, regelmäßig unter den besten IPAs des Landes genannt.",
+      "community_rating": 3.8
+    },
+    {
+      "id": "at-brewage-affenkoenig",
+      "brewery_id": "at-brewage",
+      "name": "Brew Age Affenkönig",
+      "style": "Imperial IPA",
+      "abv": 8.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das Imperial IPA der Wiener Kreativbrauerei Brew Age: massiv gehopft, mit tropischer Fruchtaromatik und kräftigem Malzkörper.",
+      "description_community": "Gilt als eines der besten Hopfenbiere Österreichs; wuchtig, harzig-fruchtig und für seine Stärke gefährlich trinkbar.",
+      "community_rating": 3.9
+    },
+    {
+      "id": "at-brewage-hopfenauflauf",
+      "brewery_id": "at-brewage",
+      "name": "Brew Age Hopfenauflauf",
+      "style": "IPA",
+      "abv": 6.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Ein hopfenbetontes IPA von Brew Age mit verspieltem Namen, das Zitrus- und Tropenaromen in den Mittelpunkt stellt.",
+      "description_community": "Beliebtes Wiener Craft-IPA; aromatisch und zugänglich, ein guter Einstieg ins Brew-Age-Sortiment.",
+      "community_rating": 3.7
+    },
+    {
+      "id": "at-gusswerk-edelguss",
+      "brewery_id": "at-gusswerk",
+      "name": "Gusswerk Edelguss",
+      "style": "Golden Ale",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "description_manufacturer": "Das goldene Bio-Ale des Brauhauses Gusswerk aus Salzburg: obergärig, aromatisch und als handwerkliche Bio-Alternative zu den Salzburger Lagerbieren positioniert.",
+      "description_community": "Angenehm fruchtig-frisches Bio-Ale; steht für die handwerkliche Salzburger Bioschiene und wird von Craft-Einsteigern gerne gewählt.",
+      "community_rating": 3.5
+    },
+    {
+      "id": "at-grieskirchner-pils",
+      "brewery_id": "at-grieskirchner",
+      "name": "Grieskirchner Pils",
+      "style": "Pils",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9010300000052"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/901/030/000/0052/front_de.3.400.jpg",
+      "description_manufacturer": "Das hopfenbetonte Aushängeschild aus Grieskirchen: schlank, trocken und spürbar herber als die meisten österreichischen Lagerbiere.",
+      "description_community": "Für Fans herber Biere einer der wenigen echten Pils-Klassiker Österreichs; knochentrocken und erfrischend bitter.",
+      "community_rating": 3.5
+    },
+    {
+      "id": "at-rieder-maerzen",
+      "brewery_id": "at-rieder",
+      "name": "Rieder Märzen",
+      "style": "Märzen",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das Standardbier der Innviertler Braugenossenschaft: goldgelb, malzbetont und auf Süffigkeit gebraut.",
+      "description_community": "Solides, ehrliches Innviertler Märzen – unaufgeregt und gut trinkbar, im Kern ein Wirtshausbier.",
+      "community_rating": 3.3
+    },
+    {
+      "id": "at-baumgartner-maerzen",
+      "brewery_id": "at-baumgartner",
+      "name": "Baumgartner Märzen",
+      "style": "Märzen",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Der Schärdinger Klassiker: ein mildes, rundes Märzen mit sanfter Malzsüße, seit Generationen das Alltagsbier des Innviertels.",
+      "description_community": "Im Innviertel Kult und dort in vielen Wirtshäusern Standard; weich, süffig und angenehm unspektakulär.",
+      "community_rating": 3.4
+    },
+    {
+      "id": "at-schlaegl-doppelbock",
+      "brewery_id": "at-schlaegl",
+      "name": "Schlägl Doppelbock",
+      "style": "Doppelbock",
+      "abv": 8.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Kräftiger dunkler Doppelbock der Stiftsbrauerei: viel Malz, Noten von Dörrobst und Karamell, wärmend im Abgang.",
+      "description_community": "Einer der angesehensten Starkbiere Österreichs; komplex und vollmundig, ideal als Winter- und Fastenbier.",
+      "community_rating": 3.9
+    },
+    {
+      "id": "at-schlaegl-bio-roggen",
+      "brewery_id": "at-schlaegl",
+      "name": "Schlägl Bio Roggen",
+      "style": "Roggenbier",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Obergäriges Spezialbier mit Bio-Roggen aus dem Mühlviertel: leicht säuerlich-würzig, mit brotiger Malznote und feiner Fruchtigkeit.",
+      "description_community": "Seltener Bierstil, den kaum jemand sonst in Österreich braut; erfrischend anders und ein Aushängeschild der Stiftsbrauerei.",
+      "community_rating": 3.8
+    },
+    {
+      "id": "at-raschhofer-maerzen",
+      "brewery_id": "at-raschhofer",
+      "name": "Raschhofer Märzen",
+      "style": "Märzen",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das klassische Märzen der Altheimer Familienbrauerei: hell, mild gehopft und auf Trinkbarkeit ausgelegt.",
+      "description_community": "Regionaler Standard im westlichen Innviertel; sauber gebraut und süffig.",
+      "community_rating": 3.2
+    },
+    {
+      "id": "at-hofstettner-granitbock",
+      "brewery_id": "at-hofstettner",
+      "name": "Hofstettner Granitbock",
+      "style": "Bock",
+      "abv": 7.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "In ausgehöhlten Granittrögen offen vergorener Bock nach historischem Vorbild: malzig-komplex mit karamelligen und leicht rauchigen Anklängen.",
+      "description_community": "Ein Unikat der österreichischen Bierszene und international beachtet; wuchtig, vielschichtig und absolut probierenswert.",
+      "community_rating": 4.1
+    },
+    {
+      "id": "at-hofstettner-kuebelbier",
+      "brewery_id": "at-hofstettner",
+      "name": "Hofstettner Kübelbier",
+      "style": "Zwickl",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Unfiltriertes Zwickl der ältesten Brauerei Österreichs, benannt nach dem früher üblichen Ausschank im Kübel: naturtrüb, mild und malzaromatisch.",
+      "description_community": "Süffiges, ehrliches Kellerbier mit Geschichte; im Mühlviertel ein Klassiker.",
+      "community_rating": 3.7
+    },
+    {
+      "id": "at-starkenberger-maerzen",
+      "brewery_id": "at-starkenberger",
+      "name": "Starkenberger Märzen",
+      "style": "Märzen",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das Tiroler Standardbier der Schlossbrauerei: hellgolden, mild und mit weichem Tiroler Bergwasser gebraut.",
+      "description_community": "Im Tiroler Oberland verbreitetes, gut trinkbares Märzen; solide Basis des Starkenberger-Sortiments.",
+      "community_rating": 3.2
+    },
+    {
+      "id": "at-eggenberg-hopfenkoenig",
+      "brewery_id": "at-eggenberg",
+      "name": "Eggenberger Hopfenkönig",
+      "style": "Pils",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [],
+      "image_url": null,
+      "description_manufacturer": "Das hopfenbetonte Premium-Pils von Schloss Eggenberg: strohgelb, schlank und mit deutlicher, eleganter Bittere.",
+      "description_community": "Gilt seit Jahrzehnten als eines der besten Pilsbiere Österreichs; trocken, spritzig und fein gehopft.",
+      "community_rating": 3.8
+    },
+    {
+      "id": "at-eggenberg-samichlaus",
+      "brewery_id": "at-eggenberg",
+      "name": "Samichlaus Classic",
+      "style": "Doppelbock",
+      "abv": 14.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "0608782502288"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/060/878/250/2288/front_fr.6.400.jpg",
+      "description_manufacturer": "Nur einmal im Jahr am 6. Dezember eingebraut und zehn Monate gereift: ein extrem starkes, likörartiges Lagerbier mit Noten von Dörrobst, Karamell und Portwein.",
+      "description_community": "Legendäres Sammler- und Digestif-Bier, das lange als stärkstes Lagerbier der Welt galt; nichts für nebenbei, aber ein Erlebnis.",
+      "community_rating": 4.0
+    }
+  ]
+}

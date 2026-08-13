@@ -1,0 +1,4 @@
+# Minimal-Konfiguration für die Supabase-GitHub-Integration
+# (Projekt: swlqkwlpnxwthbneblww). Für lokale Entwicklung mit
+# `supabase start` erzeugt `supabase init` bei Bedarf die volle Fassung.
+project_id = "brewmates"

@@ -44,6 +44,19 @@ class Breweries extends Table {
   TextColumn get country => text()();
   TextColumn get city => text()();
 
+  // Detailinfos aus der Community-Datenbank (breweries-at.json), alle optional.
+  TextColumn get address => text().nullable()();
+  RealColumn get latitude => real().nullable()();
+  RealColumn get longitude => real().nullable()();
+  IntColumn get founded => integer().nullable()();
+  TextColumn get website => text().nullable()();
+  TextColumn get ownership => text().nullable()();
+  IntColumn get employees => integer().nullable()();
+  IntColumn get annualOutputHl => integer().nullable()();
+  IntColumn get revenueEur => integer().nullable()();
+  TextColumn get notes => text().nullable()();
+  TextColumn get dataStatus => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -59,6 +72,18 @@ class Beers extends Table {
   BoolColumn get isAlcoholFree => boolean().withDefault(const Constant(false))();
   BoolColumn get isUserSubmitted =>
       boolean().withDefault(const Constant(false))();
+
+  /// Kundenerfahrungen/Verkostungsnotizen aus der Community-Datenbank.
+  TextColumn get descriptionCommunity => text().nullable()();
+
+  /// Redaktionelle Community-Bewertung (0–5) aus der Datenbank, kein Messwert.
+  RealColumn get communityRating => real().nullable()();
+
+  /// Kommagetrennte EAN-Barcodes (8 oder 13 Ziffern), z. B. "90034107".
+  TextColumn get barcodes => text().withDefault(const Constant(''))();
+
+  /// Etikett-/Produktfoto als URL (Open Food Facts, CC-BY-SA – nur verlinkt).
+  TextColumn get imageUrl => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -239,13 +264,39 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (m) async {
           await m.createAll();
           await seedDatabase(this);
+        },
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            // v2: Community-Datenbank-Felder (Österreich-Fokus).
+            await m.addColumn(breweries, breweries.address);
+            await m.addColumn(breweries, breweries.latitude);
+            await m.addColumn(breweries, breweries.longitude);
+            await m.addColumn(breweries, breweries.founded);
+            await m.addColumn(breweries, breweries.website);
+            await m.addColumn(breweries, breweries.ownership);
+            await m.addColumn(breweries, breweries.employees);
+            await m.addColumn(breweries, breweries.annualOutputHl);
+            await m.addColumn(breweries, breweries.revenueEur);
+            await m.addColumn(breweries, breweries.notes);
+            await m.addColumn(breweries, breweries.dataStatus);
+            await m.addColumn(beers, beers.descriptionCommunity);
+            await m.addColumn(beers, beers.communityRating);
+          }
+          if (from < 3) {
+            // v3: Barcodes für den Scanner.
+            await m.addColumn(beers, beers.barcodes);
+          }
+          if (from < 4) {
+            // v4: Etikett-Bilder (Open Food Facts) für die Community-DB.
+            await m.addColumn(beers, beers.imageUrl);
+          }
         },
       );
 
@@ -579,6 +630,7 @@ class AppDatabase extends _$AppDatabase {
     double? abv,
     bool isAlcoholFree = false,
     String? description,
+    String? barcode,
   }) =>
       into(beers).insert(BeersCompanion.insert(
         id: id,
@@ -589,7 +641,73 @@ class AppDatabase extends _$AppDatabase {
         isAlcoholFree: Value(isAlcoholFree),
         description: Value(description),
         isUserSubmitted: const Value(true),
+        barcodes: Value(barcode ?? ''),
       ));
+
+  /// Bier über einen gescannten EAN finden. LIKE nur als Vorfilter —
+  /// die exakte Prüfung passiert in Dart, weil ein EAN-8 sonst als
+  /// Teilstring eines EAN-13 fälschlich matchen würde.
+  Future<BeerWithBrewery?> findBeerByBarcode(String ean) async {
+    final query = select(beers).join([
+      innerJoin(breweries, breweries.id.equalsExp(beers.breweryId)),
+    ])
+      ..where(beers.barcodes.like('%$ean%'));
+    final rows = await query.get();
+    for (final row in rows) {
+      final beer = row.readTable(beers);
+      if (beer.barcodes.split(',').map((c) => c.trim()).contains(ean)) {
+        return BeerWithBrewery(
+            beer: beer, brewery: row.readTable(breweries));
+      }
+    }
+    return null;
+  }
+
+  Stream<Brewery?> watchBrewery(String id) =>
+      (select(breweries)..where((t) => t.id.equals(id))).watchSingleOrNull();
+
+  Stream<List<BeerWithBrewery>> watchBeersOfBrewery(String breweryId) {
+    final query = select(beers).join([
+      innerJoin(breweries, breweries.id.equalsExp(beers.breweryId)),
+    ])
+      ..where(beers.breweryId.equals(breweryId))
+      ..orderBy([OrderingTerm.asc(beers.name)]);
+    return query.watch().map((rows) => rows
+        .map((row) => BeerWithBrewery(
+              beer: row.readTable(beers),
+              brewery: row.readTable(breweries),
+            ))
+        .toList());
+  }
+
+  /// Brauereien nach Name/Ort/Land suchen (Entdecken-Suche).
+  Stream<List<Brewery>> watchBreweriesSearch(String search) {
+    final term = '%${search.toLowerCase()}%';
+    return (select(breweries)
+          ..where((t) =>
+              t.name.lower().like(term) |
+              t.city.lower().like(term) |
+              t.country.lower().like(term))
+          ..orderBy([(t) => OrderingTerm.asc(t.name)]))
+        .watch();
+  }
+
+  /// Brauereien mit bekanntem Standort (für die Karten-Ebene).
+  Stream<List<Brewery>> watchBreweriesWithLocation() => (select(breweries)
+        ..where((t) => t.latitude.isNotNull() & t.longitude.isNotNull())
+        ..orderBy([(t) => OrderingTerm.asc(t.name)]))
+      .watch();
+
+  /// Upsert aus der Community-Datenbank (GitHub-JSON).
+  Future<void> upsertCommunityData({
+    required List<BreweriesCompanion> breweryRows,
+    required List<BeersCompanion> beerRows,
+  }) async {
+    await batch((b) {
+      b.insertAllOnConflictUpdate(breweries, breweryRows);
+      b.insertAllOnConflictUpdate(beers, beerRows);
+    });
+  }
 
   Future<Brewery> getOrCreateBrewery({
     required String id,

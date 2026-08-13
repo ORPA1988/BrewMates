@@ -197,7 +197,10 @@ class CheckinCard extends ConsumerWidget {
 
             const SizedBox(height: 4),
 
-            // Fußzeile: Toast + Kommentare.
+            // Fußzeile: Toast + Kommentare. Für Online-Einträge echter
+            // Freunde (remote-…) gibt es lokal nichts zu zählen –
+            // Interaktion darauf kommt mit einer späteren Beta.
+            if (!checkin.id.startsWith('remote-'))
             Row(
               children: [
                 TextButton.icon(

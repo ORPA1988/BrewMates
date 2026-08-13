@@ -1,7 +1,8 @@
 name: brewmates
 description: "BrewMates – Bier entdecken, Freunde treffen. Untappd × Beer with Me."
 publish_to: "none"
-version: 1.0.0+1
+# Beta-Phase: 0.x bis zum offiziellen 1.0-Store-Release (versionCode zählt weiter)
+version: 0.9.5-beta+9
 
 environment:
   sdk: ^3.5.0
@@ -29,6 +30,22 @@ dependencies:
   intl: ^0.19.0
   uuid: ^4.4.2
 
+  # Community-Datenbank von GitHub laden / Vorschläge einreichen
+  http: ^1.2.2
+  url_launcher: ^6.3.0
+
+  # Hero-Funktionen: Barcode-Scanner + echtes GPS.
+  # Versionen bewusst auf die Flutter-3.24-Toolchain gepinnt:
+  # mobile_scanner 6+/geolocator 14+ verlangen neuere AGP/Kotlin/compileSdk.
+  mobile_scanner: ^5.2.3
+  geolocator: ^13.0.2
+
+  # Bier-Foto für Community-Einträge (gepinnt passend zur 3.24-Toolchain)
+  image_picker: ^1.1.2
+
+  # Online-Stufe (Beta): Konten, echte Freunde, Live-Beacon
+  supabase_flutter: ^2.8.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -40,6 +57,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/data/
 
 # App-Icons für alle Plattformen aus einer Quelle:
 #   dart run flutter_launcher_icons
@@ -64,4 +83,4 @@ msix_config:
   identity_name: de.brewmates.app
   msix_version: 1.0.0.0
   logo_path: assets/icon/icon.png
-  capabilities: internetClient
+  capabilities: internetClient,location

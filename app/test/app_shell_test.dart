@@ -3,8 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:brewmates/data/db/database.dart';
+import 'package:brewmates/data/location_service.dart';
 import 'package:brewmates/data/providers.dart';
 import 'package:brewmates/main.dart';
+
+/// Fake-GPS für Widget-Tests: liefert sofort Wien.
+class _FakeLocationService extends LocationService {
+  const _FakeLocationService();
+
+  @override
+  Future<LocationResult> getCurrentPosition() async =>
+      const LocationGranted(48.2082, 16.3738);
+}
 
 Widget _app() => ProviderScope(
       overrides: [
@@ -13,6 +23,10 @@ Widget _app() => ProviderScope(
           ref.onDispose(db.close);
           return db;
         }),
+        locationServiceProvider
+            .overrideWithValue(const _FakeLocationService()),
+        // Kein Supabase in Widget-Tests: der Offline-Pfad ist der Testpfad.
+        onlineServiceProvider.overrideWith((ref) async => null),
       ],
       child: const BrewMatesApp(),
     );
@@ -25,12 +39,13 @@ Future<void> _windDown(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('App startet: Feed zeigt Session-Leiste aus den Seed-Daten',
+  testWidgets('Home zeigt die zwei Hero-Aktionen und aktive Sessions',
       (tester) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
 
-    expect(find.text('BrewMates'), findsOneWidget);
+    expect(find.text('Bier scannen'), findsOneWidget);
+    expect(find.text('Zusammenkommen!'), findsOneWidget);
     expect(find.text('Gerade unterwegs 🍻'), findsOneWidget);
     expect(find.textContaining('Anna'), findsWidgets);
 
@@ -55,34 +70,87 @@ void main() {
     await _windDown(tester);
   });
 
-  testWidgets('Los!-Button öffnet Auswahl mit Session und Check-in',
+  testWidgets('Beacon-Flow: Ein Tap startet die Session, Undo beendet sie',
       (tester) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Los!'));
+    await tester.tap(find.text('Zusammenkommen!'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Session starten'), findsOneWidget);
-    expect(find.text('Bier einchecken'), findsOneWidget);
-
-    await tester.tap(find.text('Session starten'));
+    // Erste eigene Session → „Session-Starter"-Abzeichen wird gefeiert.
+    expect(find.textContaining('Session-Starter'), findsWidgets);
+    await tester.tap(find.text('Prost! 🍻').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('🍺 Bier-Zeit!'), findsOneWidget);
-    expect(find.text('Nur ich (Stealth)'), findsOneWidget);
+    expect(find.text('Beacon läuft!'), findsOneWidget);
+
+    // Undo: Session wieder beenden → zurück auf Home, Hero-Karte ist zurück.
+    await tester.tap(find.text('Ups – wieder beenden'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Zusammenkommen!'), findsOneWidget);
+    expect(find.text('Dein Beacon läuft'), findsNothing);
 
     await _windDown(tester);
   });
 
-  testWidgets('Check-in-Flow: Bier suchen, bewerten, speichern – Abzeichen',
+  testWidgets('Scanner (Desktop-Fallback): EAN aus der Community-DB '
+      'zeigt den Treffer und führt zum Check-in', (tester) async {
+    await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Bier scannen'));
+    await tester.pumpAndSettle();
+
+    // Auf dem Test-Host gibt es keine Kamera → manuelles EAN-Feld.
+    // 90034107 = Stiegl-Goldbräu aus der gebündelten Österreich-DB
+    // (der Scan-Flow wartet selbst auf den Community-Import).
+    await tester.enterText(
+        find.widgetWithText(TextField, 'EAN eintippen (8 oder 13 Ziffern)'),
+        '90034107');
+    await tester.tap(find.text('Suchen'));
+    await tester.pumpAndSettle();
+
+    // Treffer-Bestätigung (Bottom Sheet) zeigt das erkannte Bier …
+    expect(find.text('Gefunden! 🎯'), findsOneWidget);
+    expect(find.textContaining('Stiegl-Goldbräu'), findsWidgets);
+
+    // … und „Einchecken" führt zum Check-in mit vorausgewähltem Bier.
+    await tester.tap(find.text('Einchecken'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Bier einchecken'), findsOneWidget);
+    expect(find.textContaining('Stiegl-Goldbräu'), findsWidgets);
+
+    await _windDown(tester);
+  });
+
+  testWidgets('Ungültige EAN zeigt eine verständliche Fehlermeldung',
       (tester) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Los!'));
+    await tester.tap(find.text('Bier scannen'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Bier einchecken'));
+
+    await tester.enterText(
+        find.widgetWithText(TextField, 'EAN eintippen (8 oder 13 Ziffern)'),
+        '1234');
+    await tester.tap(find.text('Suchen'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('8 oder 13 Ziffern'), findsWidgets);
+
+    await _windDown(tester);
+  });
+
+  testWidgets('Check-in-Flow über Home: suchen, speichern, Abzeichen',
+      (tester) async {
+    await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Ohne Scannen einchecken'));
     await tester.pumpAndSettle();
 
     // Bier suchen und auswählen.

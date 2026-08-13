@@ -4,8 +4,15 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:supabase_flutter/supabase_flutter.dart' show User;
+
 import '../domain/badges.dart';
+import '../features/scan/barcode_lookup.dart';
+import 'community_sync.dart';
 import 'db/database.dart';
+import 'location_service.dart';
+import 'online/online_service.dart';
+import 'online/remote_mapping.dart';
 
 // ============================================================================
 // Infrastruktur
@@ -41,6 +48,176 @@ DateTime _now(Ref ref) =>
     ref.watch(clockProvider).valueOrNull ?? DateTime.now();
 
 // ============================================================================
+// Community-Datenbank (GitHub)
+// ============================================================================
+
+final communitySyncProvider =
+    Provider<CommunitySync>((ref) => CommunitySync(ref.watch(databaseProvider)));
+
+/// Läuft einmal beim App-Start. Das Future ist fertig, sobald die
+/// GEBÜNDELTEN Daten importiert sind (darauf darf z. B. der Scanner
+/// warten); der GitHub-Abgleich läuft danach im Hintergrund weiter.
+final communityBootstrapProvider = FutureProvider<void>((ref) async {
+  final sync = ref.watch(communitySyncProvider);
+  await sync.importBundledData();
+  unawaited(sync.syncSilently());
+});
+
+// ============================================================================
+// Online-Stufe (Beta): Konten, Freunde, Live-Beacon
+// ============================================================================
+
+/// null, solange keine Supabase-Konfiguration vorliegt – die App läuft
+/// dann vollständig lokal (wie bisher).
+final onlineServiceProvider =
+    FutureProvider<OnlineService?>((ref) => OnlineService.initialize());
+
+/// Der angemeldete Supabase-Nutzer (null = abgemeldet/offline).
+final onlineUserProvider = StreamProvider<User?>((ref) async* {
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) {
+    yield null;
+    return;
+  }
+  yield online.currentUser;
+  await for (final state in online.authChanges) {
+    yield state.session?.user;
+  }
+});
+
+final isSignedInProvider =
+    Provider<bool>((ref) => ref.watch(onlineUserProvider).valueOrNull != null);
+
+final myRemoteProfileProvider = FutureProvider<RemoteProfile?>((ref) async {
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  return online?.myProfile();
+});
+
+/// Aktive Sessions echter Freunde (Realtime).
+final remoteSessionsProvider =
+    StreamProvider<List<RemoteSession>>((ref) async* {
+  final online = await ref.watch(onlineServiceProvider.future);
+  final user = ref.watch(onlineUserProvider).valueOrNull;
+  if (online == null || user == null) {
+    yield const [];
+    return;
+  }
+  yield* online.friendSessionsStream();
+});
+
+/// Check-ins echter Freunde (Abruf beim Start + alle 30 s über die Clock).
+final remoteFeedProvider = FutureProvider<List<RemoteCheckin>>((ref) async {
+  ref.watch(onlineUserProvider);
+  ref.watch(clockProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null || online.currentUser == null) return const [];
+  return online.friendCheckins();
+});
+
+final onlineFriendsProvider =
+    FutureProvider<List<RemoteProfile>>((ref) async {
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) return const [];
+  return online.friends();
+});
+
+/// Eigene Blockliste (Migration 0009); leer, solange niemand blockiert ist.
+final blockedProfilesProvider =
+    FutureProvider<List<RemoteProfile>>((ref) async {
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) return const [];
+  return online.blockedProfiles();
+});
+
+/// Sichtbarer Kartenausschnitt (von der Karte gesetzt, entprellt).
+typedef MapBounds = ({
+  double minLat,
+  double minLng,
+  double maxLat,
+  double maxLng,
+});
+
+final mapBoundsProvider = StateProvider<MapBounds?>((ref) => null);
+
+/// Anzahl aktiver Nicht-Freunde im Kartenausschnitt („x weitere BrewMates
+/// aktiv"). Aktualisiert bei Kartenbewegung und über die 30-s-Clock.
+final otherActiveCountProvider = FutureProvider<int>((ref) async {
+  final bounds = ref.watch(mapBoundsProvider);
+  ref.watch(clockProvider);
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (bounds == null || online == null || online.currentUser == null) {
+    return 0;
+  }
+  return online.countOtherActiveSessions(
+    minLat: bounds.minLat,
+    minLng: bounds.minLng,
+    maxLat: bounds.maxLat,
+    maxLng: bounds.maxLng,
+  );
+});
+
+/// Bin ich Admin? (Rollen vergibt nur ein Admin; der erste Admin wird
+/// serverseitig per E-Mail-Bootstrap gesetzt.)
+final isAdminProvider = FutureProvider<bool>((ref) async {
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) return false;
+  return online.amIAdmin();
+});
+
+/// Meine freigeschalteten Funktionen (premium, moderation, …).
+final myFeaturesProvider = FutureProvider<Map<String, bool>>((ref) async {
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  final user = online?.currentUser;
+  if (online == null || user == null) return const {};
+  return online.featuresOf(user.id);
+});
+
+final friendRequestsProvider =
+    FutureProvider<List<FriendRequest>>((ref) async {
+  ref.watch(onlineUserProvider);
+  ref.watch(clockProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) return const [];
+  return online.incomingRequests();
+});
+
+// ============================================================================
+// Hero-Funktionen: Barcode-Lookup & Standort
+// ============================================================================
+
+final barcodeLookupProvider = Provider<BarcodeLookup>((ref) => BarcodeLookup(
+      ref.watch(databaseProvider),
+      // Zwischenschritt der Scan-Kette: von anderen Nutzern direkt
+      // eingetragene Community-Biere (nur angemeldet erreichbar).
+      communityLookup: (ean) async {
+        final online = await ref.read(onlineServiceProvider.future);
+        return online?.communityBeerByBarcode(ean);
+      },
+    ));
+
+/// Echte Community-Bewertung (Ø + Anzahl) aus den Online-Check-ins aller
+/// Nutzer – ersetzt schrittweise die redaktionelle community_rating.
+final onlineRatingStatsProvider =
+    FutureProvider.family<(double, int)?, String>((ref, beerId) async {
+  if (!ref.watch(isSignedInProvider)) return null;
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) return null;
+  final item = await ref.watch(beerProvider(beerId).future);
+  if (item == null) return null;
+  return online.beerRatingStats(item.beer.name, item.brewery.name);
+});
+
+/// In Widget-Tests per overrideWithValue durch einen Fake ersetzen.
+final locationServiceProvider =
+    Provider<LocationService>((ref) => const LocationService());
+
+// ============================================================================
 // Profil & Freunde
 // ============================================================================
 
@@ -54,8 +231,20 @@ final friendsProvider = StreamProvider<List<Profile>>(
 // Feed, Toasts, Kommentare
 // ============================================================================
 
-final feedProvider = StreamProvider<List<CheckinDetails>>(
-    (ref) => ref.watch(databaseProvider).watchFeed());
+/// Feed: abgemeldet = lokale Daten inkl. Demo-Freunde; angemeldet = eigene
+/// lokale Check-ins + die echter Freunde (Demo-Inhalte verschwinden).
+final feedProvider = StreamProvider<List<CheckinDetails>>((ref) {
+  final db = ref.watch(databaseProvider);
+  if (!ref.watch(isSignedInProvider)) return db.watchFeed();
+  final remote = ref.watch(remoteFeedProvider).valueOrNull ?? const [];
+  return db.watchFeed().map((locals) {
+    final merged = [
+      ...locals.where((c) => c.author.isMe),
+      ...remote.map(remoteCheckinToDetails),
+    ]..sort((a, b) => b.checkin.createdAt.compareTo(a.checkin.createdAt));
+    return merged;
+  });
+});
 
 final myDiaryProvider = StreamProvider<List<CheckinDetails>>((ref) {
   final me = ref.watch(meProvider).valueOrNull;
@@ -85,8 +274,18 @@ final commentsProvider =
 // Sessions
 // ============================================================================
 
-final activeSessionsProvider = StreamProvider<List<SessionDetails>>((ref) =>
-    ref.watch(databaseProvider).watchActiveSessions(_now(ref)));
+/// Aktive Sessions: abgemeldet = lokal (inkl. Demo); angemeldet = eigene
+/// aktive Session + Live-Sessions echter Freunde.
+final activeSessionsProvider = StreamProvider<List<SessionDetails>>((ref) {
+  final localStream =
+      ref.watch(databaseProvider).watchActiveSessions(_now(ref));
+  if (!ref.watch(isSignedInProvider)) return localStream;
+  final remote = ref.watch(remoteSessionsProvider).valueOrNull ?? const [];
+  return localStream.map((locals) => [
+        ...locals.where((s) => s.host.isMe),
+        ...remote.map(remoteSessionToDetails),
+      ]);
+});
 
 final myActiveSessionProvider = StreamProvider<Session?>((ref) {
   final me = ref.watch(meProvider).valueOrNull;
@@ -94,12 +293,24 @@ final myActiveSessionProvider = StreamProvider<Session?>((ref) {
   return ref.watch(databaseProvider).watchMyActiveSession(me.id, _now(ref));
 });
 
-final sessionProvider = StreamProvider.family<SessionDetails?, String>(
-    (ref, id) => ref.watch(databaseProvider).watchSession(id));
+final sessionProvider =
+    StreamProvider.family<SessionDetails?, String>((ref, id) {
+  if (isRemoteId(id)) {
+    final remote = ref.watch(remoteSessionsProvider).valueOrNull ?? const [];
+    RemoteSession? match;
+    for (final s in remote) {
+      if ('$remotePrefix${s.id}' == id) match = s;
+    }
+    return Stream.value(match == null ? null : remoteSessionToDetails(match));
+  }
+  return ref.watch(databaseProvider).watchSession(id);
+});
 
 final sessionCheckinsProvider =
-    StreamProvider.family<List<CheckinDetails>, String>((ref, id) =>
-        ref.watch(databaseProvider).watchSessionCheckins(id));
+    StreamProvider.family<List<CheckinDetails>, String>((ref, id) {
+  if (isRemoteId(id)) return Stream.value(const []);
+  return ref.watch(databaseProvider).watchSessionCheckins(id);
+});
 
 // ============================================================================
 // Biere & Wunschliste
@@ -121,6 +332,22 @@ final beerProvider = StreamProvider.family<BeerWithBrewery?, String>(
 
 final beerStatsProvider = StreamProvider.family<BeerStats, String>(
     (ref, id) => ref.watch(databaseProvider).watchBeerStats(id));
+
+final breweryProvider = StreamProvider.family<Brewery?, String>(
+    (ref, id) => ref.watch(databaseProvider).watchBrewery(id));
+
+final breweryBeersProvider =
+    StreamProvider.family<List<BeerWithBrewery>, String>((ref, id) =>
+        ref.watch(databaseProvider).watchBeersOfBrewery(id));
+
+final breweriesWithLocationProvider = StreamProvider<List<Brewery>>(
+    (ref) => ref.watch(databaseProvider).watchBreweriesWithLocation());
+
+/// Brauerei-Suche für den Entdecken-Tab (leer bei leerem Suchbegriff).
+final brewerySearchProvider = StreamProvider.family<List<Brewery>, String>(
+    (ref, search) => search.trim().isEmpty
+        ? Stream.value(const <Brewery>[])
+        : ref.watch(databaseProvider).watchBreweriesSearch(search.trim()));
 
 final wishlistProvider = StreamProvider<List<BeerWithBrewery>>((ref) {
   final me = ref.watch(meProvider).valueOrNull;
@@ -176,6 +403,12 @@ class BrewActions {
 
   Future<Profile> _me() => _db.getMe();
 
+  /// Online-Service, falls konfiguriert UND angemeldet – sonst null.
+  Future<OnlineService?> _online() async {
+    final online = await _ref.read(onlineServiceProvider.future);
+    return (online != null && online.currentUser != null) ? online : null;
+  }
+
   /// Check-in speichern. Läuft die aktive eigene Session, wird der Check-in
   /// ihr automatisch zugeordnet. Gibt neu verdiente Abzeichen zurück.
   Future<List<BadgeDef>> createCheckin({
@@ -189,8 +422,9 @@ class BrewActions {
     final me = await _me();
     final now = DateTime.now();
     final session = await _db.getMyActiveSession(me.id, now);
+    final checkinId = _uuid.v4();
     await _db.into(_db.checkins).insert(CheckinsCompanion.insert(
-          id: _uuid.v4(),
+          id: checkinId,
           profileId: me.id,
           beerId: beerId,
           sessionId: Value(session?.id),
@@ -201,12 +435,24 @@ class BrewActions {
           servingStyle: Value(servingStyle),
           createdAt: now,
         ));
+    // Online spiegeln (Freunde sehen den Check-in in ihrem Feed).
+    final online = await _online();
+    if (online != null) {
+      final mine = await _db.myCheckinsDetailed(me.id);
+      for (final details in mine) {
+        if (details.checkin.id == checkinId) {
+          unawaited(online.insertCheckin(details));
+          break;
+        }
+      }
+    }
     return BadgeEngine(_db).evaluate(me.id);
   }
 
   /// Session starten („der eine Tap"). Gibt neu verdiente Abzeichen zurück.
+  /// [venueName] darf fehlen (Beacon „unterwegs" mit reiner GPS-Position).
   Future<List<BadgeDef>> startSession({
-    required String venueName,
+    String? venueName,
     String? message,
     required SessionVisibility visibility,
     required Duration autoEnd,
@@ -218,10 +464,11 @@ class BrewActions {
     // Nur eine aktive Session gleichzeitig.
     final current = await _db.getMyActiveSession(me.id, now);
     if (current != null) {
-      await _db.endSession(current.id, now);
+      await endMySession();
     }
+    final sessionId = _uuid.v4();
     await _db.into(_db.sessions).insert(SessionsCompanion.insert(
-          id: _uuid.v4(),
+          id: sessionId,
           hostId: me.id,
           venueName: Value(venueName),
           message: Value((message ?? '').trim().isEmpty ? null : message),
@@ -232,6 +479,15 @@ class BrewActions {
           latitude: Value(latitude),
           longitude: Value(longitude),
         ));
+    // Live-Beacon: eigene Session für echte Freunde sichtbar machen
+    // (nur bei Sichtbarkeit „friends" – Stealth bleibt lokal).
+    if (visibility == SessionVisibility.friends) {
+      final online = await _online();
+      if (online != null) {
+        final row = await _db.getMyActiveSession(me.id, now);
+        if (row != null) unawaited(online.upsertSession(row));
+      }
+    }
     return BadgeEngine(_db).evaluate(me.id);
   }
 
@@ -239,20 +495,40 @@ class BrewActions {
     final me = await _me();
     final now = DateTime.now();
     final current = await _db.getMyActiveSession(me.id, now);
-    if (current != null) await _db.endSession(current.id, now);
+    if (current != null) {
+      await _db.endSession(current.id, now);
+      final online = await _online();
+      if (online != null) unawaited(online.endSession(current.id));
+    }
   }
 
-  /// „Bin dabei!" auf die Session eines Freundes.
+  /// „Bin dabei!" auf die Session eines Freundes (lokal oder online).
   Future<List<BadgeDef>> joinSession(String sessionId) async {
     final me = await _me();
-    await _db.joinSession(sessionId, me.id, ParticipantKind.joined);
+    if (isRemoteId(sessionId)) {
+      final online = await _online();
+      if (online != null) {
+        unawaited(
+            online.joinSession(stripRemote(sessionId), joined: true));
+      }
+    } else {
+      await _db.joinSession(sessionId, me.id, ParticipantKind.joined);
+    }
     return BadgeEngine(_db).evaluate(me.id);
   }
 
-  /// Fern-Prost auf eine Session.
+  /// Fern-Prost auf eine Session (lokal oder online).
   Future<void> toastSession(String sessionId) async {
     final me = await _me();
-    await _db.joinSession(sessionId, me.id, ParticipantKind.toast);
+    if (isRemoteId(sessionId)) {
+      final online = await _online();
+      if (online != null) {
+        unawaited(
+            online.joinSession(stripRemote(sessionId), joined: false));
+      }
+    } else {
+      await _db.joinSession(sessionId, me.id, ParticipantKind.toast);
+    }
   }
 
   Future<List<BadgeDef>> toggleToast(String checkinId) async {
@@ -287,6 +563,7 @@ class BrewActions {
     double? abv,
     bool isAlcoholFree = false,
     String? description,
+    String? barcode,
   }) async {
     final brewery = await _db.getOrCreateBrewery(
       id: _uuid.v4(),
@@ -303,6 +580,7 @@ class BrewActions {
       abv: abv,
       isAlcoholFree: isAlcoholFree,
       description: description,
+      barcode: barcode,
     );
     return beerId;
   }

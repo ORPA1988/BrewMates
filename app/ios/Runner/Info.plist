@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCameraUsageDescription</key>
+	<string>BrewMates nutzt die Kamera nur zum Scannen von Bier-Barcodes. Es werden keine Fotos gespeichert oder übertragen.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>BrewMates verwendet deinen Standort nur während einer aktiven Session, damit Freunde sehen, wo ihr zusammenkommen könnt.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
