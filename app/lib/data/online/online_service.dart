@@ -707,27 +707,15 @@ class OnlineService {
   // Check-ins
   // --------------------------------------------------------------------------
 
-  /// Eigenen Check-in online spiegeln (denormalisiert).
+  /// Eigenen Check-in online spiegeln (denormalisiert, gleiche Zeile wie
+  /// der Upload-Assistent).
   Future<void> insertCheckin(local.CheckinDetails details) async {
     final me = currentUser;
     if (me == null) return;
-    final c = details.checkin;
+    final row = uploadRow(details, me.id);
+    if (row == null) return;
     try {
-      await _client.from('checkins').upsert({
-        'id': c.id,
-        'profile_id': me.id,
-        'session_id': null,
-        'venue_id': c.venueId,
-        'beer_name': details.beer.name,
-        'brewery_name': details.brewery.name,
-        'beer_style': details.beer.style,
-        'is_alcohol_free': details.beer.isAlcoholFree,
-        'rating': c.rating,
-        'note': c.note,
-        'venue_name': c.venueName,
-        'visibility': 'friends',
-        'created_at': c.createdAt.toUtc().toIso8601String(),
-      });
+      await _client.from('checkins').upsert(row);
     } catch (_) {}
   }
 
@@ -1177,13 +1165,21 @@ class OnlineService {
       'id': c.id,
       'profile_id': profileId,
       'session_id': null,
-      'venue_id': c.venueId,
+      // `local-…`-Pseudo-IDs (Offline-Gasthaus-Queue) nie hochschicken —
+      // der Server kennt sie nicht (FK); der Name reicht bis zum Replay.
+      'venue_id':
+          (c.venueId?.startsWith('local-') ?? false) ? null : c.venueId,
       'beer_name': details.beer.name,
       'brewery_name': details.brewery.name,
       'beer_style': details.beer.style,
       'is_alcohol_free': details.beer.isAlcoholFree,
       'rating': c.rating,
       'note': c.note,
+      'flavor_tags': [
+        for (final t in c.flavorTags.split(','))
+          if (t.trim().isNotEmpty) t.trim(),
+      ],
+      'serving_style': c.servingStyle?.name,
       'venue_name': c.venueName,
       'visibility': 'friends',
       'created_at': c.createdAt.toUtc().toIso8601String(),
@@ -1223,6 +1219,108 @@ class OnlineService {
     } catch (_) {
       return null;
     }
+  }
+
+  // --------------------------------------------------------------------------
+  // Cloud-Restore (Migration 0016): eigene Check-ins, Erfolge und
+  // Wunschliste vom Server zurückholen — z. B. nach Neuinstallation oder
+  // Gerätewechsel. null = offline/abgemeldet (Aufrufer versucht es später).
+  // --------------------------------------------------------------------------
+
+  /// Alle eigenen Check-ins mit vollen Spalten (Denorm-Daten reichen, um
+  /// sie lokal zu rekonstruieren).
+  Future<List<Map<String, dynamic>>?> myRemoteCheckins() async {
+    final me = currentUser;
+    if (me == null) return null;
+    try {
+      final rows = await _client
+          .from('checkins')
+          .select('id, rating, note, flavor_tags, serving_style, beer_name, '
+              'beer_style, brewery_name, is_alcohol_free, venue_id, '
+              'venue_name, created_at')
+          .eq('profile_id', me.id)
+          .order('created_at', ascending: true);
+      return rows.cast<Map<String, dynamic>>();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Eigene Erfolge: badge_slug → awarded_at.
+  Future<Map<String, DateTime>?> myRemoteBadges() async {
+    final me = currentUser;
+    if (me == null) return null;
+    try {
+      final rows = await _client
+          .from('user_badges')
+          .select('badge_slug, awarded_at')
+          .eq('profile_id', me.id);
+      return {
+        for (final r in rows)
+          r['badge_slug'] as String:
+              DateTime.parse(r['awarded_at'] as String).toUtc(),
+      };
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Erfolge hochspiegeln (idempotent; bestehende Zeilen bleiben stehen).
+  Future<bool> uploadBadges(Map<String, DateTime> badges) async {
+    final me = currentUser;
+    if (me == null || badges.isEmpty) return badges.isEmpty;
+    try {
+      await _client.from('user_badges').upsert([
+        for (final e in badges.entries)
+          {
+            'profile_id': me.id,
+            'badge_slug': e.key,
+            'awarded_at': e.value.toUtc().toIso8601String(),
+          },
+      ], ignoreDuplicates: true);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Eigene Wunschliste: beer_key (lokale Bier-ID) → created_at.
+  Future<Map<String, DateTime>?> myRemoteWishlist() async {
+    final me = currentUser;
+    if (me == null) return null;
+    try {
+      final rows = await _client
+          .from('wishlist_items')
+          .select('beer_key, created_at')
+          .eq('profile_id', me.id);
+      return {
+        for (final r in rows)
+          r['beer_key'] as String:
+              DateTime.parse(r['created_at'] as String).toUtc(),
+      };
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Wunschlisten-Eintrag serverseitig setzen/entfernen (best effort).
+  Future<void> setWishlistRemote(String beerKey, {required bool add}) async {
+    final me = currentUser;
+    if (me == null) return;
+    try {
+      if (add) {
+        await _client.from('wishlist_items').upsert({
+          'profile_id': me.id,
+          'beer_key': beerKey,
+        }, ignoreDuplicates: true);
+      } else {
+        await _client
+            .from('wishlist_items')
+            .delete()
+            .eq('profile_id', me.id)
+            .eq('beer_key', beerKey);
+      }
+    } catch (_) {}
   }
 
   Future<List<RemoteCheckin>> friendCheckins({int limit = 50}) async {

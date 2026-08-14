@@ -1031,6 +1031,16 @@ class AppDatabase extends _$AppDatabase {
       (select(userBadges)..where((t) => t.profileId.equals(profileId)))
           .watch();
 
+  /// Steht das Bier aktuell auf der Wunschliste? (Für den Server-Spiegel
+  /// nach [toggleWishlist].)
+  Future<bool> isWishlisted(String profileId, String beerId) async {
+    final rows = await (select(wishlistItems)
+          ..where(
+              (t) => t.profileId.equals(profileId) & t.beerId.equals(beerId)))
+        .get();
+    return rows.isNotEmpty;
+  }
+
   Future<Set<String>> earnedBadgeSlugs(String profileId) async {
     final rows = await (select(userBadges)
           ..where((t) => t.profileId.equals(profileId)))

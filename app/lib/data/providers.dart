@@ -20,6 +20,7 @@ import '../widgets/badge_celebration.dart';
 import 'community_sync.dart';
 import 'db/database.dart';
 import 'location_service.dart';
+import 'restore.dart';
 import 'venue_sync.dart';
 import 'online/online_service.dart';
 import 'online/remote_mapping.dart';
@@ -480,6 +481,41 @@ final checkinAutoSyncProvider = FutureProvider<int>((ref) async {
   return uploaded;
 });
 
+/// Merker, für welches Konto der Cloud-Restore diese App-Sitzung schon
+/// vollständig gelaufen ist (verhindert Doppel-Läufe).
+final _restoredUidProvider = StateProvider<String?>((_) => null);
+
+/// ☁️ Cloud-Restore (Migration 0016): holt nach der Anmeldung eigene
+/// Check-ins, Erfolge und Wunschliste vom Server zurück und vereinigt sie
+/// mit dem lokalen Bestand — wichtig nach Neuinstallation/Gerätewechsel.
+/// Läuft einmal pro Konto und App-Sitzung; solange er offline
+/// unvollständig bleibt, versucht es der 5-Minuten-Takt erneut.
+/// Die AppShell hält den Provider am Leben.
+final cloudRestoreProvider = FutureProvider<RestoreSummary?>((ref) async {
+  ref.watch(_syncTickProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  final user = ref.watch(onlineUserProvider).valueOrNull;
+  if (online == null || user == null) return null;
+  if (ref.read(_restoredUidProvider) == user.id) return null;
+  final db = ref.read(databaseProvider);
+  final summary = await restoreFromCloud(
+    db,
+    fetchCheckins: online.myRemoteCheckins,
+    fetchBadges: online.myRemoteBadges,
+    pushBadges: online.uploadBadges,
+    fetchWishlist: online.myRemoteWishlist,
+    pushWishlistItem: (key) => online.setWishlistRemote(key, add: true),
+  );
+  if (summary.complete) {
+    ref.read(_restoredUidProvider.notifier).state = user.id;
+  }
+  if (summary.checkins > 0) {
+    // Wiederhergestellte Check-ins können weitere Abzeichen auslösen.
+    await ref.read(actionsProvider).evaluateBadges();
+  }
+  return summary;
+});
+
 final toastCountProvider = StreamProvider.family<int, String>(
     (ref, checkinId) => ref.watch(databaseProvider).watchToastCount(checkinId));
 
@@ -645,8 +681,15 @@ class BrewActions {
   Future<List<BadgeDef>> evaluateBadges() async {
     final me = await _me();
     final online = await _online();
-    return BadgeEngine(_db)
+    final earned = await BadgeEngine(_db)
         .evaluate(me.id, onlineUserId: online?.currentUser?.id);
+    // Neue Erfolge best-effort in die Cloud spiegeln (0016) — schlägt das
+    // fehl, holt der Restore-Abgleich sie beim nächsten Lauf nach.
+    if (earned.isNotEmpty && online != null) {
+      final now = DateTime.now().toUtc();
+      await online.uploadBadges({for (final b in earned) b.slug: now});
+    }
+    return earned;
   }
 
   /// Check-in speichern. Läuft die aktive eigene Session, wird der Check-in
@@ -814,6 +857,12 @@ class BrewActions {
   Future<void> toggleWishlist(String beerId) async {
     final me = await _me();
     await _db.toggleWishlist(me.id, beerId, DateTime.now());
+    // Server-Spiegel (0016, best effort) — beer_key ist die lokale Bier-ID.
+    final online = await _online();
+    if (online != null) {
+      final onList = await _db.isWishlisted(me.id, beerId);
+      await online.setWishlistRemote(beerId, add: onList);
+    }
   }
 
   /// Community-Einreichung: neues Bier (+ ggf. neue Brauerei) anlegen.

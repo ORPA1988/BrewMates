@@ -55,6 +55,25 @@ Checkboxen ☐ markiert.
    kopieren und Passwörter/Pfad eintragen. Die Datei ist per `.gitignore`
    vom Commit ausgeschlossen — **niemals einchecken**.
 
+✅ **CI-Signierung über GitHub-Secrets** (seit v0.9.8 eingerichtet):
+   `release.yml` signiert mit dem Upload-Keystore, wenn diese
+   Action-Secrets existieren (Repo → Settings → Secrets and variables →
+   Actions):
+   - `KEYSTORE_BASE64` — der Keystore als Base64
+     (`base64 -w0 upload-keystore.jks`)
+   - `KEYSTORE_PASSWORD` — Store-Passwort
+   - `KEY_PASSWORD` — Key-Passwort (optional; fehlt es, wird das
+     Store-Passwort verwendet). Key-Alias ist fest `brewmates`.
+
+   Fehlen die Secrets, ist der Build wie früher debug-signiert und der
+   Workflow warnt. **Wichtig:** Eine stabile Signatur ist Voraussetzung
+   dafür, dass Updates über eine bestehende Installation installierbar
+   sind (sonst `INSTALL_FAILED_UPDATE_INCOMPATIBLE` → Deinstallation →
+   lokale Daten weg). Beim einmaligen Wechsel von Debug- auf
+   Keystore-Signatur (≤ v0.9.7 → v0.9.8) müssen Tester die App einmal
+   deinstallieren; nach Anmeldung stellt der Cloud-Sync Check-ins,
+   Erfolge und Wunschliste wieder her.
+
 ### 2.2 Build
 
 3. Lokal bauen:
@@ -65,10 +84,9 @@ Checkboxen ☐ markiert.
    # Ergebnis: build/app/outputs/bundle/release/app-release.aab
    ```
 
-   Alternativ: `git tag v1.0.0 && git push origin v1.0.0` — die Release-CI
-   baut APK und AAB als Actions-Artefakte (ohne key.properties allerdings
-   debug-signiert; für den Play-Upload daher lokal mit Keystore bauen oder
-   den Keystore später als CI-Secret einrichten).
+   Alternativ: Release-Workflow (workflow_dispatch) — die CI baut APK und
+   AAB und signiert mit dem Upload-Keystore aus den Secrets (siehe 2.1
+   Punkt 3); ohne Secrets debug-signiert mit Warnung.
 
 ### 2.3 Play Console
 

@@ -33,8 +33,11 @@ class AppShell extends ConsumerWidget {
     // Hält den automatischen Konto-Abgleich am Leben: offline entstandene
     // Check-ins werden nachgereicht, sobald Verbindung und Konto da sind.
     ref.watch(checkinAutoSyncProvider);
-    // Ebenso den Gasthaus-Cache (gemeinsame Venue-DB aus Supabase).
+    // Ebenso den Gasthaus-Cache (gemeinsame Venue-DB aus Supabase)…
     ref.watch(venueSyncProvider);
+    // …und den Cloud-Restore (Check-ins/Erfolge/Wunschliste nach
+    // Neuinstallation oder Gerätewechsel zurückholen).
+    ref.watch(cloudRestoreProvider);
 
     final body = Column(
       children: [

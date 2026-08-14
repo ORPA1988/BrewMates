@@ -7,15 +7,16 @@ Fokus Österreich + Bayern. Antworte dem Nutzer auf Deutsch.
 
 - **Branch**: PRs #2–#4 sind in `main` gemerged; neue Arbeit startet auf
   frischen Branches von `main`.
-  Version `0.9.7-beta+11`, Release v0.9.7-beta veröffentlicht (Beta 0.x bis
+  Version `0.9.8-beta+12` (Beta 0.x bis
   zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch; die
   frühen Alpha-Releases wurden von 1.1/1.2 auf 0.1.0/0.2.0 umbenannt).
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU). Migrationen
-  `supabase/migrations/0001–0015` sind LIVE (0011 Gasthäuser, 0012
+  `supabase/migrations/0001–0016` sind LIVE (0011 Gasthäuser, 0012
   Challenges, 0013 Vertrauensstufen + edit_log, 0014 complete_challenge-RPC
-  + contribution_leaderboard, 0015 venues.opening_hours_json). Google-Login und
+  + contribution_leaderboard, 0015 venues.opening_hours_json, 0016
+  user_badges/wishlist_items für den Cloud-Sync). Google-Login und
   E-Mail-Anmeldung (ohne Bestätigungspflicht) sind eingerichtet und
   funktionieren. Seit 0008 gilt: EXECUTE auf Funktionen wird von PUBLIC
   entzogen und pro Funktion gezielt gewährt — neue Funktionen brauchen in
@@ -64,6 +65,13 @@ mit 403 (Branch-Scope-Token). Der Lauf baut APK+AAB und veröffentlicht sie.
   3 Bierkenner (≥100 P.) · 4 Moderator · 5 Admin; Overrides über
   user_features (`trust_level_2/3`, `edit_lock`). RLS erzwingt, die UI
   spiegelt (`accountLevelProvider`).
+- **Persistenz**: Release-CI signiert mit dem Upload-Keystore aus den
+  GitHub-Secrets `KEYSTORE_BASE64`/`KEYSTORE_PASSWORD` (ohne Secrets:
+  Debug-Fallback mit Warnung) — stabile Signatur = Updates ohne
+  Datenverlust. Cloud-Restore (`data/restore.dart`,
+  `cloudRestoreProvider`) holt nach Anmeldung eigene Check-ins, Erfolge
+  und Wunschliste zurück (Union, idempotent); Badge-Vergabe und
+  Wunschlisten-Toggle spiegeln best-effort zum Server.
 - Challenge-Abschlüsse werden seit 0014 SERVERSEITIG validiert
   (`complete_challenge`-RPC; direkte Inserts gesperrt). Gasthaus-Pflege
   funktioniert seit Drift v8 auch offline: `venue_edit_queue` +
