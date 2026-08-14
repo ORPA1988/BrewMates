@@ -885,8 +885,8 @@ class OnlineService {
 
   static const _venueCols =
       'id, name, category, address, city, latitude, longitude, '
-      'opening_hours, price_half_l, price_third_l, verified, created_by, '
-      'updated_at';
+      'opening_hours, opening_hours_json, price_half_l, price_third_l, '
+      'verified, created_by, updated_at';
 
   /// Venues seit [since] (Delta über updated_at); null = offline/abgemeldet.
   Future<List<Map<String, dynamic>>?> fetchVenues({DateTime? since}) async {
@@ -913,6 +913,9 @@ class OnlineService {
     double? latitude,
     double? longitude,
     String? openingHours,
+
+    /// Dekodierte JSON-Liste `[{"d":…,"von":…,"bis":…}]` oder null.
+    Object? openingHoursJson,
     double? priceHalfL,
     double? priceThirdL,
   }) async {
@@ -929,6 +932,7 @@ class OnlineService {
             'latitude': latitude,
             'longitude': longitude,
             'opening_hours': _emptyToNull(openingHours),
+            'opening_hours_json': openingHoursJson,
             'price_half_l': priceHalfL,
             'price_third_l': priceThirdL,
             'created_by': me.id,

@@ -7,6 +7,7 @@ import '../../data/db/database.dart';
 import '../../data/location_service.dart';
 import '../../data/providers.dart';
 import '../../data/venue_sync.dart';
+import '../../domain/opening_hours.dart';
 import '../../widgets/venue_tile.dart';
 
 /// Sortierungen der Gasthausliste.
@@ -53,6 +54,13 @@ List<Venue> sortVenues(List<Venue> venues, VenueSort sort, {LatLng? here}) {
   return sorted;
 }
 
+/// „Jetzt geöffnet"-Filter (pur, testbar): behält nur Venues MIT
+/// strukturierten Öffnungszeiten, die zu [now] geöffnet sind.
+List<Venue> openNow(List<Venue> venues, DateTime now) => [
+      for (final v in venues)
+        if (isOpenAt(parseOpeningHours(v.openingHoursJson), now)) v,
+    ];
+
 /// Entfernung in km zu [here] (null, wenn nicht bestimmbar).
 double? venueDistanceKm(Venue v, LatLng? here) {
   if (here == null || v.latitude == null || v.longitude == null) return null;
@@ -71,6 +79,7 @@ class VenuesListScreen extends ConsumerStatefulWidget {
 class _VenuesListScreenState extends ConsumerState<VenuesListScreen> {
   String _search = '';
   String? _category;
+  bool _openNowOnly = false;
   VenueSort _sort = VenueSort.alphabetical;
   LatLng? _here;
   bool _locationTried = false;
@@ -101,7 +110,7 @@ class _VenuesListScreenState extends ConsumerState<VenuesListScreen> {
     final myLevel = ref.watch(accountLevelProvider).valueOrNull?.level ?? 0;
 
     final term = _search.trim().toLowerCase();
-    final filtered = [
+    var filtered = [
       for (final v in all)
         if ((_category == null || v.category == _category) &&
             (term.isEmpty ||
@@ -109,6 +118,7 @@ class _VenuesListScreenState extends ConsumerState<VenuesListScreen> {
                 (v.city ?? '').toLowerCase().contains(term)))
           v,
     ];
+    if (_openNowOnly) filtered = openNow(filtered, DateTime.now());
     final venues = sortVenues(filtered, _sort, here: _here);
 
     return Scaffold(
@@ -140,6 +150,13 @@ class _VenuesListScreenState extends ConsumerState<VenuesListScreen> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
             child: Row(
               children: [
+                FilterChip(
+                  label: const Text('● Jetzt geöffnet'),
+                  selected: _openNowOnly,
+                  onSelected: (selected) =>
+                      setState(() => _openNowOnly = selected),
+                ),
+                const SizedBox(width: 8),
                 FilterChip(
                   label: const Text('Alle'),
                   selected: _category == null,

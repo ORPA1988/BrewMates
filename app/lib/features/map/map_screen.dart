@@ -10,6 +10,7 @@ import '../../data/db/database.dart';
 import '../../data/providers.dart';
 import '../../data/venue_sync.dart';
 import '../../widgets/place_quick_sheet.dart';
+import '../venues/venues_list_screen.dart' show openNow;
 
 /// Formulierung des Aktiv-Zählers rechts oben – zentral anpassbar.
 String activeUsersLabel(int n) =>
@@ -28,6 +29,7 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   bool _showBreweries = true;
   bool _showVenues = true;
+  bool _openNowOnly = false;
   Timer? _boundsDebounce;
   final _mapController = MapController();
 
@@ -81,10 +83,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ? (ref.watch(breweriesWithLocationProvider).valueOrNull ??
             const <Brewery>[])
         : const <Brewery>[];
-    final venues = _showVenues
+    var venues = _showVenues
         ? (ref.watch(venuesWithLocationProvider).valueOrNull ??
             const <Venue>[])
         : const <Venue>[];
+    if (_openNowOnly) venues = openNow(venues, DateTime.now());
     // Bearbeiten im Quick-Sheet: Ersteller immer, sonst ab Stammgast –
     // die RLS bleibt die eigentliche Durchsetzung.
     final myUid = ref.watch(onlineUserProvider).valueOrNull?.id;
@@ -233,6 +236,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   selected: _showVenues,
                   onSelected: (v) => setState(() => _showVenues = v),
                 ),
+                if (_showVenues) ...[
+                  const SizedBox(height: 4),
+                  FilterChip(
+                    label: const Text('● Jetzt geöffnet'),
+                    selected: _openNowOnly,
+                    onSelected: (v) => setState(() => _openNowOnly = v),
+                  ),
+                ],
                 const SizedBox(height: 4),
                 ActionChip(
                   label: const Text('📋 Gasthaus-Liste'),

@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../core/format.dart';
 import '../../data/db/database.dart';
+import '../../domain/opening_hours.dart';
 import '../../data/location_service.dart';
 import '../../data/providers.dart';
 import '../../data/venue_queue.dart';
@@ -44,6 +45,16 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
   bool _busy = false;
   bool _loaded = false;
 
+  /// Strukturierte Öffnungszeiten: Wochentag (1–7) → (von, bis) in Minuten
+  /// seit Mitternacht; null = Ruhetag. Die UI pflegt ein Intervall pro Tag.
+  final Map<int, (int, int)?> _days = {for (var d = 1; d <= 7; d++) d: null};
+
+  List<OpeningInterval> get _structuredIntervals => [
+        for (final e in _days.entries)
+          if (e.value != null)
+            OpeningInterval(weekday: e.key, from: e.value!.$1, to: e.value!.$2),
+      ];
+
   bool get _isNew => widget.venueId == null;
 
   @override
@@ -79,6 +90,10 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
     _category = venue.category;
     _latitude = venue.latitude;
     _longitude = venue.longitude;
+    // Erstes Intervall je Wochentag in die Eingabe übernehmen.
+    for (final i in parseOpeningHours(venue.openingHoursJson)) {
+      _days[i.weekday] ??= (i.from, i.to);
+    }
   }
 
   static String _fieldLabel(String column) => switch (column) {
@@ -109,6 +124,58 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
     return null;
   }
 
+  Widget _dayRow(int day) {
+    final value = _days[day];
+    return Row(
+      children: [
+        Switch(
+          value: value != null,
+          onChanged: (on) => setState(
+              () => _days[day] = on ? (11 * 60, 23 * 60) : null),
+        ),
+        SizedBox(width: 36, child: Text(weekdayShortNames[day - 1])),
+        if (value == null)
+          const Text('Ruhetag')
+        else ...[
+          TextButton(
+            onPressed: () => _pickTime(day, isFrom: true),
+            child: Text(formatClock(value.$1)),
+          ),
+          const Text('–'),
+          TextButton(
+            onPressed: () => _pickTime(day, isFrom: false),
+            child: Text(formatClock(value.$2)),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Future<void> _pickTime(int day, {required bool isFrom}) async {
+    final current = _days[day];
+    if (current == null) return;
+    final initial = isFrom ? current.$1 : current.$2;
+    final picked = await showTimePicker(
+      context: context,
+      initialTime:
+          TimeOfDay(hour: (initial ~/ 60) % 24, minute: initial % 60),
+    );
+    if (picked == null || !mounted) return;
+    final minutes = picked.hour * 60 + picked.minute;
+    setState(() => _days[day] =
+        isFrom ? (minutes, current.$2) : (current.$1, minutes));
+  }
+
+  void _applyMondayToWeekdays() {
+    final monday = _days[1];
+    if (monday == null) return;
+    setState(() {
+      for (var d = 2; d <= 5; d++) {
+        _days[d] = monday;
+      }
+    });
+  }
+
   Future<void> _useCurrentLocation() async {
     final result =
         await ref.read(locationServiceProvider).getCurrentPosition();
@@ -134,18 +201,26 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
   }
 
   /// Formular → Supabase-Spalten (snake_case); dient online als Patch und
-  /// offline als Queue-Payload.
-  Map<String, dynamic> _buildPayload() => {
-        'name': _nameController.text.trim(),
-        'category': _category,
-        'address': _emptyToNull(_addressController.text),
-        'city': _emptyToNull(_cityController.text),
-        'latitude': _latitude,
-        'longitude': _longitude,
-        'opening_hours': _emptyToNull(_hoursController.text),
-        'price_half_l': _parsePrice(_priceHalfController.text),
-        'price_third_l': _parsePrice(_priceThirdController.text),
-      };
+  /// offline als Queue-Payload. Mit strukturierten Zeiten wird der
+  /// Freitext automatisch generiert, sonst bleibt er wie eingegeben.
+  Map<String, dynamic> _buildPayload() {
+    final intervals = _structuredIntervals;
+    return {
+      'name': _nameController.text.trim(),
+      'category': _category,
+      'address': _emptyToNull(_addressController.text),
+      'city': _emptyToNull(_cityController.text),
+      'latitude': _latitude,
+      'longitude': _longitude,
+      'opening_hours': intervals.isEmpty
+          ? _emptyToNull(_hoursController.text)
+          : formatOpeningHours(intervals),
+      'opening_hours_json':
+          intervals.isEmpty ? null : encodeOpeningHours(intervals),
+      'price_half_l': _parsePrice(_priceHalfController.text),
+      'price_third_l': _parsePrice(_priceThirdController.text),
+    };
+  }
 
   /// Payload → optimistische Cache-Zeile. `updatedAt` bleibt bewusst leer,
   /// damit der nächste Delta-Sync den echten Server-Stand holt.
@@ -160,6 +235,9 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
         latitude: Value((payload['latitude'] as num?)?.toDouble()),
         longitude: Value((payload['longitude'] as num?)?.toDouble()),
         openingHours: Value(payload['opening_hours'] as String?),
+        openingHoursJson: Value(payload['opening_hours_json'] == null
+            ? null
+            : jsonEncode(payload['opening_hours_json'])),
         priceHalfL: Value((payload['price_half_l'] as num?)?.toDouble()),
         priceThirdL: Value((payload['price_third_l'] as num?)?.toDouble()),
       );
@@ -364,11 +442,35 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
             TextFormField(
               controller: _hoursController,
               maxLines: 2,
-              decoration: const InputDecoration(
-                labelText: 'Öffnungszeiten',
+              enabled: _structuredIntervals.isEmpty,
+              decoration: InputDecoration(
+                labelText: 'Öffnungszeiten (Freitext)',
                 hintText: 'z. B. Mo–Sa 11–24 Uhr, So Ruhetag',
-                border: OutlineInputBorder(),
+                helperText: _structuredIntervals.isEmpty
+                    ? null
+                    : 'Wird automatisch erzeugt: '
+                        '${formatOpeningHours(_structuredIntervals)}',
+                helperMaxLines: 3,
+                border: const OutlineInputBorder(),
               ),
+            ),
+            ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              title: Text('🕒 Öffnungszeiten je Wochentag',
+                  style: theme.textTheme.titleSmall),
+              subtitle: const Text(
+                  'Grundlage für „Jetzt geöffnet" in Liste und Karte'),
+              children: [
+                for (var d = 1; d <= 7; d++) _dayRow(d),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                    onPressed:
+                        _days[1] == null ? null : _applyMondayToWeekdays,
+                    child: const Text('Mo auf Mo–Fr übernehmen'),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             Row(

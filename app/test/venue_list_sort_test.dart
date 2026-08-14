@@ -8,7 +8,8 @@ Venue _venue(String id, String name,
         {double? lat,
         double? lng,
         double? priceHalf,
-        DateTime? updatedAt}) =>
+        DateTime? updatedAt,
+        String? hoursJson}) =>
     Venue(
       id: id,
       name: name,
@@ -18,6 +19,7 @@ Venue _venue(String id, String name,
       priceHalfL: priceHalf,
       verified: false,
       updatedAt: updatedAt,
+      openingHoursJson: hoursJson,
     );
 
 void main() {
@@ -52,5 +54,20 @@ void main() {
   test('Aktuell: zuletzt gepflegte zuerst, ohne Zeitstempel ans Ende', () {
     final sorted = sortVenues(venues, VenueSort.updated);
     expect(sorted.map((v) => v.id), ['b', 'a', 'c']);
+  });
+
+  test('„Jetzt geöffnet" filtert auf strukturierte Zeiten', () {
+    final list = [
+      // Mi 11–24 → um Mi 12:00 offen.
+      _venue('offen', 'Offenes Wirtshaus',
+          hoursJson: '[{"d":3,"von":"11:00","bis":"24:00"}]'),
+      // Nur Sa geöffnet.
+      _venue('zu', 'Samstagsbeisl',
+          hoursJson: '[{"d":6,"von":"10:00","bis":"02:00"}]'),
+      // Ohne strukturierte Zeiten: fällt bei aktivem Filter raus.
+      _venue('freitext', 'Nur-Freitext-Gasthaus'),
+    ];
+    final mittwochMittag = DateTime(2026, 8, 12, 12, 0);
+    expect(openNow(list, mittwochMittag).map((v) => v.id), ['offen']);
   });
 }

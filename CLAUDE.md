@@ -3,15 +3,19 @@
 BrewMates: Android-Bier-App (Untappd × Beer with Me), Flutter, deutschsprachig,
 Fokus Österreich + Bayern. Antworte dem Nutzer auf Deutsch.
 
-## Aktueller Stand (2026-08-13)
+## Aktueller Stand (2026-08-14)
 
 - **Branch**: PR #2 (`claude/multi-platform-app-design-7lm758`) ist in
   `main` gemerged; neue Arbeit startet auf frischen Branches von `main`.
   Version `0.9.6-beta+10`, Release v0.9.6-beta veröffentlicht (Beta 0.x bis
-  zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch).
+  zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch; die
+  frühen Alpha-Releases wurden von 1.1/1.2 auf 0.1.0/0.2.0 umbenannt).
+  Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
+  `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU). Migrationen
-  `supabase/migrations/0001–0013` sind LIVE (0011 Gasthäuser, 0012
-  Challenges, 0013 Vertrauensstufen + edit_log). Google-Login und
+  `supabase/migrations/0001–0015` sind LIVE (0011 Gasthäuser, 0012
+  Challenges, 0013 Vertrauensstufen + edit_log, 0014 complete_challenge-RPC
+  + contribution_leaderboard, 0015 venues.opening_hours_json). Google-Login und
   E-Mail-Anmeldung (ohne Bestätigungspflicht) sind eingerichtet und
   funktionieren. Seit 0008 gilt: EXECUTE auf Funktionen wird von PUBLIC
   entzogen und pro Funktion gezielt gewährt — neue Funktionen brauchen in

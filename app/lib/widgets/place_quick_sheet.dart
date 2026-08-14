@@ -7,6 +7,7 @@ import '../core/external_links.dart';
 import '../core/format.dart';
 import '../data/db/database.dart';
 import '../data/venue_sync.dart';
+import '../domain/opening_hours.dart';
 
 /// Schnellansicht für Orte (Gasthäuser UND Brauereien): ein Bottom-Sheet
 /// mit den wichtigsten Fakten (Adresse, Öffnungszeiten, Bierpreise),
@@ -29,6 +30,7 @@ class PlaceQuickData {
     this.detailRoute,
     this.editRoute,
     this.websiteUrl,
+    this.openingIntervals = const [],
   });
 
   factory PlaceQuickData.fromVenue(Venue v, {bool canEdit = false}) =>
@@ -49,6 +51,7 @@ class PlaceQuickData {
         mapsQuery: '${v.name}${v.city == null ? '' : ', ${v.city}'}',
         updatedAt: v.updatedAt,
         editRoute: canEdit ? '/venue/${v.id}/edit' : null,
+        openingIntervals: parseOpeningHours(v.openingHoursJson),
       );
 
   factory PlaceQuickData.fromBrewery(Brewery b) => PlaceQuickData(
@@ -78,6 +81,9 @@ class PlaceQuickData {
   final String? detailRoute;
   final String? editRoute;
   final String? websiteUrl;
+
+  /// Strukturierte Öffnungszeiten (leer = nur Freitext bekannt).
+  final List<OpeningInterval> openingIntervals;
 }
 
 final _euro = NumberFormat.currency(locale: 'de_AT', symbol: '€');
@@ -89,6 +95,7 @@ Future<void> showPlaceQuickSheet(BuildContext context, PlaceQuickData place) {
     builder: (sheetContext) {
       final theme = Theme.of(sheetContext);
       final scheme = theme.colorScheme;
+      final status = openingStatus(place.openingIntervals, DateTime.now());
       final facts = <(IconData, String)>[
         if (place.address != null && place.address!.isNotEmpty)
           (Icons.place_outlined, place.address!),
@@ -136,6 +143,17 @@ Future<void> showPlaceQuickSheet(BuildContext context, PlaceQuickData place) {
                 ],
               ),
               const SizedBox(height: 12),
+              if (status != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Text(
+                    status.label,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: status.open ? scheme.primary : scheme.outline,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
               for (final (icon, text) in facts)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),

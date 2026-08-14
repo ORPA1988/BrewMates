@@ -105,9 +105,12 @@ Kosten trägt (siehe [docs/09](09-wachstum-und-geschaeftsmodell.md)).
 
 - [ ] **Venues & Tap-Listen** für verifizierte Betreiber („Was läuft gerade
       vom Fass?") — *Fundament fertig: gemeinsame Gasthaus-DB (Supabase, 0011)
-      mit Preisen (0,5 l/0,3 l), Öffnungszeiten, Kategorien, Karte,
-      Schnellansicht, Google-Maps-Link, Venue-Picker in Session/Check-in und
-      Vertrauensstufen-Datenpflege (0013 inkl. Audit-Log); Tap-Listen und
+      mit Preisen (0,5 l/0,3 l), Kategorien, Karte, Schnellansicht,
+      Google-Maps-Link, Venue-Picker in Session/Check-in,
+      Vertrauensstufen-Datenpflege (0013 inkl. Audit-Log), durchsuchbarer
+      Gasthausliste (A–Z/Nähe/Preis/Aktuell), Offline-Warteschlange für die
+      Pflege (Drift v8) und strukturierten Öffnungszeiten inkl.
+      „Jetzt geöffnet"-Filter (0015); Tap-Listen und
       Betreiber-Verifizierung stehen noch aus*
 - [ ] **Geplante Sessions & Events** (Einladungen, Erinnerungen, Kalender-Export)
 - [ ] **Empfehlungen**: „Das könnte dir schmecken" auf Basis eigener Bewertungen

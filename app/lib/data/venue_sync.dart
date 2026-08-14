@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 
 import 'db/database.dart';
@@ -29,6 +31,7 @@ class VenueSync {
           latitude: (payload['latitude'] as num?)?.toDouble(),
           longitude: (payload['longitude'] as num?)?.toDouble(),
           openingHours: payload['opening_hours'] as String?,
+          openingHoursJson: payload['opening_hours_json'],
           priceHalfL: (payload['price_half_l'] as num?)?.toDouble(),
           priceThirdL: (payload['price_third_l'] as num?)?.toDouble(),
         ),
@@ -53,6 +56,10 @@ class VenueSync {
         latitude: Value((r['latitude'] as num?)?.toDouble()),
         longitude: Value((r['longitude'] as num?)?.toDouble()),
         openingHours: Value(r['opening_hours'] as String?),
+        // PostgREST liefert jsonb dekodiert – lokal als JSON-Text cachen.
+        openingHoursJson: Value(r['opening_hours_json'] == null
+            ? null
+            : jsonEncode(r['opening_hours_json'])),
         priceHalfL: Value((r['price_half_l'] as num?)?.toDouble()),
         priceThirdL: Value((r['price_third_l'] as num?)?.toDouble()),
         verified: Value((r['verified'] as bool?) ?? false),
