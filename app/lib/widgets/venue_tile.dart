@@ -39,9 +39,13 @@ class VenueTile extends StatelessWidget {
             '0,5 l € ${venue.priceHalfL!.toStringAsFixed(2)}',
           if (distanceKm != null) '📍 $_distanceLabel',
         ].join(' · ')),
-        trailing: venue.verified
-            ? Icon(Icons.verified_outlined, size: 20, color: scheme.primary)
-            : null,
+        // `local-…` = offline erfasst, wartet auf Übertragung.
+        trailing: venue.id.startsWith('local-')
+            ? const Text('⏳', style: TextStyle(fontSize: 18))
+            : venue.verified
+                ? Icon(Icons.verified_outlined,
+                    size: 20, color: scheme.primary)
+                : null,
         onTap: () async => showPlaceQuickSheet(
             context, PlaceQuickData.fromVenue(venue, canEdit: canEdit)),
       ),

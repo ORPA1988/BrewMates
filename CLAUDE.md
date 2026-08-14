@@ -60,7 +60,10 @@ mit 403 (Branch-Scope-Token). Der Lauf baut APK+AAB und veröffentlicht sie.
   3 Bierkenner (≥100 P.) · 4 Moderator · 5 Admin; Overrides über
   user_features (`trust_level_2/3`, `edit_lock`). RLS erzwingt, die UI
   spiegelt (`accountLevelProvider`).
-- Beta-Einschränkung (bewusst): Gasthaus-Pflege nur online (keine
-  Offline-Queue). Challenge-Abschlüsse werden seit 0014 SERVERSEITIG
-  validiert (`complete_challenge`-RPC; direkte Inserts gesperrt).
+- Challenge-Abschlüsse werden seit 0014 SERVERSEITIG validiert
+  (`complete_challenge`-RPC; direkte Inserts gesperrt). Gasthaus-Pflege
+  funktioniert seit Drift v8 auch offline: `venue_edit_queue` +
+  `replayVenueQueue` (FIFO, Last-write-wins; Replay am Anfang von
+  `VenueSync.sync()`; Neuanlagen bekommen bis zum Upload eine
+  `local-…`-Pseudo-ID im Cache).
 - orpa-tech.at ist bewusst KEIN Bestandteil des Projekts.

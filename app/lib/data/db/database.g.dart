@@ -1839,6 +1839,12 @@ class $VenuesTable extends Venues with TableInfo<$VenuesTable, Venue> {
   late final GeneratedColumn<String> openingHours = GeneratedColumn<String>(
       'opening_hours', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _openingHoursJsonMeta =
+      const VerificationMeta('openingHoursJson');
+  @override
+  late final GeneratedColumn<String> openingHoursJson = GeneratedColumn<String>(
+      'opening_hours_json', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _priceHalfLMeta =
       const VerificationMeta('priceHalfL');
   @override
@@ -1883,6 +1889,7 @@ class $VenuesTable extends Venues with TableInfo<$VenuesTable, Venue> {
         latitude,
         longitude,
         openingHours,
+        openingHoursJson,
         priceHalfL,
         priceThirdL,
         verified,
@@ -1936,6 +1943,12 @@ class $VenuesTable extends Venues with TableInfo<$VenuesTable, Venue> {
           openingHours.isAcceptableOrUnknown(
               data['opening_hours']!, _openingHoursMeta));
     }
+    if (data.containsKey('opening_hours_json')) {
+      context.handle(
+          _openingHoursJsonMeta,
+          openingHoursJson.isAcceptableOrUnknown(
+              data['opening_hours_json']!, _openingHoursJsonMeta));
+    }
     if (data.containsKey('price_half_l')) {
       context.handle(
           _priceHalfLMeta,
@@ -1985,6 +1998,8 @@ class $VenuesTable extends Venues with TableInfo<$VenuesTable, Venue> {
           .read(DriftSqlType.double, data['${effectivePrefix}longitude']),
       openingHours: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}opening_hours']),
+      openingHoursJson: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}opening_hours_json']),
       priceHalfL: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}price_half_l']),
       priceThirdL: attachedDatabase.typeMapping
@@ -2013,6 +2028,10 @@ class Venue extends DataClass implements Insertable<Venue> {
   final double? latitude;
   final double? longitude;
   final String? openingHours;
+
+  /// Strukturierte Öffnungszeiten (JSON-Liste `{"d":1–7,"von":…,"bis":…}`;
+  /// null = nur Freitext). Grundlage für „Jetzt geöffnet".
+  final String? openingHoursJson;
   final double? priceHalfL;
   final double? priceThirdL;
   final bool verified;
@@ -2027,6 +2046,7 @@ class Venue extends DataClass implements Insertable<Venue> {
       this.latitude,
       this.longitude,
       this.openingHours,
+      this.openingHoursJson,
       this.priceHalfL,
       this.priceThirdL,
       required this.verified,
@@ -2052,6 +2072,9 @@ class Venue extends DataClass implements Insertable<Venue> {
     }
     if (!nullToAbsent || openingHours != null) {
       map['opening_hours'] = Variable<String>(openingHours);
+    }
+    if (!nullToAbsent || openingHoursJson != null) {
+      map['opening_hours_json'] = Variable<String>(openingHoursJson);
     }
     if (!nullToAbsent || priceHalfL != null) {
       map['price_half_l'] = Variable<double>(priceHalfL);
@@ -2087,6 +2110,9 @@ class Venue extends DataClass implements Insertable<Venue> {
       openingHours: openingHours == null && nullToAbsent
           ? const Value.absent()
           : Value(openingHours),
+      openingHoursJson: openingHoursJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(openingHoursJson),
       priceHalfL: priceHalfL == null && nullToAbsent
           ? const Value.absent()
           : Value(priceHalfL),
@@ -2115,6 +2141,7 @@ class Venue extends DataClass implements Insertable<Venue> {
       latitude: serializer.fromJson<double?>(json['latitude']),
       longitude: serializer.fromJson<double?>(json['longitude']),
       openingHours: serializer.fromJson<String?>(json['openingHours']),
+      openingHoursJson: serializer.fromJson<String?>(json['openingHoursJson']),
       priceHalfL: serializer.fromJson<double?>(json['priceHalfL']),
       priceThirdL: serializer.fromJson<double?>(json['priceThirdL']),
       verified: serializer.fromJson<bool>(json['verified']),
@@ -2134,6 +2161,7 @@ class Venue extends DataClass implements Insertable<Venue> {
       'latitude': serializer.toJson<double?>(latitude),
       'longitude': serializer.toJson<double?>(longitude),
       'openingHours': serializer.toJson<String?>(openingHours),
+      'openingHoursJson': serializer.toJson<String?>(openingHoursJson),
       'priceHalfL': serializer.toJson<double?>(priceHalfL),
       'priceThirdL': serializer.toJson<double?>(priceThirdL),
       'verified': serializer.toJson<bool>(verified),
@@ -2151,6 +2179,7 @@ class Venue extends DataClass implements Insertable<Venue> {
           Value<double?> latitude = const Value.absent(),
           Value<double?> longitude = const Value.absent(),
           Value<String?> openingHours = const Value.absent(),
+          Value<String?> openingHoursJson = const Value.absent(),
           Value<double?> priceHalfL = const Value.absent(),
           Value<double?> priceThirdL = const Value.absent(),
           bool? verified,
@@ -2166,6 +2195,9 @@ class Venue extends DataClass implements Insertable<Venue> {
         longitude: longitude.present ? longitude.value : this.longitude,
         openingHours:
             openingHours.present ? openingHours.value : this.openingHours,
+        openingHoursJson: openingHoursJson.present
+            ? openingHoursJson.value
+            : this.openingHoursJson,
         priceHalfL: priceHalfL.present ? priceHalfL.value : this.priceHalfL,
         priceThirdL: priceThirdL.present ? priceThirdL.value : this.priceThirdL,
         verified: verified ?? this.verified,
@@ -2184,6 +2216,9 @@ class Venue extends DataClass implements Insertable<Venue> {
       openingHours: data.openingHours.present
           ? data.openingHours.value
           : this.openingHours,
+      openingHoursJson: data.openingHoursJson.present
+          ? data.openingHoursJson.value
+          : this.openingHoursJson,
       priceHalfL:
           data.priceHalfL.present ? data.priceHalfL.value : this.priceHalfL,
       priceThirdL:
@@ -2205,6 +2240,7 @@ class Venue extends DataClass implements Insertable<Venue> {
           ..write('latitude: $latitude, ')
           ..write('longitude: $longitude, ')
           ..write('openingHours: $openingHours, ')
+          ..write('openingHoursJson: $openingHoursJson, ')
           ..write('priceHalfL: $priceHalfL, ')
           ..write('priceThirdL: $priceThirdL, ')
           ..write('verified: $verified, ')
@@ -2224,6 +2260,7 @@ class Venue extends DataClass implements Insertable<Venue> {
       latitude,
       longitude,
       openingHours,
+      openingHoursJson,
       priceHalfL,
       priceThirdL,
       verified,
@@ -2241,6 +2278,7 @@ class Venue extends DataClass implements Insertable<Venue> {
           other.latitude == this.latitude &&
           other.longitude == this.longitude &&
           other.openingHours == this.openingHours &&
+          other.openingHoursJson == this.openingHoursJson &&
           other.priceHalfL == this.priceHalfL &&
           other.priceThirdL == this.priceThirdL &&
           other.verified == this.verified &&
@@ -2257,6 +2295,7 @@ class VenuesCompanion extends UpdateCompanion<Venue> {
   final Value<double?> latitude;
   final Value<double?> longitude;
   final Value<String?> openingHours;
+  final Value<String?> openingHoursJson;
   final Value<double?> priceHalfL;
   final Value<double?> priceThirdL;
   final Value<bool> verified;
@@ -2272,6 +2311,7 @@ class VenuesCompanion extends UpdateCompanion<Venue> {
     this.latitude = const Value.absent(),
     this.longitude = const Value.absent(),
     this.openingHours = const Value.absent(),
+    this.openingHoursJson = const Value.absent(),
     this.priceHalfL = const Value.absent(),
     this.priceThirdL = const Value.absent(),
     this.verified = const Value.absent(),
@@ -2288,6 +2328,7 @@ class VenuesCompanion extends UpdateCompanion<Venue> {
     this.latitude = const Value.absent(),
     this.longitude = const Value.absent(),
     this.openingHours = const Value.absent(),
+    this.openingHoursJson = const Value.absent(),
     this.priceHalfL = const Value.absent(),
     this.priceThirdL = const Value.absent(),
     this.verified = const Value.absent(),
@@ -2305,6 +2346,7 @@ class VenuesCompanion extends UpdateCompanion<Venue> {
     Expression<double>? latitude,
     Expression<double>? longitude,
     Expression<String>? openingHours,
+    Expression<String>? openingHoursJson,
     Expression<double>? priceHalfL,
     Expression<double>? priceThirdL,
     Expression<bool>? verified,
@@ -2321,6 +2363,7 @@ class VenuesCompanion extends UpdateCompanion<Venue> {
       if (latitude != null) 'latitude': latitude,
       if (longitude != null) 'longitude': longitude,
       if (openingHours != null) 'opening_hours': openingHours,
+      if (openingHoursJson != null) 'opening_hours_json': openingHoursJson,
       if (priceHalfL != null) 'price_half_l': priceHalfL,
       if (priceThirdL != null) 'price_third_l': priceThirdL,
       if (verified != null) 'verified': verified,
@@ -2339,6 +2382,7 @@ class VenuesCompanion extends UpdateCompanion<Venue> {
       Value<double?>? latitude,
       Value<double?>? longitude,
       Value<String?>? openingHours,
+      Value<String?>? openingHoursJson,
       Value<double?>? priceHalfL,
       Value<double?>? priceThirdL,
       Value<bool>? verified,
@@ -2354,6 +2398,7 @@ class VenuesCompanion extends UpdateCompanion<Venue> {
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       openingHours: openingHours ?? this.openingHours,
+      openingHoursJson: openingHoursJson ?? this.openingHoursJson,
       priceHalfL: priceHalfL ?? this.priceHalfL,
       priceThirdL: priceThirdL ?? this.priceThirdL,
       verified: verified ?? this.verified,
@@ -2390,6 +2435,9 @@ class VenuesCompanion extends UpdateCompanion<Venue> {
     if (openingHours.present) {
       map['opening_hours'] = Variable<String>(openingHours.value);
     }
+    if (openingHoursJson.present) {
+      map['opening_hours_json'] = Variable<String>(openingHoursJson.value);
+    }
     if (priceHalfL.present) {
       map['price_half_l'] = Variable<double>(priceHalfL.value);
     }
@@ -2422,6 +2470,7 @@ class VenuesCompanion extends UpdateCompanion<Venue> {
           ..write('latitude: $latitude, ')
           ..write('longitude: $longitude, ')
           ..write('openingHours: $openingHours, ')
+          ..write('openingHoursJson: $openingHoursJson, ')
           ..write('priceHalfL: $priceHalfL, ')
           ..write('priceThirdL: $priceThirdL, ')
           ..write('verified: $verified, ')
@@ -5211,6 +5260,272 @@ class ChallengeCacheCompanion extends UpdateCompanion<ChallengeCacheData> {
   }
 }
 
+class $VenueEditQueueTable extends VenueEditQueue
+    with TableInfo<$VenueEditQueueTable, VenueEditQueueData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VenueEditQueueTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _venueIdMeta =
+      const VerificationMeta('venueId');
+  @override
+  late final GeneratedColumn<String> venueId = GeneratedColumn<String>(
+      'venue_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _payloadJsonMeta =
+      const VerificationMeta('payloadJson');
+  @override
+  late final GeneratedColumn<String> payloadJson = GeneratedColumn<String>(
+      'payload_json', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, venueId, payloadJson, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'venue_edit_queue';
+  @override
+  VerificationContext validateIntegrity(Insertable<VenueEditQueueData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('venue_id')) {
+      context.handle(_venueIdMeta,
+          venueId.isAcceptableOrUnknown(data['venue_id']!, _venueIdMeta));
+    }
+    if (data.containsKey('payload_json')) {
+      context.handle(
+          _payloadJsonMeta,
+          payloadJson.isAcceptableOrUnknown(
+              data['payload_json']!, _payloadJsonMeta));
+    } else if (isInserting) {
+      context.missing(_payloadJsonMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VenueEditQueueData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VenueEditQueueData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      venueId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}venue_id']),
+      payloadJson: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}payload_json'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $VenueEditQueueTable createAlias(String alias) {
+    return $VenueEditQueueTable(attachedDatabase, alias);
+  }
+}
+
+class VenueEditQueueData extends DataClass
+    implements Insertable<VenueEditQueueData> {
+  final int id;
+  final String? venueId;
+  final String payloadJson;
+  final DateTime createdAt;
+  const VenueEditQueueData(
+      {required this.id,
+      this.venueId,
+      required this.payloadJson,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || venueId != null) {
+      map['venue_id'] = Variable<String>(venueId);
+    }
+    map['payload_json'] = Variable<String>(payloadJson);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  VenueEditQueueCompanion toCompanion(bool nullToAbsent) {
+    return VenueEditQueueCompanion(
+      id: Value(id),
+      venueId: venueId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(venueId),
+      payloadJson: Value(payloadJson),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory VenueEditQueueData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VenueEditQueueData(
+      id: serializer.fromJson<int>(json['id']),
+      venueId: serializer.fromJson<String?>(json['venueId']),
+      payloadJson: serializer.fromJson<String>(json['payloadJson']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'venueId': serializer.toJson<String?>(venueId),
+      'payloadJson': serializer.toJson<String>(payloadJson),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  VenueEditQueueData copyWith(
+          {int? id,
+          Value<String?> venueId = const Value.absent(),
+          String? payloadJson,
+          DateTime? createdAt}) =>
+      VenueEditQueueData(
+        id: id ?? this.id,
+        venueId: venueId.present ? venueId.value : this.venueId,
+        payloadJson: payloadJson ?? this.payloadJson,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  VenueEditQueueData copyWithCompanion(VenueEditQueueCompanion data) {
+    return VenueEditQueueData(
+      id: data.id.present ? data.id.value : this.id,
+      venueId: data.venueId.present ? data.venueId.value : this.venueId,
+      payloadJson:
+          data.payloadJson.present ? data.payloadJson.value : this.payloadJson,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VenueEditQueueData(')
+          ..write('id: $id, ')
+          ..write('venueId: $venueId, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, venueId, payloadJson, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VenueEditQueueData &&
+          other.id == this.id &&
+          other.venueId == this.venueId &&
+          other.payloadJson == this.payloadJson &&
+          other.createdAt == this.createdAt);
+}
+
+class VenueEditQueueCompanion extends UpdateCompanion<VenueEditQueueData> {
+  final Value<int> id;
+  final Value<String?> venueId;
+  final Value<String> payloadJson;
+  final Value<DateTime> createdAt;
+  const VenueEditQueueCompanion({
+    this.id = const Value.absent(),
+    this.venueId = const Value.absent(),
+    this.payloadJson = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  VenueEditQueueCompanion.insert({
+    this.id = const Value.absent(),
+    this.venueId = const Value.absent(),
+    required String payloadJson,
+    required DateTime createdAt,
+  })  : payloadJson = Value(payloadJson),
+        createdAt = Value(createdAt);
+  static Insertable<VenueEditQueueData> custom({
+    Expression<int>? id,
+    Expression<String>? venueId,
+    Expression<String>? payloadJson,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (venueId != null) 'venue_id': venueId,
+      if (payloadJson != null) 'payload_json': payloadJson,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  VenueEditQueueCompanion copyWith(
+      {Value<int>? id,
+      Value<String?>? venueId,
+      Value<String>? payloadJson,
+      Value<DateTime>? createdAt}) {
+    return VenueEditQueueCompanion(
+      id: id ?? this.id,
+      venueId: venueId ?? this.venueId,
+      payloadJson: payloadJson ?? this.payloadJson,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (venueId.present) {
+      map['venue_id'] = Variable<String>(venueId.value);
+    }
+    if (payloadJson.present) {
+      map['payload_json'] = Variable<String>(payloadJson.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VenueEditQueueCompanion(')
+          ..write('id: $id, ')
+          ..write('venueId: $venueId, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5227,6 +5542,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $UserBadgesTable userBadges = $UserBadgesTable(this);
   late final $WishlistItemsTable wishlistItems = $WishlistItemsTable(this);
   late final $ChallengeCacheTable challengeCache = $ChallengeCacheTable(this);
+  late final $VenueEditQueueTable venueEditQueue = $VenueEditQueueTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5243,7 +5559,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         comments,
         userBadges,
         wishlistItems,
-        challengeCache
+        challengeCache,
+        venueEditQueue
       ];
 }
 
@@ -6923,6 +7240,7 @@ typedef $$VenuesTableCreateCompanionBuilder = VenuesCompanion Function({
   Value<double?> latitude,
   Value<double?> longitude,
   Value<String?> openingHours,
+  Value<String?> openingHoursJson,
   Value<double?> priceHalfL,
   Value<double?> priceThirdL,
   Value<bool> verified,
@@ -6939,6 +7257,7 @@ typedef $$VenuesTableUpdateCompanionBuilder = VenuesCompanion Function({
   Value<double?> latitude,
   Value<double?> longitude,
   Value<String?> openingHours,
+  Value<String?> openingHoursJson,
   Value<double?> priceHalfL,
   Value<double?> priceThirdL,
   Value<bool> verified,
@@ -6979,6 +7298,10 @@ class $$VenuesTableFilterComposer
 
   ColumnFilters<String> get openingHours => $composableBuilder(
       column: $table.openingHours, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get openingHoursJson => $composableBuilder(
+      column: $table.openingHoursJson,
+      builder: (column) => ColumnFilters(column));
 
   ColumnFilters<double> get priceHalfL => $composableBuilder(
       column: $table.priceHalfL, builder: (column) => ColumnFilters(column));
@@ -7030,6 +7353,10 @@ class $$VenuesTableOrderingComposer
       column: $table.openingHours,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get openingHoursJson => $composableBuilder(
+      column: $table.openingHoursJson,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<double> get priceHalfL => $composableBuilder(
       column: $table.priceHalfL, builder: (column) => ColumnOrderings(column));
 
@@ -7079,6 +7406,9 @@ class $$VenuesTableAnnotationComposer
   GeneratedColumn<String> get openingHours => $composableBuilder(
       column: $table.openingHours, builder: (column) => column);
 
+  GeneratedColumn<String> get openingHoursJson => $composableBuilder(
+      column: $table.openingHoursJson, builder: (column) => column);
+
   GeneratedColumn<double> get priceHalfL => $composableBuilder(
       column: $table.priceHalfL, builder: (column) => column);
 
@@ -7126,6 +7456,7 @@ class $$VenuesTableTableManager extends RootTableManager<
             Value<double?> latitude = const Value.absent(),
             Value<double?> longitude = const Value.absent(),
             Value<String?> openingHours = const Value.absent(),
+            Value<String?> openingHoursJson = const Value.absent(),
             Value<double?> priceHalfL = const Value.absent(),
             Value<double?> priceThirdL = const Value.absent(),
             Value<bool> verified = const Value.absent(),
@@ -7142,6 +7473,7 @@ class $$VenuesTableTableManager extends RootTableManager<
             latitude: latitude,
             longitude: longitude,
             openingHours: openingHours,
+            openingHoursJson: openingHoursJson,
             priceHalfL: priceHalfL,
             priceThirdL: priceThirdL,
             verified: verified,
@@ -7158,6 +7490,7 @@ class $$VenuesTableTableManager extends RootTableManager<
             Value<double?> latitude = const Value.absent(),
             Value<double?> longitude = const Value.absent(),
             Value<String?> openingHours = const Value.absent(),
+            Value<String?> openingHoursJson = const Value.absent(),
             Value<double?> priceHalfL = const Value.absent(),
             Value<double?> priceThirdL = const Value.absent(),
             Value<bool> verified = const Value.absent(),
@@ -7174,6 +7507,7 @@ class $$VenuesTableTableManager extends RootTableManager<
             latitude: latitude,
             longitude: longitude,
             openingHours: openingHours,
+            openingHoursJson: openingHoursJson,
             priceHalfL: priceHalfL,
             priceThirdL: priceThirdL,
             verified: verified,
@@ -9959,6 +10293,159 @@ typedef $$ChallengeCacheTableProcessedTableManager = ProcessedTableManager<
     ),
     ChallengeCacheData,
     PrefetchHooks Function()>;
+typedef $$VenueEditQueueTableCreateCompanionBuilder = VenueEditQueueCompanion
+    Function({
+  Value<int> id,
+  Value<String?> venueId,
+  required String payloadJson,
+  required DateTime createdAt,
+});
+typedef $$VenueEditQueueTableUpdateCompanionBuilder = VenueEditQueueCompanion
+    Function({
+  Value<int> id,
+  Value<String?> venueId,
+  Value<String> payloadJson,
+  Value<DateTime> createdAt,
+});
+
+class $$VenueEditQueueTableFilterComposer
+    extends Composer<_$AppDatabase, $VenueEditQueueTable> {
+  $$VenueEditQueueTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get venueId => $composableBuilder(
+      column: $table.venueId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get payloadJson => $composableBuilder(
+      column: $table.payloadJson, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$VenueEditQueueTableOrderingComposer
+    extends Composer<_$AppDatabase, $VenueEditQueueTable> {
+  $$VenueEditQueueTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get venueId => $composableBuilder(
+      column: $table.venueId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get payloadJson => $composableBuilder(
+      column: $table.payloadJson, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$VenueEditQueueTableAnnotationComposer
+    extends Composer<_$AppDatabase, $VenueEditQueueTable> {
+  $$VenueEditQueueTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get venueId =>
+      $composableBuilder(column: $table.venueId, builder: (column) => column);
+
+  GeneratedColumn<String> get payloadJson => $composableBuilder(
+      column: $table.payloadJson, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$VenueEditQueueTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $VenueEditQueueTable,
+    VenueEditQueueData,
+    $$VenueEditQueueTableFilterComposer,
+    $$VenueEditQueueTableOrderingComposer,
+    $$VenueEditQueueTableAnnotationComposer,
+    $$VenueEditQueueTableCreateCompanionBuilder,
+    $$VenueEditQueueTableUpdateCompanionBuilder,
+    (
+      VenueEditQueueData,
+      BaseReferences<_$AppDatabase, $VenueEditQueueTable, VenueEditQueueData>
+    ),
+    VenueEditQueueData,
+    PrefetchHooks Function()> {
+  $$VenueEditQueueTableTableManager(
+      _$AppDatabase db, $VenueEditQueueTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VenueEditQueueTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VenueEditQueueTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VenueEditQueueTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> venueId = const Value.absent(),
+            Value<String> payloadJson = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              VenueEditQueueCompanion(
+            id: id,
+            venueId: venueId,
+            payloadJson: payloadJson,
+            createdAt: createdAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> venueId = const Value.absent(),
+            required String payloadJson,
+            required DateTime createdAt,
+          }) =>
+              VenueEditQueueCompanion.insert(
+            id: id,
+            venueId: venueId,
+            payloadJson: payloadJson,
+            createdAt: createdAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$VenueEditQueueTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $VenueEditQueueTable,
+    VenueEditQueueData,
+    $$VenueEditQueueTableFilterComposer,
+    $$VenueEditQueueTableOrderingComposer,
+    $$VenueEditQueueTableAnnotationComposer,
+    $$VenueEditQueueTableCreateCompanionBuilder,
+    $$VenueEditQueueTableUpdateCompanionBuilder,
+    (
+      VenueEditQueueData,
+      BaseReferences<_$AppDatabase, $VenueEditQueueTable, VenueEditQueueData>
+    ),
+    VenueEditQueueData,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -9987,4 +10474,6 @@ class $AppDatabaseManager {
       $$WishlistItemsTableTableManager(_db, _db.wishlistItems);
   $$ChallengeCacheTableTableManager get challengeCache =>
       $$ChallengeCacheTableTableManager(_db, _db.challengeCache);
+  $$VenueEditQueueTableTableManager get venueEditQueue =>
+      $$VenueEditQueueTableTableManager(_db, _db.venueEditQueue);
 }
