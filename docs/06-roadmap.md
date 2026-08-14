@@ -51,7 +51,8 @@ ohne Konto, ohne Backend.
       `beers-at.json` (`barcodes`-Array), EAN-Feld im Issue-Formular existiert
 - [x] **Releases als APK über GitHub Releases** — Workflow `release.yml` per
       workflow_dispatch; Versionierung läuft als Beta 0.9.x bis zum
-      Play-Store-1.0 (statt der ursprünglich geplanten v1.2.0)
+      Play-Store-1.0 (die frühen Alpha-Releases wurden nachträglich von
+      1.1/1.2 auf 0.1.0/0.2.0 umbenannt)
 
 **Exit-Kriterium:** Ein gescanntes österreichisches Supermarkt-Bier landet in
 unter 15 Sekunden als Check-in; der Beacon zeigt die echte eigene Position auf

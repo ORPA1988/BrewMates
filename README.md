@@ -31,11 +31,12 @@ Der Startbildschirm besteht aus zwei großen Hero-Aktionen — alles andere grup
 
 Jedes Bier während einer Session landet automatisch im gemeinsamen Abend-Album; Statistiken und Abzeichen wachsen mit.
 
-## 🚀 Status: Beta 0.9 — Version 1.2-Funktionsumfang + Online-Beta
+## 🚀 Status: Beta 0.9 — lokaler Kern (Alpha 0.2) + Online-Beta
 
-Die App ist bewusst als **0.x-Beta** versioniert, bis der Play-Store-Release
+Die App ist bewusst als **0.x** versioniert, bis der Play-Store-Release
 1.0 kommt (der interne Android-`versionCode` zählt weiter hoch, Updates
-funktionieren normal). Der lokale Kern (Funktionsumfang der Version 1.2) ist
+funktionieren normal); die ersten Alpha-Releases heißen 0.1.0 und 0.2.0.
+Der lokale Kern (Funktionsumfang der Alpha 0.2) ist
 **local-first** und voll funktionsfähig – ohne Konto, ohne Backend:
 
 - ✅ **Hero-Aktionen**: Barcode-Scanner (EAN-8/13, Open-Food-Facts-Fallback) und Ein-Tap-Beacon mit echtem GPS
