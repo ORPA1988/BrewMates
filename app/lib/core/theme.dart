@@ -27,6 +27,9 @@ class BrewTheme {
   static ThemeData _base(ColorScheme scheme) => ThemeData(
         useMaterial3: true,
         colorScheme: scheme,
+        // Gebündeltes Roboto (pubspec fonts:) — die Web-App bleibt damit
+        // auch ohne Zugriff auf fonts.gstatic.com lesbar.
+        fontFamily: 'Roboto',
         cardTheme: const CardTheme(
           clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
