@@ -40,6 +40,33 @@ jobs:
           flutter-version: "3.24.5"
           channel: stable
           cache: true
+      # Stabile Signatur: Ist der Upload-Keystore als Secret hinterlegt,
+      # wird das Release damit signiert — nur dann lassen sich Updates
+      # über eine bestehende Installation einspielen (gleiche Signatur =
+      # lokale Daten bleiben erhalten). Ohne Secrets: Debug-Signatur wie
+      # bisher (Fallback, z. B. für Forks).
+      - name: Signierung einrichten (Upload-Keystore aus Secrets)
+        id: signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > android/upload-keystore.jks
+            {
+              echo "storeFile=../upload-keystore.jks"
+              echo "storePassword=$KEYSTORE_PASSWORD"
+              echo "keyAlias=brewmates"
+              echo "keyPassword=${KEY_PASSWORD:-$KEYSTORE_PASSWORD}"
+            } > android/key.properties
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+            echo "hint=Dieses Release ist mit dem BrewMates-Upload-Keystore signiert – Updates lassen sich direkt über eine bestehende Installation einspielen, alle lokalen Daten bleiben erhalten." >> "$GITHUB_OUTPUT"
+          else
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+            echo "hint=Hinweis: Dieser Test-Build ist mit einem Debug-Schlüssel signiert; Updates über eine bestehende Installation können fehlschlagen (siehe docs/07-release-playbook.md, Abschnitt Signierung)." >> "$GITHUB_OUTPUT"
+            echo "::warning::KEYSTORE_BASE64-Secret fehlt – Release wird debug-signiert (Updates über bestehende Installationen schlagen fehl)."
+          fi
       - run: flutter pub get
       - run: flutter analyze
       - run: flutter test
@@ -75,10 +102,9 @@ jobs:
 
             In der Online-Beta ist ein Konto erforderlich (E-Mail oder
             Google); Check-ins und Sessions sind nur für bestätigte
-            Freunde sichtbar. Hinweis: Diese Test-Builds sind mit einem
-            Debug-Schlüssel signiert; für den späteren Play-Store-Release
-            wird mit dem Upload-Keystore signiert
-            (siehe docs/07-release-playbook.md).
+            Freunde sichtbar.
+
+            ${{ steps.signing.outputs.hint }}
 
             Die `.aab`-Datei ist das Play-Store-Format und nur für den
             Store-Upload gedacht.
