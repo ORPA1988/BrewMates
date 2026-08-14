@@ -59,6 +59,7 @@ Future<RestoreSummary> restoreFromCloud(
               note: Value(r['note'] as String?),
               flavorTags: Value(_csvTags(r['flavor_tags'])),
               servingStyle: Value(_servingStyle(r['serving_style'])),
+              photoUrl: Value(r['photo_url'] as String?),
               createdAt: DateTime.parse(createdAt).toUtc(),
             ),
             mode: InsertMode.insertOrIgnore,

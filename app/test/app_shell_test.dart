@@ -163,6 +163,8 @@ void main() {
     // Zum Speichern-Button scrollen und speichern.
     await tester.scrollUntilVisible(find.text('Speichern'), 200,
         scrollable: find.byType(Scrollable).first);
+    await tester.ensureVisible(find.text('Speichern'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Speichern'));
     await tester.pumpAndSettle();
 

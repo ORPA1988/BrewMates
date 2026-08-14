@@ -110,6 +110,7 @@ class RemoteCheckin {
     this.note,
     this.venueName,
     this.sessionId,
+    this.photoUrl,
     required this.createdAt,
   });
 
@@ -123,6 +124,7 @@ class RemoteCheckin {
   final String? note;
   final String? venueName;
   final String? sessionId;
+  final String? photoUrl;
   final DateTime createdAt;
 }
 
@@ -239,6 +241,21 @@ class OnlineService {
   }
 
   Future<void> signOut() => _client.auth.signOut();
+
+  /// Konto unwiderruflich löschen (0017): entfernt Profil, alle
+  /// Server-Daten (FK-Kaskaden) und den Auth-Nutzer; Community-Beiträge
+  /// werden anonymisiert. Lokale Daten auf dem Gerät bleiben.
+  /// null = ok (danach abgemeldet), sonst Fehlermeldung.
+  Future<String?> deleteMyAccount() async {
+    if (currentUser == null) return 'Nicht angemeldet.';
+    try {
+      await _client.rpc('delete_my_account');
+      await _client.auth.signOut();
+      return null;
+    } catch (_) {
+      return 'Löschen fehlgeschlagen – bitte später erneut versuchen.';
+    }
+  }
 
   /// Anmeldung/Registrierung mit dem Google-Konto (Browser-OAuth-Flow;
   /// die Rückkehr in die App läuft über [oauthRedirect]). Das Profil
@@ -706,6 +723,25 @@ class OnlineService {
   // --------------------------------------------------------------------------
   // Check-ins
   // --------------------------------------------------------------------------
+
+  /// Check-in-Foto in den öffentlichen beer-photos-Bucket laden.
+  /// Rückgabe: öffentliche URL, null bei Fehler/offline/abgemeldet.
+  Future<String?> uploadCheckinPhoto(Uint8List bytes) async {
+    final me = currentUser;
+    if (me == null) return null;
+    try {
+      final path =
+          '${me.id}/checkin-${DateTime.now().millisecondsSinceEpoch}.jpg';
+      await _client.storage.from('beer-photos').uploadBinary(
+            path,
+            bytes,
+            fileOptions: const FileOptions(contentType: 'image/jpeg'),
+          );
+      return _client.storage.from('beer-photos').getPublicUrl(path);
+    } catch (_) {
+      return null;
+    }
+  }
 
   /// Eigenen Check-in online spiegeln (denormalisiert, gleiche Zeile wie
   /// der Upload-Assistent).
@@ -1180,6 +1216,7 @@ class OnlineService {
           if (t.trim().isNotEmpty) t.trim(),
       ],
       'serving_style': c.servingStyle?.name,
+      'photo_url': c.photoUrl,
       'venue_name': c.venueName,
       'visibility': 'friends',
       'created_at': c.createdAt.toUtc().toIso8601String(),
@@ -1237,7 +1274,7 @@ class OnlineService {
           .from('checkins')
           .select('id, rating, note, flavor_tags, serving_style, beer_name, '
               'beer_style, brewery_name, is_alcohol_free, venue_id, '
-              'venue_name, created_at')
+              'venue_name, photo_url, created_at')
           .eq('profile_id', me.id)
           .order('created_at', ascending: true);
       return rows.cast<Map<String, dynamic>>();
@@ -1330,7 +1367,7 @@ class OnlineService {
       final rows = await _client
           .from('checkins')
           .select('id, beer_name, brewery_name, beer_style, is_alcohol_free, '
-              'rating, note, venue_name, session_id, created_at, '
+              'rating, note, venue_name, session_id, photo_url, created_at, '
               'author:profiles!checkins_profile_id_fkey($_profileCols)')
           .neq('profile_id', me.id)
           .order('created_at', ascending: false)
@@ -1338,6 +1375,119 @@ class OnlineService {
       return [for (final r in rows) _checkinFromRow(r)];
     } catch (_) {
       return const [];
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // Toasts & Kommentare (Server = Wahrheit für alle hochgeladenen
+  // Check-ins; RLS aus 0001 begrenzt auf sichtbare Check-ins).
+  // --------------------------------------------------------------------------
+
+  /// Toast-/Kommentar-Stand für eine Menge von Check-in-UUIDs.
+  /// null = offline/abgemeldet.
+  Future<Map<String, ({int toasts, bool toastedByMe, int comments})>?>
+      reactionsFor(List<String> checkinIds) async {
+    final me = currentUser;
+    if (me == null) return null;
+    if (checkinIds.isEmpty) return const {};
+    try {
+      final toastRows = await _client
+          .from('toasts')
+          .select('checkin_id, profile_id')
+          .inFilter('checkin_id', checkinIds);
+      final commentRows = await _client
+          .from('comments')
+          .select('checkin_id')
+          .inFilter('checkin_id', checkinIds);
+      final toastCount = <String, int>{};
+      final mine = <String>{};
+      for (final r in toastRows) {
+        final id = r['checkin_id'] as String;
+        toastCount[id] = (toastCount[id] ?? 0) + 1;
+        if (r['profile_id'] == me.id) mine.add(id);
+      }
+      final commentCount = <String, int>{};
+      for (final r in commentRows) {
+        final id = r['checkin_id'] as String;
+        commentCount[id] = (commentCount[id] ?? 0) + 1;
+      }
+      return {
+        for (final id in checkinIds)
+          id: (
+            toasts: toastCount[id] ?? 0,
+            toastedByMe: mine.contains(id),
+            comments: commentCount[id] ?? 0,
+          ),
+      };
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Eigenen Toast setzen/entfernen (idempotent). true = übernommen.
+  Future<bool> setToastRemote(String checkinId, {required bool on}) async {
+    final me = currentUser;
+    if (me == null) return false;
+    try {
+      if (on) {
+        await _client.from('toasts').upsert({
+          'checkin_id': checkinId,
+          'profile_id': me.id,
+        }, ignoreDuplicates: true);
+      } else {
+        await _client
+            .from('toasts')
+            .delete()
+            .eq('checkin_id', checkinId)
+            .eq('profile_id', me.id);
+      }
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Kommentare eines Check-ins, älteste zuerst. null = offline.
+  Future<List<({RemoteProfile author, String body, DateTime createdAt})>?>
+      commentsRemote(String checkinId) async {
+    if (currentUser == null) return null;
+    try {
+      final rows = await _client
+          .from('comments')
+          .select('body, created_at, '
+              'author:profiles!comments_profile_id_fkey($_profileCols)')
+          .eq('checkin_id', checkinId)
+          .order('created_at', ascending: true);
+      return [
+        for (final r in rows)
+          (
+            author:
+                RemoteProfile.fromRow(r['author'] as Map<String, dynamic>),
+            body: r['body'] as String,
+            createdAt:
+                DateTime.parse(r['created_at'] as String).toLocal(),
+          ),
+      ];
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Kommentar schreiben. null = ok, sonst Fehlermeldung.
+  Future<String?> addCommentRemote(String checkinId, String body) async {
+    final me = currentUser;
+    if (me == null) return 'Nicht angemeldet.';
+    try {
+      await _client.from('comments').insert({
+        'checkin_id': checkinId,
+        'profile_id': me.id,
+        'body': body.trim(),
+      });
+      return null;
+    } on PostgrestException {
+      return 'Kommentar konnte nicht gespeichert werden.';
+    } catch (_) {
+      return 'Keine Verbindung.';
     }
   }
 
@@ -1353,6 +1503,7 @@ class OnlineService {
         note: r['note'] as String?,
         venueName: r['venue_name'] as String?,
         sessionId: r['session_id'] as String?,
+        photoUrl: r['photo_url'] as String?,
         createdAt: DateTime.parse(r['created_at'] as String).toLocal(),
       );
 }

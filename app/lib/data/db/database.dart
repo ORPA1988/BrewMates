@@ -154,6 +154,9 @@ class Checkins extends Table {
   /// Kommagetrennt, z. B. "hopfig,fruchtig".
   TextColumn get flavorTags => text().withDefault(const Constant(''))();
   TextColumn get servingStyle => textEnum<ServingStyle>().nullable()();
+
+  /// Foto des Check-ins (öffentliche URL im beer-photos-Bucket).
+  TextColumn get photoUrl => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
 
   @override
@@ -320,7 +323,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -426,6 +429,10 @@ class AppDatabase extends _$AppDatabase {
             // Öffnungszeiten.
             await m.createTable(venueEditQueue);
             await m.addColumn(venues, venues.openingHoursJson);
+          }
+          if (from < 9) {
+            // v9: Foto-Check-ins.
+            await m.addColumn(checkins, checkins.photoUrl);
           }
         },
       );

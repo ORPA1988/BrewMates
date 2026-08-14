@@ -23,12 +23,15 @@ class CheckinCard extends ConsumerWidget {
         ServingStyle.growler => 'Growler',
       };
 
-  Future<void> _openComments(BuildContext context) async {
+  Future<void> _openComments(BuildContext context,
+      {String? serverId}) async {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (_) => _CommentsSheet(checkinId: details.checkin.id),
+      builder: (_) => serverId != null
+          ? _RemoteCommentsSheet(serverId: serverId)
+          : _CommentsSheet(checkinId: details.checkin.id),
     );
   }
 
@@ -41,12 +44,20 @@ class CheckinCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    final toastCount =
-        ref.watch(toastCountProvider(checkin.id)).valueOrNull ?? 0;
-    final toasted =
-        ref.watch(toastedByMeProvider(checkin.id)).valueOrNull ?? false;
-    final commentCount =
-        ref.watch(commentCountProvider(checkin.id)).valueOrNull ?? 0;
+    // Reaktionen: Für hochgeladene Check-ins (eigene wie Freunde) zählt
+    // der Server – so sind auch Toasts/Kommentare der Freunde sichtbar.
+    // Offline/abgemeldet: lokale Zähler wie bisher.
+    final serverId = serverCheckinId(checkin.id);
+    final serverEntry = serverId == null
+        ? null
+        : ref.watch(feedReactionsProvider).valueOrNull?[serverId];
+
+    final toastCount = serverEntry?.toasts ??
+        (ref.watch(toastCountProvider(checkin.id)).valueOrNull ?? 0);
+    final toasted = serverEntry?.toastedByMe ??
+        (ref.watch(toastedByMeProvider(checkin.id)).valueOrNull ?? false);
+    final commentCount = serverEntry?.comments ??
+        (ref.watch(commentCountProvider(checkin.id)).valueOrNull ?? 0);
 
     final flavorTags = checkin.flavorTags
         .split(',')
@@ -160,6 +171,30 @@ class CheckinCard extends ConsumerWidget {
               ),
             ],
 
+            // Foto (öffentliche URL aus dem beer-photos-Bucket).
+            if (checkin.photoUrl != null) ...[
+              const SizedBox(height: 8),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  checkin.photoUrl!,
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, progress) =>
+                      progress == null
+                          ? child
+                          : Container(
+                              height: 200,
+                              alignment: Alignment.center,
+                              color: scheme.surfaceContainerHighest,
+                              child: const CircularProgressIndicator(),
+                            ),
+                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                ),
+              ),
+            ],
+
             // Notiz.
             if (checkin.note != null) ...[
               const SizedBox(height: 8),
@@ -197,16 +232,21 @@ class CheckinCard extends ConsumerWidget {
 
             const SizedBox(height: 4),
 
-            // Fußzeile: Toast + Kommentare. Für Online-Einträge echter
-            // Freunde (remote-…) gibt es lokal nichts zu zählen –
-            // Interaktion darauf kommt mit einer späteren Beta.
-            if (!checkin.id.startsWith('remote-'))
+            // Fußzeile: Toast + Kommentare. Hochgeladene Check-ins laufen
+            // über den Server (Reaktionen der Freunde inklusive); rein
+            // lokale Einträge (Demo/Seed) über die lokalen Tabellen.
+            // Remote-Einträge ohne Server-Stand (offline) bleiben ohne
+            // Fußzeile.
+            if (serverEntry != null || !checkin.id.startsWith('remote-'))
             Row(
               children: [
                 TextButton.icon(
                   onPressed: () async {
-                    final earned =
-                        await ref.read(actionsProvider).toggleToast(checkin.id);
+                    final actions = ref.read(actionsProvider);
+                    final earned = serverEntry != null
+                        ? await actions.toggleServerToast(
+                            checkin.id, serverId!, on: !toasted)
+                        : await actions.toggleToast(checkin.id);
                     if (context.mounted) {
                       await showBadgeCelebration(context, earned);
                     }
@@ -229,7 +269,8 @@ class CheckinCard extends ConsumerWidget {
                 ),
                 const SizedBox(width: 4),
                 TextButton.icon(
-                  onPressed: () async => _openComments(context),
+                  onPressed: () async => _openComments(context,
+                      serverId: serverEntry != null ? serverId : null),
                   style: TextButton.styleFrom(
                     visualDensity: VisualDensity.compact,
                     foregroundColor: scheme.onSurfaceVariant,
@@ -238,6 +279,148 @@ class CheckinCard extends ConsumerWidget {
                   label: Text('$commentCount'),
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Bottom-Sheet für Kommentare auf hochgeladenen Check-ins: Liste und
+/// Eingabe laufen direkt gegen den Server (Freunde sehen sie sofort).
+class _RemoteCommentsSheet extends ConsumerStatefulWidget {
+  const _RemoteCommentsSheet({required this.serverId});
+
+  final String serverId;
+
+  @override
+  ConsumerState<_RemoteCommentsSheet> createState() =>
+      _RemoteCommentsSheetState();
+}
+
+class _RemoteCommentsSheetState extends ConsumerState<_RemoteCommentsSheet> {
+  final _controller = TextEditingController();
+  bool _sending = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _send() async {
+    final text = _controller.text.trim();
+    if (text.isEmpty || _sending) return;
+    setState(() => _sending = true);
+    final error = await ref
+        .read(actionsProvider)
+        .addServerComment(widget.serverId, text);
+    if (!mounted) return;
+    setState(() => _sending = false);
+    if (error != null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error)));
+      return;
+    }
+    _controller.clear();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final comments = ref.watch(remoteCommentsProvider(widget.serverId));
+
+    return Padding(
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Kommentare', style: theme.textTheme.titleMedium),
+            const SizedBox(height: 8),
+            Flexible(
+              child: comments.when(
+                loading: () => const Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+                error: (e, _) => Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text('Fehler beim Laden: $e'),
+                ),
+                data: (list) => (list == null || list.isEmpty)
+                    ? Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Text(
+                          list == null
+                              ? 'Kommentare sind gerade nicht erreichbar '
+                                  '(offline?).'
+                              : 'Noch keine Kommentare – sei die erste '
+                                  'Stimme 🍻',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant),
+                        ),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: list.length,
+                        itemBuilder: (context, index) {
+                          final entry = list[index];
+                          return ListTile(
+                            dense: true,
+                            leading: CircleAvatar(
+                              radius: 16,
+                              child: Text(entry.author.avatarEmoji,
+                                  style: const TextStyle(fontSize: 16)),
+                            ),
+                            title: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    entry.author.displayName,
+                                    style: theme.textTheme.titleSmall,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Text(
+                                  timeAgo(entry.createdAt),
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                      color: theme
+                                          .colorScheme.onSurfaceVariant),
+                                ),
+                              ],
+                            ),
+                            subtitle: Text(entry.body),
+                          );
+                        },
+                      ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 8, 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      decoration: const InputDecoration(
+                        hintText: 'Kommentar schreiben …',
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                      textInputAction: TextInputAction.send,
+                      onSubmitted: (_) async => _send(),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _sending ? null : () async => _send(),
+                    icon: const Icon(Icons.send),
+                    tooltip: 'Senden',
+                  ),
+                ],
+              ),
             ),
           ],
         ),
