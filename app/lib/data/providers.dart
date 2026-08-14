@@ -484,6 +484,23 @@ final checkinAutoSyncProvider = FutureProvider<int>((ref) async {
   return uploaded;
 });
 
+/// 👥 Eigene Crews (Beitritt per Einladungscode = Crew-UUID).
+final myCrewsProvider = FutureProvider<List<RemoteCrew>>((ref) async {
+  ref.watch(_syncTickProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null || online.currentUser == null) return const [];
+  return online.myCrews();
+});
+
+/// Mitglieder einer Crew (null = offline).
+final crewMembersProvider = FutureProvider.autoDispose
+    .family<List<({RemoteProfile profile, String role})>?, String>(
+        (ref, crewId) async {
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) return null;
+  return online.crewMembers(crewId);
+});
+
 /// 🍺 Freunde mit aktiver Bierlaune (0018) — „X hätte jetzt Lust auf ein
 /// Bier". Aktualisiert sich im 5-Minuten-Takt und nach eigenen Aktionen.
 final thirstyFriendsProvider =
@@ -807,7 +824,8 @@ class BrewActions {
   }
 
   /// Session starten („der eine Tap"). Gibt neu verdiente Abzeichen zurück.
-  /// [venueName] darf fehlen (Beacon „unterwegs" mit reiner GPS-Position).
+  /// [venueName] darf fehlen (Beacon „unterwegs" mit reiner GPS-Position);
+  /// [crewId] gehört zu `visibility == crew` (nur die Crew sieht den Beacon).
   Future<List<BadgeDef>> startSession({
     String? venueName,
     String? venueId,
@@ -816,6 +834,7 @@ class BrewActions {
     required Duration autoEnd,
     double? latitude,
     double? longitude,
+    String? crewId,
   }) async {
     final me = await _me();
     final now = DateTime.now();
@@ -838,13 +857,15 @@ class BrewActions {
           latitude: Value(latitude),
           longitude: Value(longitude),
         ));
-    // Live-Beacon: eigene Session für echte Freunde sichtbar machen
-    // (nur bei Sichtbarkeit „friends" – Stealth bleibt lokal).
-    if (visibility == SessionVisibility.friends) {
+    // Live-Beacon: eigene Session für Freunde bzw. die Crew sichtbar
+    // machen (Stealth bleibt lokal; RLS erzwingt die Sichtbarkeit).
+    if (visibility != SessionVisibility.private) {
       final online = await _online();
       if (online != null) {
         final row = await _db.getMyActiveSession(me.id, now);
-        if (row != null) unawaited(online.upsertSession(row));
+        if (row != null) {
+          unawaited(online.upsertSession(row, crewId: crewId));
+        }
       }
     }
     return BadgeEngine(_db).evaluate(me.id,

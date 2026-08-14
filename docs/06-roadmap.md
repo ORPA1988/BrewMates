@@ -153,12 +153,16 @@ Maßnahmen sind überwiegend Aktivierung des Vorhandenen.
       Push nur beim Session-*Start*, Mindestintervall 15 Min.,
       Radius-Option; Antwort-Chips („Prost 🍻" → Toast). *Extern
       blockiert: braucht Firebase/FCM.*
-- [ ] **Crews aktiv nutzen** (Tabellen seit 0001 bereit): Crew anlegen,
-      Mitglieder per Username/QR, Crew-Feed, Crew-Sichtbarkeit für
-      Sessions (`visibility = crew` existiert schon) — der größte
-      Differenzierer gegenüber Beer With Me.
-- [ ] **Badge-Level** (erreichbare Zwischenstufen statt Fernziele) und
-      **Streaks/Heatmap** für die Statistik-Seite
+- [x] **Crews aktiv nutzen** (seit 0.9.12): Crew gründen, Beitritt per
+      Einladungscode (= Crew-UUID, bewusst kein Kontakte-Import),
+      Mitgliederliste, verlassen/auflösen — und **Crew-Beacons**:
+      Sessions mit Sichtbarkeit „Nur meine Crew" (RLS zeigt Beacon UND
+      Check-ins der Runde nur Crew-Mitgliedern). Offen: eigener Crew-Feed.
+- [x] **Badge-Level** (seit 0.9.12): 8 erreichbare Zwischenstufen
+      (Stil-Kenner/-Professor, Globetrotter, Kurator, Brauerei-Pilger,
+      Wirtshaus-Legende, Klarer Kopf, Landvermesser) + 🔥
+      **Wochen-Serie** (Wochen statt Tage — kein täglicher Trinkanreiz)
+      als Badge und Profil-Statistik. Offen: Heatmap.
 - [ ] **Homescreen-Widget** („Session starten / letztes Bier einchecken",
       Flutter `home_widget`) — sichtbares Alleinstellungsmerkmal
 - [ ] **„Year in Beer"-Story-Export** (teilbar = kostenloses Marketing)

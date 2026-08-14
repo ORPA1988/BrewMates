@@ -16,6 +16,8 @@ import '../features/beers/beer_detail_screen.dart';
 import '../features/beers/beers_screen.dart';
 import '../features/beers/brewery_detail_screen.dart';
 import '../features/checkin/checkin_screen.dart';
+import '../features/crews/crew_detail_screen.dart';
+import '../features/crews/crews_screen.dart';
 import '../features/feed/feed_screen.dart';
 import '../features/friends/friends_screen.dart';
 import '../features/home/home_screen.dart';
@@ -157,6 +159,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/friends',
         builder: (_, __) => const FriendsScreen(),
+      ),
+      GoRoute(
+        path: '/crews',
+        builder: (_, __) => const CrewsScreen(),
+      ),
+      GoRoute(
+        path: '/crew/:id',
+        builder: (_, state) =>
+            CrewDetailScreen(crewId: state.pathParameters['id']!),
       ),
       GoRoute(
         path: '/admin',

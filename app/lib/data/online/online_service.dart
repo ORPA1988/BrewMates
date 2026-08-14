@@ -139,6 +139,23 @@ class RemoteCheckin {
   final DateTime createdAt;
 }
 
+/// 👥 Crew (Gruppe) aus Supabase — Beitritt per Einladungscode (UUID).
+class RemoteCrew {
+  const RemoteCrew({
+    required this.id,
+    required this.name,
+    required this.emoji,
+    required this.ownerId,
+    required this.memberCount,
+  });
+
+  final String id;
+  final String name;
+  final String emoji;
+  final String ownerId;
+  final int memberCount;
+}
+
 /// Alle Supabase-Zugriffe der App. Grundsätze:
 /// - Die App bleibt ohne Konto voll funktionsfähig (local-first).
 /// - Netzfehler werden geschluckt, wo der lokale Zustand die Wahrheit ist
@@ -630,13 +647,150 @@ class OnlineService {
   }
 
   // --------------------------------------------------------------------------
+  // Crews (Gruppen, Tabellen seit 0001; Beitritt per Einladungscode =
+  // Crew-UUID — bewusst kein Kontakte-Import, wie bei Beer With Me).
+  // --------------------------------------------------------------------------
+
+  /// Eigene Crews (RLS zeigt nur Crews, in denen man Mitglied ist).
+  Future<List<RemoteCrew>> myCrews() async {
+    if (currentUser == null) return const [];
+    try {
+      final rows = await _client
+          .from('crews')
+          .select('id, name, emoji, owner_id, crew_members(count)')
+          .order('created_at', ascending: true);
+      return [
+        for (final r in rows)
+          RemoteCrew(
+            id: r['id'] as String,
+            name: r['name'] as String,
+            emoji: (r['emoji'] as String?) ?? '👥',
+            ownerId: r['owner_id'] as String,
+            memberCount: _embeddedCount(r['crew_members']),
+          ),
+      ];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// PostgREST-`count`-Embed → int (Form: `[{"count": n}]`).
+  static int _embeddedCount(Object? embed) {
+    if (embed is List && embed.isNotEmpty && embed.first is Map) {
+      return ((embed.first as Map)['count'] as num?)?.toInt() ?? 0;
+    }
+    return 0;
+  }
+
+  /// Crew gründen. Rückgabe: (crewId, Fehlermeldung).
+  Future<(String?, String?)> createCrew(String name, String emoji) async {
+    final me = currentUser;
+    if (me == null) return (null, 'Nicht angemeldet.');
+    try {
+      final row = await _client
+          .from('crews')
+          .insert({'name': name.trim(), 'emoji': emoji, 'owner_id': me.id})
+          .select('id')
+          .single();
+      final id = row['id'] as String;
+      await _client.from('crew_members').insert({
+        'crew_id': id,
+        'profile_id': me.id,
+        'role': 'owner',
+      });
+      return (id, null);
+    } on PostgrestException {
+      return (null, 'Crew konnte nicht angelegt werden.');
+    } catch (_) {
+      return (null, 'Keine Verbindung.');
+    }
+  }
+
+  /// Crew per Einladungscode (= Crew-UUID) beitreten.
+  Future<String?> joinCrew(String code) async {
+    final me = currentUser;
+    if (me == null) return 'Nicht angemeldet.';
+    if (!_uuidPattern.hasMatch(code.trim())) {
+      return 'Das sieht nicht wie ein Einladungscode aus.';
+    }
+    try {
+      await _client.from('crew_members').insert({
+        'crew_id': code.trim(),
+        'profile_id': me.id,
+      });
+      return null;
+    } on PostgrestException catch (e) {
+      if (e.code == '23505') return 'Du bist schon Mitglied dieser Crew.';
+      if (e.code == '23503') return 'Diesen Einladungscode gibt es nicht.';
+      return 'Beitritt fehlgeschlagen.';
+    } catch (_) {
+      return 'Keine Verbindung.';
+    }
+  }
+
+  /// Crew verlassen (eigene Mitgliedschaft löschen).
+  Future<String?> leaveCrew(String crewId) async {
+    final me = currentUser;
+    if (me == null) return 'Nicht angemeldet.';
+    try {
+      await _client
+          .from('crew_members')
+          .delete()
+          .eq('crew_id', crewId)
+          .eq('profile_id', me.id);
+      return null;
+    } catch (_) {
+      return 'Keine Verbindung.';
+    }
+  }
+
+  /// Crew auflösen (nur Besitzer, RLS erzwingt das).
+  Future<String?> deleteCrew(String crewId) async {
+    if (currentUser == null) return 'Nicht angemeldet.';
+    try {
+      await _client.from('crews').delete().eq('id', crewId);
+      return null;
+    } catch (_) {
+      return 'Keine Verbindung.';
+    }
+  }
+
+  /// Mitglieder einer Crew (Profil + Rolle).
+  Future<List<({RemoteProfile profile, String role})>?> crewMembers(
+      String crewId) async {
+    if (currentUser == null) return null;
+    try {
+      final rows = await _client
+          .from('crew_members')
+          .select('role, '
+              'profile:profiles!crew_members_profile_id_fkey($_profileCols)')
+          .eq('crew_id', crewId)
+          .order('created_at', ascending: true);
+      return [
+        for (final r in rows)
+          (
+            profile:
+                RemoteProfile.fromRow(r['profile'] as Map<String, dynamic>),
+            role: (r['role'] as String?) ?? 'member',
+          ),
+      ];
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // --------------------------------------------------------------------------
   // Sessions (Live-Beacon)
   // --------------------------------------------------------------------------
 
   /// Eigene Session online spiegeln (Fehler still: lokal gilt weiter).
-  Future<void> upsertSession(local.Session session) async {
+  /// [crewId] gehört zu `visibility == crew` (RLS zeigt die Session dann
+  /// nur den Crew-Mitgliedern).
+  Future<void> upsertSession(local.Session session, {String? crewId}) async {
     final me = currentUser;
     if (me == null) return;
+    final isCrew =
+        session.visibility == local.SessionVisibility.crew && crewId != null;
     try {
       await _client.from('sessions').upsert({
         'id': session.id,
@@ -644,7 +798,8 @@ class OnlineService {
         'venue_id': session.venueId,
         'venue_name': session.venueName,
         'message': session.message,
-        'visibility': 'friends',
+        'visibility': isCrew ? 'crew' : 'friends',
+        'crew_id': isCrew ? crewId : null,
         'status': session.status.name,
         'started_at': session.startedAt.toUtc().toIso8601String(),
         'expires_at': session.expiresAt.toUtc().toIso8601String(),
