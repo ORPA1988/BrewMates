@@ -260,6 +260,18 @@ class ProfileScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 8),
+              Card(
+                child: ListTile(
+                  leading:
+                      const Text('🏅', style: TextStyle(fontSize: 24)),
+                  title: const Text('Datenpflege-Bestenliste'),
+                  subtitle: const Text('Wer pflegt die Community-DB am '
+                      'fleißigsten?'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push('/profile/leaderboard'),
+                ),
+              ),
+              const SizedBox(height: 8),
             ];
           }(),
 

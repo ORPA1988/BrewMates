@@ -378,6 +378,15 @@ final accountLevelProvider =
 /// Wartende Level-Up-Feier; die UI konsumiert und leert den Wert.
 final levelUpProvider = StateProvider<CelebrationItem?>((ref) => null);
 
+/// 🏅 Datenpflege-Bestenliste (Top 20; leer offline/abgemeldet).
+final leaderboardProvider = FutureProvider<
+    List<({String username, String avatarEmoji, int points})>>((ref) async {
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) return const [];
+  return online.contributionLeaderboard();
+});
+
 // ============================================================================
 // Challenges (Herausforderungen mit Belohnungs-Badge, Admin-gepflegt)
 // ============================================================================

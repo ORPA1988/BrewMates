@@ -60,6 +60,7 @@ mit 403 (Branch-Scope-Token). Der Lauf baut APK+AAB und veröffentlicht sie.
   3 Bierkenner (≥100 P.) · 4 Moderator · 5 Admin; Overrides über
   user_features (`trust_level_2/3`, `edit_lock`). RLS erzwingt, die UI
   spiegelt (`accountLevelProvider`).
-- Beta-Einschränkungen (bewusst): Challenge-Abschlüsse ohne
-  Server-Re-Validierung; Gasthaus-Pflege nur online (keine Offline-Queue).
+- Beta-Einschränkung (bewusst): Gasthaus-Pflege nur online (keine
+  Offline-Queue). Challenge-Abschlüsse werden seit 0014 SERVERSEITIG
+  validiert (`complete_challenge`-RPC; direkte Inserts gesperrt).
 - orpa-tech.at ist bewusst KEIN Bestandteil des Projekts.

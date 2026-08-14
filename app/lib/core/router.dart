@@ -22,6 +22,7 @@ import '../features/home/home_screen.dart';
 import '../features/map/map_screen.dart';
 import '../features/profile/badges_screen.dart';
 import '../features/profile/challenges_screen.dart';
+import '../features/profile/leaderboard_screen.dart';
 import '../features/profile/diary_screen.dart';
 import '../features/profile/profile_screen.dart';
 import '../features/profile/wishlist_screen.dart';
@@ -168,6 +169,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile/challenges',
         builder: (_, __) => const ChallengesScreen(),
+      ),
+      GoRoute(
+        path: '/profile/leaderboard',
+        builder: (_, __) => const LeaderboardScreen(),
       ),
       GoRoute(
         path: '/admin/challenges',
