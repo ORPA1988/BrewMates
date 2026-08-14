@@ -12,6 +12,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' show User;
 
 import '../core/app_update.dart';
 import '../core/config.dart';
+import '../core/format.dart' show isUuid;
 import '../domain/account_level.dart';
 import '../domain/badges.dart';
 import '../domain/challenges.dart';
@@ -534,6 +535,40 @@ final commentsProvider =
     StreamProvider.family<List<(Comment, Profile)>, String>((ref, checkinId) =>
         ref.watch(databaseProvider).watchComments(checkinId));
 
+/// Server-Check-in-UUID zu einer Feed-ID: `remote-…`-Präfix entfernen;
+/// null, wenn der Eintrag nie hochgeladen wurde (Demo/Seed ohne UUID).
+String? serverCheckinId(String feedId) {
+  final real = stripRemote(feedId);
+  return isUuid(real) ? real : null;
+}
+
+/// 🍻 Server-Reaktionen (Toasts + Kommentare) für alle Feed-Einträge in
+/// EINER Abfrage – gilt für eigene hochgeladene Check-ins genauso wie für
+/// die der Freunde. null = offline/abgemeldet (Karte fällt auf die
+/// lokalen Zähler zurück); aktualisiert sich im 5-Minuten-Takt und nach
+/// jeder eigenen Aktion (Invalidate in BrewActions).
+final feedReactionsProvider = FutureProvider<
+    Map<String, ({int toasts, bool toastedByMe, int comments})>?>((ref) async {
+  ref.watch(_syncTickProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null || online.currentUser == null) return null;
+  final feed = await ref.watch(feedProvider.future);
+  final ids = <String>[
+    for (final d in feed)
+      if (serverCheckinId(d.checkin.id) case final id?) id,
+  ];
+  return online.reactionsFor(ids);
+});
+
+/// Kommentare eines Server-Check-ins (für das Kommentar-Sheet).
+final remoteCommentsProvider = FutureProvider.autoDispose.family<
+    List<({RemoteProfile author, String body, DateTime createdAt})>?,
+    String>((ref, checkinId) async {
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) return null;
+  return online.commentsRemote(checkinId);
+});
+
 // ============================================================================
 // Sessions
 // ============================================================================
@@ -851,6 +886,25 @@ class BrewActions {
         onlineUserId: (await _online())?.currentUser?.id);
   }
 
+  /// Toast auf einem hochgeladenen Check-in (eigener oder von Freunden):
+  /// Server ist die Wahrheit; lokal wird der Toast gespiegelt, damit
+  /// Abzeichen („Prost-Meister") weiterzählen. Gibt neue Abzeichen zurück.
+  Future<List<BadgeDef>> toggleServerToast(
+    String feedId,
+    String serverId, {
+    required bool on,
+  }) async {
+    final online = await _online();
+    if (online != null) {
+      await online.setToastRemote(serverId, on: on);
+      _ref.invalidate(feedReactionsProvider);
+    }
+    final me = await _me();
+    await _db.toggleToast(feedId, me.id);
+    return BadgeEngine(_db)
+        .evaluate(me.id, onlineUserId: online?.currentUser?.id);
+  }
+
   Future<void> addComment(String checkinId, String body) async {
     final me = await _me();
     await _db.into(_db.comments).insert(CommentsCompanion.insert(
@@ -860,6 +914,18 @@ class BrewActions {
           body: body.trim(),
           createdAt: DateTime.now(),
         ));
+  }
+
+  /// Kommentar auf einem hochgeladenen Check-in (serverseitig).
+  Future<String?> addServerComment(String serverId, String body) async {
+    final online = await _online();
+    if (online == null) return 'Keine Verbindung.';
+    final error = await online.addCommentRemote(serverId, body);
+    if (error == null) {
+      _ref.invalidate(feedReactionsProvider);
+      _ref.invalidate(remoteCommentsProvider(serverId));
+    }
+    return error;
   }
 
   Future<void> toggleWishlist(String beerId) async {

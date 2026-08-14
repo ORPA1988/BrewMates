@@ -1363,6 +1363,119 @@ class OnlineService {
     }
   }
 
+  // --------------------------------------------------------------------------
+  // Toasts & Kommentare (Server = Wahrheit für alle hochgeladenen
+  // Check-ins; RLS aus 0001 begrenzt auf sichtbare Check-ins).
+  // --------------------------------------------------------------------------
+
+  /// Toast-/Kommentar-Stand für eine Menge von Check-in-UUIDs.
+  /// null = offline/abgemeldet.
+  Future<Map<String, ({int toasts, bool toastedByMe, int comments})>?>
+      reactionsFor(List<String> checkinIds) async {
+    final me = currentUser;
+    if (me == null) return null;
+    if (checkinIds.isEmpty) return const {};
+    try {
+      final toastRows = await _client
+          .from('toasts')
+          .select('checkin_id, profile_id')
+          .inFilter('checkin_id', checkinIds);
+      final commentRows = await _client
+          .from('comments')
+          .select('checkin_id')
+          .inFilter('checkin_id', checkinIds);
+      final toastCount = <String, int>{};
+      final mine = <String>{};
+      for (final r in toastRows) {
+        final id = r['checkin_id'] as String;
+        toastCount[id] = (toastCount[id] ?? 0) + 1;
+        if (r['profile_id'] == me.id) mine.add(id);
+      }
+      final commentCount = <String, int>{};
+      for (final r in commentRows) {
+        final id = r['checkin_id'] as String;
+        commentCount[id] = (commentCount[id] ?? 0) + 1;
+      }
+      return {
+        for (final id in checkinIds)
+          id: (
+            toasts: toastCount[id] ?? 0,
+            toastedByMe: mine.contains(id),
+            comments: commentCount[id] ?? 0,
+          ),
+      };
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Eigenen Toast setzen/entfernen (idempotent). true = übernommen.
+  Future<bool> setToastRemote(String checkinId, {required bool on}) async {
+    final me = currentUser;
+    if (me == null) return false;
+    try {
+      if (on) {
+        await _client.from('toasts').upsert({
+          'checkin_id': checkinId,
+          'profile_id': me.id,
+        }, ignoreDuplicates: true);
+      } else {
+        await _client
+            .from('toasts')
+            .delete()
+            .eq('checkin_id', checkinId)
+            .eq('profile_id', me.id);
+      }
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Kommentare eines Check-ins, älteste zuerst. null = offline.
+  Future<List<({RemoteProfile author, String body, DateTime createdAt})>?>
+      commentsRemote(String checkinId) async {
+    if (currentUser == null) return null;
+    try {
+      final rows = await _client
+          .from('comments')
+          .select('body, created_at, '
+              'author:profiles!comments_profile_id_fkey($_profileCols)')
+          .eq('checkin_id', checkinId)
+          .order('created_at', ascending: true);
+      return [
+        for (final r in rows)
+          (
+            author:
+                RemoteProfile.fromRow(r['author'] as Map<String, dynamic>),
+            body: r['body'] as String,
+            createdAt:
+                DateTime.parse(r['created_at'] as String).toLocal(),
+          ),
+      ];
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Kommentar schreiben. null = ok, sonst Fehlermeldung.
+  Future<String?> addCommentRemote(String checkinId, String body) async {
+    final me = currentUser;
+    if (me == null) return 'Nicht angemeldet.';
+    try {
+      await _client.from('comments').insert({
+        'checkin_id': checkinId,
+        'profile_id': me.id,
+        'body': body.trim(),
+      });
+      return null;
+    } on PostgrestException {
+      return 'Kommentar konnte nicht gespeichert werden.';
+    } catch (_) {
+      return 'Keine Verbindung.';
+    }
+  }
+
   RemoteCheckin _checkinFromRow(Map<String, dynamic> r) => RemoteCheckin(
         id: r['id'] as String,
         author:
