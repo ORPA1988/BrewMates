@@ -59,6 +59,18 @@ flutter:
   uses-material-design: true
   assets:
     - assets/data/
+  # Roboto gebündelt: Die Web-Engine lädt Schriften sonst zur Laufzeit von
+  # fonts.gstatic.com — blockiert das ein Netz/VPN/Adblocker, bleibt die
+  # Web-App textlos. Gebündelt rendert sie überall (Android nutzt Roboto
+  # ohnehin als Standard, +~420 KB APK).
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Roboto-Bold.ttf
+          weight: 700
 
 # App-Icons für alle Plattformen aus einer Quelle:
 #   dart run flutter_launcher_icons
