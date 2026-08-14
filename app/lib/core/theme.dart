@@ -31,7 +31,14 @@ class BrewTheme {
         // auch ohne Zugriff auf fonts.gstatic.com lesbar; Emojis/Symbole
         // kommen aus den gebündelten Noto-Fallbacks statt vom Google-CDN.
         fontFamily: 'Roboto',
-        fontFamilyFallback: const ['NotoEmoji', 'NotoSansSymbols2'],
+        // NotoColorEmoji wird auf Web zur Laufzeit geladen
+        // (core/emoji_font.dart); wo er fehlt, wird der Eintrag einfach
+        // übersprungen und die monochromen Bundles greifen.
+        fontFamilyFallback: const [
+          'NotoColorEmoji',
+          'NotoEmoji',
+          'NotoSansSymbols2',
+        ],
         cardTheme: const CardTheme(
           clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
