@@ -22,3 +22,6 @@ jobs:
       - run: flutter pub get
       - run: flutter analyze
       - run: flutter test
+      # Fängt dart:io-Regressionen: die App muss auch fürs Web bauen
+      # (GitHub-Pages-Deployment, siehe pages.yml).
+      - run: flutter build web --release

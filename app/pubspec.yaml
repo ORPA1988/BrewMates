@@ -2,7 +2,7 @@ name: brewmates
 description: "BrewMates – Bier entdecken, Freunde treffen. Untappd × Beer with Me."
 publish_to: "none"
 # Beta-Phase: 0.x bis zum offiziellen 1.0-Store-Release (versionCode zählt weiter)
-version: 0.9.9-beta+13
+version: 0.9.10-beta+14
 
 environment:
   sdk: ^3.5.0
@@ -72,6 +72,10 @@ flutter_launcher_icons:
   windows:
     generate: true
     icon_size: 256
+  web:
+    generate: true
+    background_color: "#1C140F"
+    theme_color: "#1C140F"
 
 # Windows-Paket:  dart run msix:create
 # Standard: selbstsigniertes Test-Paket (sideload-fähig, CI-tauglich).

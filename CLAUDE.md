@@ -83,4 +83,16 @@ mit 403 (Branch-Scope-Token). Der Lauf baut APK+AAB und veröffentlicht sie.
   `replayVenueQueue` (FIFO, Last-write-wins; Replay am Anfang von
   `VenueSync.sync()`; Neuanlagen bekommen bis zum Upload eine
   `local-…`-Pseudo-ID im Cache).
+- **Web-App**: Seit 0.9.10 baut die App auch fürs Web
+  (`https://orpa1988.github.io/BrewMates/`, Datenschutz unter
+  `…/privacy/`; kombiniertes Pages-Deployment in `pages.yml`). Drift läuft
+  im Browser über `WasmDatabase` — die Plattform-Weiche liegt in
+  `data/db/connection/` (Conditional Imports; nativer Pfad byte-identisch).
+  `web/sqlite3.wasm` (sqlite3 2.9.4) und `web/drift_worker.js`
+  (drift 2.23.1) sind versionsgepinnt — bei Paket-Upgrades neu laden!
+  CanvasKit wird selbst gehostet (`web/flutter_bootstrap.js`).
+  KEIN `dart:io` in `app/lib/` (CI erzwingt `flutter build web`);
+  Plattform-Checks über `kIsWeb`/`defaultTargetPlatform` — in Widget-Tests
+  meldet `defaultTargetPlatform` Android, Desktop-Tests setzen
+  `debugDefaultTargetPlatformOverride`.
 - orpa-tech.at ist bewusst KEIN Bestandteil des Projekts.

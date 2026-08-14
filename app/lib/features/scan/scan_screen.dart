@@ -1,6 +1,5 @@
-import 'dart:io' show Platform;
-
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart'
+    show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,7 +10,8 @@ import '../../data/providers.dart';
 import '../../widgets/rating_stars.dart';
 import 'barcode_lookup.dart';
 
-/// Hero-Funktion „🍺 Bier scannen": Kamera-Scan auf Android/iOS,
+/// Hero-Funktion „🍺 Bier scannen": Kamera-Scan auf Android/iOS und im
+/// Browser (mobile_scanner lädt die zxing-Bibliothek zur Laufzeit nach),
 /// manuelle EAN-Eingabe überall (und als einziger Weg auf Desktop).
 /// Die Lookup-Logik lebt in [BarcodeLookup] — dieser Screen ist nur UI.
 class ScanScreen extends ConsumerStatefulWidget {
@@ -27,7 +27,9 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
   String? _error;
 
   bool get _cameraSupported =>
-      !kIsWeb && (Platform.isAndroid || Platform.isIOS);
+      kIsWeb ||
+      defaultTargetPlatform == TargetPlatform.android ||
+      defaultTargetPlatform == TargetPlatform.iOS;
 
   @override
   void dispose() {

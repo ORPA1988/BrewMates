@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/supabase_config.dart';
@@ -264,8 +265,14 @@ class OnlineService {
     try {
       final launched = await _client.auth.signInWithOAuth(
         OAuthProvider.google,
-        redirectTo: oauthRedirect,
-        authScreenLaunchMode: LaunchMode.externalApplication,
+        // Web: zurück auf die eigene Seiten-URL (GitHub Pages), sonst
+        // Custom-Scheme in die App; supabase_flutter erkennt den
+        // PKCE-Code in der Rück-URL automatisch.
+        redirectTo:
+            kIsWeb ? Uri.base.origin + Uri.base.path : oauthRedirect,
+        authScreenLaunchMode: kIsWeb
+            ? LaunchMode.platformDefault
+            : LaunchMode.externalApplication,
       );
       return launched ? null : 'Google-Anmeldung konnte nicht gestartet werden.';
     } on AuthException catch (e) {

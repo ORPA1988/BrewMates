@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io' show Platform;
 
 import 'package:drift/drift.dart' show Value;
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart'
+    show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
@@ -332,7 +332,9 @@ final venueProvider = StreamProvider.family<Venue?, String>(
 /// Prüft einmal pro App-Start, ob ein neueres Release existiert.
 /// null = aktuell/offline/kein Android. In Tests via override abschaltbar.
 final updateInfoProvider = FutureProvider<UpdateInfo?>((ref) async {
-  if (kIsWeb || !Platform.isAndroid) return null;
+  // kIsWeb MUSS zuerst stehen: Im Browser meldet defaultTargetPlatform das
+  // Betriebssystem des Geräts — auf Web gibt es aber kein APK-Update.
+  if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) return null;
   final client = http.Client();
   try {
     return await checkForUpdate(client,

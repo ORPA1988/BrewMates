@@ -41,5 +41,6 @@ Analyse-SDKs.
       Konto-Registrierung einen In-App-Weg zur Kontolöschung (oder eine
       Web-URL). Vor dem Store-Release einbauen (Konto-Screen →
       „Konto löschen") oder Lösch-URL angeben.
-- [ ] Datenschutz-URL im Store-Eintrag: GitHub-Pages-Seite aus PRIVACY.md
-      (siehe docs/07-release-playbook.md, Abschnitt 2).
+- [ ] Datenschutz-URL im Store-Eintrag:
+      `https://orpa1988.github.io/BrewMates/privacy/` (GitHub-Pages-Seite
+      aus PRIVACY.md; siehe docs/07-release-playbook.md, Abschnitt 2).

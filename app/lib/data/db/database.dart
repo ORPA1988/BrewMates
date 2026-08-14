@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
 
 import '../seed.dart';
+import 'connection/connection.dart';
 
 part 'database.g.dart';
 
@@ -318,9 +314,9 @@ class ProfileStats {
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
-  AppDatabase.open() : super(_openConnection());
+  AppDatabase.open() : super(openConnection());
 
-  AppDatabase.memory() : super(NativeDatabase.memory());
+  AppDatabase.memory() : super(openInMemory());
 
   @override
   int get schemaVersion => 9;
@@ -437,13 +433,6 @@ class AppDatabase extends _$AppDatabase {
         },
       );
 
-  static QueryExecutor _openConnection() {
-    return LazyDatabase(() async {
-      final dir = await getApplicationSupportDirectory();
-      final file = File(p.join(dir.path, 'brewmates.sqlite'));
-      return NativeDatabase.createInBackground(file);
-    });
-  }
 
   // --------------------------------------------------------------------------
   // Profil
