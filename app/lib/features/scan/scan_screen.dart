@@ -11,7 +11,8 @@ import '../../widgets/rating_stars.dart';
 import 'barcode_lookup.dart';
 
 /// Hero-Funktion „🍺 Bier scannen": Kamera-Scan auf Android/iOS und im
-/// Browser (mobile_scanner lädt die zxing-Bibliothek zur Laufzeit nach),
+/// Browser (mobile_scanner lädt die zxing-Bibliothek zur Laufzeit nach —
+/// aus dem eigenen `web/zxing.js` statt von unpkg.com, siehe [initState]),
 /// manuelle EAN-Eingabe überall (und als einziger Weg auf Desktop).
 /// Die Lookup-Logik lebt in [BarcodeLookup] — dieser Screen ist nur UI.
 class ScanScreen extends ConsumerStatefulWidget {
@@ -30,6 +31,18 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       kIsWeb ||
       defaultTargetPlatform == TargetPlatform.android ||
       defaultTargetPlatform == TargetPlatform.iOS;
+
+  @override
+  void initState() {
+    super.initState();
+    // Web: zxing selbst hosten (web/zxing.js, @zxing/library 0.19.1) statt
+    // es von unpkg.com nachzuladen — VPN/Adblocker blockieren die CDN gern,
+    // dann erkennt der Scanner ohne Fehlermeldung einfach nie einen Code
+    // (gleiche Falle wie einst CanvasKit/Fonts von gstatic). Die relative
+    // URL löst über <base href> korrekt auf; auf Android/iOS ist der
+    // Aufruf ein No-op.
+    MobileScannerPlatform.instance.setBarcodeLibraryScriptUrl('zxing.js');
+  }
 
   @override
   void dispose() {

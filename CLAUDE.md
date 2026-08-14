@@ -91,8 +91,10 @@ mit 403 (Branch-Scope-Token). Der Lauf baut APK+AAB und veröffentlicht sie.
   `…/privacy/`; kombiniertes Pages-Deployment in `pages.yml`). Drift läuft
   im Browser über `WasmDatabase` — die Plattform-Weiche liegt in
   `data/db/connection/` (Conditional Imports; nativer Pfad byte-identisch).
-  `web/sqlite3.wasm` (sqlite3 2.9.4) und `web/drift_worker.js`
-  (drift 2.23.1) sind versionsgepinnt — bei Paket-Upgrades neu laden!
+  `web/sqlite3.wasm` (sqlite3 2.9.4), `web/drift_worker.js`
+  (drift 2.23.1) und `web/zxing.js` (@zxing/library 0.19.1, muss zur
+  scriptUrl in mobile_scanner passen; Override in `scan_screen.initState`)
+  sind versionsgepinnt — bei Paket-Upgrades neu laden!
   CanvasKit wird selbst gehostet (`web/flutter_bootstrap.js`).
   KEIN `dart:io` in `app/lib/` (CI erzwingt `flutter build web`);
   Plattform-Checks über `kIsWeb`/`defaultTargetPlatform` — in Widget-Tests
