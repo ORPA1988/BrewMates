@@ -98,14 +98,18 @@ Checkboxen ☐ markiert.
 6. ☐ **Inhaltsfragebogen (IARC)** ausfüllen: Frage zu Alkohol-Referenzen
    mit **JA** beantworten → ergibt automatisch die USK/PEGI-Einstufung
    (erwartet ~„Teens").
-7. ☐ **Datenschutzerklärungs-URL** eintragen (die veröffentlichte
-   PRIVACY.md, siehe Abschnitt 1).
-8. ☐ **Data-Safety-Formular**: „Erhebt oder teilt deine App
-   Nutzerdaten?" → **Nein**. Begründung: Data Safety fragt nach
-   *erhobenen* Daten; die beim OSM-Kachelabruf übertragene IP-Adresse ist
-   flüchtig (ephemeral), wird von uns weder erhoben noch gespeichert und
-   muss daher nicht deklariert werden. Alle App-Daten liegen ausschließlich
-   lokal (SQLite).
+7. ☐ **Datenschutzerklärungs-URL** eintragen: PRIVACY.md wird per
+   GitHub Pages veröffentlicht (`.github/workflows/pages.yml`).
+   Einmalig aktivieren: Repo → Settings → Pages → Source =
+   **„GitHub Actions"**; danach liegt die Seite unter
+   `https://orpa1988.github.io/BrewMates/`.
+8. ☐ **Data-Safety-Formular**: vorbereitete Antworten in
+   `store/data-safety.md` (seit der Online-Beta werden mit Konto Daten
+   erhoben: E-Mail, Profil, optional Standort während Sessions, Fotos,
+   Nutzerinhalte; alles TLS-verschlüsselt, kein Tracking/keine Werbung).
+   Voraussetzung: **In-App-Kontolöschung** (Konto-Screen → „Konto
+   löschen", `delete_my_account`-RPC) ist eingebaut — im Formular die
+   Löschmöglichkeit mit JA beantworten.
 9. ☐ **Zielgruppe**: 18+ auswählen (Alkohol-Bezug; vermeidet zusätzliche
    Kinder-/Familien-Anforderungen).
 10. ☐ AAB in die **interne Testschiene** hochladen und selbst testen.

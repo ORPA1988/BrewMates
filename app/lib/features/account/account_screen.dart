@@ -115,6 +115,43 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         const SnackBar(content: Text('Abgemeldet. Bis bald! 👋')));
   }
 
+  /// Konto löschen (Play-Store-Pflicht): doppelte Bestätigung, dann
+  /// serverseitige Löschung über die delete_my_account-RPC.
+  Future<void> _deleteAccount(OnlineService online) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Konto wirklich löschen?'),
+        content: const Text(
+            'Dein Profil, deine Check-ins, Erfolge, Wunschliste und '
+            'Freundschaften werden auf dem Server unwiderruflich '
+            'gelöscht; Beiträge zur gemeinsamen Bier- und Gasthaus-'
+            'Datenbank bleiben anonymisiert erhalten. Die lokalen Daten '
+            'auf diesem Gerät bleiben bestehen.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Abbrechen'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.error),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Endgültig löschen'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    setState(() => _busy = true);
+    final error = await online.deleteMyAccount();
+    if (!mounted) return;
+    setState(() => _busy = false);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(error ?? 'Konto gelöscht. Danke, dass du dabei '
+            'warst! 🍻')));
+  }
+
   @override
   Widget build(BuildContext context) {
     final onlineAsync = ref.watch(onlineServiceProvider);
@@ -617,6 +654,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           textAlign: TextAlign.center,
           style: theme.textTheme.bodySmall
               ?.copyWith(color: scheme.onSurfaceVariant),
+        ),
+        const SizedBox(height: 24),
+        TextButton.icon(
+          onPressed: _busy ? null : () async => _deleteAccount(online),
+          style: TextButton.styleFrom(foregroundColor: scheme.error),
+          icon: const Icon(Icons.delete_forever_outlined, size: 18),
+          label: const Text('Konto löschen'),
         ),
       ],
     );

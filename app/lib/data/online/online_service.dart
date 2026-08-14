@@ -242,6 +242,21 @@ class OnlineService {
 
   Future<void> signOut() => _client.auth.signOut();
 
+  /// Konto unwiderruflich löschen (0017): entfernt Profil, alle
+  /// Server-Daten (FK-Kaskaden) und den Auth-Nutzer; Community-Beiträge
+  /// werden anonymisiert. Lokale Daten auf dem Gerät bleiben.
+  /// null = ok (danach abgemeldet), sonst Fehlermeldung.
+  Future<String?> deleteMyAccount() async {
+    if (currentUser == null) return 'Nicht angemeldet.';
+    try {
+      await _client.rpc('delete_my_account');
+      await _client.auth.signOut();
+      return null;
+    } catch (_) {
+      return 'Löschen fehlgeschlagen – bitte später erneut versuchen.';
+    }
+  }
+
   /// Anmeldung/Registrierung mit dem Google-Konto (Browser-OAuth-Flow;
   /// die Rückkehr in die App läuft über [oauthRedirect]). Das Profil
   /// entsteht serverseitig automatisch (Trigger) mit Platzhalter-Username.

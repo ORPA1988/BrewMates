@@ -150,9 +150,13 @@ Zusätzlich werden für die Funktionssteuerung eine etwaige Rolle
 auf dem Gerät bestehen („eingeloggt bleiben"), bis Sie sich aktiv
 abmelden.
 
-Wenn Sie sich abmelden, endet die Übertragung. Die Löschung des Kontos ist
-in der Beta auf Anfrage möglich (Kontakt siehe Ziffer 9), ab Version 1.0
-direkt in der App. Rechtsgrundlage ist die Bereitstellung der von Ihnen
+Wenn Sie sich abmelden, endet die Übertragung. Ihr Konto können Sie
+jederzeit direkt in der App löschen (Konto-Bildschirm → „Konto löschen"):
+Dabei werden Ihr Profil und alle Ihnen zugeordneten Server-Daten
+(Check-ins, Erfolge, Wunschliste, Freundschaften) unwiderruflich
+entfernt; Beiträge zur gemeinsamen Bier- und Gasthaus-Datenbank bleiben
+ohne Personenbezug (anonymisiert) erhalten.
+Rechtsgrundlage ist die Bereitstellung der von Ihnen
 gewünschten Funktionen (Art. 6 Abs. 1 lit. b DSGVO). Für die Verarbeitung
 durch Supabase gilt deren Datenschutzerklärung:
 <https://supabase.com/privacy>
