@@ -201,7 +201,11 @@ Checkboxen ☐ markiert.
 ## 5. Versionierung & Release-Auslösung
 
 1. Version steht in `app/pubspec.yaml`: `version: 1.0.0+1`
-   (Format `versionName+buildNumber`).
+   (Format `versionName+buildNumber`). **Immer zusammen mit
+   `AppConfig.appVersion` in `app/lib/core/config.dart` anheben** — die
+   automatische Update-Funktion vergleicht diese Konstante mit dem
+   jüngsten GitHub-Release; ein Test erzwingt den Gleichstand mit
+   `pubspec.yaml`.
 2. Für jedes Update: mindestens die **buildNumber** erhöhen
    (`1.0.1+2`, `1.1.0+3`, …) — Play und App Store lehnen Uploads mit
    bereits verwendeter buildNumber ab. Windows: `msix_version` in der
