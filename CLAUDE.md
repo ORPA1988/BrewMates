@@ -1,13 +1,13 @@
 # CLAUDE.md — Arbeitsanleitung für Claude-Sessions
 
 BrewMates: Android-Bier-App (Untappd × Beer with Me), Flutter, deutschsprachig,
-Fokus Österreich + Bayern. Antworte dem Nutzer auf Deutsch.
+Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
 
 ## Aktueller Stand (2026-08-14)
 
 - **Branch**: PRs #2–#4 sind in `main` gemerged; neue Arbeit startet auf
   frischen Branches von `main`.
-  Version `0.9.12-beta+16` (Beta 0.x bis
+  Version `0.9.13-beta+17` (Beta 0.x bis
   zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch; die
   frühen Alpha-Releases wurden von 1.1/1.2 auf 0.1.0/0.2.0 umbenannt).
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
@@ -51,9 +51,11 @@ mit 403 (Branch-Scope-Token). Der Lauf baut APK+AAB und veröffentlicht sie.
 
 ## Daten & Konventionen
 
-- Community-DB: `app/assets/data/` — vier Dateien (`beers-at/by`,
-  `breweries-at/by`), verknüpft über `brewery_id`; Bild-URLs nur als Links
-  auf Open Food Facts (CC-BY-SA), Herkunft/Lizenz in `DATENHERKUNFT.md`.
+- Community-DB: `app/assets/data/` — acht Dateien (`beers-at/by/de/ch`,
+  `breweries-at/by/de/ch`; DACH seit 0.9.13, Bayern-IDs `de-by-…`,
+  Restdeutschland `de-…`, Schweiz `ch-…`), verknüpft über `brewery_id`;
+  Bild-URLs nur als Links auf Open Food Facts (CC-BY-SA), Herkunft/Lizenz
+  in `DATENHERKUNFT.md`.
 - Karten-Wording zentral: `activeUsersLabel()` in
   `app/lib/features/map/map_screen.dart`.
 - Nicht-Freunde erscheinen auf der Karte NIE mit Position, nur als Zähler.

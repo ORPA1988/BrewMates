@@ -122,8 +122,10 @@ Kosten trägt (siehe [docs/09](09-wachstum-und-geschaeftsmodell.md)).
 - [ ] **Crews** (Gruppen) mit Crew-Feed und Crew-Beacons
 - [ ] **Monetarisierung gemäß docs/09**: Premium („BrewMates Pro") zuerst,
       Werbung nur optional und dezent – Kernfunktionen bleiben gratis
-- [ ] **Bier-DB über Österreich hinaus**: Erweiterung auf den DACH-Raum
-      (Deutschland, Schweiz) mit demselben Community-Workflow
+- [x] **Bier-DB über Österreich hinaus**: Erweiterung auf den DACH-Raum
+      (Deutschland, Schweiz) mit demselben Community-Workflow — *seit
+      0.9.13: 95 Biere / 40 Brauereien Restdeutschland + 45 Biere /
+      18 Brauereien Schweiz (`beers-de/ch.json`, `breweries-de/ch.json`)*
 
 ---
 
