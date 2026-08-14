@@ -484,6 +484,17 @@ final checkinAutoSyncProvider = FutureProvider<int>((ref) async {
   return uploaded;
 });
 
+/// 🍺 Freunde mit aktiver Bierlaune (0018) — „X hätte jetzt Lust auf ein
+/// Bier". Aktualisiert sich im 5-Minuten-Takt und nach eigenen Aktionen.
+final thirstyFriendsProvider =
+    FutureProvider<List<RemoteProfile>>((ref) async {
+  ref.watch(_syncTickProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null || online.currentUser == null) return const [];
+  final all = await online.friends();
+  return [for (final f in all) if (f.hasBierlaune) f];
+});
+
 /// Merker, für welches Konto der Cloud-Restore diese App-Sitzung schon
 /// vollständig gelaufen ist (verhindert Doppel-Läufe).
 final _restoredUidProvider = StateProvider<String?>((_) => null);
@@ -879,6 +890,32 @@ class BrewActions {
     } else {
       await _db.joinSession(sessionId, me.id, ParticipantKind.toast);
     }
+  }
+
+  /// 🍺 Bierlaune umschalten: an = 4 Stunden ab jetzt, aus = löschen.
+  Future<void> setBierlaune({required bool on}) async {
+    final online = await _online();
+    if (online == null) return;
+    await online.setBierlaune(
+        on ? DateTime.now().add(const Duration(hours: 4)) : null);
+    _ref.invalidate(myRemoteProfileProvider);
+    _ref.invalidate(thirstyFriendsProvider);
+  }
+
+  /// ⚡ One-Tap-Check-in: loggt das zuletzt getrunkene Bier erneut —
+  /// Details (Bewertung, Foto, Notiz) lassen sich später im normalen
+  /// Flow ergänzen. Gibt null zurück, wenn es noch keinen Check-in gibt,
+  /// sonst (Biername, Feier-Einträge).
+  Future<(String, List<CelebrationItem>)?> repeatLastCheckin() async {
+    final me = await _me();
+    final mine = await _db.myCheckinsDetailed(me.id);
+    if (mine.isEmpty) return null;
+    final last = mine.first;
+    final earned = await createCheckin(
+      beerId: last.beer.id,
+      servingStyle: last.checkin.servingStyle,
+    );
+    return (last.beer.name, earned);
   }
 
   Future<List<BadgeDef>> toggleToast(String checkinId) async {

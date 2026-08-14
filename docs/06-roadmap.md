@@ -127,6 +127,56 @@ Kosten trägt (siehe [docs/09](09-wachstum-und-geschaeftsmodell.md)).
 
 ---
 
+## Prioritäten aus der Wettbewerbsanalyse (2026-08, Untappd × Beer With Me)
+
+Quelle: Wettbewerbsanalyse-Dokument (Google Docs, 14.08.2026). Kernbefund:
+BrewMates ist strukturell bereits die Synthese beider Vorbilder; die
+Maßnahmen sind überwiegend Aktivierung des Vorhandenen.
+
+**Bereits umgesetzt (Stand 0.9.11):**
+
+- [x] **One-Tap-Check-in** („⚡ Nochmal: <letztes Bier>" auf dem Home-Tab —
+      loggen in unter zwei Sekunden, Details später ergänzbar)
+- [x] **„Bierlaune"-Status** (0018): Lust signalisieren, ohne zu trinken —
+      Chip auf Home (4 Stunden), Freunde mit Bierlaune erscheinen als
+      Home-Karte. Das meistgewünschte fehlende Beer-With-Me-Feature.
+- [x] **Badges sichtbar feiern** (Vollbild-Celebration, Galerie mit
+      Fortschritt), **EAN-Scan als Katalog-Motor** (0010),
+      **Foto-Feed dosiert** (Freunde-only, 0009-Moderation),
+      **Challenges-Infrastruktur** (0012/0014) + erste Monats-Challenge
+      live („Stil-Safari August" 🦁 — Vielfalt statt Menge)
+- [x] **Statistiken frei** statt hinter Abo (Profil-Zähler; Ausbau s. u.)
+
+**Nächste Schritte (priorisiert):**
+
+- [ ] **Session-Push mit Spam-Bremse** — der virale Kern von Beer With Me:
+      Push nur beim Session-*Start*, Mindestintervall 15 Min.,
+      Radius-Option; Antwort-Chips („Prost 🍻" → Toast). *Extern
+      blockiert: braucht Firebase/FCM.*
+- [ ] **Crews aktiv nutzen** (Tabellen seit 0001 bereit): Crew anlegen,
+      Mitglieder per Username/QR, Crew-Feed, Crew-Sichtbarkeit für
+      Sessions (`visibility = crew` existiert schon) — der größte
+      Differenzierer gegenüber Beer With Me.
+- [ ] **Badge-Level** (erreichbare Zwischenstufen statt Fernziele) und
+      **Streaks/Heatmap** für die Statistik-Seite
+- [ ] **Homescreen-Widget** („Session starten / letztes Bier einchecken",
+      Flutter `home_widget`) — sichtbares Alleinstellungsmerkmal
+- [ ] **„Year in Beer"-Story-Export** (teilbar = kostenloses Marketing)
+
+**Bewusst NICHT übernehmen** (aus den Fehlern der Vorbilder):
+Unique-Tick-Mechaniken/Volumen-Ranglisten (Ticking Culture, heikel bei
+Alkohol — Milestones an Vielfalt/Orte/Soziales koppeln), Werbung im Feed,
+Kontakte-Import (QR/Username bleibt), Spirituosen-Ausweitung,
+Verified-Venue-Komplexität, 0,25er-Rating-Fetisch als öffentliche
+Rangliste (Ratings primär privat/als Geschmacksprofil denken).
+
+*Technik-Notiz: `spatial_ref_sys`-RLS (Advisor „critical") ist als
+PostGIS-Systemtabelle nur durch `supabase_admin` änderbar — Versuch am
+14.08. scheiterte an Ownership; bleibt dokumentierte, unkritische
+Baseline (öffentliche Koordinatendaten).*
+
+---
+
 ## Risiken & Gegenmaßnahmen
 
 | Risiko | Gegenmaßnahme |

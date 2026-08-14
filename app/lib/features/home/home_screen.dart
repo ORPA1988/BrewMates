@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/format.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
+import '../../widgets/badge_celebration.dart';
 import '../../widgets/checkin_card.dart';
 import '../../widgets/session_card.dart';
 import '../../widgets/update_dialog.dart';
@@ -100,6 +101,93 @@ class HomeScreen extends ConsumerWidget {
               label: const Text('Ohne Scannen einchecken'),
             ),
           ),
+
+          // ------------------------------------------------------------------
+          // Schnellaktionen (Wettbewerbsanalyse): One-Tap-Check-in in unter
+          // zwei Sekunden + „Bierlaune" signalisieren, ohne zu trinken.
+          // ------------------------------------------------------------------
+          ...() {
+            final diary =
+                ref.watch(myDiaryProvider).valueOrNull ?? const <CheckinDetails>[];
+            final signedIn = ref.watch(onlineUserProvider).valueOrNull != null;
+            final bierlauneBis = profile?.thirstyUntil;
+            final bierlaune =
+                bierlauneBis != null && bierlauneBis.isAfter(DateTime.now());
+            if (diary.isEmpty && !signedIn) return const <Widget>[];
+            return [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  alignment: WrapAlignment.center,
+                  children: [
+                    if (diary.isNotEmpty)
+                      ActionChip(
+                        avatar: const Text('⚡'),
+                        label: Text(
+                          'Nochmal: ${diary.first.beer.name}',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        onPressed: () async {
+                          final result = await ref
+                              .read(actionsProvider)
+                              .repeatLastCheckin();
+                          if (!context.mounted || result == null) return;
+                          final (name, earned) = result;
+                          if (earned.isNotEmpty) {
+                            await showCelebration(context, earned);
+                            if (!context.mounted) return;
+                          }
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Eingecheckt: $name 🍺 — Details '
+                                  'kannst du im Tagebuch ergänzen.')));
+                        },
+                      ),
+                    if (signedIn)
+                      FilterChip(
+                        label: Text(bierlaune
+                            ? '🍺 Bierlaune bis '
+                                '${bierlauneBis.hour}:${bierlauneBis.minute.toString().padLeft(2, '0')}'
+                            : '🍺 Bierlaune!'),
+                        selected: bierlaune,
+                        onSelected: (on) async =>
+                            ref.read(actionsProvider).setBierlaune(on: on),
+                      ),
+                  ],
+                ),
+              ),
+            ];
+          }(),
+
+          // Freunde mit Bierlaune — der sanfte Anstoß zum Zusammenkommen.
+          ...() {
+            final thirsty =
+                ref.watch(thirstyFriendsProvider).valueOrNull ?? const [];
+            if (thirsty.isEmpty) return const <Widget>[];
+            return [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: Card(
+                  color: theme.colorScheme.secondaryContainer,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('🍺 Bierlaune bei deinen Freunden',
+                            style: theme.textTheme.titleSmall),
+                        const SizedBox(height: 4),
+                        for (final f in thirsty)
+                          Text('${f.avatarEmoji} ${f.displayName} hätte '
+                              'jetzt Lust auf ein Bier'),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ];
+          }(),
 
           // ------------------------------------------------------------------
           // Aktive Challenge (kompakt; Tap → alle Challenges)

@@ -15,6 +15,7 @@ class RemoteProfile {
     required this.displayName,
     required this.avatarEmoji,
     this.accountNo,
+    this.thirstyUntil,
   });
 
   factory RemoteProfile.fromRow(Map<String, dynamic> row) => RemoteProfile(
@@ -23,12 +24,21 @@ class RemoteProfile {
         displayName: (row['display_name'] as String?) ?? row['username'] as String,
         avatarEmoji: (row['avatar_emoji'] as String?) ?? '🍺',
         accountNo: (row['account_no'] as num?)?.toInt(),
+        thirstyUntil: row['thirsty_until'] == null
+            ? null
+            : DateTime.parse(row['thirsty_until'] as String).toLocal(),
       );
 
   final String id;
   final String username;
   final String displayName;
   final String avatarEmoji;
+
+  /// 🍺 Bierlaune (0018): bis wann Lust auf ein Bier signalisiert wird.
+  final DateTime? thirstyUntil;
+
+  bool get hasBierlaune =>
+      thirstyUntil != null && thirstyUntil!.isAfter(DateTime.now());
 
   /// Unveränderliche, kurze Kontonummer (für Anzeige/Support). Die
   /// technische Konto-ID ist die UUID [id]; Anmeldeverfahren (E-Mail,
@@ -140,7 +150,7 @@ class OnlineService {
   final SupabaseClient _client;
 
   static const _profileCols =
-      'id, username, display_name, avatar_emoji, account_no';
+      'id, username, display_name, avatar_emoji, account_no, thirsty_until';
 
   /// Deep-Link, über den OAuth-Anmeldungen in die App zurückkehren.
   static const oauthRedirect = 'de.brewmates.app://login-callback';
@@ -507,6 +517,17 @@ class OnlineService {
       } else {
         await _client.from('friendships').delete().eq('id', friendshipId);
       }
+    } catch (_) {}
+  }
+
+  /// 🍺 Bierlaune setzen (bis [until]) oder beenden (null).
+  Future<void> setBierlaune(DateTime? until) async {
+    final me = currentUser;
+    if (me == null) return;
+    try {
+      await _client.from('profiles').update({
+        'thirsty_until': until?.toUtc().toIso8601String(),
+      }).eq('id', me.id);
     } catch (_) {}
   }
 
