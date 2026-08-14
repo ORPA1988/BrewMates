@@ -28,8 +28,10 @@ class BrewTheme {
         useMaterial3: true,
         colorScheme: scheme,
         // Gebündeltes Roboto (pubspec fonts:) — die Web-App bleibt damit
-        // auch ohne Zugriff auf fonts.gstatic.com lesbar.
+        // auch ohne Zugriff auf fonts.gstatic.com lesbar; Emojis/Symbole
+        // kommen aus den gebündelten Noto-Fallbacks statt vom Google-CDN.
         fontFamily: 'Roboto',
+        fontFamilyFallback: const ['NotoEmoji', 'NotoSansSymbols2'],
         cardTheme: const CardTheme(
           clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
