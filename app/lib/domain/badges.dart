@@ -1,4 +1,5 @@
 import '../data/db/database.dart';
+import 'streak.dart';
 
 /// Abzeichen-Katalog. Grundsatz (docs/01-produktvision.md): belohnt werden
 /// Vielfalt, Orte und Gemeinsamkeit – niemals Konsummenge.
@@ -80,12 +81,39 @@ final List<BadgeDef> allBadges = [
     target: 5,
     progressOf: (c) => c.myCheckins.map((x) => x.beer.style).toSet().length,
   ),
+  // Erreichbare Zwischenstufen (Wettbewerbsanalyse: Level statt
+  // Fernziele — und Vielfalt statt Menge).
+  BadgeDef(
+    slug: 'stil-entdecker-2',
+    name: 'Stil-Kenner',
+    description: '10 verschiedene Bierstile probiert',
+    emoji: '🧭',
+    target: 10,
+    progressOf: (c) => c.myCheckins.map((x) => x.beer.style).toSet().length,
+  ),
+  BadgeDef(
+    slug: 'stil-entdecker-3',
+    name: 'Stil-Professor',
+    description: '20 verschiedene Bierstile probiert',
+    emoji: '🎓',
+    target: 20,
+    progressOf: (c) => c.myCheckins.map((x) => x.beer.style).toSet().length,
+  ),
   BadgeDef(
     slug: 'weltenbummler',
     name: 'Weltenbummler',
     description: 'Biere aus 5 verschiedenen Ländern probiert',
     emoji: '🌍',
     target: 5,
+    progressOf: (c) =>
+        c.myCheckins.map((x) => x.brewery.country).toSet().length,
+  ),
+  BadgeDef(
+    slug: 'weltenbummler-2',
+    name: 'Globetrotter',
+    description: 'Biere aus 10 verschiedenen Ländern probiert',
+    emoji: '🛫',
+    target: 10,
     progressOf: (c) =>
         c.myCheckins.map((x) => x.brewery.country).toSet().length,
   ),
@@ -163,6 +191,60 @@ final List<BadgeDef> allBadges = [
     emoji: '⭐',
     target: 25,
     progressOf: (c) => c.myCheckins.map((x) => x.beer.id).toSet().length,
+  ),
+  BadgeDef(
+    slug: 'sammler-2',
+    name: 'Kurator',
+    description: '50 verschiedene Biere probiert',
+    emoji: '🌟',
+    target: 50,
+    progressOf: (c) => c.myCheckins.map((x) => x.beer.id).toSet().length,
+  ),
+  BadgeDef(
+    slug: 'brauerei-tour-2',
+    name: 'Brauerei-Pilger',
+    description: 'Biere von 25 verschiedenen Brauereien',
+    emoji: '⛰',
+    target: 25,
+    progressOf: (c) => c.myCheckins.map((x) => x.brewery.id).toSet().length,
+  ),
+  BadgeDef(
+    slug: 'local-hero-2',
+    name: 'Wirtshaus-Legende',
+    description: 'In 15 verschiedenen Venues eingecheckt',
+    emoji: '🏆',
+    target: 15,
+    progressOf: (c) => c.myCheckins
+        .map((x) => x.checkin.venueName)
+        .whereType<String>()
+        .toSet()
+        .length,
+  ),
+  BadgeDef(
+    slug: 'nuechtern-dabei-2',
+    name: 'Klarer Kopf',
+    description: '15 alkoholfreie Biere eingecheckt – Respekt!',
+    emoji: '🧊',
+    target: 15,
+    progressOf: (c) =>
+        c.myCheckins.where((x) => x.beer.isAlcoholFree).length,
+  ),
+  BadgeDef(
+    slug: 'wochenserie',
+    name: 'Wochenserie',
+    description: '4 Wochen in Folge mindestens ein Check-in',
+    emoji: '🔥',
+    target: 4,
+    progressOf: (c) => weeklyStreak(
+        c.myCheckins.map((x) => x.checkin.createdAt), DateTime.now()),
+  ),
+  BadgeDef(
+    slug: 'kartograph-2',
+    name: 'Landvermesser',
+    description: '10 Gasthäuser mit Kartenposition angelegt',
+    emoji: '📐',
+    target: 10,
+    progressOf: (c) => c.venuesCreatedWithLocation,
   ),
   // Datenpflege: die gemeinsame Gasthaus-DB lebt von Beiträgen.
   BadgeDef(

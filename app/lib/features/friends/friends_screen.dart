@@ -221,13 +221,35 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
         ref.watch(blockedProfilesProvider).valueOrNull ?? const [];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Freunde')),
+      appBar: AppBar(
+        title: const Text('Freunde'),
+        actions: [
+          IconButton(
+            tooltip: 'Crews (Gruppen)',
+            icon: const Icon(Icons.groups_outlined),
+            onPressed: () => context.push('/crews'),
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: ListView(
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.all(16),
           children: [
+            // 👥 Crews: fester Einstieg (Stammtisch & Co.).
+            Card(
+              child: ListTile(
+                leading:
+                    const Text('👥', style: TextStyle(fontSize: 24)),
+                title: const Text('Crews'),
+                subtitle: const Text(
+                    'Stammtisch, Verein, WG – Beacons nur für die Gruppe'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/crews'),
+              ),
+            ),
+            const SizedBox(height: 8),
             // ------------------------------------------------------------------
             // Anfragen
             // ------------------------------------------------------------------

@@ -6,6 +6,7 @@ import '../../data/db/database.dart';
 import '../../data/providers.dart';
 import '../../domain/account_level.dart';
 import '../../domain/badges.dart';
+import '../../domain/streak.dart';
 import '../../widgets/badge_celebration.dart';
 
 const List<String> _avatarEmojis = [
@@ -224,6 +225,18 @@ class ProfileScreen extends ConsumerWidget {
               _StatTile(label: 'Check-ins', value: stats?.totalCheckins),
               _StatTile(label: 'Sessions', value: stats?.totalSessions),
               _StatTile(label: 'Abzeichen', value: stats?.badgeCount),
+              // 🔥 Wochen-Serie „mit Augenmaß": Wochen, nicht Tage.
+              _StatTile(
+                label: '🔥 Wochen-Serie',
+                value: weeklyStreak(
+                  [
+                    for (final d in ref.watch(myDiaryProvider).valueOrNull ??
+                        const <CheckinDetails>[])
+                      d.checkin.createdAt,
+                  ],
+                  DateTime.now(),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 16),

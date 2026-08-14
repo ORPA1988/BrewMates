@@ -25,6 +25,9 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
   final _venueController = TextEditingController();
   final _messageController = TextEditingController();
   SessionVisibility _visibility = SessionVisibility.friends;
+
+  /// Gewählte Crew für `visibility == crew`.
+  String? _crewId;
   Duration _autoEnd = const Duration(hours: 3);
   bool _shareLocation = true;
   String? _venueError;
@@ -119,6 +122,8 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
             autoEnd: _autoEnd,
             latitude: latitude,
             longitude: longitude,
+            crewId:
+                _visibility == SessionVisibility.crew ? _crewId : null,
           );
       if (!mounted) return;
       final messenger = ScaffoldMessenger.of(context);
@@ -224,7 +229,36 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
             onChanged: (v) => setState(() => _visibility = v!),
             title: const Text('Alle Freunde'),
           ),
-          // Kein Crew-Radio: Crews kommen in v1.1.
+          // 👥 Crew-Beacon: nur sichtbar, wenn man Crews hat.
+          ...() {
+            final crews =
+                ref.watch(myCrewsProvider).valueOrNull ?? const [];
+            if (crews.isEmpty) return const <Widget>[];
+            // Vorauswahl: erste Crew, sobald „Crew" gewählt wird.
+            _crewId ??= crews.first.id;
+            return [
+              RadioListTile<SessionVisibility>(
+                value: SessionVisibility.crew,
+                groupValue: _visibility,
+                onChanged: (v) => setState(() => _visibility = v!),
+                title: const Text('Nur meine Crew'),
+                subtitle: _visibility == SessionVisibility.crew
+                    ? DropdownButton<String>(
+                        value: _crewId,
+                        isExpanded: true,
+                        items: [
+                          for (final c in crews)
+                            DropdownMenuItem(
+                              value: c.id,
+                              child: Text('${c.emoji} ${c.name}'),
+                            ),
+                        ],
+                        onChanged: (v) => setState(() => _crewId = v),
+                      )
+                    : null,
+              ),
+            ];
+          }(),
           RadioListTile<SessionVisibility>(
             value: SessionVisibility.private,
             groupValue: _visibility,
