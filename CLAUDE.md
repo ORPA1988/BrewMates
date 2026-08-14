@@ -7,16 +7,17 @@ Fokus Österreich + Bayern. Antworte dem Nutzer auf Deutsch.
 
 - **Branch**: PRs #2–#4 sind in `main` gemerged; neue Arbeit startet auf
   frischen Branches von `main`.
-  Version `0.9.8-beta+12` (Beta 0.x bis
+  Version `0.9.9-beta+13` (Beta 0.x bis
   zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch; die
   frühen Alpha-Releases wurden von 1.1/1.2 auf 0.1.0/0.2.0 umbenannt).
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU). Migrationen
-  `supabase/migrations/0001–0016` sind LIVE (0011 Gasthäuser, 0012
+  `supabase/migrations/0001–0017` sind LIVE (0011 Gasthäuser, 0012
   Challenges, 0013 Vertrauensstufen + edit_log, 0014 complete_challenge-RPC
   + contribution_leaderboard, 0015 venues.opening_hours_json, 0016
-  user_badges/wishlist_items für den Cloud-Sync). Google-Login und
+  user_badges/wishlist_items für den Cloud-Sync, 0017
+  delete_my_account-RPC). Google-Login und
   E-Mail-Anmeldung (ohne Bestätigungspflicht) sind eingerichtet und
   funktionieren. Seit 0008 gilt: EXECUTE auf Funktionen wird von PUBLIC
   entzogen und pro Funktion gezielt gewährt — neue Funktionen brauchen in
@@ -71,7 +72,11 @@ mit 403 (Branch-Scope-Token). Der Lauf baut APK+AAB und veröffentlicht sie.
   Datenverlust. Cloud-Restore (`data/restore.dart`,
   `cloudRestoreProvider`) holt nach Anmeldung eigene Check-ins, Erfolge
   und Wunschliste zurück (Union, idempotent); Badge-Vergabe und
-  Wunschlisten-Toggle spiegeln best-effort zum Server.
+  Wunschlisten-Toggle spiegeln best-effort zum Server. Seit Drift v9:
+  Foto-Check-ins (beer-photos-Bucket, `checkins.photo_url`); Toasts und
+  Kommentare laufen für hochgeladene Check-ins über den Server
+  (`feedReactionsProvider`). Kontolöschung in-app (0017,
+  Play-Store-Pflicht).
 - Challenge-Abschlüsse werden seit 0014 SERVERSEITIG validiert
   (`complete_challenge`-RPC; direkte Inserts gesperrt). Gasthaus-Pflege
   funktioniert seit Drift v8 auch offline: `venue_edit_queue` +
