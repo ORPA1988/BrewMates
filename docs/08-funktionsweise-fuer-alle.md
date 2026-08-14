@@ -10,7 +10,7 @@ BrewMates dreht sich um zwei große Knöpfe auf dem Startbildschirm:
 **„🍺 Bier scannen"** (Barcode der Flasche scannen → Bier erkannt → bewerten
 → ins Tagebuch; dazu Abzeichen, Wunschliste, Statistiken) und
 **„🍻 Zusammenkommen!"** (ein Tap: Ihre Session startet mit echtem
-GPS-Standort, (in Version 1: Demo-)Freunde sehen Sie auf der Karte –
+GPS-Standort, (abgemeldet: Demo-)Freunde sehen Sie auf der Karte –
 Botschaft: „Alle willkommen!"). Die App läuft auf Android (die iOS-Variante
 bleibt technisch offen) und funktioniert komplett ohne Konto und ohne
 Anmeldung.
@@ -31,7 +31,7 @@ Anmeldung.
 
 Ein Tap: Die App fragt (einmalig) nach der Standort-Berechtigung, startet
 Ihre Session mit der Nachricht „Alle willkommen! 🍻" und zeigt Sie auf der
-Karte. Nach 3 Stunden endet die Session automatisch. In Version 1.x bleibt
+Karte. Nach 3 Stunden endet die Session automatisch. Abgemeldet bleibt
 der Standort dabei **rein lokal auf dem Gerät** – erst mit der Online-Stufe
 (echte Freunde) wird er – nur für Freunde, nur während der Session – geteilt.
 Ohne Standort-Freigabe wählen Sie den Ort einfach von Hand.
@@ -50,7 +50,7 @@ er gespeichert ist und ob dafür eine Internetverbindung nötig ist.
 | **Etikett-Fotos** der Biere | Nur als Link in der Datenbank hinterlegt (Fotos: Open Food Facts, Lizenz CC-BY-SA) | **Ja, beim Anzeigen**: Das Foto wird von images.openfoodfacts.org geladen – wie ein Bild auf einer Webseite. Ohne Internet erscheint stattdessen das 🍺-Symbol |
 | **Die „Freunde"** ohne Konto (abgemeldet) | Demo-Daten auf Ihrem Gerät | **Nein.** Es sind Beispielpersonen, keine echten Menschen |
 | **Gescannte Barcodes** | Werden dem jeweiligen Bier in der lokalen Datenbank zugeordnet | **Nur bei unbekannten Codes**: Anfrage (nur die Ziffernfolge) an Open Food Facts (world.openfoodfacts.org) |
-| **Ihr GPS-Standort** (Beacon/Session) | Nur in der lokalen Datenbank, nur während einer aktiven Session, keine Historie | **Nein** (in Version 1.x verlässt der Standort das Gerät nicht) |
+| **Ihr GPS-Standort** (Beacon/Session) | Nur in der lokalen Datenbank, nur während einer aktiven Session, keine Historie | **Nein** (abgemeldet verlässt der Standort das Gerät nicht) |
 | **Online-Modus (optional)**: eigene Check-ins & aktive Sessions | Supabase-Server (EU), nur für bestätigte Freunde sichtbar | **Ja**, nur solange Sie angemeldet sind |
 
 ### „Offline-first" – die Notizbuch-Metapher

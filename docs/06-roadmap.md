@@ -51,7 +51,8 @@ ohne Konto, ohne Backend.
       `beers-at.json` (`barcodes`-Array), EAN-Feld im Issue-Formular existiert
 - [x] **Releases als APK über GitHub Releases** — Workflow `release.yml` per
       workflow_dispatch; Versionierung läuft als Beta 0.9.x bis zum
-      Play-Store-1.0 (statt der ursprünglich geplanten v1.2.0)
+      Play-Store-1.0 (die frühen Alpha-Releases wurden nachträglich von
+      1.1/1.2 auf 0.1.0/0.2.0 umbenannt)
 
 **Exit-Kriterium:** Ein gescanntes österreichisches Supermarkt-Bier landet in
 unter 15 Sekunden als Check-in; der Beacon zeigt die echte eigene Position auf
@@ -104,9 +105,12 @@ Kosten trägt (siehe [docs/09](09-wachstum-und-geschaeftsmodell.md)).
 
 - [ ] **Venues & Tap-Listen** für verifizierte Betreiber („Was läuft gerade
       vom Fass?") — *Fundament fertig: gemeinsame Gasthaus-DB (Supabase, 0011)
-      mit Preisen (0,5 l/0,3 l), Öffnungszeiten, Kategorien, Karte,
-      Schnellansicht, Google-Maps-Link, Venue-Picker in Session/Check-in und
-      Vertrauensstufen-Datenpflege (0013 inkl. Audit-Log); Tap-Listen und
+      mit Preisen (0,5 l/0,3 l), Kategorien, Karte, Schnellansicht,
+      Google-Maps-Link, Venue-Picker in Session/Check-in,
+      Vertrauensstufen-Datenpflege (0013 inkl. Audit-Log), durchsuchbarer
+      Gasthausliste (A–Z/Nähe/Preis/Aktuell), Offline-Warteschlange für die
+      Pflege (Drift v8) und strukturierten Öffnungszeiten inkl.
+      „Jetzt geöffnet"-Filter (0015); Tap-Listen und
       Betreiber-Verifizierung stehen noch aus*
 - [ ] **Geplante Sessions & Events** (Einladungen, Erinnerungen, Kalender-Export)
 - [ ] **Empfehlungen**: „Das könnte dir schmecken" auf Basis eigener Bewertungen

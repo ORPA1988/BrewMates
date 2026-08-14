@@ -885,8 +885,8 @@ class OnlineService {
 
   static const _venueCols =
       'id, name, category, address, city, latitude, longitude, '
-      'opening_hours, price_half_l, price_third_l, verified, created_by, '
-      'updated_at';
+      'opening_hours, opening_hours_json, price_half_l, price_third_l, '
+      'verified, created_by, updated_at';
 
   /// Venues seit [since] (Delta über updated_at); null = offline/abgemeldet.
   Future<List<Map<String, dynamic>>?> fetchVenues({DateTime? since}) async {
@@ -913,6 +913,9 @@ class OnlineService {
     double? latitude,
     double? longitude,
     String? openingHours,
+
+    /// Dekodierte JSON-Liste `[{"d":…,"von":…,"bis":…}]` oder null.
+    Object? openingHoursJson,
     double? priceHalfL,
     double? priceThirdL,
   }) async {
@@ -929,6 +932,7 @@ class OnlineService {
             'latitude': latitude,
             'longitude': longitude,
             'opening_hours': _emptyToNull(openingHours),
+            'opening_hours_json': openingHoursJson,
             'price_half_l': priceHalfL,
             'price_third_l': priceThirdL,
             'created_by': me.id,
@@ -1097,16 +1101,36 @@ class OnlineService {
     }
   }
 
-  /// Abschluss melden (idempotent per Primärschlüssel).
+  /// Abschluss melden. Seit Migration 0014 validiert der SERVER die Regel
+  /// gegen die Online-Check-ins (direkte Inserts sind gesperrt) — ein
+  /// manipulierter Client kann keine Abschlüsse mehr erfinden.
   Future<void> completeChallenge(String challengeId) async {
-    final me = currentUser;
-    if (me == null) return;
+    if (currentUser == null) return;
     try {
-      await _client.from('challenge_completions').upsert({
-        'challenge_id': challengeId,
-        'profile_id': me.id,
-      });
+      await _client
+          .rpc('complete_challenge', params: {'p_challenge': challengeId});
     } catch (_) {}
+  }
+
+  /// 🏅 Datenpflege-Bestenliste (aggregierte Punkte, private Profile
+  /// ausgenommen; nur Anzeige-Daten, keine IDs).
+  Future<List<({String username, String avatarEmoji, int points})>>
+      contributionLeaderboard({int limit = 20}) async {
+    if (currentUser == null) return const [];
+    try {
+      final rows = await _client
+          .rpc('contribution_leaderboard', params: {'p_limit': limit});
+      return [
+        for (final r in (rows as List).cast<Map<String, dynamic>>())
+          (
+            username: r['username'] as String,
+            avatarEmoji: (r['avatar_emoji'] as String?) ?? '🍺',
+            points: (r['points'] as num?)?.toInt() ?? 0,
+          ),
+      ];
+    } catch (_) {
+      return const [];
+    }
   }
 
   /// Wer hat's geschafft? (RLS filtert auf mich + Freunde.)

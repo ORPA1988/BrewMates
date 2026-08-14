@@ -11,6 +11,7 @@ import '../features/beers/add_beer_screen.dart';
 import '../features/beers/beer_edit_screen.dart';
 import '../features/beers/brewery_edit_screen.dart';
 import '../features/venues/venue_edit_screen.dart';
+import '../features/venues/venues_list_screen.dart';
 import '../features/beers/beer_detail_screen.dart';
 import '../features/beers/beers_screen.dart';
 import '../features/beers/brewery_detail_screen.dart';
@@ -21,6 +22,7 @@ import '../features/home/home_screen.dart';
 import '../features/map/map_screen.dart';
 import '../features/profile/badges_screen.dart';
 import '../features/profile/challenges_screen.dart';
+import '../features/profile/leaderboard_screen.dart';
 import '../features/profile/diary_screen.dart';
 import '../features/profile/profile_screen.dart';
 import '../features/profile/wishlist_screen.dart';
@@ -133,6 +135,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       // Gasthäuser (gemeinsame Datenbank)
       GoRoute(
+        path: '/venues',
+        builder: (_, __) => const VenuesListScreen(),
+      ),
+      GoRoute(
         path: '/venues/add',
         builder: (_, state) => VenueEditScreen(
           initialName: state.uri.queryParameters['name'],
@@ -163,6 +169,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile/challenges',
         builder: (_, __) => const ChallengesScreen(),
+      ),
+      GoRoute(
+        path: '/profile/leaderboard',
+        builder: (_, __) => const LeaderboardScreen(),
       ),
       GoRoute(
         path: '/admin/challenges',

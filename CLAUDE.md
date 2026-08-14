@@ -3,15 +3,19 @@
 BrewMates: Android-Bier-App (Untappd × Beer with Me), Flutter, deutschsprachig,
 Fokus Österreich + Bayern. Antworte dem Nutzer auf Deutsch.
 
-## Aktueller Stand (2026-08-13)
+## Aktueller Stand (2026-08-14)
 
-- **Branch**: PR #2 (`claude/multi-platform-app-design-7lm758`) ist in
-  `main` gemerged; neue Arbeit startet auf frischen Branches von `main`.
-  Version `0.9.6-beta+10`, Release v0.9.6-beta veröffentlicht (Beta 0.x bis
-  zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch).
+- **Branch**: PRs #2–#4 sind in `main` gemerged; neue Arbeit startet auf
+  frischen Branches von `main`.
+  Version `0.9.7-beta+11`, Release v0.9.7-beta veröffentlicht (Beta 0.x bis
+  zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch; die
+  frühen Alpha-Releases wurden von 1.1/1.2 auf 0.1.0/0.2.0 umbenannt).
+  Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
+  `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU). Migrationen
-  `supabase/migrations/0001–0013` sind LIVE (0011 Gasthäuser, 0012
-  Challenges, 0013 Vertrauensstufen + edit_log). Google-Login und
+  `supabase/migrations/0001–0015` sind LIVE (0011 Gasthäuser, 0012
+  Challenges, 0013 Vertrauensstufen + edit_log, 0014 complete_challenge-RPC
+  + contribution_leaderboard, 0015 venues.opening_hours_json). Google-Login und
   E-Mail-Anmeldung (ohne Bestätigungspflicht) sind eingerichtet und
   funktionieren. Seit 0008 gilt: EXECUTE auf Funktionen wird von PUBLIC
   entzogen und pro Funktion gezielt gewährt — neue Funktionen brauchen in
@@ -60,6 +64,10 @@ mit 403 (Branch-Scope-Token). Der Lauf baut APK+AAB und veröffentlicht sie.
   3 Bierkenner (≥100 P.) · 4 Moderator · 5 Admin; Overrides über
   user_features (`trust_level_2/3`, `edit_lock`). RLS erzwingt, die UI
   spiegelt (`accountLevelProvider`).
-- Beta-Einschränkungen (bewusst): Challenge-Abschlüsse ohne
-  Server-Re-Validierung; Gasthaus-Pflege nur online (keine Offline-Queue).
+- Challenge-Abschlüsse werden seit 0014 SERVERSEITIG validiert
+  (`complete_challenge`-RPC; direkte Inserts gesperrt). Gasthaus-Pflege
+  funktioniert seit Drift v8 auch offline: `venue_edit_queue` +
+  `replayVenueQueue` (FIFO, Last-write-wins; Replay am Anfang von
+  `VenueSync.sync()`; Neuanlagen bekommen bis zum Upload eine
+  `local-…`-Pseudo-ID im Cache).
 - orpa-tech.at ist bewusst KEIN Bestandteil des Projekts.

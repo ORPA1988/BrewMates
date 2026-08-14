@@ -1,17 +1,25 @@
+import 'dart:convert';
+
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../core/format.dart';
 import '../../data/db/database.dart';
+import '../../domain/opening_hours.dart';
 import '../../data/location_service.dart';
 import '../../data/providers.dart';
+import '../../data/venue_queue.dart';
 import '../../data/venue_sync.dart';
 import '../../widgets/badge_celebration.dart';
 
 /// Gasthaus anlegen bzw. bearbeiten. Online-first: gespeichert wird direkt
 /// in der gemeinsamen Supabase-DB (RLS entscheidet, was erlaubt ist);
-/// der lokale Cache wird sofort nachgezogen.
+/// der lokale Cache wird sofort nachgezogen. Ohne Verbindung landet die
+/// Änderung in der Offline-Warteschlange und wird beim nächsten Sync
+/// übertragen (Last-write-wins).
 class VenueEditScreen extends ConsumerStatefulWidget {
   const VenueEditScreen({super.key, this.venueId, this.initialName});
 
@@ -36,6 +44,16 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
   double? _longitude;
   bool _busy = false;
   bool _loaded = false;
+
+  /// Strukturierte Öffnungszeiten: Wochentag (1–7) → (von, bis) in Minuten
+  /// seit Mitternacht; null = Ruhetag. Die UI pflegt ein Intervall pro Tag.
+  final Map<int, (int, int)?> _days = {for (var d = 1; d <= 7; d++) d: null};
+
+  List<OpeningInterval> get _structuredIntervals => [
+        for (final e in _days.entries)
+          if (e.value != null)
+            OpeningInterval(weekday: e.key, from: e.value!.$1, to: e.value!.$2),
+      ];
 
   bool get _isNew => widget.venueId == null;
 
@@ -72,6 +90,10 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
     _category = venue.category;
     _latitude = venue.latitude;
     _longitude = venue.longitude;
+    // Erstes Intervall je Wochentag in die Eingabe übernehmen.
+    for (final i in parseOpeningHours(venue.openingHoursJson)) {
+      _days[i.weekday] ??= (i.from, i.to);
+    }
   }
 
   static String _fieldLabel(String column) => switch (column) {
@@ -102,6 +124,58 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
     return null;
   }
 
+  Widget _dayRow(int day) {
+    final value = _days[day];
+    return Row(
+      children: [
+        Switch(
+          value: value != null,
+          onChanged: (on) => setState(
+              () => _days[day] = on ? (11 * 60, 23 * 60) : null),
+        ),
+        SizedBox(width: 36, child: Text(weekdayShortNames[day - 1])),
+        if (value == null)
+          const Text('Ruhetag')
+        else ...[
+          TextButton(
+            onPressed: () => _pickTime(day, isFrom: true),
+            child: Text(formatClock(value.$1)),
+          ),
+          const Text('–'),
+          TextButton(
+            onPressed: () => _pickTime(day, isFrom: false),
+            child: Text(formatClock(value.$2)),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Future<void> _pickTime(int day, {required bool isFrom}) async {
+    final current = _days[day];
+    if (current == null) return;
+    final initial = isFrom ? current.$1 : current.$2;
+    final picked = await showTimePicker(
+      context: context,
+      initialTime:
+          TimeOfDay(hour: (initial ~/ 60) % 24, minute: initial % 60),
+    );
+    if (picked == null || !mounted) return;
+    final minutes = picked.hour * 60 + picked.minute;
+    setState(() => _days[day] =
+        isFrom ? (minutes, current.$2) : (current.$1, minutes));
+  }
+
+  void _applyMondayToWeekdays() {
+    final monday = _days[1];
+    if (monday == null) return;
+    setState(() {
+      for (var d = 2; d <= 5; d++) {
+        _days[d] = monday;
+      }
+    });
+  }
+
   Future<void> _useCurrentLocation() async {
     final result =
         await ref.read(locationServiceProvider).getCurrentPosition();
@@ -121,51 +195,115 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
     }
   }
 
+  static String? _emptyToNull(String raw) {
+    final trimmed = raw.trim();
+    return trimmed.isEmpty ? null : trimmed;
+  }
+
+  /// Formular → Supabase-Spalten (snake_case); dient online als Patch und
+  /// offline als Queue-Payload. Mit strukturierten Zeiten wird der
+  /// Freitext automatisch generiert, sonst bleibt er wie eingegeben.
+  Map<String, dynamic> _buildPayload() {
+    final intervals = _structuredIntervals;
+    return {
+      'name': _nameController.text.trim(),
+      'category': _category,
+      'address': _emptyToNull(_addressController.text),
+      'city': _emptyToNull(_cityController.text),
+      'latitude': _latitude,
+      'longitude': _longitude,
+      'opening_hours': intervals.isEmpty
+          ? _emptyToNull(_hoursController.text)
+          : formatOpeningHours(intervals),
+      'opening_hours_json':
+          intervals.isEmpty ? null : encodeOpeningHours(intervals),
+      'price_half_l': _parsePrice(_priceHalfController.text),
+      'price_third_l': _parsePrice(_priceThirdController.text),
+    };
+  }
+
+  /// Payload → optimistische Cache-Zeile. `updatedAt` bleibt bewusst leer,
+  /// damit der nächste Delta-Sync den echten Server-Stand holt.
+  static VenuesCompanion _cacheCompanion(
+          String id, Map<String, dynamic> payload) =>
+      VenuesCompanion(
+        id: Value(id),
+        name: Value((payload['name'] as String?) ?? ''),
+        category: Value((payload['category'] as String?) ?? 'gasthaus'),
+        address: Value(payload['address'] as String?),
+        city: Value(payload['city'] as String?),
+        latitude: Value((payload['latitude'] as num?)?.toDouble()),
+        longitude: Value((payload['longitude'] as num?)?.toDouble()),
+        openingHours: Value(payload['opening_hours'] as String?),
+        openingHoursJson: Value(payload['opening_hours_json'] == null
+            ? null
+            : jsonEncode(payload['opening_hours_json'])),
+        priceHalfL: Value((payload['price_half_l'] as num?)?.toDouble()),
+        priceThirdL: Value((payload['price_third_l'] as num?)?.toDouble()),
+      );
+
+  /// Offline-Pfad: Änderung in die Warteschlange stellen und den Cache
+  /// optimistisch nachziehen (Neuanlagen mit `local-…`-Pseudo-ID).
+  Future<void> _saveOffline(Map<String, dynamic> payload) async {
+    final db = ref.read(databaseProvider);
+    final now = DateTime.now().toUtc();
+    if (_isNew) {
+      final localId = 'local-${const Uuid().v4()}';
+      await db.upsertVenues([_cacheCompanion(localId, payload)]);
+      await db.enqueueVenueEdit(
+        payloadJson: jsonEncode({...payload, venueQueueLocalIdKey: localId}),
+        createdAt: now,
+      );
+    } else {
+      await db.upsertVenues([_cacheCompanion(widget.venueId!, payload)]);
+      await db.enqueueVenueEdit(
+        venueId: widget.venueId,
+        payloadJson: jsonEncode(payload),
+        createdAt: now,
+      );
+    }
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Gespeichert – wird übertragen, sobald du wieder '
+            'online bist ⏳')));
+    context.pop();
+  }
+
   Future<void> _save() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     final online = await ref.read(onlineServiceProvider.future);
     if (online == null || online.currentUser == null) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Gasthaus-Pflege braucht ein Konto und Internet.')));
+          content: Text('Gasthaus-Pflege braucht ein Konto – bitte einmal '
+              'anmelden.')));
       return;
     }
     setState(() => _busy = true);
     try {
+      final payload = _buildPayload();
       String? error;
       if (_isNew) {
         final (_, err) = await online.createVenue(
-          name: _nameController.text,
+          name: (payload['name'] as String?) ?? '',
           category: _category,
-          address: _addressController.text,
-          city: _cityController.text,
+          address: payload['address'] as String?,
+          city: payload['city'] as String?,
           latitude: _latitude,
           longitude: _longitude,
-          openingHours: _hoursController.text,
-          priceHalfL: _parsePrice(_priceHalfController.text),
-          priceThirdL: _parsePrice(_priceThirdController.text),
+          openingHours: payload['opening_hours'] as String?,
+          priceHalfL: payload['price_half_l'] as double?,
+          priceThirdL: payload['price_third_l'] as double?,
         );
         error = err;
       } else {
-        error = await online.updateVenue(widget.venueId!, {
-          'name': _nameController.text.trim(),
-          'category': _category,
-          'address': _addressController.text.trim().isEmpty
-              ? null
-              : _addressController.text.trim(),
-          'city': _cityController.text.trim().isEmpty
-              ? null
-              : _cityController.text.trim(),
-          'latitude': _latitude,
-          'longitude': _longitude,
-          'opening_hours': _hoursController.text.trim().isEmpty
-              ? null
-              : _hoursController.text.trim(),
-          'price_half_l': _parsePrice(_priceHalfController.text),
-          'price_third_l': _parsePrice(_priceThirdController.text),
-        });
+        error = await online.updateVenue(widget.venueId!, payload);
       }
       if (!mounted) return;
+      if (error != null && isConnectionError(error)) {
+        await _saveOffline(payload);
+        return;
+      }
       if (error != null) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(error)));
@@ -304,11 +442,35 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
             TextFormField(
               controller: _hoursController,
               maxLines: 2,
-              decoration: const InputDecoration(
-                labelText: 'Öffnungszeiten',
+              enabled: _structuredIntervals.isEmpty,
+              decoration: InputDecoration(
+                labelText: 'Öffnungszeiten (Freitext)',
                 hintText: 'z. B. Mo–Sa 11–24 Uhr, So Ruhetag',
-                border: OutlineInputBorder(),
+                helperText: _structuredIntervals.isEmpty
+                    ? null
+                    : 'Wird automatisch erzeugt: '
+                        '${formatOpeningHours(_structuredIntervals)}',
+                helperMaxLines: 3,
+                border: const OutlineInputBorder(),
               ),
+            ),
+            ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              title: Text('🕒 Öffnungszeiten je Wochentag',
+                  style: theme.textTheme.titleSmall),
+              subtitle: const Text(
+                  'Grundlage für „Jetzt geöffnet" in Liste und Karte'),
+              children: [
+                for (var d = 1; d <= 7; d++) _dayRow(d),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                    onPressed:
+                        _days[1] == null ? null : _applyMondayToWeekdays,
+                    child: const Text('Mo auf Mo–Fr übernehmen'),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             Row(

@@ -1,6 +1,6 @@
 # Datenschutzerklärung für BrewMates
 
-**Stand: 13. August 2026 — gilt für BrewMates ab Version 1.2 bzw. Online-Beta 0.9**
+**Stand: 13. August 2026 — gilt für BrewMates ab Alpha 0.2 bzw. Online-Beta 0.9**
 
 ## 1. Kurzfassung
 

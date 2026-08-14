@@ -100,6 +100,10 @@ class Venues extends Table {
   RealColumn get latitude => real().nullable()();
   RealColumn get longitude => real().nullable()();
   TextColumn get openingHours => text().nullable()();
+
+  /// Strukturierte Öffnungszeiten (JSON-Liste `{"d":1–7,"von":…,"bis":…}`;
+  /// null = nur Freitext). Grundlage für „Jetzt geöffnet".
+  TextColumn get openingHoursJson => text().nullable()();
   RealColumn get priceHalfL => real().nullable()();
   RealColumn get priceThirdL => real().nullable()();
   BoolColumn get verified => boolean().withDefault(const Constant(false))();
@@ -182,6 +186,16 @@ class UserBadges extends Table {
 
   @override
   Set<Column> get primaryKey => {profileId, badgeSlug};
+}
+
+/// Warteschlange für offline erfasste Gasthaus-Änderungen: wird beim
+/// nächsten Venue-Sync FIFO abgespielt (venueId null = Neuanlage; bei
+/// Neuanlagen verweist payload auf eine lokale `local-…`-Cache-Zeile).
+class VenueEditQueue extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get venueId => text().nullable()();
+  TextColumn get payloadJson => text()();
+  DateTimeColumn get createdAt => dateTime()();
 }
 
 /// Offline-Cache der Challenges (Supabase = Wahrheit). Bleibt auch nach
@@ -296,6 +310,7 @@ class ProfileStats {
   UserBadges,
   WishlistItems,
   ChallengeCache,
+  VenueEditQueue,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
@@ -305,7 +320,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -405,6 +420,12 @@ class AppDatabase extends _$AppDatabase {
           if (from < 7) {
             // v7: Offline-Cache für Challenges (Herausforderungen).
             await m.createTable(challengeCache);
+          }
+          if (from < 8) {
+            // v8: Offline-Queue für Gasthaus-Pflege + strukturierte
+            // Öffnungszeiten.
+            await m.createTable(venueEditQueue);
+            await m.addColumn(venues, venues.openingHoursJson);
           }
         },
       );
@@ -831,6 +852,10 @@ class AppDatabase extends _$AppDatabase {
         ..orderBy([(t) => OrderingTerm.asc(t.name)]))
       .watch();
 
+  /// Komplette Gasthausliste (Sortierung übernimmt die UI).
+  Stream<List<Venue>> watchAllVenues() =>
+      (select(venues)..orderBy([(t) => OrderingTerm.asc(t.name)])).watch();
+
   Stream<List<Venue>> watchVenueSearch(String query) {
     final term = query.trim().toLowerCase();
     final q = select(venues)
@@ -848,6 +873,59 @@ class AppDatabase extends _$AppDatabase {
 
   Stream<Venue?> watchVenue(String id) =>
       (select(venues)..where((t) => t.id.equals(id))).watchSingleOrNull();
+
+  // ---------------------------------------------------------------------
+  // Offline-Warteschlange für Gasthaus-Änderungen
+  // ---------------------------------------------------------------------
+
+  /// Stellt eine offline erfasste Änderung in die Warteschlange
+  /// (venueId null = Neuanlage).
+  Future<int> enqueueVenueEdit({
+    String? venueId,
+    required String payloadJson,
+    required DateTime createdAt,
+  }) =>
+      into(venueEditQueue).insert(VenueEditQueueCompanion.insert(
+        venueId: Value(venueId),
+        payloadJson: payloadJson,
+        createdAt: createdAt,
+      ));
+
+  /// Alle wartenden Einträge in Erfassungsreihenfolge (FIFO).
+  Future<List<VenueEditQueueData>> pendingVenueEdits() =>
+      (select(venueEditQueue)..orderBy([(t) => OrderingTerm.asc(t.id)]))
+          .get();
+
+  Future<void> deleteVenueEdit(int id) async {
+    await (delete(venueEditQueue)..where((t) => t.id.equals(id))).go();
+  }
+
+  /// Anzahl wartender Einträge (für Sync-Status-Anzeigen).
+  Stream<int> watchPendingVenueEditCount() {
+    final count = venueEditQueue.id.count();
+    return (selectOnly(venueEditQueue)..addColumns([count]))
+        .watchSingle()
+        .map((row) => row.read(count) ?? 0);
+  }
+
+  /// Entfernt eine lokale Pseudo-Zeile (`local-…`) wieder, wenn der
+  /// Server die Neuanlage fachlich ablehnt (z. B. Duplikat).
+  Future<void> deleteVenueCacheRow(String id) async {
+    await (delete(venues)..where((t) => t.id.equals(id))).go();
+  }
+
+  /// Ersetzt nach erfolgreicher Offline-Neuanlage die lokale Pseudo-ID
+  /// (`local-…`) durch die echte Supabase-UUID – im Venue-Cache und in
+  /// allen Check-in-/Session-Verweisen.
+  Future<void> replaceLocalVenueId(String localId, String realId) =>
+      transaction(() async {
+        await (update(venues)..where((t) => t.id.equals(localId)))
+            .write(VenuesCompanion(id: Value(realId)));
+        await (update(checkins)..where((t) => t.venueId.equals(localId)))
+            .write(CheckinsCompanion(venueId: Value(realId)));
+        await (update(sessions)..where((t) => t.venueId.equals(localId)))
+            .write(SessionsCompanion(venueId: Value(realId)));
+      });
 
   // ---------------------------------------------------------------------
   // Challenges (Offline-Cache)

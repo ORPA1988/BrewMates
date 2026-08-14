@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
-import '../../data/venue_sync.dart';
 import '../../widgets/place_quick_sheet.dart';
+import '../../widgets/venue_tile.dart';
 
 /// Entdecken: Bier-Datenbank durchsuchen und filtern.
 class BeersScreen extends ConsumerStatefulWidget {
@@ -67,6 +67,11 @@ class _BeersScreenState extends ConsumerState<BeersScreen> {
       appBar: AppBar(
         title: const Text('Entdecken'),
         actions: [
+          IconButton(
+            tooltip: 'Alle Gasthäuser',
+            icon: const Icon(Icons.storefront_outlined),
+            onPressed: () => context.push('/venues'),
+          ),
           IconButton(
             icon: _syncing
                 ? const SizedBox(
@@ -196,7 +201,7 @@ class _BeersScreenState extends ConsumerState<BeersScreen> {
                           ),
                         ),
                         for (final venue in sortedVenues)
-                          _VenueTile(
+                          VenueTile(
                             venue: venue,
                             canEdit: myUid != null &&
                                 (venue.createdBy == myUid || myLevel >= 2),
@@ -304,35 +309,6 @@ class _BreweryTile extends StatelessWidget {
   }
 }
 
-class _VenueTile extends StatelessWidget {
-  const _VenueTile({required this.venue, this.canEdit = false});
-
-  final Venue venue;
-  final bool canEdit;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Card(
-      child: ListTile(
-        leading: Text(venueCategoryEmoji(venue.category),
-            style: const TextStyle(fontSize: 26)),
-        title: Text(venue.name),
-        subtitle: Text([
-          venueCategoryLabel(venue.category),
-          if (venue.city != null && venue.city!.isNotEmpty) venue.city!,
-          if (venue.priceHalfL != null)
-            '0,5 l € ${venue.priceHalfL!.toStringAsFixed(2)}',
-        ].join(' · ')),
-        trailing: venue.verified
-            ? Icon(Icons.verified_outlined, size: 20, color: scheme.primary)
-            : null,
-        onTap: () async => showPlaceQuickSheet(
-            context, PlaceQuickData.fromVenue(venue, canEdit: canEdit)),
-      ),
-    );
-  }
-}
 
 class _EmptyResults extends StatelessWidget {
   const _EmptyResults();
