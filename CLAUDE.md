@@ -5,9 +5,9 @@ Fokus Österreich + Bayern. Antworte dem Nutzer auf Deutsch.
 
 ## Aktueller Stand (2026-08-14)
 
-- **Branch**: PR #2 (`claude/multi-platform-app-design-7lm758`) ist in
-  `main` gemerged; neue Arbeit startet auf frischen Branches von `main`.
-  Version `0.9.6-beta+10`, Release v0.9.6-beta veröffentlicht (Beta 0.x bis
+- **Branch**: PRs #2–#4 sind in `main` gemerged; neue Arbeit startet auf
+  frischen Branches von `main`.
+  Version `0.9.7-beta+11`, Release v0.9.7-beta veröffentlicht (Beta 0.x bis
   zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch; die
   frühen Alpha-Releases wurden von 1.1/1.2 auf 0.1.0/0.2.0 umbenannt).
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
