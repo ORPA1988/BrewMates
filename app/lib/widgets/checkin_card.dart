@@ -160,6 +160,30 @@ class CheckinCard extends ConsumerWidget {
               ),
             ],
 
+            // Foto (öffentliche URL aus dem beer-photos-Bucket).
+            if (checkin.photoUrl != null) ...[
+              const SizedBox(height: 8),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  checkin.photoUrl!,
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, progress) =>
+                      progress == null
+                          ? child
+                          : Container(
+                              height: 200,
+                              alignment: Alignment.center,
+                              color: scheme.surfaceContainerHighest,
+                              child: const CircularProgressIndicator(),
+                            ),
+                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                ),
+              ),
+            ],
+
             // Notiz.
             if (checkin.note != null) ...[
               const SizedBox(height: 8),

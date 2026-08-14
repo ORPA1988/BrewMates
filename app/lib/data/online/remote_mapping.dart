@@ -70,6 +70,7 @@ CheckinDetails remoteCheckinToDetails(RemoteCheckin c) {
       note: c.note,
       flavorTags: '',
       servingStyle: null,
+      photoUrl: c.photoUrl,
       createdAt: c.createdAt,
     ),
     beer: Beer(

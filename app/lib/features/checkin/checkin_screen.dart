@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
@@ -30,6 +33,9 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
   bool _venuePrefilled = false;
   bool _saving = false;
 
+  /// Gewähltes Foto (JPEG-Bytes); Upload passiert beim Speichern.
+  Uint8List? _photoBytes;
+
   /// Gewähltes Gasthaus aus der gemeinsamen DB (null = Freitext).
   String? _venueId;
 
@@ -50,9 +56,38 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
     super.dispose();
   }
 
+  Future<void> _pickPhoto(ImageSource source) async {
+    try {
+      final file = await ImagePicker().pickImage(
+        source: source,
+        maxWidth: 1280,
+        imageQuality: 80,
+      );
+      if (file == null) return;
+      final bytes = await file.readAsBytes();
+      if (!mounted) return;
+      setState(() => _photoBytes = bytes);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Foto konnte nicht geladen werden.')));
+    }
+  }
+
   Future<void> _save(BeerWithBrewery selected) async {
     setState(() => _saving = true);
     try {
+      // Foto zuerst hochladen (braucht Konto + Internet); klappt es nicht,
+      // wird der Check-in trotzdem gespeichert — nur ohne Bild.
+      String? photoUrl;
+      var photoFailed = false;
+      if (_photoBytes != null) {
+        final online = await ref.read(onlineServiceProvider.future);
+        photoUrl = online == null
+            ? null
+            : await online.uploadCheckinPhoto(_photoBytes!);
+        photoFailed = photoUrl == null;
+      }
       final venue = _venueController.text.trim();
       final earned = await ref.read(actionsProvider).createCheckin(
             beerId: selected.beer.id,
@@ -62,8 +97,14 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
             venueId: venue.isEmpty ? null : _venueId,
             flavorTags: _tags.toList(),
             servingStyle: _serving,
+            photoUrl: photoUrl,
           );
       if (!mounted) return;
+      if (photoFailed) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Foto-Upload hat nicht geklappt (offline?) – '
+                'Check-in wurde ohne Bild gespeichert.')));
+      }
       final messenger = ScaffoldMessenger.of(context);
       if (earned.isNotEmpty) {
         await showCelebration(context, earned);
@@ -237,6 +278,48 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
               border: OutlineInputBorder(),
             ),
           ),
+          const SizedBox(height: 16),
+          Text('Foto (optional)', style: theme.textTheme.titleSmall),
+          const SizedBox(height: 8),
+          if (_photoBytes == null)
+            Row(
+              children: [
+                OutlinedButton.icon(
+                  onPressed: () => _pickPhoto(ImageSource.camera),
+                  icon: const Icon(Icons.photo_camera_outlined, size: 18),
+                  label: const Text('Kamera'),
+                ),
+                const SizedBox(width: 8),
+                OutlinedButton.icon(
+                  onPressed: () => _pickPhoto(ImageSource.gallery),
+                  icon: const Icon(Icons.photo_library_outlined, size: 18),
+                  label: const Text('Galerie'),
+                ),
+              ],
+            )
+          else
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.memory(
+                    _photoBytes!,
+                    height: 180,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: IconButton.filledTonal(
+                    tooltip: 'Foto entfernen',
+                    icon: const Icon(Icons.close, size: 18),
+                    onPressed: () => setState(() => _photoBytes = null),
+                  ),
+                ),
+              ],
+            ),
           const SizedBox(height: 24),
           FilledButton(
             style: FilledButton.styleFrom(

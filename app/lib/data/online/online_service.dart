@@ -110,6 +110,7 @@ class RemoteCheckin {
     this.note,
     this.venueName,
     this.sessionId,
+    this.photoUrl,
     required this.createdAt,
   });
 
@@ -123,6 +124,7 @@ class RemoteCheckin {
   final String? note;
   final String? venueName;
   final String? sessionId;
+  final String? photoUrl;
   final DateTime createdAt;
 }
 
@@ -707,6 +709,25 @@ class OnlineService {
   // Check-ins
   // --------------------------------------------------------------------------
 
+  /// Check-in-Foto in den öffentlichen beer-photos-Bucket laden.
+  /// Rückgabe: öffentliche URL, null bei Fehler/offline/abgemeldet.
+  Future<String?> uploadCheckinPhoto(Uint8List bytes) async {
+    final me = currentUser;
+    if (me == null) return null;
+    try {
+      final path =
+          '${me.id}/checkin-${DateTime.now().millisecondsSinceEpoch}.jpg';
+      await _client.storage.from('beer-photos').uploadBinary(
+            path,
+            bytes,
+            fileOptions: const FileOptions(contentType: 'image/jpeg'),
+          );
+      return _client.storage.from('beer-photos').getPublicUrl(path);
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Eigenen Check-in online spiegeln (denormalisiert, gleiche Zeile wie
   /// der Upload-Assistent).
   Future<void> insertCheckin(local.CheckinDetails details) async {
@@ -1180,6 +1201,7 @@ class OnlineService {
           if (t.trim().isNotEmpty) t.trim(),
       ],
       'serving_style': c.servingStyle?.name,
+      'photo_url': c.photoUrl,
       'venue_name': c.venueName,
       'visibility': 'friends',
       'created_at': c.createdAt.toUtc().toIso8601String(),
@@ -1237,7 +1259,7 @@ class OnlineService {
           .from('checkins')
           .select('id, rating, note, flavor_tags, serving_style, beer_name, '
               'beer_style, brewery_name, is_alcohol_free, venue_id, '
-              'venue_name, created_at')
+              'venue_name, photo_url, created_at')
           .eq('profile_id', me.id)
           .order('created_at', ascending: true);
       return rows.cast<Map<String, dynamic>>();
@@ -1330,7 +1352,7 @@ class OnlineService {
       final rows = await _client
           .from('checkins')
           .select('id, beer_name, brewery_name, beer_style, is_alcohol_free, '
-              'rating, note, venue_name, session_id, created_at, '
+              'rating, note, venue_name, session_id, photo_url, created_at, '
               'author:profiles!checkins_profile_id_fkey($_profileCols)')
           .neq('profile_id', me.id)
           .order('created_at', ascending: false)
@@ -1353,6 +1375,7 @@ class OnlineService {
         note: r['note'] as String?,
         venueName: r['venue_name'] as String?,
         sessionId: r['session_id'] as String?,
+        photoUrl: r['photo_url'] as String?,
         createdAt: DateTime.parse(r['created_at'] as String).toLocal(),
       );
 }

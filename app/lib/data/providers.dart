@@ -704,6 +704,7 @@ class BrewActions {
     String? venueId,
     List<String> flavorTags = const [],
     ServingStyle? servingStyle,
+    String? photoUrl,
   }) async {
     final me = await _me();
     final now = DateTime.now();
@@ -720,6 +721,7 @@ class BrewActions {
           note: Value((note ?? '').trim().isEmpty ? null : note!.trim()),
           flavorTags: Value(flavorTags.join(',')),
           servingStyle: Value(servingStyle),
+          photoUrl: Value(photoUrl),
           createdAt: now,
         ));
     // Online spiegeln (Freunde sehen den Check-in in ihrem Feed).
@@ -735,6 +737,12 @@ class BrewActions {
     }
     final badges = await BadgeEngine(_db)
         .evaluate(me.id, onlineUserId: online?.currentUser?.id);
+    // Neue Erfolge best-effort in die Cloud spiegeln (0016).
+    if (badges.isNotEmpty && online != null) {
+      final stamp = DateTime.now().toUtc();
+      unawaited(
+          online.uploadBadges({for (final b in badges) b.slug: stamp}));
+    }
     // Challenges prüfen: Abschluss lokal als Badge festhalten und
     // best-effort online melden (idempotent; offline holt der nächste
     // Durchlauf es nach).
