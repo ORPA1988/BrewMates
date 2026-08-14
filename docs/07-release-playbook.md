@@ -99,10 +99,11 @@ Checkboxen ☐ markiert.
    mit **JA** beantworten → ergibt automatisch die USK/PEGI-Einstufung
    (erwartet ~„Teens").
 7. ☐ **Datenschutzerklärungs-URL** eintragen: PRIVACY.md wird per
-   GitHub Pages veröffentlicht (`.github/workflows/pages.yml`).
-   Einmalig aktivieren: Repo → Settings → Pages → Source =
-   **„GitHub Actions"**; danach liegt die Seite unter
-   `https://orpa1988.github.io/BrewMates/`.
+   GitHub Pages veröffentlicht (`.github/workflows/pages.yml`, kombiniert
+   mit der Web-App). Einmalig aktivieren: Repo → Settings → Pages →
+   Source = **„GitHub Actions"**; danach liegt die Datenschutzseite unter
+   `https://orpa1988.github.io/BrewMates/privacy/` (die Web-App auf der
+   Root-URL `https://orpa1988.github.io/BrewMates/`).
 8. ☐ **Data-Safety-Formular**: vorbereitete Antworten in
    `store/data-safety.md` (seit der Online-Beta werden mit Konto Daten
    erhoben: E-Mail, Profil, optional Standort während Sessions, Fotos,

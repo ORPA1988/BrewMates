@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart'
+    show debugDefaultTargetPlatformOverride;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -98,6 +100,10 @@ void main() {
 
   testWidgets('Scanner (Desktop-Fallback): EAN aus der Community-DB '
       'zeigt den Treffer und führt zum Check-in', (tester) async {
+    // Desktop simulieren: In Widget-Tests meldet defaultTargetPlatform
+    // sonst Android und der Screen würde die Kamera-Ansicht rendern.
+    // (Reset am Test-Ende im Body — die Binding-Invarianten verlangen das.)
+    debugDefaultTargetPlatformOverride = TargetPlatform.windows;
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
 
@@ -125,10 +131,12 @@ void main() {
     expect(find.textContaining('Stiegl-Goldbräu'), findsWidgets);
 
     await _windDown(tester);
+    debugDefaultTargetPlatformOverride = null;
   });
 
   testWidgets('Ungültige EAN zeigt eine verständliche Fehlermeldung',
       (tester) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.windows;
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
 
@@ -144,6 +152,7 @@ void main() {
     expect(find.textContaining('8 oder 13 Ziffern'), findsWidgets);
 
     await _windDown(tester);
+    debugDefaultTargetPlatformOverride = null;
   });
 
   testWidgets('Check-in-Flow über Home: suchen, speichern, Abzeichen',

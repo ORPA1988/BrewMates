@@ -1,15 +1,13 @@
-name: Pages (Datenschutz)
+name: Pages (Web-App + Datenschutz)
 
-# Veröffentlicht PRIVACY.md als hübsche HTML-Seite über GitHub Pages —
-# die öffentliche Datenschutz-URL für den Play-Store-Eintrag.
+# EIN kombiniertes GitHub-Pages-Deployment:
+#   https://orpa1988.github.io/BrewMates/          → die BrewMates-Web-App
+#   https://orpa1988.github.io/BrewMates/privacy/  → Datenschutzerklärung
 # Voraussetzung (einmalig): Repo → Settings → Pages → Source = "GitHub Actions".
 
 on:
   push:
     branches: [main]
-    paths:
-      - PRIVACY.md
-      - .github/workflows/pages.yml
   workflow_dispatch:
 
 permissions:
@@ -29,10 +27,21 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - name: PRIVACY.md nach HTML wandeln
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24.5"
+          channel: stable
+          cache: true
+      - name: Web-App bauen
+        working-directory: app
         run: |
+          flutter pub get
+          flutter build web --release --base-href /BrewMates/
+      - name: Seite zusammenstellen (App + Datenschutz)
+        run: |
+          mkdir -p _site/privacy
+          cp -r app/build/web/. _site/
           pip install markdown
-          mkdir -p _site
           python3 <<'EOF'
           import markdown
           import pathlib
@@ -47,7 +56,8 @@ jobs:
                   'margin:2rem auto;padding:0 1rem;line-height:1.6;color:#222}'
                   'table{border-collapse:collapse}td,th{border:1px solid #ccc;'
                   'padding:.4rem}</style></head><body>' + body + '</body></html>')
-          pathlib.Path('_site/index.html').write_text(html, encoding='utf-8')
+          pathlib.Path('_site/privacy/index.html').write_text(
+              html, encoding='utf-8')
           EOF
       - uses: actions/upload-pages-artifact@v3
       - id: deployment
