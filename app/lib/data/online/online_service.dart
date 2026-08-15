@@ -475,12 +475,25 @@ class OnlineService {
   Future<List<RemoteProfile>> searchProfiles(String query) async {
     final term = query.trim().toLowerCase();
     if (term.length < 3) return const [];
+    // Ohne Session keine Suche — und vor allem kein `neq('id', '')`,
+    // das serverseitig als ungültige UUID abbricht (still gefangen =
+    // „keine Treffer", obwohl nur die Anmeldung fehlte).
+    final myId = currentUser?.id;
+    if (myId == null) return const [];
+    // %, Komma und Klammern würden die PostgREST-or()-Syntax bzw. das
+    // LIKE-Muster kapern — in Nutzernamen/Anzeigenamen sind sie eh tabu.
+    final safe = term.replaceAll(RegExp(r'[%,()\\]'), '');
+    if (safe.length < 3) return const [];
     try {
+      // Nutzername als Präfix, Anzeigename als Teilstring: Konten aus
+      // Google-Login/E-Mail-Registrierung tragen den echten Namen oft nur
+      // im display_name (bis 0019 war der username immer mate_<hex>).
       final rows = await _client
           .from('profiles')
           .select(_profileCols)
-          .ilike('username', '$term%')
-          .neq('id', currentUser?.id ?? '')
+          .or('username.ilike.$safe%,display_name.ilike.%$safe%')
+          .neq('id', myId)
+          .order('username', ascending: true)
           .limit(10);
       return [for (final r in rows) RemoteProfile.fromRow(r)];
     } catch (_) {

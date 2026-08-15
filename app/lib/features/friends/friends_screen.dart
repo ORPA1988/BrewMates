@@ -298,7 +298,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
               controller: _searchController,
               autocorrect: false,
               decoration: InputDecoration(
-                labelText: 'Nutzername suchen (min. 3 Zeichen)',
+                labelText: 'Name oder Nutzername (min. 3 Zeichen)',
                 prefixIcon: const Icon(Icons.search),
                 border: const OutlineInputBorder(),
                 suffixIcon: _searching

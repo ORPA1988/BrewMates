@@ -13,11 +13,13 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU). Migrationen
-  `supabase/migrations/0001–0018` sind LIVE (0011 Gasthäuser, 0012
+  `supabase/migrations/0001–0019` sind LIVE (0011 Gasthäuser, 0012
   Challenges, 0013 Vertrauensstufen + edit_log, 0014 complete_challenge-RPC
   + contribution_leaderboard, 0015 venues.opening_hours_json, 0016
   user_badges/wishlist_items für den Cloud-Sync, 0017
-  delete_my_account-RPC, 0018 profiles.thirsty_until „Bierlaune").
+  delete_my_account-RPC, 0018 profiles.thirsty_until „Bierlaune", 0019
+  sprechende Nutzernamen aus full_name/E-Mail statt mate_<hex>; die
+  Freundessuche matcht seit 0.9.13 auch display_name).
   Google-Login und
   E-Mail-Anmeldung (ohne Bestätigungspflicht) sind eingerichtet und
   funktionieren. Seit 0008 gilt: EXECUTE auf Funktionen wird von PUBLIC
