@@ -61,6 +61,12 @@ mit 403 (Branch-Scope-Token). Der Lauf baut APK+AAB und veröffentlicht sie.
 - Karten-Wording zentral: `activeUsersLabel()` in
   `app/lib/features/map/map_screen.dart`.
 - Nicht-Freunde erscheinen auf der Karte NIE mit Position, nur als Zähler.
+- **Pflicht bei JEDEM Entwicklungslauf**: nutzererstellte Biere prüfen
+  (`beers.verified = false` in Supabase) und fehlende Infos ergänzen —
+  Anleitung + SQL in `docs/10-community-datenpflege.md`. Beste Quelle ist
+  das Etikettfoto des Nutzers (`beers.label_url`), danach Open Food Facts
+  über den Barcode. Geprüfte Einträge auf `verified = true` setzen und
+  denormalisierte `checkins.beer_name`/`brewery_name` nachziehen.
 - **Sync-Invariante**: Community-JSON-Datensätze (Biere mit
   `isUserSubmitted == false`, Brauereien mit Nicht-UUID-ID) sind in der App
   READ-ONLY — der GitHub-Sync überschreibt sie wholesale. In-App-Bearbeitung

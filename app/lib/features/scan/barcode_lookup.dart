@@ -61,6 +61,26 @@ class BarcodeLookup {
   static bool isValidEan(String input) =>
       RegExp(r'^\d{8}$|^\d{13}$').hasMatch(input);
 
+  /// Bei Open Food Facts heißt das Produkt oft nur „Bier" — als Biername
+  /// ist das wertlos und landete bisher ungefiltert im Anlegen-Formular
+  /// (Ergebnis: Einträge namens „Bier"). Solche Gattungswörter lassen wir
+  /// weg, damit das Namensfeld leer bleibt und bewusst ausgefüllt wird.
+  /// Zusammensetzungen („Bier Radler", „Lager Hell") bleiben erhalten.
+  static bool isGenericProductName(String name) {
+    const generic = {
+      'bier', 'biere', 'bière', 'bières', 'beer', 'beers', 'birra', 'birre',
+      'cerveza', 'cerveja', 'pivo', 'øl', 'olut', 'alkoholfreies bier',
+      'bier alkoholfrei', 'bière sans alcool', 'non alcoholic beer',
+      'vollbier', 'schankbier', 'lagerbier', 'bierre',
+    };
+    final normalized = name
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^a-zà-ÿ ]'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+    return normalized.isEmpty || generic.contains(normalized);
+  }
+
   Future<BarcodeLookupResult> lookup(String ean) async {
     final local = await db.findBeerByBarcode(ean);
     if (local != null) return LocalBeerFound(local);
@@ -90,9 +110,11 @@ class BarcodeLookup {
           final name = (product['product_name'] as String?)?.trim();
           final brand =
               (product['brands'] as String?)?.split(',').first.trim();
+          final usableName =
+              (name == null || isGenericProductName(name)) ? null : name;
           return OffProductFound(
             ean: ean,
-            name: (name?.isEmpty ?? true) ? null : name,
+            name: usableName,
             brand: (brand?.isEmpty ?? true) ? null : brand,
           );
         }
