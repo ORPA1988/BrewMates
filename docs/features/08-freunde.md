@@ -63,12 +63,13 @@ Die Freundesliste selbst ist durch die menschliche Freundeszahl begrenzt.
 Funktional vollständig, aber **flach**: Jeder Freund sieht alles. Für eine
 App, die Standort und Trinkverhalten zeigt, ist das zu grob.
 
-Zweite Lücke: Freundschaften entstehen nur über die Namenssuche — genau
-das ist am Wirtshaustisch der unbequemste Weg.
+~~Zweite Lücke: Freundschaften entstehen nur über die Namenssuche.~~ Seit
+0.9.14 gibt es [QR-Codes](22-freunde-per-qr-code.md) — den Weg für den
+Wirtshaustisch, an dem die Namenssuche am schlechtesten funktioniert.
 
 ## Umsetzungsplan
 
-1. [Freunde per QR-Code](22-freunde-per-qr-code.md) — löst das Finden
+1. ~~[Freunde per QR-Code](22-freunde-per-qr-code.md)~~ — erledigt (0.9.14)
 2. [Freundeskreise](24-freundeskreise.md) — löst die Abstufung
 3. Trigram-Index, sobald die Suche spürbar langsamer wird
 

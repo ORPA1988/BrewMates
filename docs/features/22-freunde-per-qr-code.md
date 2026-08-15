@@ -1,8 +1,8 @@
 # 22 Freunde per QR-Code
 
-> **Status:** 🔴 geplant — Freundschaften entstehen heute nur über die
-> Namenssuche.
-> **Geplant für:** 0.9.14-beta · **Zuletzt geprüft:** 2026-08-15
+> **Status:** 🟢 fertig — Code anzeigen und scannen; Desktop bleibt bei
+> der Namenssuche.
+> **Seit:** 0.9.14-beta · **Zuletzt geprüft:** 2026-08-15
 
 ## Zielsetzung
 
@@ -29,14 +29,26 @@ man den Nutzernamen des anderen kennen muss.
 
 ## Technische Umsetzung
 
-- **Neu:** `features/friends/qr_share_screen.dart` (anzeigen),
-  `features/friends/qr_scan_screen.dart` (lesen)
-- **Geändert:** `features/friends/friends_screen.dart` (zwei Schaltflächen),
-  `core/router.dart` (zwei Routen)
-- **Paket:** `qr_flutter` zum Erzeugen — reines Dart, damit auf allen fünf
-  Plattformen unkritisch
-- **Lesen:** `mobile_scanner` ist bereits an Bord; heute auf EAN-8/13
-  eingeschränkt, hier zusätzlich `BarcodeFormat.qrCode`
+- **Neu:** `features/friends/friend_code.dart` (Nutzlast, rein und
+  testbar), `qr_share_screen.dart` (anzeigen), `qr_scan_screen.dart` (lesen)
+- **Geändert:** `features/friends/friends_screen.dart` (zwei Schaltflächen
+  in der Titelleiste), `core/router.dart` (`/friends/code`,
+  `/friends/scan`), `data/online/online_service.dart` (`profileById`)
+- **Paket:** `qr_flutter ^4.1.0` zum Erzeugen — reines Dart, damit auf
+  allen fünf Plattformen unkritisch; der Web-Build wurde nach der
+  Aufnahme geprüft
+- **Lesen:** `mobile_scanner` ist bereits an Bord; der Bier-Scanner nutzt
+  EAN-8/13, dieser hier `BarcodeFormat.qrCode`
+
+**Zwei Details, die leicht untergehen:** Der Code steht auf weißem Grund
+unabhängig vom Farbschema — auf dunklem Hintergrund erkennen viele
+Kameras nichts. Und `zxing.js` wird auch hier aus dem eigenen Bundle
+geladen; die CDN-Variante scheitert hinter VPN und Werbeblocker
+schweigend, was beim Bier-Scanner schon einmal Fehlersuche gekostet hat.
+
+**`profileById` schweigt bewusst:** Nicht gefunden, nicht sichtbar
+(blockiert, privat) und offline ergeben dieselbe Antwort. Alles andere
+wäre eine Auskunft über Fremde.
 
 **Nutzlast:** `brewmates:friend:<uuid>` — die Profil-ID, die Freunde
 ohnehin sehen. Kein Geheimnis, kein Zeitstempel, keine Signatur: Ein
@@ -74,19 +86,20 @@ verschwindet die Schaltfläche, statt einen Fehler zu zeigen.
 Unkritisch. Ein Code je Profil, keine Serverlast — der Scan endet in
 derselben Freundschaftsanfrage wie bisher.
 
+## Umsetzungsstatus
+
+Vollständig bis auf die Helligkeitsanhebung beim Anzeigen — die braucht
+ein weiteres plattformgebundenes Paket und wäre der einzige Grund, eines
+aufzunehmen. Zurückgestellt, bis jemand berichtet, dass der Code im
+dunklen Wirtshaus nicht gelesen wird.
+
+Abgesichert durch `test/friend_code_test.dart` (4 Tests): Hin- und
+Rückweg, fremde Codes (WLAN-Zugang, nackte UUID, falsche
+Groß-/Kleinschreibung), verstümmelte Codes, Whitespace.
+
 ## Umsetzungsplan
 
-1. **Code anzeigen.** `qr_flutter` einbinden, Anzeige-Bildschirm mit
-   Helligkeitsanhebung.
-   *Prüfkriterium:* Widget-Test — Code enthält die eigene Profil-ID.
-2. **Code lesen.** Scanner-Bildschirm mit QR-Format, Nutzlast prüfen.
-   *Prüfkriterium:* Unit-Test der Zerlegung, inklusive fremder und
-   verstümmelter Codes.
-3. **Profilkarte + Anfrage,** Wiederverwendung der bestehenden
-   Anfrage-Logik.
-   *Prüfkriterium:* eigener Code führt zu „das bist du selbst";
-   bestehende Freundschaft wird erkannt.
-4. **Plattform-Weiche** für Geräte ohne Kamera.
+Erledigt.
 
 ## Offene Punkte / Ideen
 

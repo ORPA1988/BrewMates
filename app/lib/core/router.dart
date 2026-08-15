@@ -20,6 +20,8 @@ import '../features/crews/crew_detail_screen.dart';
 import '../features/crews/crews_screen.dart';
 import '../features/feed/feed_screen.dart';
 import '../features/friends/friends_screen.dart';
+import '../features/friends/qr_scan_screen.dart';
+import '../features/friends/qr_share_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/map/map_screen.dart';
 import '../features/profile/badges_screen.dart';
@@ -159,6 +161,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/friends',
         builder: (_, __) => const FriendsScreen(),
+      ),
+      GoRoute(
+        path: '/friends/code',
+        builder: (_, __) => const QrShareScreen(),
+      ),
+      GoRoute(
+        path: '/friends/scan',
+        builder: (_, __) => const QrScanScreen(),
       ),
       GoRoute(
         path: '/crews',

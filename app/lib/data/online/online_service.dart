@@ -501,6 +501,26 @@ class OnlineService {
     }
   }
 
+  /// Ein einzelnes Profil über seine ID holen — für den QR-Scan, der eine
+  /// ID statt eines Suchbegriffs liefert.
+  ///
+  /// Null bedeutet: gibt es nicht, ist für uns nicht sichtbar (blockiert,
+  /// privat) oder wir sind offline. Der Aufrufer sagt in allen Fällen
+  /// dasselbe — mehr Auskunft wäre hier eine Auskunft über Fremde.
+  Future<RemoteProfile?> profileById(String profileId) async {
+    if (currentUser == null) return null;
+    try {
+      final row = await _client
+          .from('profiles')
+          .select(_profileCols)
+          .eq('id', profileId)
+          .maybeSingle();
+      return row == null ? null : RemoteProfile.fromRow(row);
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<String?> sendFriendRequest(String profileId) async {
     try {
       await _client.from('friendships').insert({
