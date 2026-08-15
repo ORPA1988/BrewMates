@@ -28,3 +28,6 @@ ios/Flutter/Generated.xcconfig
 
 # Windows
 windows/flutter/ephemeral/
+
+# Abdeckungsbericht (flutter test --coverage) — lokal erzeugt, nie eingecheckt.
+coverage/
