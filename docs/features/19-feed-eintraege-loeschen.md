@@ -1,8 +1,8 @@
 # 19 Feed-Einträge löschen
 
-> **Status:** 🔴 geplant — noch nichts umgesetzt. Serverseitig ist der Weg
-> bereits offen (`checkins_delete`-Policy aus 0001), es fehlt alles davor.
-> **Geplant für:** 0.9.14-beta · **Zuletzt geprüft:** 2026-08-15
+> **Status:** 🟢 fertig — eigene Check-ins lassen sich löschen, offline
+> wie online, mit „Rückgängig".
+> **Seit:** 0.9.14-beta · **Zuletzt geprüft:** 2026-08-15
 
 ## Zielsetzung
 
@@ -34,21 +34,31 @@ ein.
 
 ## Technische Umsetzung
 
-- **Neu:** `data/checkin_delete_queue.dart` nach dem Muster von
-  `data/venue_queue.dart` (FIFO, idempotent)
-- **Geändert:** `widgets/checkin_card.dart` (Menü), `features/feed/`,
-  `features/profile/diary_screen.dart`, `data/providers.dart`
-  (`BrewActions.deleteCheckin`), `data/online/online_service.dart`
-- **Lokal:** Drift v10 — Tabelle `checkin_delete_queue`; Löschen der
-  Check-in-Zeile
-- **Server:** keine Migration nötig. `checkins_delete` erlaubt bereits
-  `profile_id = auth.uid()`; `toasts` und `comments` hängen mit
+- **Neu:** `data/checkin_delete_queue.dart` — `replayCheckinDeleteQueue`
+  nach dem Muster von `data/venue_queue.dart` (FIFO, idempotent)
+- **Geändert:** `widgets/checkin_card.dart` (Menü, Rückfrage,
+  „Rückgängig"), `data/providers.dart` (`BrewActions.deleteCheckin` und
+  `restoreCheckin`, `checkinDeleteSyncProvider`),
+  `data/online/online_service.dart` (`deleteCheckinRemote`,
+  `deleteCheckinPhoto`), `features/shell/app_shell.dart`
+- **Lokal:** Drift v10 — Tabelle `CheckinDeleteQueue`;
+  `deleteCheckinLocal` entfernt Check-in, Toasts und Kommentare in einer
+  Transaktion
+- **Server:** keine Migration nötig. `checkins_delete` (0001) erlaubt
+  bereits `profile_id = auth.uid()`; `toasts` und `comments` hängen mit
   `on delete cascade` daran und verschwinden mit.
-- **Speicher:** Foto im Bucket `beer-photos` mitlöschen (`photo_url`)
+- **Speicher:** Foto im Bucket `beer-photos` mitlöschen — die
+  Warteschlange führt `photo_url` mit, weil die Check-in-Zeile beim
+  Abspielen längst weg ist
 
 **Reihenfolge beim Löschen:** erst lokal, dann Server, dann Foto. Bricht
 der Server ab, bleibt der Auftrag in der Warteschlange; das Foto zuletzt,
 weil ein verwaistes Bild harmloser ist als ein Eintrag ohne Bild.
+
+**Eigener Provider statt Anbau.** `checkinDeleteSyncProvider` läuft im
+selben Takt wie der Gasthaus-Abgleich, aber unabhängig davon — die
+Alternative wäre gewesen, das Abspielen in `VenueSync.sync()`
+hineinzuschreiben, was den Namen zur Lüge gemacht hätte.
 
 ## Modularität
 
@@ -67,25 +77,26 @@ Alle. Kein plattformgebundenes Paket beteiligt.
 Unkritisch: eine Zeile pro Vorgang, die Warteschlange wird beim Abgleich
 geleert. Das `cascade` auf Toasts und Kommentaren erledigt Postgres.
 
+## Umsetzungsstatus
+
+Alle vier geplanten Schritte sind erledigt. Abgesichert durch
+`test/checkin_delete_test.dart` (8 Tests): FIFO-Reihenfolge,
+Foto-Entfernung, Abbruch bei Verbindungsfehlern, Verwerfen fachlicher
+Fehler, Rückgängig und wiederholtes Abspielen.
+
+**Eine bekannte Enge:** Läuft der Abgleich innerhalb der wenigen Sekunden
+zwischen Löschen und „Rückgängig", ist die Serverzeile bereits weg. Der
+Check-in lebt dann lokal weiter und wird vom Upload-Assistenten erneut
+hochgeladen — kein Datenverlust, nur ein Umweg.
+
 ## Umsetzungsplan
 
-1. **Drift v10 + Warteschlange.** Tabelle `checkin_delete_queue`,
-   `replayCheckinDeletes()` analog `replayVenueQueue`.
-   *Prüfkriterium:* Unit-Test — Eintrag löschen, offline, Wiedergabe holt
-   es nach; doppelte Wiedergabe schadet nicht.
-2. **Server- und Speicherpfad.** `OnlineService.deleteCheckin(id)` inkl.
-   Foto-Entfernung.
-   *Prüfkriterium:* gelöschter Check-in ist über die API nicht mehr
-   abrufbar, Foto ist weg.
-3. **Bedienung.** Menü in `checkin_card.dart`, Rückfrage,
-   „Rückgängig"-Hinweis (5 Sekunden Aufschub vor dem echten Löschen).
-   *Prüfkriterium:* Widget-Test — Menü nur bei eigenen Karten;
-   „Rückgängig" stellt wieder her.
-4. **Abzeichen neu bewerten** (ohne Aberkennung), Statistiken aktualisieren.
-   *Prüfkriterium:* Test — Löschen senkt Zähler, entzieht aber kein
-   vergebenes Abzeichen.
+Erledigt. Offen bleibt nur der naheliegende Nachbau:
+
+1. **Bearbeiten statt Löschen** (Bewertung oder Notiz nachträglich
+   ändern) — deckt vermutlich die Hälfte der Löschwünsche ab und
+   verhindert, dass Erinnerungen wegen eines Tippfehlers verschwinden.
 
 ## Offene Punkte / Ideen
 
-- Später: Bearbeiten statt Löschen (Bewertung oder Notiz nachträglich
-  ändern) — das deckt vermutlich die Hälfte der Löschwünsche ab.
+- Mehrere Check-ins auf einmal löschen (Auswahlmodus im Tagebuch)

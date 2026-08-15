@@ -197,6 +197,19 @@ class VenueEditQueue extends Table {
   DateTimeColumn get createdAt => dateTime()();
 }
 
+/// Offline-Warteschlange für gelöschte eigene Check-ins.
+///
+/// Die lokale Zeile verschwindet sofort (das Löschen soll sich sofort
+/// anfühlen); der Server erfährt es beim nächsten Sync. `photoUrl` wird
+/// mitgeführt, weil die Check-in-Zeile zu diesem Zeitpunkt schon weg ist,
+/// das Bild im Bucket aber noch aufgeräumt werden muss.
+class CheckinDeleteQueue extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get checkinId => text()();
+  TextColumn get photoUrl => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
 /// Offline-Cache der Challenges (Supabase = Wahrheit). Bleibt auch nach
 /// Challenge-Ende erhalten, damit die Abzeichen-Galerie Titel/Emoji
 /// verdienter Challenge-Badges anzeigen kann.
@@ -310,6 +323,7 @@ class ProfileStats {
   WishlistItems,
   ChallengeCache,
   VenueEditQueue,
+  CheckinDeleteQueue,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
@@ -319,7 +333,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(openInMemory());
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -429,6 +443,10 @@ class AppDatabase extends _$AppDatabase {
           if (from < 9) {
             // v9: Foto-Check-ins.
             await m.addColumn(checkins, checkins.photoUrl);
+          }
+          if (from < 10) {
+            // v10: Offline-Warteschlange für gelöschte eigene Check-ins.
+            await m.createTable(checkinDeleteQueue);
           }
         },
       );
@@ -894,6 +912,64 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> deleteVenueEdit(int id) async {
     await (delete(venueEditQueue)..where((t) => t.id.equals(id))).go();
+  }
+
+  // --------------------------------------------------------------------------
+  // Check-ins löschen (lokal sofort, Server beim nächsten Sync)
+  // --------------------------------------------------------------------------
+
+  Future<Checkin?> findCheckin(String id) =>
+      (select(checkins)..where((t) => t.id.equals(id))).getSingleOrNull();
+
+  /// Stellt einen gelöschten Check-in wieder her („Rückgängig").
+  Future<void> restoreCheckinRow(Checkin row) async {
+    await into(checkins).insertOnConflictUpdate(row);
+  }
+
+  /// Löscht einen eigenen Check-in lokal samt Toasts und Kommentaren und
+  /// merkt ihn für den Server vor.
+  ///
+  /// Der Aufrufer stellt sicher, dass es sich um einen eigenen Check-in
+  /// handelt — die Server-Policy erzwingt es zusätzlich.
+  Future<void> deleteCheckinLocal(
+    String checkinId, {
+    String? photoUrl,
+    required DateTime now,
+    bool queueForServer = true,
+  }) async {
+    await transaction(() async {
+      await (delete(toasts)..where((t) => t.checkinId.equals(checkinId))).go();
+      await (delete(comments)..where((t) => t.checkinId.equals(checkinId)))
+          .go();
+      await (delete(checkins)..where((t) => t.id.equals(checkinId))).go();
+      if (queueForServer) {
+        await into(checkinDeleteQueue).insert(
+          CheckinDeleteQueueCompanion.insert(
+            checkinId: checkinId,
+            photoUrl: Value(photoUrl),
+            createdAt: now,
+          ),
+        );
+      }
+    });
+  }
+
+  /// Wartende Löschungen in Erfassungsreihenfolge (FIFO).
+  Future<List<CheckinDeleteQueueData>> pendingCheckinDeletes() =>
+      (select(checkinDeleteQueue)..orderBy([(t) => OrderingTerm.asc(t.id)]))
+          .get();
+
+  Future<void> deleteCheckinDeleteEntry(int id) async {
+    await (delete(checkinDeleteQueue)..where((t) => t.id.equals(id))).go();
+  }
+
+  /// Nimmt eine Löschung zurück („Rückgängig"), solange sie noch nicht
+  /// übertragen wurde. Der Check-in selbst wird vom Aufrufer wieder
+  /// eingefügt; hier verschwindet nur der Auftrag.
+  Future<void> cancelCheckinDelete(String checkinId) async {
+    await (delete(checkinDeleteQueue)
+          ..where((t) => t.checkinId.equals(checkinId)))
+        .go();
   }
 
   /// Anzahl wartender Einträge (für Sync-Status-Anzeigen).

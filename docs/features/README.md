@@ -42,12 +42,12 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [16](16-datensynchronisation.md) | Datensynchronisation | 🟡 | Local-first, Cloud-Restore; kein Delta-Sync |
 | [17](17-app-update.md) | App-Update | 🟢 | Prüfung gegen GitHub-Releases |
 | [18](18-plattformen.md) | Plattformen | 🟡 | Android + Web live, Windows baubar |
+| [19](19-feed-eintraege-loeschen.md) | Feed-Einträge löschen | 🟢 | Eigene Check-ins entfernen, offlinefähig, Rückgängig |
 
 ## Geplante Funktionen
 
 | # | Funktion | Status | Kurz |
 |---|---|---|---|
-| [19](19-feed-eintraege-loeschen.md) | Feed-Einträge löschen | 🔴 | Eigene Check-ins entfernen |
 | [20](20-feed-statistiken.md) | Feed-Statistiken | 🔴 | Menge, Land, Art, Gebinde, Zeitraum |
 | [21](21-hintergrundgeschichten.md) | Hintergrundgeschichten | 🔴 | Geschichten zu Bier & Brauerei, Info beim Scan |
 | [22](22-freunde-per-qr-code.md) | Freunde per QR-Code | 🔴 | Anzeigen und scannen statt tippen |

@@ -18,6 +18,7 @@ import '../domain/badges.dart';
 import '../domain/challenges.dart';
 import '../features/scan/barcode_lookup.dart';
 import '../widgets/badge_celebration.dart';
+import 'checkin_delete_queue.dart';
 import 'community_sync.dart';
 import 'db/database.dart';
 import 'location_service.dart';
@@ -314,6 +315,25 @@ final venueSyncProvider = FutureProvider<int>((ref) async {
 
 final venuesWithLocationProvider = StreamProvider<List<Venue>>(
     (ref) => ref.watch(databaseProvider).watchVenuesWithLocation());
+
+// ============================================================================
+// Gelöschte Check-ins nachtragen (eigene Warteschlange, siehe Funktion 19)
+// ============================================================================
+
+/// Überträgt lokal gelöschte Check-ins an den Server – im selben Takt wie
+/// der Gasthaus-Abgleich, aber unabhängig davon. Die AppShell hält den
+/// Provider am Leben. Rückgabe: übertragene Löschungen.
+final checkinDeleteSyncProvider = FutureProvider<int>((ref) async {
+  ref.watch(_syncTickProvider);
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null || online.currentUser == null) return 0;
+  return replayCheckinDeleteQueue(
+    ref.read(databaseProvider),
+    deleteRemote: online.deleteCheckinRemote,
+    deletePhoto: online.deleteCheckinPhoto,
+  );
+});
 
 /// Alle Gasthäuser aus dem Cache (Gasthausliste; Sortierung macht die UI).
 final allVenuesProvider = StreamProvider<List<Venue>>(
@@ -821,6 +841,38 @@ class BrewActions {
       for (final b in badges) CelebrationItem.fromBadge(b),
       for (final def in completed) CelebrationItem.fromChallenge(def),
     ];
+  }
+
+  /// Eigenen Check-in löschen: lokal sofort (auch offline), der Server
+  /// erfährt es beim nächsten Abgleich.
+  ///
+  /// Gibt die gelöschte Zeile zurück, damit „Rückgängig" sie
+  /// wiederherstellen kann — oder null, wenn es den Check-in nicht gibt
+  /// oder er jemand anderem gehört.
+  ///
+  /// Bereits verdiente Abzeichen und abgeschlossene Challenges bleiben
+  /// bestehen: Erreichtes rückwirkend abzuerkennen wäre die schlechtere
+  /// Überraschung und lüde zum Missbrauch als Rückabwicklung ein.
+  Future<Checkin?> deleteCheckin(String checkinId) async {
+    final me = await _me();
+    final row = await _db.findCheckin(checkinId);
+    if (row == null || row.profileId != me.id) return null;
+    await _db.deleteCheckinLocal(
+      row.id,
+      photoUrl: row.photoUrl,
+      now: DateTime.now(),
+    );
+    return row;
+  }
+
+  /// Nimmt ein Löschen zurück.
+  ///
+  /// Lief der Abgleich in der Zwischenzeit bereits (Sekundenfenster), ist
+  /// die Serverzeile weg — der Check-in lebt dann lokal weiter und wird
+  /// vom Upload-Assistenten wieder hochgeladen.
+  Future<void> restoreCheckin(Checkin row) async {
+    await _db.cancelCheckinDelete(row.id);
+    await _db.restoreCheckinRow(row);
   }
 
   /// Session starten („der eine Tap"). Gibt neu verdiente Abzeichen zurück.

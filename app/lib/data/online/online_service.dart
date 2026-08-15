@@ -939,6 +939,48 @@ class OnlineService {
     }
   }
 
+  /// Eigenen Check-in serverseitig löschen.
+  ///
+  /// Toasts und Kommentare hängen mit `on delete cascade` daran und
+  /// verschwinden mit; die RLS-Policy lässt nur eigene Zeilen zu.
+  /// Rückgabe: null bei Erfolg, sonst die Fehlermeldung.
+  Future<String?> deleteCheckinRemote(String checkinId) async {
+    final me = currentUser;
+    if (me == null) return 'Nicht angemeldet.';
+    try {
+      await _client
+          .from('checkins')
+          .delete()
+          .eq('id', checkinId)
+          .eq('profile_id', me.id);
+      return null;
+    } on PostgrestException catch (_) {
+      // Zeile längst weg oder fremd: nichts zu tun, aber kein
+      // Verbindungsfehler – die Warteschlange verwirft den Eintrag.
+      return 'Löschen fehlgeschlagen.';
+    } catch (_) {
+      return 'Keine Verbindung – wird später übertragen.';
+    }
+  }
+
+  /// Check-in-Foto aus dem Bucket entfernen. Best effort — ein verwaistes
+  /// Bild ist harmlos, ein fehlgeschlagener Aufruf darf nichts blockieren.
+  Future<void> deleteCheckinPhoto(String photoUrl) async {
+    final me = currentUser;
+    if (me == null) return;
+    // Öffentliche URL → Objektpfad (…/beer-photos/<profil>/<datei>).
+    const marker = '/beer-photos/';
+    final index = photoUrl.indexOf(marker);
+    if (index < 0) return;
+    final path = photoUrl.substring(index + marker.length).split('?').first;
+    // Nur eigene Objekte anfassen, auch wenn die Storage-Policy es ohnehin
+    // erzwingt.
+    if (!path.startsWith('${me.id}/')) return;
+    try {
+      await _client.storage.from('beer-photos').remove([path]);
+    } catch (_) {}
+  }
+
   /// Eigenen Check-in online spiegeln (denormalisiert, gleiche Zeile wie
   /// der Upload-Assistent).
   Future<void> insertCheckin(local.CheckinDetails details) async {

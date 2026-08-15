@@ -35,6 +35,8 @@ class AppShell extends ConsumerWidget {
     ref.watch(checkinAutoSyncProvider);
     // Ebenso den Gasthaus-Cache (gemeinsame Venue-DB aus Supabase)…
     ref.watch(venueSyncProvider);
+    // …und die Warteschlange gelöschter Check-ins.
+    ref.watch(checkinDeleteSyncProvider);
     // …und den Cloud-Restore (Check-ins/Erfolge/Wunschliste nach
     // Neuinstallation oder Gerätewechsel zurückholen).
     ref.watch(cloudRestoreProvider);

@@ -5567,6 +5567,271 @@ class VenueEditQueueCompanion extends UpdateCompanion<VenueEditQueueData> {
   }
 }
 
+class $CheckinDeleteQueueTable extends CheckinDeleteQueue
+    with TableInfo<$CheckinDeleteQueueTable, CheckinDeleteQueueData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CheckinDeleteQueueTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _checkinIdMeta =
+      const VerificationMeta('checkinId');
+  @override
+  late final GeneratedColumn<String> checkinId = GeneratedColumn<String>(
+      'checkin_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _photoUrlMeta =
+      const VerificationMeta('photoUrl');
+  @override
+  late final GeneratedColumn<String> photoUrl = GeneratedColumn<String>(
+      'photo_url', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, checkinId, photoUrl, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'checkin_delete_queue';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<CheckinDeleteQueueData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('checkin_id')) {
+      context.handle(_checkinIdMeta,
+          checkinId.isAcceptableOrUnknown(data['checkin_id']!, _checkinIdMeta));
+    } else if (isInserting) {
+      context.missing(_checkinIdMeta);
+    }
+    if (data.containsKey('photo_url')) {
+      context.handle(_photoUrlMeta,
+          photoUrl.isAcceptableOrUnknown(data['photo_url']!, _photoUrlMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CheckinDeleteQueueData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CheckinDeleteQueueData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      checkinId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}checkin_id'])!,
+      photoUrl: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}photo_url']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $CheckinDeleteQueueTable createAlias(String alias) {
+    return $CheckinDeleteQueueTable(attachedDatabase, alias);
+  }
+}
+
+class CheckinDeleteQueueData extends DataClass
+    implements Insertable<CheckinDeleteQueueData> {
+  final int id;
+  final String checkinId;
+  final String? photoUrl;
+  final DateTime createdAt;
+  const CheckinDeleteQueueData(
+      {required this.id,
+      required this.checkinId,
+      this.photoUrl,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['checkin_id'] = Variable<String>(checkinId);
+    if (!nullToAbsent || photoUrl != null) {
+      map['photo_url'] = Variable<String>(photoUrl);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  CheckinDeleteQueueCompanion toCompanion(bool nullToAbsent) {
+    return CheckinDeleteQueueCompanion(
+      id: Value(id),
+      checkinId: Value(checkinId),
+      photoUrl: photoUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(photoUrl),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory CheckinDeleteQueueData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CheckinDeleteQueueData(
+      id: serializer.fromJson<int>(json['id']),
+      checkinId: serializer.fromJson<String>(json['checkinId']),
+      photoUrl: serializer.fromJson<String?>(json['photoUrl']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'checkinId': serializer.toJson<String>(checkinId),
+      'photoUrl': serializer.toJson<String?>(photoUrl),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  CheckinDeleteQueueData copyWith(
+          {int? id,
+          String? checkinId,
+          Value<String?> photoUrl = const Value.absent(),
+          DateTime? createdAt}) =>
+      CheckinDeleteQueueData(
+        id: id ?? this.id,
+        checkinId: checkinId ?? this.checkinId,
+        photoUrl: photoUrl.present ? photoUrl.value : this.photoUrl,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  CheckinDeleteQueueData copyWithCompanion(CheckinDeleteQueueCompanion data) {
+    return CheckinDeleteQueueData(
+      id: data.id.present ? data.id.value : this.id,
+      checkinId: data.checkinId.present ? data.checkinId.value : this.checkinId,
+      photoUrl: data.photoUrl.present ? data.photoUrl.value : this.photoUrl,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CheckinDeleteQueueData(')
+          ..write('id: $id, ')
+          ..write('checkinId: $checkinId, ')
+          ..write('photoUrl: $photoUrl, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, checkinId, photoUrl, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CheckinDeleteQueueData &&
+          other.id == this.id &&
+          other.checkinId == this.checkinId &&
+          other.photoUrl == this.photoUrl &&
+          other.createdAt == this.createdAt);
+}
+
+class CheckinDeleteQueueCompanion
+    extends UpdateCompanion<CheckinDeleteQueueData> {
+  final Value<int> id;
+  final Value<String> checkinId;
+  final Value<String?> photoUrl;
+  final Value<DateTime> createdAt;
+  const CheckinDeleteQueueCompanion({
+    this.id = const Value.absent(),
+    this.checkinId = const Value.absent(),
+    this.photoUrl = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  CheckinDeleteQueueCompanion.insert({
+    this.id = const Value.absent(),
+    required String checkinId,
+    this.photoUrl = const Value.absent(),
+    required DateTime createdAt,
+  })  : checkinId = Value(checkinId),
+        createdAt = Value(createdAt);
+  static Insertable<CheckinDeleteQueueData> custom({
+    Expression<int>? id,
+    Expression<String>? checkinId,
+    Expression<String>? photoUrl,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (checkinId != null) 'checkin_id': checkinId,
+      if (photoUrl != null) 'photo_url': photoUrl,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  CheckinDeleteQueueCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? checkinId,
+      Value<String?>? photoUrl,
+      Value<DateTime>? createdAt}) {
+    return CheckinDeleteQueueCompanion(
+      id: id ?? this.id,
+      checkinId: checkinId ?? this.checkinId,
+      photoUrl: photoUrl ?? this.photoUrl,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (checkinId.present) {
+      map['checkin_id'] = Variable<String>(checkinId.value);
+    }
+    if (photoUrl.present) {
+      map['photo_url'] = Variable<String>(photoUrl.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CheckinDeleteQueueCompanion(')
+          ..write('id: $id, ')
+          ..write('checkinId: $checkinId, ')
+          ..write('photoUrl: $photoUrl, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5584,6 +5849,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $WishlistItemsTable wishlistItems = $WishlistItemsTable(this);
   late final $ChallengeCacheTable challengeCache = $ChallengeCacheTable(this);
   late final $VenueEditQueueTable venueEditQueue = $VenueEditQueueTable(this);
+  late final $CheckinDeleteQueueTable checkinDeleteQueue =
+      $CheckinDeleteQueueTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5601,7 +5868,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         userBadges,
         wishlistItems,
         challengeCache,
-        venueEditQueue
+        venueEditQueue,
+        checkinDeleteQueue
       ];
 }
 
@@ -10502,6 +10770,162 @@ typedef $$VenueEditQueueTableProcessedTableManager = ProcessedTableManager<
     ),
     VenueEditQueueData,
     PrefetchHooks Function()>;
+typedef $$CheckinDeleteQueueTableCreateCompanionBuilder
+    = CheckinDeleteQueueCompanion Function({
+  Value<int> id,
+  required String checkinId,
+  Value<String?> photoUrl,
+  required DateTime createdAt,
+});
+typedef $$CheckinDeleteQueueTableUpdateCompanionBuilder
+    = CheckinDeleteQueueCompanion Function({
+  Value<int> id,
+  Value<String> checkinId,
+  Value<String?> photoUrl,
+  Value<DateTime> createdAt,
+});
+
+class $$CheckinDeleteQueueTableFilterComposer
+    extends Composer<_$AppDatabase, $CheckinDeleteQueueTable> {
+  $$CheckinDeleteQueueTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get checkinId => $composableBuilder(
+      column: $table.checkinId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get photoUrl => $composableBuilder(
+      column: $table.photoUrl, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$CheckinDeleteQueueTableOrderingComposer
+    extends Composer<_$AppDatabase, $CheckinDeleteQueueTable> {
+  $$CheckinDeleteQueueTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get checkinId => $composableBuilder(
+      column: $table.checkinId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get photoUrl => $composableBuilder(
+      column: $table.photoUrl, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$CheckinDeleteQueueTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CheckinDeleteQueueTable> {
+  $$CheckinDeleteQueueTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get checkinId =>
+      $composableBuilder(column: $table.checkinId, builder: (column) => column);
+
+  GeneratedColumn<String> get photoUrl =>
+      $composableBuilder(column: $table.photoUrl, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$CheckinDeleteQueueTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $CheckinDeleteQueueTable,
+    CheckinDeleteQueueData,
+    $$CheckinDeleteQueueTableFilterComposer,
+    $$CheckinDeleteQueueTableOrderingComposer,
+    $$CheckinDeleteQueueTableAnnotationComposer,
+    $$CheckinDeleteQueueTableCreateCompanionBuilder,
+    $$CheckinDeleteQueueTableUpdateCompanionBuilder,
+    (
+      CheckinDeleteQueueData,
+      BaseReferences<_$AppDatabase, $CheckinDeleteQueueTable,
+          CheckinDeleteQueueData>
+    ),
+    CheckinDeleteQueueData,
+    PrefetchHooks Function()> {
+  $$CheckinDeleteQueueTableTableManager(
+      _$AppDatabase db, $CheckinDeleteQueueTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CheckinDeleteQueueTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CheckinDeleteQueueTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CheckinDeleteQueueTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> checkinId = const Value.absent(),
+            Value<String?> photoUrl = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              CheckinDeleteQueueCompanion(
+            id: id,
+            checkinId: checkinId,
+            photoUrl: photoUrl,
+            createdAt: createdAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String checkinId,
+            Value<String?> photoUrl = const Value.absent(),
+            required DateTime createdAt,
+          }) =>
+              CheckinDeleteQueueCompanion.insert(
+            id: id,
+            checkinId: checkinId,
+            photoUrl: photoUrl,
+            createdAt: createdAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$CheckinDeleteQueueTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $CheckinDeleteQueueTable,
+    CheckinDeleteQueueData,
+    $$CheckinDeleteQueueTableFilterComposer,
+    $$CheckinDeleteQueueTableOrderingComposer,
+    $$CheckinDeleteQueueTableAnnotationComposer,
+    $$CheckinDeleteQueueTableCreateCompanionBuilder,
+    $$CheckinDeleteQueueTableUpdateCompanionBuilder,
+    (
+      CheckinDeleteQueueData,
+      BaseReferences<_$AppDatabase, $CheckinDeleteQueueTable,
+          CheckinDeleteQueueData>
+    ),
+    CheckinDeleteQueueData,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -10532,4 +10956,6 @@ class $AppDatabaseManager {
       $$ChallengeCacheTableTableManager(_db, _db.challengeCache);
   $$VenueEditQueueTableTableManager get venueEditQueue =>
       $$VenueEditQueueTableTableManager(_db, _db.venueEditQueue);
+  $$CheckinDeleteQueueTableTableManager get checkinDeleteQueue =>
+      $$CheckinDeleteQueueTableTableManager(_db, _db.checkinDeleteQueue);
 }
