@@ -182,6 +182,14 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
 
     final geaendert =
         await ref.read(databaseProvider).addBarcodeToBeer(gewaehlt.beer.id, ean);
+    if (_volumeMl != null) {
+      await ref.read(databaseProvider).setBarcodeVolume(ean, _volumeMl!);
+    }
+    // Auch für andere hinterlegen — ein nachgetragener Code ist der
+    // häufigste und nützlichste Community-Beitrag überhaupt.
+    final online = await ref.read(onlineServiceProvider.future);
+    await online?.upsertBeerBarcode(ean, gewaehlt.beer.id,
+        volumeMl: _volumeMl);
     if (!mounted) return;
     messenger.showSnackBar(SnackBar(
       content: Text(geaendert
@@ -246,6 +254,12 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
           barcode: widget.initialBarcode,
           photoBytes: _photoBytes,
         );
+        // Barcode und Größe für alle hinterlegen (0028). Getrennt vom
+        // Bier, weil eine EAN die Handelseinheit bezeichnet — dasselbe
+        // Bier in 0,33 und 0,5 hat zwei Nummern.
+        if (ean != null) {
+          await online.upsertBeerBarcode(ean, id, volumeMl: _volumeMl);
+        }
       } else {
         await _offerCommunityProposal();
       }

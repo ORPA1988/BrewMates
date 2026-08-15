@@ -525,6 +525,59 @@ class OnlineService {
   /// Neues Bier direkt in die Community-DB eintragen (unverifiziert; die
   /// Brauerei wird per Name wiederverwendet oder mit angelegt, das Foto
   /// landet im öffentlichen beer-photos-Bucket).
+  /// Barcode samt Gebindegröße für alle hinterlegen (Migration 0028).
+  ///
+  /// Eine EAN bezeichnet die Handelseinheit, nicht das Getränk — deshalb
+  /// eine eigene Tabelle mit mehreren Zeilen je Bier statt der einzelnen
+  /// Spalte `beers.barcode` aus 0010, in die der zweite Code eines Biers
+  /// nie passte.
+  ///
+  /// Fehler bleiben still und das ist hier vertretbar: Lokal ist der Code
+  /// bereits vermerkt, es geht nichts verloren, und beim nächsten Scan
+  /// versucht es die App erneut. Der Rückgabewert steht trotzdem bereit.
+  Future<bool> upsertBeerBarcode(
+    String ean,
+    String beerId, {
+    int? volumeMl,
+  }) async {
+    final me = currentUser;
+    if (me == null) return false;
+    try {
+      await _client.from('beer_barcodes').upsert({
+        'ean': ean,
+        'beer_id': beerId,
+        if (volumeMl != null) 'volume_ml': volumeMl,
+        'created_by': me.id,
+        'updated_at': DateTime.now().toUtc().toIso8601String(),
+      });
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Was der Server über einen Barcode weiß: welches Bier, welche Größe.
+  ///
+  /// `null` heißt offline oder unbekannt — beides führt zum selben
+  /// Verhalten, nämlich „selbst anlegen".
+  Future<({String beerId, int? volumeMl})?> beerBarcode(String ean) async {
+    if (currentUser == null) return null;
+    try {
+      final row = await _client
+          .from('beer_barcodes')
+          .select('beer_id, volume_ml')
+          .eq('ean', ean)
+          .maybeSingle();
+      if (row == null) return null;
+      return (
+        beerId: row['beer_id'] as String,
+        volumeMl: (row['volume_ml'] as num?)?.toInt(),
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<String?> submitCommunityBeer({
     required String name,
     required String style,
