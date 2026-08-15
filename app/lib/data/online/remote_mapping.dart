@@ -63,6 +63,8 @@ CheckinDetails remoteCheckinToDetails(RemoteCheckin c) {
     checkin: Checkin(
       id: '$remotePrefix${c.id}',
       profileId: '$remotePrefix${c.author.id}',
+      // Fremde Check-ins kommen vom Server — nichts nachzureichen.
+      dirty: false,
       beerId: '$remotePrefix-beer',
       sessionId: c.sessionId,
       venueName: c.venueName,

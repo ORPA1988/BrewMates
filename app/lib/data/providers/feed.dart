@@ -122,7 +122,11 @@ final pendingCheckinUploadProvider =
   if (remoteIds == null) return null;
   return [
     for (final d in candidates)
-      if (!remoteIds.contains(d.checkin.id)) d,
+      // Neu (kennt der Server nicht) ODER lokal korrigiert (Funktion 27).
+      // Ohne den zweiten Fall käme eine Korrektur an einem bereits
+      // hochgeladenen Check-in nie an — und die App zeigte etwas anderes
+      // als die Freunde sehen.
+      if (!remoteIds.contains(d.checkin.id) || d.checkin.dirty) d,
   ];
 });
 

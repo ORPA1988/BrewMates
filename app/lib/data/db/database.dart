@@ -174,6 +174,17 @@ class Checkins extends Table {
   /// Alte Check-ins haben keine; die Auswertung schätzt dort nach Gebinde
   /// und weist das aus.
   IntColumn get volumeMl => integer().nullable()();
+
+  /// Lokal geändert und noch nicht zum Server übertragen.
+  ///
+  /// Der Abgleich lud bisher nur hoch, was der Server **noch nicht kennt**
+  /// — eine Korrektur an einem bereits hochgeladenen Check-in wäre nie
+  /// angekommen. Bewusst ein Flag statt einer eigenen Warteschlangen-
+  /// Tabelle (anders als `venue_edit_queue`): Hier ist die Zeile selbst
+  /// die Wahrheit und der Upsert idempotent — die letzte Fassung gewinnt.
+  /// Eine Tabelle daneben wäre doppelte Buchführung.
+  BoolColumn get dirty => boolean().withDefault(const Constant(false))();
+
   DateTimeColumn get createdAt => dateTime()();
 
   @override
@@ -354,7 +365,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(openInMemory());
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 13;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -477,6 +488,12 @@ class AppDatabase extends _$AppDatabase {
             // v12: Hintergrundgeschichten zu Bier und Brauerei.
             await m.addColumn(beers, beers.story);
             await m.addColumn(breweries, breweries.story);
+          }
+          if (from < 13) {
+            // v13: Korrekturen an Check-ins (Funktion 27). Bestehende
+            // Zeilen gelten als sauber — sie sind entweder längst
+            // hochgeladen oder werden über den ID-Abgleich erkannt.
+            await m.addColumn(checkins, checkins.dirty);
           }
         },
       );
@@ -1009,6 +1026,64 @@ class AppDatabase extends _$AppDatabase {
   /// Löscht einen eigenen Check-in lokal samt Toasts und Kommentaren und
   /// merkt ihn für den Server vor.
   ///
+  /// Einen eigenen Check-in korrigieren (Funktion 27).
+  ///
+  /// Wirkt sofort lokal und markiert die Zeile als [Checkins.dirty], damit
+  /// der nächste Abgleich sie erneut überträgt. Das Bier selbst lässt sich
+  /// bewusst nicht ändern — ein anderes Bier ist ein anderer Check-in.
+  ///
+  /// `null` als Wert heißt „nicht anfassen"; um ein Feld zu **leeren**,
+  /// gibt es je einen expliziten Schalter. Ohne diese Unterscheidung
+  /// könnte man eine Notiz nie wieder loswerden.
+  Future<void> updateCheckinLocal(
+    String checkinId, {
+    double? rating,
+    String? note,
+    bool clearNote = false,
+    String? flavorTags,
+    ServingStyle? servingStyle,
+    bool clearServingStyle = false,
+    int? volumeMl,
+    bool clearVolume = false,
+    String? venueName,
+    String? venueId,
+    bool clearVenue = false,
+  }) async {
+    await (update(checkins)..where((t) => t.id.equals(checkinId))).write(
+      CheckinsCompanion(
+        rating: rating == null ? const Value.absent() : Value(rating),
+        note: clearNote
+            ? const Value(null)
+            : (note == null ? const Value.absent() : Value(note)),
+        flavorTags:
+            flavorTags == null ? const Value.absent() : Value(flavorTags),
+        servingStyle: clearServingStyle
+            ? const Value(null)
+            : (servingStyle == null
+                ? const Value.absent()
+                : Value(servingStyle)),
+        volumeMl: clearVolume
+            ? const Value(null)
+            : (volumeMl == null ? const Value.absent() : Value(volumeMl)),
+        venueName: clearVenue
+            ? const Value(null)
+            : (venueName == null ? const Value.absent() : Value(venueName)),
+        venueId: clearVenue
+            ? const Value(null)
+            : (venueId == null ? const Value.absent() : Value(venueId)),
+        dirty: const Value(true),
+      ),
+    );
+  }
+
+  /// Nach erfolgreichem Upload: Die Zeile ist wieder deckungsgleich mit
+  /// dem Server.
+  Future<void> markCheckinsClean(Iterable<String> ids) async {
+    if (ids.isEmpty) return;
+    await (update(checkins)..where((t) => t.id.isIn(ids.toList())))
+        .write(const CheckinsCompanion(dirty: Value(false)));
+  }
+
   /// Der Aufrufer stellt sicher, dass es sich um einen eigenen Check-in
   /// handelt — die Server-Policy erzwingt es zusätzlich.
   Future<void> deleteCheckinLocal(
