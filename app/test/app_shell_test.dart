@@ -64,11 +64,34 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(
-        find.widgetWithText(TextField, 'Bier, Brauerei oder Stil suchen …'),
+        find.widgetWithText(TextField, 'Bier, Brauerei oder Gasthaus'),
         'Augustiner');
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Augustiner'), findsWidgets);
+
+    await _windDown(tester);
+  });
+
+  testWidgets('Entdecken vereint Biere, Brauereien und Gasthäuser',
+      (tester) async {
+    // Die Gasthausliste war vorher ein eigener Bildschirm hinter einem
+    // Knopf auf der Karte — man musste wissen, dass es sie gibt.
+    await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Entdecken'));
+    await tester.pumpAndSettle();
+
+    for (final bereich in ['Biere', 'Brauereien', 'Gasthäuser']) {
+      expect(find.text(bereich), findsOneWidget,
+          reason: '$bereich fehlt im Entdecken-Bildschirm');
+    }
+
+    // Der Gasthaus-Bereich bringt die Filter der abgelösten Liste mit.
+    await tester.tap(find.text('Gasthäuser'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('jetzt geöffnet'), findsOneWidget);
 
     await _windDown(tester);
   });

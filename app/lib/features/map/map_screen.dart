@@ -38,7 +38,6 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   bool _showBreweries = true;
   bool _showVenues = true;
-  bool _openNowOnly = false;
   Timer? _boundsDebounce;
   final _mapController = MapController();
 
@@ -96,7 +95,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ? (ref.watch(venuesWithLocationProvider).valueOrNull ??
             const <Venue>[])
         : const <Venue>[];
-    if (_openNowOnly) venues = openNow(venues, DateTime.now());
+    // Nicht mehr filtern, sondern faerben: Ein geschlossenes Gasthaus ist
+    // eine nuetzliche Information (morgen wieder da, Preis bekannt), kein
+    // Grund es verschwinden zu lassen. Wer es ausblendet, sieht auf der
+    // Karte ein Loch und weiss nicht, ob dort nichts ist oder nur zu.
     // Bearbeiten im Quick-Sheet: Ersteller immer, sonst ab Stammgast –
     // die RLS bleibt die eigentliche Durchsetzung.
     final myUid = ref.watch(onlineUserProvider).valueOrNull?.id;
@@ -156,7 +158,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                             context,
                             lat: v.latitude!,
                             lng: v.longitude!,
-                            color: theme.colorScheme.secondary,
+                            color: venueFarbe(theme, v, DateTime.now()),
                             onTap: () => showPlaceQuickSheet(
                                 context, PlaceQuickData.fromVenue(v, canEdit: canEditVenue(v))),
                           )
@@ -165,6 +167,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                             lat: v.latitude!,
                             lng: v.longitude!,
                             emoji: venueCategoryEmoji(v.category),
+                            farbe: venueFarbe(theme, v, DateTime.now()),
                             // Preis-Radar: ab Zoom 12 steht der 0,5-l-Preis
                             // direkt am Namensschild.
                             label: (_zoom >= 12 && v.priceHalfL != null)
@@ -247,18 +250,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   onSelected: (v) => setState(() => _showVenues = v),
                 ),
                 if (_showVenues) ...[
-                  const SizedBox(height: 4),
-                  FilterChip(
-                    label: const Text('● Jetzt geöffnet'),
-                    selected: _openNowOnly,
-                    onSelected: (v) => setState(() => _openNowOnly = v),
-                  ),
+                  const SizedBox(height: 6),
+                  // Legende statt Filter: Die Farbe sagt, was der Filter
+                  // frueher weggenommen hat.
+                  _OeffnungsLegende(),
                 ],
-                const SizedBox(height: 4),
-                ActionChip(
-                  label: const Text('📋 Gasthaus-Liste'),
-                  onPressed: () => context.push('/venues'),
-                ),
               ],
             ),
           ),
@@ -342,6 +338,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     required String emoji,
     required String label,
     required VoidCallback onTap,
+    Color? farbe,
   }) {
     final theme = Theme.of(context);
     return Marker(
@@ -362,6 +359,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               decoration: BoxDecoration(
                 color: theme.colorScheme.surface.withOpacity(0.85),
                 borderRadius: BorderRadius.circular(6),
+                // Der farbige Rand traegt die Oeffnungsangabe auch dort,
+                // wo Namensschilder sichtbar sind.
+                border: farbe == null
+                    ? null
+                    : Border.all(color: farbe, width: 1.5),
               ),
               child: Text(
                 label,
@@ -426,6 +428,44 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Legende zu den Gasthaus-Farben.
+///
+/// Sie ersetzt den frueheren Filter „Jetzt geoeffnet". Ein Filter nimmt
+/// Information weg, eine Legende gibt sie: Geschlossen heisst nicht
+/// uninteressant — der Preis steht trotzdem da, und morgen ist wieder auf.
+class _OeffnungsLegende extends StatelessWidget {
+  const _OeffnungsLegende();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    Widget zeile(Color farbe, String text) => Padding(
+          padding: const EdgeInsets.only(top: 2),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(color: farbe, shape: BoxShape.circle),
+              ),
+              const SizedBox(width: 6),
+              Text(text, style: theme.textTheme.labelSmall),
+            ],
+          ),
+        );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        zeile(const Color(0xFF1E6FD9), 'geöffnet'),
+        zeile(const Color(0xFFC62828), 'geschlossen'),
+        zeile(theme.colorScheme.secondary, 'keine Zeiten'),
+      ],
     );
   }
 }

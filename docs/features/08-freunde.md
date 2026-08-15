@@ -52,6 +52,28 @@ Fehler still ab: Ohne Anmeldung meldete sie „keine Treffer" statt „nicht
 angemeldet". Seit 0.9.13 sucht sie auch über den Anzeigenamen, und
 Migration 0019 vergibt sprechende Nutzernamen.
 
+### Anfragen auf der Startseite (2026-08-15)
+
+Offene Freundschaftsanfragen standen nur im Freunde-Bildschirm. Wer dort
+nicht hinsah, ließ jemanden wochenlang warten — und eine Anfrage ist die
+einzige Stelle der App, an der ein anderer Mensch auf eine **Antwort**
+wartet. Sie gehört dorthin, wo man ohnehin hinschaut.
+
+Drei Antworten, und sie sind bewusst nicht gleichwertig:
+
+| | |
+|---|---|
+| **Annehmen** / **Ablehnen** | endgültig, geht sofort an den Server |
+| **Später** | nur diese Sitzung, nur die Startseite — **keine** Antwort |
+
+„Später" darf nichts an den Server melden. Eine Schaltfläche, die
+aussieht wie „nicht jetzt" und wirkt wie „abgelehnt", wäre die
+gefährlichste der drei; ein Test hält deshalb fest, dass dabei **kein**
+Aufruf erfolgt.
+
+Im Freunde-Bildschirm bleibt jede Anfrage sichtbar und änderbar, auch die
+zurückgestellten.
+
 ## Modularität
 
 - **Hängt ab von:** Konto (01)
