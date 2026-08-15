@@ -98,8 +98,15 @@ void main() {
       final teile = f.path.replaceAll(r'\', '/').split('/');
       final eigener = teile[teile.indexOf('features') + 1];
       for (final i in importsOf(f)) {
-        final m = RegExp(r'features/([^/]+)/').firstMatch(i);
-        final fremder = m?.group(1);
+        // Zwei Schreibweisen — und die zweite hat diese Prüfung lange
+        // umgangen: `package:…/features/x/…` nennt den Ordner im Pfad,
+        // `../x/…` nicht. Zwei echte Verstöße (map → venues, scan →
+        // beers) steckten deshalb unbemerkt im Code, während der Test
+        // grün leuchtete. Ein Wächter mit blindem Fleck ist schlimmer als
+        // keiner: Er erzeugt Vertrauen, das er nicht deckt.
+        final absolut = RegExp(r'features/([^/]+)/').firstMatch(i)?.group(1);
+        final relativ = RegExp(r'^\.\./([^/.]+)/').firstMatch(i)?.group(1);
+        final fremder = absolut ?? relativ;
         if (fremder != null && fremder != eigener) {
           verstoesse.add('${f.path} → $i');
         }

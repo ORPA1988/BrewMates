@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'package:brewmates/data/db/database.dart';
+import 'package:brewmates/data/venue_open.dart';
 import 'package:brewmates/features/venues/venues_list_screen.dart';
 
 Venue _venue(String id, String name,

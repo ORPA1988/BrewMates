@@ -8,7 +8,7 @@ import '../../core/format.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
 import '../../widgets/rating_stars.dart';
-import 'story_sheet.dart';
+import '../../widgets/story_sheet.dart';
 
 /// Detailseite eines Biers: Infos, Bewertung, Einchecken, Wunschliste,
 /// eigener Verlauf.

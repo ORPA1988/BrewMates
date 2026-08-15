@@ -10,9 +10,18 @@ import '../../data/db/database.dart';
 import '../../data/providers.dart';
 import '../../data/venue_sync.dart';
 import '../../widgets/place_quick_sheet.dart';
-import '../venues/venues_list_screen.dart' show openNow;
+import '../../data/venue_open.dart';
 
 /// Formulierung des Aktiv-Zählers rechts oben – zentral anpassbar.
+/// Anbieter der Kartenkacheln.
+///
+/// Existiert als Provider, damit der Widget-Test die Karte prüfen kann,
+/// ohne Kacheln zu laden: Im Test gibt es kein Netz, jede Anfrage
+/// scheitert, und `flutter_map` versucht es endlos weiter — der Test
+/// hängt, statt etwas auszusagen. Produktiv ist es der Normalfall.
+final mapTileProviderProvider =
+    Provider<TileProvider>((ref) => NetworkTileProvider());
+
 String activeUsersLabel(int n) =>
     n == 1 ? '🍻 1 weiterer BrewMate aktiv' : '🍻 $n weitere BrewMates aktiv';
 
@@ -118,6 +127,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'de.brewmates.app',
+                tileProvider: ref.watch(mapTileProviderProvider),
               ),
               MarkerLayer(
                 markers: [

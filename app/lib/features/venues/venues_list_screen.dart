@@ -6,8 +6,8 @@ import 'package:latlong2/latlong.dart';
 import '../../data/db/database.dart';
 import '../../data/location_service.dart';
 import '../../data/providers.dart';
+import '../../data/venue_open.dart';
 import '../../data/venue_sync.dart';
-import '../../domain/opening_hours.dart';
 import '../../widgets/venue_tile.dart';
 
 /// Sortierungen der Gasthausliste.
@@ -56,10 +56,6 @@ List<Venue> sortVenues(List<Venue> venues, VenueSort sort, {LatLng? here}) {
 
 /// „Jetzt geöffnet"-Filter (pur, testbar): behält nur Venues MIT
 /// strukturierten Öffnungszeiten, die zu [now] geöffnet sind.
-List<Venue> openNow(List<Venue> venues, DateTime now) => [
-      for (final v in venues)
-        if (isOpenAt(parseOpeningHours(v.openingHoursJson), now)) v,
-    ];
 
 /// Entfernung in km zu [here] (null, wenn nicht bestimmbar).
 double? venueDistanceKm(Venue v, LatLng? here) {
