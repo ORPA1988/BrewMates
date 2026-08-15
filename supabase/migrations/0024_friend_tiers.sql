@@ -157,10 +157,18 @@ language sql stable security definer set search_path = public as $$
     and s.latitude between min_lat and max_lat
     and s.longitude between min_lng and max_lng
     and s.host_id <> auth.uid()
-    and coalesce(public.tier_for(s.host_id, auth.uid()), 'bekannter')
-        < 'freund'
-    and not (s.visibility = 'crew'
-             and public.is_crew_member(s.crew_id, auth.uid()));
+    -- Wortwörtlich die Negation der beiden sichtbar-machenden Zweige aus
+    -- sessions_select. Als zwei getrennte Bedingungen formuliert, entstehen
+    -- Lücken: Eine Crew-Session, deren Gastgeber mich als Freund führt, die
+    -- ich aber als Nicht-Mitglied nicht sehen darf, fiele sonst aus Karte
+    -- UND Zähler heraus. Sichtbar + gezählt muss zusammen alles ergeben.
+    and not (
+      (s.visibility = 'friends'
+        and coalesce(public.tier_for(s.host_id, auth.uid()), 'bekannter')
+            >= 'freund')
+      or (s.visibility = 'crew'
+        and public.is_crew_member(s.crew_id, auth.uid()))
+    );
 $$;
 
 revoke execute on function public.count_other_active_sessions(
