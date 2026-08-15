@@ -31,6 +31,27 @@ und die Freunde wissen Bescheid.
 - **Sicherheit:** RLS entscheidet über Sichtbarkeit; wer nicht darf, sieht
   die Zeile gar nicht
 
+### Beenden ohne Verbindung (2026-08-15, Backlog A-8)
+
+Das Beenden lief bisher als `unawaited` mit leerem `catch` — schlug es
+fehl, war der Beacon **lokal** aus, auf dem Server aber weiter aktiv. Er
+zeigte Freunden also weiter den Aufenthaltsort, bis der Cron ihn beim
+Ablaufdatum schloss. Das konnte Stunden dauern, und die App sagte nichts.
+
+Zwei Änderungen:
+
+- `endMySession` gibt zurück, ob der Server es mitbekommen hat. Alle vier
+  Bildschirme, die einen Beacon beenden können, melden einen Fehlschlag
+  (`widgets/beacon_messages.dart` — ein Satz, nicht vier Kopien).
+- `sessionReconcileProvider` schließt beim nächsten Abgleich alles, was
+  der Server noch als laufend führt, obwohl lokal nichts läuft.
+
+**Warum hier eine Warteschlange richtig ist und beim Verlängern nicht:**
+Nachträgliches Beenden verringert Sichtbarkeit immer und erhöht sie nie.
+Eine nachgereichte *Verlängerung* würde dagegen eine beendete Session
+wiederbeleben — siehe `docs/features/23`. Dieselbe Frage, entgegengesetzte
+Antwort, weil die Richtung des Schadens entgegengesetzt ist.
+
 ## Modularität
 
 - **Hängt ab von:** Konto (01), Freunde (08), Gasthäuser (05, optional),

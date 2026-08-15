@@ -580,6 +580,24 @@ final checkinAutoSyncProvider = FutureProvider<int>((ref) async {
   return uploaded;
 });
 
+/// Räumt Beacons auf, die der Server noch als laufend führt, obwohl lokal
+/// keiner (mehr) läuft.
+///
+/// Das ist die Reparatur für ein fehlgeschlagenes Beenden: Ohne Verbindung
+/// bleibt die Session auf dem Server stehen und zeigt Freunden weiter den
+/// Aufenthaltsort. Läuft am selben Takt wie der Check-in-Abgleich.
+///
+/// Nachziehen ist hier gefahrlos — anders als beim Verlängern verringert
+/// es Sichtbarkeit immer und erhöht sie nie.
+final sessionReconcileProvider = FutureProvider<int>((ref) async {
+  ref.watch(_syncTickProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null || online.currentUser == null) return 0;
+  final mine = await ref.watch(myActiveSessionProvider.future);
+  return online.endStaleSessions(
+      keepSessionId: mine != null && isRemoteId(mine.id) ? mine.id : null);
+});
+
 /// 👥 Eigene Crews (Beitritt per Einladungscode = Crew-UUID).
 final myCrewsProvider = FutureProvider<List<RemoteCrew>>((ref) async {
   ref.watch(_syncTickProvider);
@@ -1014,15 +1032,24 @@ class BrewActions {
         onlineUserId: (await _online())?.currentUser?.id);
   }
 
-  Future<void> endMySession() async {
+  /// Eigenen Beacon beenden.
+  ///
+  /// Rückgabe: ob der Server es mitbekommen hat. Lokal ist der Beacon
+  /// sofort aus — aber gesehen wird er über den Server. Bleibt er dort
+  /// stehen, zeigt er Freunden weiter den Aufenthaltsort, bis der
+  /// serverseitige Cron ihn beim Ablaufdatum schließt. Das kann Stunden
+  /// dauern, also darf die App darüber nicht schweigen.
+  ///
+  /// null = es lief gar keine Session.
+  Future<bool?> endMySession() async {
     final me = await _me();
     final now = DateTime.now();
     final current = await _db.getMyActiveSession(me.id, now);
-    if (current != null) {
-      await _db.endSession(current.id, now);
-      final online = await _online();
-      if (online != null) unawaited(online.endSession(current.id));
-    }
+    if (current == null) return null;
+    await _db.endSession(current.id, now);
+    final online = await _online();
+    if (online == null || !isRemoteId(current.id)) return true;
+    return online.endSession(current.id);
   }
 
   /// Laufende eigene Session verlängern.
@@ -1087,14 +1114,18 @@ class BrewActions {
   }
 
   /// 🍺 Bierlaune umschalten: an = 4 Stunden ab jetzt, aus = löschen.
-  Future<void> setBierlaune({required bool on}) async {
+  /// Rückgabe: ob es beim Server angekommen ist. Eine Bierlaune, die
+  /// niemand sieht, ist keine — darum wird ein Fehlschlag gemeldet
+  /// statt stillschweigend als Erfolg dargestellt.
+  Future<bool> setBierlaune({required bool on}) async {
     final online = await _online();
-    if (online == null) return;
-    await online.setBierlaune(
+    if (online == null) return false;
+    final ok = await online.setBierlaune(
         on ? DateTime.now().add(const Duration(hours: 4)) : null);
     _ref.invalidate(myRemoteProfileProvider);
     _ref.invalidate(myThirstyUntilProvider);
     _ref.invalidate(thirstyFriendsProvider);
+    return ok;
   }
 
   /// ⚡ One-Tap-Check-in: loggt das zuletzt getrunkene Bier erneut —

@@ -9,6 +9,7 @@ import '../../widgets/badge_celebration.dart';
 import '../../widgets/checkin_card.dart';
 import '../../widgets/session_card.dart';
 import '../../widgets/update_dialog.dart';
+import '../../widgets/beacon_messages.dart';
 
 /// Startbildschirm: die zwei Hero-Aktionen der App —
 /// „🍺 Bier scannen" und „🍻 Zusammenkommen!" — plus ein kompakter
@@ -153,8 +154,19 @@ class HomeScreen extends ConsumerWidget {
                                 '${bierlauneBis.hour}:${bierlauneBis.minute.toString().padLeft(2, '0')}'
                             : '🍺 Bierlaune!'),
                         selected: bierlaune,
-                        onSelected: (on) async =>
-                            ref.read(actionsProvider).setBierlaune(on: on),
+                        onSelected: (on) async {
+                          final messenger = ScaffoldMessenger.of(context);
+                          final ok = await ref
+                              .read(actionsProvider)
+                              .setBierlaune(on: on);
+                          if (!ok) {
+                            messenger.showSnackBar(const SnackBar(
+                              content: Text('Bierlaune konnte nicht '
+                                  'gespeichert werden — keine Verbindung? '
+                                  'Deine Freunde sehen sie nicht.'),
+                            ));
+                          }
+                        },
                       ),
                   ],
                 ),
@@ -394,7 +406,14 @@ class _ActiveBeaconCard extends ConsumerWidget {
                 ),
               ),
               TextButton(
-                onPressed: () => ref.read(actionsProvider).endMySession(),
+                onPressed: () async {
+                  final messenger = ScaffoldMessenger.of(context);
+                  final synced =
+                      await ref.read(actionsProvider).endMySession();
+                  if (synced == false) {
+                    messenger.showSnackBar(beaconEndFailedSnackBar);
+                  }
+                },
                 child: const Text('Beenden'),
               ),
             ],

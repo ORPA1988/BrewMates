@@ -62,8 +62,18 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
   Future<void> _respond(FriendRequest request, {required bool accept}) async {
     final online = await ref.read(onlineServiceProvider.future);
     if (online == null) return;
-    await online.respondRequest(request.friendshipId, accept: accept);
+    final ok = await online.respondRequest(request.friendshipId, accept: accept);
     if (!mounted) return;
+    if (!ok) {
+      // Nicht invalidieren: Der Serverstand hat sich nicht geändert. Eine
+      // verschwundene Anfrage, die in Wahrheit noch offen ist, wäre die
+      // schlechtere Anzeige.
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Hat nicht geklappt — keine Verbindung? '
+            'Die Anfrage ist weiterhin offen.'),
+      ));
+      return;
+    }
     ref.invalidate(friendRequestsProvider);
     ref.invalidate(onlineFriendsProvider);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -119,8 +129,18 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
   Future<void> _unblock(RemoteProfile profile) async {
     final online = await ref.read(onlineServiceProvider.future);
     if (online == null) return;
-    await online.unblockProfile(profile.id);
+    final ok = await online.unblockProfile(profile.id);
     if (!mounted) return;
+    if (!ok) {
+      // Blockieren ist eine Sicherheitsentscheidung. Wer glaubt, entsperrt
+      // zu haben, es aber nicht ist, wundert sich später — und umgekehrt
+      // wäre es noch schlimmer.
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Hat nicht geklappt — keine Verbindung? '
+            'Die Blockierung besteht weiterhin.'),
+      ));
+      return;
+    }
     await _refresh();
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(

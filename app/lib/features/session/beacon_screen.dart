@@ -6,6 +6,7 @@ import '../../data/db/database.dart';
 import '../../data/location_service.dart';
 import '../../data/providers.dart';
 import '../../widgets/badge_celebration.dart';
+import '../../widgets/beacon_messages.dart';
 
 /// Hero-Funktion „🍻 Zusammenkommen!": Ein Tap → Standort holen → Session
 /// startet sofort mit „Alle willkommen! 🍻". Kein Formular; nur eine
@@ -69,8 +70,11 @@ class _BeaconScreenState extends ConsumerState<BeaconScreen> {
   }
 
   Future<void> _undo() async {
-    await ref.read(actionsProvider).endMySession();
-    if (mounted) context.pop();
+    final messenger = ScaffoldMessenger.of(context);
+    final synced = await ref.read(actionsProvider).endMySession();
+    if (!mounted) return;
+    if (synced == false) messenger.showSnackBar(beaconEndFailedSnackBar);
+    context.pop();
   }
 
   @override

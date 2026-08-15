@@ -88,4 +88,26 @@ void main() {
     expect(laufzeit <= maxSessionDuration + const Duration(seconds: 2), isTrue);
     expect(laufzeit >= maxSessionDuration - const Duration(seconds: 2), isTrue);
   });
+
+  test('Ohne laufende Session gibt Beenden null zurück, keinen Fehlschlag',
+      () async {
+    // null heißt „es lief nichts" — das ist kein Problem und darf dem
+    // Nutzer keine Fehlermeldung einbringen.
+    expect(await container.read(actionsProvider).endMySession(), isNull);
+  });
+
+  test('Rein lokalen Beacon zu beenden gilt als abgeglichen', () async {
+    // Ohne Konto gibt es keinen Server-Zwilling, den man beenden müsste.
+    await container.read(actionsProvider).startSession(
+          venueName: 'Augustiner',
+          visibility: SessionVisibility.friends,
+          autoEnd: const Duration(hours: 3),
+        );
+
+    expect(await container.read(actionsProvider).endMySession(), isTrue);
+
+    final me = await db.getMe();
+    expect(await db.getMyActiveSession(me.id, DateTime.now()), isNull,
+        reason: 'Lokal muss der Beacon in jedem Fall aus sein.');
+  });
 }

@@ -30,6 +30,12 @@ klemmt, kostet den gesamten sozialen Teil.
   Sichtbarkeitsregeln; wer blockiert hat, ist für den anderen unsichtbar —
   umgekehrt bleibt die eigene Blockliste einsehbar, sonst ließe sie sich
   nicht verwalten
+- **Fehlschläge werden gemeldet** (2026-08-15, Backlog A-8): Anfrage
+  annehmen/ablehnen und Blockierung aufheben schluckten Fehler und zeigten
+  trotzdem Erfolg. Beides sind Entscheidungen über Sichtbarkeit — wer
+  glaubt, abgelehnt oder entsperrt zu haben, richtet sein Verhalten danach.
+  Schlägt der Aufruf fehl, bleibt die Liste jetzt auf dem Stand des
+  Servers stehen (kein Invalidieren) und sagt es.
 
 **Zwei Fallen, beide behoben:** Die Suche verglich lange nur den
 Nutzernamen, während neue Konten automatisch `mate_<hex>` hießen — neue
