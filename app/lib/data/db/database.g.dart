@@ -1252,6 +1252,18 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
   late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
       'image_url', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _imageSourceMeta =
+      const VerificationMeta('imageSource');
+  @override
+  late final GeneratedColumn<String> imageSource = GeneratedColumn<String>(
+      'image_source', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _imageLicenseMeta =
+      const VerificationMeta('imageLicense');
+  @override
+  late final GeneratedColumn<String> imageLicense = GeneratedColumn<String>(
+      'image_license', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _storyMeta = const VerificationMeta('story');
   @override
   late final GeneratedColumn<String> story = GeneratedColumn<String>(
@@ -1272,6 +1284,8 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
         communityRating,
         barcodes,
         imageUrl,
+        imageSource,
+        imageLicense,
         story
       ];
   @override
@@ -1353,6 +1367,18 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
       context.handle(_imageUrlMeta,
           imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta));
     }
+    if (data.containsKey('image_source')) {
+      context.handle(
+          _imageSourceMeta,
+          imageSource.isAcceptableOrUnknown(
+              data['image_source']!, _imageSourceMeta));
+    }
+    if (data.containsKey('image_license')) {
+      context.handle(
+          _imageLicenseMeta,
+          imageLicense.isAcceptableOrUnknown(
+              data['image_license']!, _imageLicenseMeta));
+    }
     if (data.containsKey('story')) {
       context.handle(
           _storyMeta, story.isAcceptableOrUnknown(data['story']!, _storyMeta));
@@ -1392,6 +1418,10 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
           .read(DriftSqlType.string, data['${effectivePrefix}barcodes'])!,
       imageUrl: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}image_url']),
+      imageSource: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}image_source']),
+      imageLicense: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}image_license']),
       story: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}story']),
     );
@@ -1423,8 +1453,23 @@ class Beer extends DataClass implements Insertable<Beer> {
   /// Kommagetrennte EAN-Barcodes (8 oder 13 Ziffern), z. B. "90034107".
   final String barcodes;
 
-  /// Etikett-/Produktfoto als URL (Open Food Facts, CC-BY-SA – nur verlinkt).
+  /// Etikett-/Produktfoto als URL — nur verlinkt, nie gespeichert.
+  ///
+  /// Zwei Herkünfte: Open Food Facts (CC-BY-SA) und seit 2026-08-15 auch
+  /// Produktfotos von den Brauerei-Webseiten selbst.
   final String? imageUrl;
+
+  /// Seite, von der das Bild stammt.
+  ///
+  /// Pflicht, sobald das Bild NICHT von Open Food Facts kommt: Ein fremdes
+  /// Produktfoto ohne Herkunftsangabe zu zeigen, ist der Unterschied
+  /// zwischen Zitieren und Nehmen. Die App weist die Quelle beim Bier aus.
+  final String? imageSource;
+
+  /// Nutzungshinweis der Brauerei, falls einer ausgewiesen ist
+  /// (z. B. „© Frastanzer nennen"). Wo keiner steht, bleibt das Feld leer
+  /// — dann gilt die Angabe in [imageSource].
+  final String? imageLicense;
 
   /// Hintergrundgeschichte: zwei bis fünf Sätze, wie ein Mensch sie
   /// erzählen würde. Kein Werbetext, kein Wikipedia-Auszug — und lieber
@@ -1444,6 +1489,8 @@ class Beer extends DataClass implements Insertable<Beer> {
       this.communityRating,
       required this.barcodes,
       this.imageUrl,
+      this.imageSource,
+      this.imageLicense,
       this.story});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1472,6 +1519,12 @@ class Beer extends DataClass implements Insertable<Beer> {
     map['barcodes'] = Variable<String>(barcodes);
     if (!nullToAbsent || imageUrl != null) {
       map['image_url'] = Variable<String>(imageUrl);
+    }
+    if (!nullToAbsent || imageSource != null) {
+      map['image_source'] = Variable<String>(imageSource);
+    }
+    if (!nullToAbsent || imageLicense != null) {
+      map['image_license'] = Variable<String>(imageLicense);
     }
     if (!nullToAbsent || story != null) {
       map['story'] = Variable<String>(story);
@@ -1502,6 +1555,12 @@ class Beer extends DataClass implements Insertable<Beer> {
       imageUrl: imageUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(imageUrl),
+      imageSource: imageSource == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imageSource),
+      imageLicense: imageLicense == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imageLicense),
       story:
           story == null && nullToAbsent ? const Value.absent() : Value(story),
     );
@@ -1525,6 +1584,8 @@ class Beer extends DataClass implements Insertable<Beer> {
       communityRating: serializer.fromJson<double?>(json['communityRating']),
       barcodes: serializer.fromJson<String>(json['barcodes']),
       imageUrl: serializer.fromJson<String?>(json['imageUrl']),
+      imageSource: serializer.fromJson<String?>(json['imageSource']),
+      imageLicense: serializer.fromJson<String?>(json['imageLicense']),
       story: serializer.fromJson<String?>(json['story']),
     );
   }
@@ -1545,6 +1606,8 @@ class Beer extends DataClass implements Insertable<Beer> {
       'communityRating': serializer.toJson<double?>(communityRating),
       'barcodes': serializer.toJson<String>(barcodes),
       'imageUrl': serializer.toJson<String?>(imageUrl),
+      'imageSource': serializer.toJson<String?>(imageSource),
+      'imageLicense': serializer.toJson<String?>(imageLicense),
       'story': serializer.toJson<String?>(story),
     };
   }
@@ -1563,6 +1626,8 @@ class Beer extends DataClass implements Insertable<Beer> {
           Value<double?> communityRating = const Value.absent(),
           String? barcodes,
           Value<String?> imageUrl = const Value.absent(),
+          Value<String?> imageSource = const Value.absent(),
+          Value<String?> imageLicense = const Value.absent(),
           Value<String?> story = const Value.absent()}) =>
       Beer(
         id: id ?? this.id,
@@ -1582,6 +1647,9 @@ class Beer extends DataClass implements Insertable<Beer> {
             : this.communityRating,
         barcodes: barcodes ?? this.barcodes,
         imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
+        imageSource: imageSource.present ? imageSource.value : this.imageSource,
+        imageLicense:
+            imageLicense.present ? imageLicense.value : this.imageLicense,
         story: story.present ? story.value : this.story,
       );
   Beer copyWithCompanion(BeersCompanion data) {
@@ -1608,6 +1676,11 @@ class Beer extends DataClass implements Insertable<Beer> {
           : this.communityRating,
       barcodes: data.barcodes.present ? data.barcodes.value : this.barcodes,
       imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
+      imageSource:
+          data.imageSource.present ? data.imageSource.value : this.imageSource,
+      imageLicense: data.imageLicense.present
+          ? data.imageLicense.value
+          : this.imageLicense,
       story: data.story.present ? data.story.value : this.story,
     );
   }
@@ -1628,6 +1701,8 @@ class Beer extends DataClass implements Insertable<Beer> {
           ..write('communityRating: $communityRating, ')
           ..write('barcodes: $barcodes, ')
           ..write('imageUrl: $imageUrl, ')
+          ..write('imageSource: $imageSource, ')
+          ..write('imageLicense: $imageLicense, ')
           ..write('story: $story')
           ..write(')'))
         .toString();
@@ -1648,6 +1723,8 @@ class Beer extends DataClass implements Insertable<Beer> {
       communityRating,
       barcodes,
       imageUrl,
+      imageSource,
+      imageLicense,
       story);
   @override
   bool operator ==(Object other) =>
@@ -1666,6 +1743,8 @@ class Beer extends DataClass implements Insertable<Beer> {
           other.communityRating == this.communityRating &&
           other.barcodes == this.barcodes &&
           other.imageUrl == this.imageUrl &&
+          other.imageSource == this.imageSource &&
+          other.imageLicense == this.imageLicense &&
           other.story == this.story);
 }
 
@@ -1683,6 +1762,8 @@ class BeersCompanion extends UpdateCompanion<Beer> {
   final Value<double?> communityRating;
   final Value<String> barcodes;
   final Value<String?> imageUrl;
+  final Value<String?> imageSource;
+  final Value<String?> imageLicense;
   final Value<String?> story;
   final Value<int> rowid;
   const BeersCompanion({
@@ -1699,6 +1780,8 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     this.communityRating = const Value.absent(),
     this.barcodes = const Value.absent(),
     this.imageUrl = const Value.absent(),
+    this.imageSource = const Value.absent(),
+    this.imageLicense = const Value.absent(),
     this.story = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -1716,6 +1799,8 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     this.communityRating = const Value.absent(),
     this.barcodes = const Value.absent(),
     this.imageUrl = const Value.absent(),
+    this.imageSource = const Value.absent(),
+    this.imageLicense = const Value.absent(),
     this.story = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
@@ -1736,6 +1821,8 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     Expression<double>? communityRating,
     Expression<String>? barcodes,
     Expression<String>? imageUrl,
+    Expression<String>? imageSource,
+    Expression<String>? imageLicense,
     Expression<String>? story,
     Expression<int>? rowid,
   }) {
@@ -1754,6 +1841,8 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       if (communityRating != null) 'community_rating': communityRating,
       if (barcodes != null) 'barcodes': barcodes,
       if (imageUrl != null) 'image_url': imageUrl,
+      if (imageSource != null) 'image_source': imageSource,
+      if (imageLicense != null) 'image_license': imageLicense,
       if (story != null) 'story': story,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1773,6 +1862,8 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       Value<double?>? communityRating,
       Value<String>? barcodes,
       Value<String?>? imageUrl,
+      Value<String?>? imageSource,
+      Value<String?>? imageLicense,
       Value<String?>? story,
       Value<int>? rowid}) {
     return BeersCompanion(
@@ -1789,6 +1880,8 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       communityRating: communityRating ?? this.communityRating,
       barcodes: barcodes ?? this.barcodes,
       imageUrl: imageUrl ?? this.imageUrl,
+      imageSource: imageSource ?? this.imageSource,
+      imageLicense: imageLicense ?? this.imageLicense,
       story: story ?? this.story,
       rowid: rowid ?? this.rowid,
     );
@@ -1837,6 +1930,12 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     if (imageUrl.present) {
       map['image_url'] = Variable<String>(imageUrl.value);
     }
+    if (imageSource.present) {
+      map['image_source'] = Variable<String>(imageSource.value);
+    }
+    if (imageLicense.present) {
+      map['image_license'] = Variable<String>(imageLicense.value);
+    }
     if (story.present) {
       map['story'] = Variable<String>(story.value);
     }
@@ -1862,6 +1961,8 @@ class BeersCompanion extends UpdateCompanion<Beer> {
           ..write('communityRating: $communityRating, ')
           ..write('barcodes: $barcodes, ')
           ..write('imageUrl: $imageUrl, ')
+          ..write('imageSource: $imageSource, ')
+          ..write('imageLicense: $imageLicense, ')
           ..write('story: $story, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -7412,6 +7513,8 @@ typedef $$BeersTableCreateCompanionBuilder = BeersCompanion Function({
   Value<double?> communityRating,
   Value<String> barcodes,
   Value<String?> imageUrl,
+  Value<String?> imageSource,
+  Value<String?> imageLicense,
   Value<String?> story,
   Value<int> rowid,
 });
@@ -7429,6 +7532,8 @@ typedef $$BeersTableUpdateCompanionBuilder = BeersCompanion Function({
   Value<double?> communityRating,
   Value<String> barcodes,
   Value<String?> imageUrl,
+  Value<String?> imageSource,
+  Value<String?> imageLicense,
   Value<String?> story,
   Value<int> rowid,
 });
@@ -7525,6 +7630,12 @@ class $$BeersTableFilterComposer extends Composer<_$AppDatabase, $BeersTable> {
 
   ColumnFilters<String> get imageUrl => $composableBuilder(
       column: $table.imageUrl, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get imageSource => $composableBuilder(
+      column: $table.imageSource, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get imageLicense => $composableBuilder(
+      column: $table.imageLicense, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get story => $composableBuilder(
       column: $table.story, builder: (column) => ColumnFilters(column));
@@ -7641,6 +7752,13 @@ class $$BeersTableOrderingComposer
   ColumnOrderings<String> get imageUrl => $composableBuilder(
       column: $table.imageUrl, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get imageSource => $composableBuilder(
+      column: $table.imageSource, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get imageLicense => $composableBuilder(
+      column: $table.imageLicense,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get story => $composableBuilder(
       column: $table.story, builder: (column) => ColumnOrderings(column));
 
@@ -7709,6 +7827,12 @@ class $$BeersTableAnnotationComposer
 
   GeneratedColumn<String> get imageUrl =>
       $composableBuilder(column: $table.imageUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get imageSource => $composableBuilder(
+      column: $table.imageSource, builder: (column) => column);
+
+  GeneratedColumn<String> get imageLicense => $composableBuilder(
+      column: $table.imageLicense, builder: (column) => column);
 
   GeneratedColumn<String> get story =>
       $composableBuilder(column: $table.story, builder: (column) => column);
@@ -7813,6 +7937,8 @@ class $$BeersTableTableManager extends RootTableManager<
             Value<double?> communityRating = const Value.absent(),
             Value<String> barcodes = const Value.absent(),
             Value<String?> imageUrl = const Value.absent(),
+            Value<String?> imageSource = const Value.absent(),
+            Value<String?> imageLicense = const Value.absent(),
             Value<String?> story = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -7830,6 +7956,8 @@ class $$BeersTableTableManager extends RootTableManager<
             communityRating: communityRating,
             barcodes: barcodes,
             imageUrl: imageUrl,
+            imageSource: imageSource,
+            imageLicense: imageLicense,
             story: story,
             rowid: rowid,
           ),
@@ -7847,6 +7975,8 @@ class $$BeersTableTableManager extends RootTableManager<
             Value<double?> communityRating = const Value.absent(),
             Value<String> barcodes = const Value.absent(),
             Value<String?> imageUrl = const Value.absent(),
+            Value<String?> imageSource = const Value.absent(),
+            Value<String?> imageLicense = const Value.absent(),
             Value<String?> story = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -7864,6 +7994,8 @@ class $$BeersTableTableManager extends RootTableManager<
             communityRating: communityRating,
             barcodes: barcodes,
             imageUrl: imageUrl,
+            imageSource: imageSource,
+            imageLicense: imageLicense,
             story: story,
             rowid: rowid,
           ),

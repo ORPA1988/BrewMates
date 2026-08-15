@@ -142,11 +142,21 @@ class _BeerDetailBody extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 4),
-            Text(
-              'Bild: Open Food Facts (CC-BY-SA)',
-              style: theme.textTheme.labelSmall
-                  ?.copyWith(color: theme.colorScheme.outline),
-              textAlign: TextAlign.center,
+            // Herkunft des Bildes — pflichtgemäß und sichtbar.
+            //
+            // Bilder kommen aus zwei Quellen: Open Food Facts (CC-BY-SA)
+            // und den Brauereien selbst. Ein fremdes Produktfoto ohne
+            // Herkunftsangabe zu zeigen ist der Unterschied zwischen
+            // Zitieren und Nehmen; `tools/validate_data.dart` lässt ein
+            // Bild ohne Quelle deshalb gar nicht erst durch.
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                _bildHerkunft(beer),
+                style: theme.textTheme.labelSmall
+                    ?.copyWith(color: theme.colorScheme.outline),
+                textAlign: TextAlign.center,
+              ),
             ),
           ] else
             Text(
@@ -351,4 +361,21 @@ class _BeerDetailBody extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Beschriftung unter dem Produktbild.
+///
+/// Nennt die Brauerei-Quelle, wo das Bild von ihr stammt, und den
+/// Nutzungshinweis, wo die Brauerei einen ausweist. Bei Open Food Facts
+/// folgt die Herkunft aus der Lizenz.
+String _bildHerkunft(Beer beer) {
+  final quelle = beer.imageSource;
+  if (quelle == null || quelle.isEmpty) {
+    return 'Bild: Open Food Facts (CC-BY-SA)';
+  }
+  final host = Uri.tryParse(quelle)?.host.replaceFirst('www.', '') ?? quelle;
+  final lizenz = beer.imageLicense;
+  return lizenz == null || lizenz.isEmpty
+      ? 'Bild: $host'
+      : 'Bild: $host — $lizenz';
 }

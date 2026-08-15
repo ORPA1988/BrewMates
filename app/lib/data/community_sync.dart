@@ -203,6 +203,8 @@ class CommunitySync {
               ((b['barcodes'] as List?)?.cast<String>() ?? const [])
                   .join(',')),
           imageUrl: Value(b['image_url'] as String?),
+          imageSource: Value(b['image_source'] as String?),
+          imageLicense: Value(b['image_license'] as String?),
           story: Value(b['story'] as String?),
         ),
     ];

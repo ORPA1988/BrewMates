@@ -46,6 +46,33 @@ so in ihrem `data_status`: Die Markierung zeigt den Ort, nicht die
 Braustätte. Eine erfundene Hausadresse wäre schlimmer als eine
 gekennzeichnete Näherung.
 
+## Produktfotos der Brauereien (seit 2026-08-15)
+
+Neben den Open-Food-Facts-Bildern verlinkt die App jetzt auch
+**Produktfotos von den Brauerei-Webseiten** — 303 Stück, Entscheidung des
+Projektinhabers. Sie sind meist vollständiger und in besserer Qualität als
+Nutzerfotos.
+
+**Jedes dieser Bilder trägt seine Quelle mit:** `image_source` nennt die
+Seite, von der es stammt, und wo die Brauerei einen Nutzungshinweis
+ausweist, steht er in `image_license` (192 der 448 Bilder der Quelle).
+Die App zeigt beides unter dem Bild an.
+
+Erzwungen wird das an zwei Stellen: `tools/validate_data.dart` lässt ein
+Bild von einer fremden Seite ohne `image_source` nicht durch, und
+`test/bild_herkunft_test.dart` prüft denselben Punkt auf dem echten
+Bestand. Ein fremdes Produktfoto ohne Herkunftsangabe zu zeigen ist der
+Unterschied zwischen Zitieren und Nehmen.
+
+Wie bisher gilt: **Wir speichern keine Bilddateien, wir verlinken nur.**
+Ändert eine Brauerei ihre Seite, verschwindet das Bild — die App zeigt
+dann wieder das Krug-Symbol.
+
+Wer eine Veröffentlichung über den internen Gebrauch hinaus plant, sollte
+die Nutzung mit den Brauereien klären; ergiebige Pressebereiche mit
+freigegebenen Packshots nennt der Recherchedatensatz ausdrücklich
+(u. a. Ottakringer, Zwettler, Egger, Stiegl, Murauer, Freistädter).
+
 ## Etiketten-Bilder (`image_url`) und Barcodes aus Open Food Facts
 
 Die Felder `image_url` sowie ein Teil der `barcodes`-Einträge (in allen Bier-Dateien) stammen aus [Open Food Facts](https://world.openfoodfacts.org), einer offenen, gemeinschaftlich gepflegten Lebensmitteldatenbank (Abgleich am 2026-08-13 für Österreich/Bayern und am 2026-08-15 für Deutschland/Schweiz über die Such- und Produkt-API von Open Food Facts). Für Deutschland und die Schweiz wurde jede einzelne Zuordnung anschließend über die Produkt-API gegengeprüft (Brauerei, Namensbestandteile, Alkoholfrei-Status); mehrdeutige Treffer wurden verworfen, weil ein falscher Barcode den Scanner auf das falsche Bier führen würde. Brauereien ohne belegte Koordinaten wurden über [Nominatim/OpenStreetMap](https://nominatim.openstreetmap.org) geokodiert (ODbL).

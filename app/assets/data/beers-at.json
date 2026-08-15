@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "updated": "2026-08-15",
   "beers": [
     {
@@ -41,7 +41,10 @@
       ],
       "description_manufacturer": "Ein schlankes, hopfenbetontes Pils aus Salzburg mit trockenem Abgang und feinherber Bittere.",
       "description_community": "Solides österreichisches Pils; Kenner finden es weicher und weniger bitter als norddeutsche Vertreter des Stils.",
-      "community_rating": 3.2
+      "community_rating": 3.2,
+      "image_url": "https://www.stiegl.at/wp-content/uploads/2022/01/produktgruppe-pils-3.png",
+      "image_source": "https://www.stiegl.at/produkt/stiegl-pils/",
+      "image_license": "Mediathek/Downloads: https://www.stiegl.at/die-brauerei/service/mediathek-downloads-stiegl/"
     },
     {
       "id": "at-stiegl-weisse",
@@ -212,7 +215,9 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Ein kräftigeres, würzigeres Spezialbier mit höherer Stammwürze, das Gösser als Bier für besondere Anlässe positioniert.",
       "description_community": "Von vielen als das beste reguläre Gösser angesehen; vollmundiger und würziger als das Märzen.",
-      "community_rating": 3.4
+      "community_rating": 3.4,
+      "image_url": "https://www.goesser.at/wp-content/uploads/2019/02/Go_Spezial-Schankmedaillon.png",
+      "image_source": "https://www.goesser.at/produkte/"
     },
     {
       "id": "at-goesser-zwickl",
@@ -378,7 +383,9 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Eine Hommage an das 1841 von Anton Dreher in Schwechat erfundene Wiener Lager: bernsteinfarben, malzaromatisch und nach historischem Vorbild gebraut.",
       "description_community": "Bei Bierfreunden beliebt, weil hier der historische Wiener Stil von seiner Ursprungsbrauerei wiederbelebt wird; schön malzig mit trockenem Abgang.",
-      "community_rating": 3.6
+      "community_rating": 3.6,
+      "image_url": "https://www.schwechater.at/wp-content/uploads/2025/07/SA-Wr-Lager-Home.png",
+      "image_source": "https://www.schwechater.at/wp-json/wp/v2/media?search=lager&per_page=3"
     },
     {
       "id": "at-schwechater-zwickl",
@@ -390,7 +397,9 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Unfiltriertes, hopfiges Zwickl aus Schwechat, das mit natürlicher Trübung und frischem Kellercharakter beworben wird.",
       "description_community": "Hat sich in Wiener Lokalen als beliebtes Fassbier etabliert; frisch, hefig und überraschend hopfig für ein Großbrauerei-Zwickl.",
-      "community_rating": 3.5
+      "community_rating": 3.5,
+      "image_url": "https://www.schwechater.at/wp-content/uploads/2025/07/SA-Zwickl-Home.png",
+      "image_source": "https://www.schwechater.at/wp-json/wp/v2/media?search=zwickl&per_page=2"
     },
     {
       "id": "at-wieselburger-stammbraeu",
@@ -421,7 +430,9 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Ein mildes, goldgelbes Lager aus Wieselburg, das auf ausgewogene Süffigkeit setzt.",
       "description_community": "Regionales Alltagsbier in Niederösterreich; mild und unkompliziert.",
-      "community_rating": 3.0
+      "community_rating": 3.0,
+      "image_url": "https://www.wieselburger.at/wp-content/uploads/2020/01/weiselburger-gold-flasche.png",
+      "image_source": "https://www.wieselburger.at/wp-json/wp/v2/media?search=gold&per_page=2&page=2"
     },
     {
       "id": "at-hirter-privat-pils",
@@ -452,7 +463,9 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Ein dunkles Spezialbier aus Hirt mit Röstmalzcharakter und würziger Note, benannt nach einem alten Kärntner Ausdruck.",
       "description_community": "Beliebtes dunkles Traditionsbier; schön röstmalzig, ohne süß oder schwer zu wirken.",
-      "community_rating": 3.5
+      "community_rating": 3.5,
+      "image_url": "https://www.hirterbier.at/wp-content/uploads/Hirter_Morchl_Flasche.webp",
+      "image_source": "https://www.hirterbier.at/produkt/hirter-morchl/"
     },
     {
       "id": "at-hirter-1270",
@@ -464,7 +477,9 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Benannt nach dem Gründungsjahr der Brauerei: ein naturbelassenes, unfiltriertes Bier, das an die ursprüngliche Braukunst von Hirt erinnern soll.",
       "description_community": "Wird als charaktervolles, hefig-frisches Kellerbier geschätzt und gerne direkt im Brauereigasthof getrunken.",
-      "community_rating": 3.5
+      "community_rating": 3.5,
+      "image_url": "https://www.hirterbier.at/wp-content/uploads/Hirter_1270_Flasche.webp",
+      "image_source": "https://www.hirterbier.at/produkt/hirter-1270/"
     },
     {
       "id": "at-murauer-maerzen",
@@ -497,7 +512,10 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Die Trumer Privatbrauerei in Obertrum widmet sich ganz dem Pils: offen vergoren, lang gereift und mit feinperliger Rezenz als hochwertigstes Pils positioniert.",
       "description_community": "International renommiertes Spezialisten-Pils; schlank, elegant und knochentrocken, für viele das beste Pils Österreichs.",
-      "community_rating": 3.6
+      "community_rating": 3.6,
+      "image_url": "https://www.trumer.at/Content/uploads/pils/generated/pils_thumbnail-Trumer-Pils-mit-HG-320x461.jpg",
+      "image_source": "https://www.trumer.at/bier/",
+      "image_license": "Pressebereich extern via picdrop: https://www.picdrop.de/brilliantcommunications/TRUMER"
     },
     {
       "id": "at-augustiner-salzburg-maerzen",
@@ -540,7 +558,10 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Naturtrübes Zwickl von Egger, das mit unfiltrierter Naturbelassenheit und milder Hefenote beworben wird.",
       "description_community": "Etwas mehr Charakter als das Märzen; mild-hefig und gut trinkbar.",
-      "community_rating": 3.1
+      "community_rating": 3.1,
+      "image_url": "https://egger-bier.at/site/assets/files/2947/egger-zwickl-0-5dose.1200x630.png",
+      "image_source": "https://egger-bier.at/sortiment/egger-rosl/",
+      "image_license": "Pressebereich: https://egger-bier.at/presse/"
     },
     {
       "id": "at-zillertal-maerzen",
@@ -609,7 +630,10 @@
       ],
       "barcode_volumes": {
         "9013500010920": 330
-      }
+      },
+      "image_url": "https://www.mohrenbrauerei.at/wp-content/uploads/2025/03/Kellerbier.png",
+      "image_source": "https://www.mohrenbrauerei.at/unser-bier/mohren-biersortiment/mohren-kellerbier/",
+      "image_license": "Downloadcenter: https://www.mohrenbrauerei.at/downloads/"
     },
     {
       "id": "at-fohrenburger-jubilaeum",
@@ -621,7 +645,9 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Das Premiumbier der Fohrenburg Brauerei in Bludenz: ein goldfarbenes, malzbetontes Spezialbier, das ursprünglich zum Brauereijubiläum eingebraut wurde.",
       "description_community": "Der Fohrenburg-Klassiker im Oberland; rund und malzig, mit treuer Anhängerschaft im Raum Bludenz.",
-      "community_rating": 3.2
+      "community_rating": 3.2,
+      "image_url": "https://www.fohrenburger.at/media/jubilaeum.png",
+      "image_source": "https://www.fohrenburger.at/sortiment/"
     },
     {
       "id": "at-frastanzer-s-dunkle",
@@ -645,7 +671,9 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Das Standardbier der Schladminger Brauerei, gebraut mit Wasser aus den Schladminger Tauern und als frisches Bergbier positioniert.",
       "description_community": "Solides Skigebiet- und Wirtshausbier der Region; frisch und unkompliziert.",
-      "community_rating": 3.1
+      "community_rating": 3.1,
+      "image_url": "https://www.schladmingerbier.at/media/schladmingerbier-maerzen.png",
+      "image_source": "https://www.schladmingerbier.at/unser-bier/"
     },
     {
       "id": "at-schladminger-biozwickl",
@@ -657,7 +685,10 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Naturtrübes Bio-Zwickl aus Schladming, gebraut mit biologischen Rohstoffen und als naturbelassenes Bergbier beworben.",
       "description_community": "Wird als das interessanteste Schladminger geschätzt; hefig-frisch mit sauberem Bio-Malzcharakter.",
-      "community_rating": 3.4
+      "community_rating": 3.4,
+      "image_url": "https://www.schladmingerbier.at/media/schladmingerbier-biozwickl.png",
+      "image_source": "https://www.schladmingerbier.at/unser-bier/",
+      "image_license": "schladminger.at ist tot; aktive Herstellerdomain ist schladmingerbier.at"
     },
     {
       "id": "at-villacher-maerzen",
@@ -669,7 +700,9 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Das klassische Märzen der Villacher Brauerei: mild und süffig, als Kärntner Lebensgefühl im Glas vermarktet.",
       "description_community": "Kärntner Alltagsbier mit großer Verbreitung; mild, leicht und ohne besondere Höhen oder Tiefen.",
-      "community_rating": 3.0
+      "community_rating": 3.0,
+      "image_url": "https://www.villacher.com/media/villacher_maerzen_05_glas-1.png",
+      "image_source": "https://www.villacher.com/sortiment/"
     },
     {
       "id": "at-schremser-edelmaerzen",
@@ -726,7 +759,10 @@
       ],
       "barcode_volumes": {
         "90083150": 500
-      }
+      },
+      "image_url": "https://www.zwettler.at/wp-content/uploads/2025/09/Zwettler_Original-e1757936482571.png",
+      "image_source": "https://www.zwettler.at/sortiment/",
+      "image_license": "Mediendatenbank: https://www.zwettler.at/mediendatenbank/"
     },
     {
       "id": "at-freistaedter-ratsherrn-premium",
@@ -758,7 +794,10 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Eine rötlich schimmernde Bierspezialität aus Freistadt mit karamellig-malzigem Charakter und kräftigerer Hopfung.",
       "description_community": "Beliebte Spezialität neben dem Kernsortiment; karamellmalzig mit feiner Bittere, hebt sich wohltuend vom Einheitslager ab.",
-      "community_rating": 3.5
+      "community_rating": 3.5,
+      "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2022/06/FREISTAEDTER_Flasche_Rotschopf.png",
+      "image_source": "https://www.freistaedter-bier.at/produkte/",
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
     },
     {
       "id": "at-engelszell-gregorius",
@@ -923,10 +962,12 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [],
-      "image_url": null,
+      "image_url": "https://www.brauerei-baumgartner.at/uploads/produkte/Ma%CC%88rzen_05l_2025-07-23-110234_qtdo.jpg",
       "description_manufacturer": "Der Schärdinger Klassiker: ein mildes, rundes Märzen mit sanfter Malzsüße, seit Generationen das Alltagsbier des Innviertels.",
       "description_community": "Im Innviertel Kult und dort in vielen Wirtshäusern Standard; weich, süffig und angenehm unspektakulär.",
-      "community_rating": 3.4
+      "community_rating": 3.4,
+      "image_source": "https://www.brauerei-baumgartner.at/biere/maerzen",
+      "image_license": "Downloadbereich: https://www.brauerei-baumgartner.at/service/downloads"
     },
     {
       "id": "at-schlaegl-doppelbock",
@@ -965,10 +1006,11 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [],
-      "image_url": null,
+      "image_url": "https://www.raschhoferbier.at/images/produkte/maerzen.jpg",
       "description_manufacturer": "Das klassische Märzen der Altheimer Familienbrauerei: hell, mild gehopft und auf Trinkbarkeit ausgelegt.",
       "description_community": "Regionaler Standard im westlichen Innviertel; sauber gebraut und süffig.",
-      "community_rating": 3.2
+      "community_rating": 3.2,
+      "image_source": "https://www.raschhoferbier.at/"
     },
     {
       "id": "at-hofstettner-granitbock",
@@ -1058,7 +1100,9 @@
       "is_alcohol_free": false,
       "barcodes": [
         "9028800149515"
-      ]
+      ],
+      "image_url": "https://www.goesser.at/wp-content/uploads/2024/02/GOe-Biostoff-Uebersicht_v3.png",
+      "image_source": "https://www.goesser.at/produkte/"
     },
     {
       "id": "at-goesser-goesser-naturradler-zitrone",
@@ -1075,7 +1119,9 @@
       "barcode_volumes": {
         "90288104": 500,
         "9028800616482": 500
-      }
+      },
+      "image_url": "https://www.goesser.at/wp-content/uploads/2017/02/Go_NaturRadler.png",
+      "image_source": "https://www.goesser.at/produkte/"
     },
     {
       "id": "at-goesser-goesser-naturradler-0-0-alkoholfrei-zitrone",
@@ -1090,7 +1136,9 @@
       ],
       "barcode_volumes": {
         "9028800627907": 500
-      }
+      },
+      "image_url": "https://www.goesser.at/wp-content/uploads/2019/03/Go_NaturRadler_AF_00.png",
+      "image_source": "https://www.goesser.at/produkte/"
     },
     {
       "id": "at-goesser-goesser-naturradler-0-0-alkoholfrei-himbeer-rhabarber",
@@ -1105,7 +1153,9 @@
       ],
       "barcode_volumes": {
         "9028800641286": 330
-      }
+      },
+      "image_url": "https://www.goesser.at/wp-content/uploads/2021/05/Go_NaturRadler_AF_00_Himbeer_Rhabarber-1.png",
+      "image_source": "https://www.goesser.at/produkte/"
     },
     {
       "id": "at-goesser-goesser-naturradler-extra-frisch-zitrus-mix",
@@ -1115,7 +1165,9 @@
       "abv": 2.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.goesser.at/wp-content/uploads/2022/04/Go_NaturRadler_ZitrusMix-1.png",
+      "image_source": "https://www.goesser.at/produkte/"
     },
     {
       "id": "at-goesser-goesser-gold",
@@ -1125,7 +1177,9 @@
       "abv": 5.3,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.goesser.at/wp-content/uploads/2020/02/Go_Gold-Schankmedaillon.png",
+      "image_source": "https://www.goesser.at/produkte/"
     },
     {
       "id": "at-goesser-goesser-stifts-zwickl-hell",
@@ -1135,7 +1189,9 @@
       "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.goesser.at/wp-content/uploads/2017/02/GOe-StiftsZwickl-hell.png",
+      "image_source": "https://www.goesser.at/produkte/"
     },
     {
       "id": "at-goesser-goesser-stifts-zwickl-dunkel",
@@ -1150,7 +1206,9 @@
       ],
       "barcode_volumes": {
         "90288401": 500
-      }
+      },
+      "image_url": "https://www.goesser.at/wp-content/uploads/2017/02/GOe-StiftsZwickl-dunkel.png",
+      "image_source": "https://www.goesser.at/produkte/"
     },
     {
       "id": "at-goesser-goesser-helles",
@@ -1160,7 +1218,9 @@
       "abv": 4.4,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.goesser.at/wp-content/uploads/2022/02/Go_Helles.png",
+      "image_source": "https://www.goesser.at/produkte/"
     },
     {
       "id": "at-goesser-goesser-bock",
@@ -1170,7 +1230,9 @@
       "abv": 7.1,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.goesser.at/wp-content/uploads/2017/02/GOe-Bock.png",
+      "image_source": "https://www.goesser.at/produkte/"
     },
     {
       "id": "at-goesser-goesser-natur-saurer-radler-soda-zitron",
@@ -1180,7 +1242,9 @@
       "abv": 2.7,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.goesser.at/wp-content/uploads/2026/05/GoNSRSZ-05b-Sim-LowRes.png",
+      "image_source": "https://www.goesser.at/produkte/"
     },
     {
       "id": "at-brauerei-puntigamer-das-bierige-bier",
@@ -1245,7 +1309,9 @@
       ],
       "barcode_volumes": {
         "9028800631355": 330
-      }
+      },
+      "image_url": "https://www.zipfer.at/wp-content/uploads/2021/11/ZiM-05b-Sim-a-MidRes-Neu.png",
+      "image_source": "https://www.zipfer.at/unser-bier/"
     },
     {
       "id": "at-brauerei-zipfer-kellerbier",
@@ -1255,7 +1321,9 @@
       "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zipfer.at/wp-content/uploads/2021/11/ZiKB-05b-Sim-a-betaut-LowRes.png",
+      "image_source": "https://www.zipfer.at/unser-bier/"
     },
     {
       "id": "at-brauerei-zipfer-naturhopfen-pils",
@@ -1265,7 +1333,9 @@
       "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zipfer.at/wp-content/uploads/2021/11/ZiP-05b-Sim-a-betaut-LowRes.png",
+      "image_source": "https://www.zipfer.at/unser-bier/"
     },
     {
       "id": "at-brauerei-zipfer-limetten-radler",
@@ -1277,7 +1347,9 @@
       "is_alcohol_free": false,
       "barcodes": [
         "9028800601181"
-      ]
+      ],
+      "image_url": "https://www.zipfer.at/wp-content/uploads/2021/11/radler_0.3.png",
+      "image_source": "https://www.zipfer.at/unser-bier/"
     },
     {
       "id": "at-brauerei-zipfer-drei",
@@ -1289,7 +1361,9 @@
       "is_alcohol_free": false,
       "barcodes": [
         "9003100106505"
-      ]
+      ],
+      "image_url": "https://www.zipfer.at/wp-content/uploads/2021/11/Zi3-05b-Sim-a-betaut-LowRes.png",
+      "image_source": "https://www.zipfer.at/unser-bier/"
     },
     {
       "id": "at-brauerei-zipfer-0-0",
@@ -1299,7 +1373,9 @@
       "abv": 0.0,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zipfer.at/wp-content/uploads/2021/11/Zi00-033bEW-aNeu_Stoerer-Sim-betaut-LowRes.png",
+      "image_source": "https://www.zipfer.at/unser-bier/"
     },
     {
       "id": "at-brauerei-zipfer-josefi-bock",
@@ -1309,7 +1385,9 @@
       "abv": 7.1,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zipfer.at/wp-content/uploads/2021/11/ZiJB-05b-Sim-a-betaut-LowRes.png",
+      "image_source": "https://www.zipfer.at/unser-bier/"
     },
     {
       "id": "at-brauerei-zipfer-stefani-bock",
@@ -1319,7 +1397,9 @@
       "abv": 7.1,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zipfer.at/wp-content/uploads/2021/11/ZiSB-05b-Sim-a-betaut-LowRes.png",
+      "image_source": "https://www.zipfer.at/unser-bier/"
     },
     {
       "id": "at-brauerei-zipfer-doppelgold",
@@ -1329,7 +1409,9 @@
       "abv": 5.5,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zipfer.at/wp-content/uploads/2021/08/doppelgold.png",
+      "image_source": "https://www.zipfer.at/unser-bier/"
     },
     {
       "id": "at-brauerei-wieselburger-spezial",
@@ -1339,7 +1421,9 @@
       "abv": 5.7,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.wieselburger.at/wp-content/uploads/2020/01/wieselburger-spezial-flasche.png",
+      "image_source": "https://www.wieselburger.at/wp-json/wp/v2/media/10703"
     },
     {
       "id": "at-brauerei-wieselburger-schwarzbier",
@@ -1354,7 +1438,9 @@
       ],
       "barcode_volumes": {
         "9028800633274": 500
-      }
+      },
+      "image_url": "https://www.wieselburger.at/wp-content/uploads/2020/01/wieselburger-schwarzbier-flasche.png",
+      "image_source": "https://www.wieselburger.at/wp-json/wp/v2/media/10702"
     },
     {
       "id": "at-brauerei-wieselburger-zwickl",
@@ -1364,7 +1450,9 @@
       "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.wieselburger.at/wp-content/uploads/2020/01/wieselburger-zwickl-flasche.png",
+      "image_source": "https://www.wieselburger.at/wp-json/wp/v2/media/10704"
     },
     {
       "id": "at-brauerei-wieselburger-0-0",
@@ -1374,7 +1462,9 @@
       "abv": 0.05,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.wieselburger.at/wp-content/uploads/2023/02/wieselburger-00-flasche-glas.jpg",
+      "image_source": "https://www.wieselburger.at/wp-json/wp/v2/media?parent=12223&status=inherit"
     },
     {
       "id": "at-stieglbrauerei-stiegl-hell",
@@ -1393,7 +1483,10 @@
         "9003400390437": 500,
         "9003402194132": 330,
         "9003402290537": 330
-      }
+      },
+      "image_url": "https://www.stiegl.at/wp-content/uploads/2022/01/produktgruppe-hell-neu.png",
+      "image_source": "https://www.stiegl.at/produkt/stiegl-hell/",
+      "image_license": "Mediathek/Downloads: https://www.stiegl.at/die-brauerei/service/mediathek-downloads-stiegl/"
     },
     {
       "id": "at-stieglbrauerei-stiegl-weisse-naturtrueb",
@@ -1403,7 +1496,10 @@
       "abv": 5.1,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiegl.at/wp-content/uploads/2022/01/produktgruppe-weisse-2025-1.png",
+      "image_source": "https://www.stiegl.at/produkt/stiegl-weisse-naturtrueb/",
+      "image_license": "Mediathek/Downloads: https://www.stiegl.at/die-brauerei/service/mediathek-downloads-stiegl/"
     },
     {
       "id": "at-stieglbrauerei-stiegl-columbus-1492",
@@ -1423,7 +1519,10 @@
       "abv": 0.0,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiegl.at/wp-content/uploads/2025/04/produktgruppe-alkoholfrei-sortiment.png",
+      "image_source": "https://www.stiegl.at/produkt/stiegl-00-alkoholfrei/",
+      "image_license": "Mediathek/Downloads: https://www.stiegl.at/die-brauerei/service/mediathek-downloads-stiegl/"
     },
     {
       "id": "at-stieglbrauerei-stiegl-sport-weisse-alkoholfrei",
@@ -1452,7 +1551,10 @@
         "9003402604082": 500,
         "9003402194774": 330,
         "9003400394275": 500
-      }
+      },
+      "image_url": "https://www.stiegl.at/wp-content/uploads/2022/01/produktgruppe-radler-zitrone-dose-1.png",
+      "image_source": "https://www.stiegl.at/produkt/stiegl-radler-naturtrueb-zitrone/",
+      "image_license": "Mediathek/Downloads: https://www.stiegl.at/die-brauerei/service/mediathek-downloads-stiegl/"
     },
     {
       "id": "at-stieglbrauerei-stiegl-radler-naturtrueb-grapefruit",
@@ -1611,7 +1713,10 @@
       "abv": 4.7,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.ottakringerbrauerei.at/de/wp-content/uploads/sites/6/2025/02/OTK_Flasche_05l_Lager_72dpi-1.png",
+      "image_source": "https://www.ottakringerbrauerei.at/de/produkt/ottakringer-lager/",
+      "image_license": "Pressebereich: https://www.ottakringerbrauerei.at/de/downloads/packshots/ - Packshot-ZIP: .../2024/04/Lager.zip"
     },
     {
       "id": "at-ottakringer-ottakringer-wiener-spezial",
@@ -1621,7 +1726,10 @@
       "abv": 5.5,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.ottakringerbrauerei.at/de/wp-content/uploads/sites/6/2025/08/OTK_Flasche_05l_WienerSpezial_72ppi.png",
+      "image_source": "https://www.ottakringerbrauerei.at/de/produkt/ottakringer-wiener-spezial/",
+      "image_license": "Pressebereich: https://www.ottakringerbrauerei.at/de/downloads/packshots/"
     },
     {
       "id": "at-ottakringer-ottakringer-bio-zwickl-hell",
@@ -1631,7 +1739,10 @@
       "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.ottakringerbrauerei.at/de/wp-content/uploads/sites/6/2021/10/OTK_Flasche_05l_BioZwickl_Hell.png",
+      "image_source": "https://www.ottakringerbrauerei.at/de/produkt/ottakringer-bio-zwickl-hell/",
+      "image_license": "Pressebereich: Packshot-ZIP https://www.ottakringerbrauerei.at/de/wp-content/uploads/sites/6/2023/05/Ottakringer_BioZwicklHell-Packshots.zip"
     },
     {
       "id": "at-ottakringer-ottakringer-bio-zwickl-dunkel",
@@ -1641,7 +1752,10 @@
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.ottakringerbrauerei.at/de/wp-content/uploads/sites/6/2021/10/Bio-Zwickl_Dunkel_Flasche.png",
+      "image_source": "https://www.ottakringerbrauerei.at/de/produkt/ottakringer-bio-zwickl-dunkel/",
+      "image_license": "Pressebereich: Packshot-ZIP https://www.ottakringerbrauerei.at/de/wp-content/uploads/sites/6/2022/02/Ottakringer-Bio-Zwickl-Dunkel.zip"
     },
     {
       "id": "at-ottakringer-ottakringer-bio-zwickl-rot-rotes-zwickl",
@@ -1678,7 +1792,10 @@
       ],
       "barcode_volumes": {
         "9007600306311": 500
-      }
+      },
+      "image_url": "https://www.ottakringerbrauerei.at/de/wp-content/uploads/sites/6/2021/10/Flasche05L.png",
+      "image_source": "https://www.ottakringerbrauerei.at/de/produkt/ottakringer-citrus-radler/",
+      "image_license": "Pressebereich: Packshot-ZIP https://www.ottakringerbrauerei.at/de/wp-content/uploads/sites/6/2023/05/Citrus-Radler.zip"
     },
     {
       "id": "at-ottakringer-ottakringer-pils",
@@ -1688,7 +1805,10 @@
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.ottakringerbrauerei.at/de/wp-content/uploads/sites/6/2025/02/MicrosoftTeams-image-3-e1741268128124.png",
+      "image_source": "https://www.ottakringerbrauerei.at/de/produkt/ottakringer-pils/",
+      "image_license": "Pressebereich: Packshot-ZIP https://www.ottakringerbrauerei.at/de/wp-content/uploads/sites/6/2023/05/Ottakringer_Pils_Packshots.zip"
     },
     {
       "id": "at-ottakringer-ottakringer-g-mischtes",
@@ -1698,7 +1818,10 @@
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.ottakringerbrauerei.at/de/wp-content/uploads/sites/6/2021/10/OTK_Dose_05l_Gmischtes_72dpi-1.png",
+      "image_source": "https://www.ottakringerbrauerei.at/de/produkt/ottakringer-gmischtes/",
+      "image_license": "Pressebereich: Packshot-ZIP https://www.ottakringerbrauerei.at/de/wp-content/uploads/sites/6/2023/05/Ottakringer_Gmischtes_Packshots.zip"
     },
     {
       "id": "at-ottakringer-ottakringer-sechzehn",
@@ -1748,7 +1871,9 @@
       "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.hirterbier.at/wp-content/uploads/Hirter_Maerzen_Flasche.webp",
+      "image_source": "https://www.hirterbier.at/produkt/hirter-maerzen/"
     },
     {
       "id": "at-privatbrauerei-hirter-zwickl",
@@ -1758,7 +1883,10 @@
       "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.hirterbier.at/wp-content/uploads/Hirter_Zwickl_im_Glas.webp",
+      "image_source": "https://www.hirterbier.at/produkt/hirter-zwickl/",
+      "image_license": "nur Fassbier - offizielles Produktbild zeigt Bier im Glas"
     },
     {
       "id": "at-privatbrauerei-hirter-weizen",
@@ -1788,7 +1916,9 @@
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.hirterbier.at/wp-content/uploads/Hirter_Kellermeister_Flasche.webp",
+      "image_source": "https://www.hirterbier.at/produkt/hirter-kellermeister/"
     },
     {
       "id": "at-privatbrauerei-hirter-freigeist",
@@ -1798,7 +1928,9 @@
       "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.hirterbier.at/wp-content/uploads/Hirter_Freigeist_Flasche.webp",
+      "image_source": "https://www.hirterbier.at/produkt/hirter-freigeist/"
     },
     {
       "id": "at-privatbrauerei-hirter-hello",
@@ -1838,7 +1970,9 @@
       "abv": 7.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.hirterbier.at/wp-content/uploads/Hirter_RubinBock_Flasche.webp",
+      "image_source": "https://www.hirterbier.at/produkt/hirter-rubin-bock/"
     },
     {
       "id": "at-brauerei-murauer-pils",
@@ -1853,7 +1987,10 @@
       ],
       "barcode_volumes": {
         "90145025": 500
-      }
+      },
+      "image_url": "https://www.murauerbier.at/wp-content/uploads/2025/11/Pils-05L_ProduktbildNEU.jpg",
+      "image_source": "https://www.murauerbier.at/bier/pils/",
+      "image_license": "Downloadbereich: https://www.murauerbier.at/downloads/"
     },
     {
       "id": "at-brauerei-murauer-dunkel",
@@ -1868,7 +2005,10 @@
       ],
       "barcode_volumes": {
         "90145032": 500
-      }
+      },
+      "image_url": "https://www.murauerbier.at/wp-content/uploads/2025/11/Dunkel-05L_ProduktbildNEU.jpg",
+      "image_source": "https://www.murauerbier.at/bier/dunkel/",
+      "image_license": "Downloadbereich: https://www.murauerbier.at/downloads/"
     },
     {
       "id": "at-brauerei-murauer-zwickl-hell",
@@ -1883,7 +2023,10 @@
       ],
       "barcode_volumes": {
         "9014500015175": 750
-      }
+      },
+      "image_url": "https://www.murauerbier.at/wp-content/uploads/2017/09/Zwickl-Glas.jpg",
+      "image_source": "https://www.murauerbier.at/bier/zwickl/",
+      "image_license": "offizielles Produktbild zeigt Bier im Glas"
     },
     {
       "id": "at-brauerei-murauer-weissbier",
@@ -1895,7 +2038,10 @@
       "is_alcohol_free": false,
       "barcodes": [
         "9014500000430"
-      ]
+      ],
+      "image_url": "https://www.murauerbier.at/wp-content/uploads/2021/10/Weissbier-05-L.jpg",
+      "image_source": "https://www.murauerbier.at/bier/weissbier/",
+      "image_license": "Downloadbereich: https://www.murauerbier.at/downloads/"
     },
     {
       "id": "at-brauerei-murauer-bock-bier",
@@ -1910,7 +2056,10 @@
       ],
       "barcode_volumes": {
         "90145049": 500
-      }
+      },
+      "image_url": "https://www.murauerbier.at/wp-content/uploads/2021/10/Bock-Bier-05-L.jpg",
+      "image_source": "https://www.murauerbier.at/bier/bock/",
+      "image_license": "Downloadbereich: https://www.murauerbier.at/downloads/"
     },
     {
       "id": "at-brauerei-murauer-11-11",
@@ -1930,7 +2079,10 @@
       "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.murauerbier.at/wp-content/uploads/2021/10/Black-Hill-033-L.jpg",
+      "image_source": "https://www.murauerbier.at/bier/black-hill/",
+      "image_license": "Downloadbereich: https://www.murauerbier.at/downloads/"
     },
     {
       "id": "at-brauerei-murauer-pale-ale",
@@ -1940,7 +2092,10 @@
       "abv": 5.5,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.murauerbier.at/wp-content/uploads/2017/09/Pale-Ale-Glas.jpg",
+      "image_source": "https://www.murauerbier.at/bier/pale-ale/",
+      "image_license": "offizielles Produktbild zeigt Bier im Glas"
     },
     {
       "id": "at-brauerei-murauer-stout",
@@ -1950,7 +2105,10 @@
       "abv": 5.8,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.murauerbier.at/wp-content/uploads/2017/09/Stout-Glas.jpg",
+      "image_source": "https://www.murauerbier.at/bier/stout/",
+      "image_license": "offizielles Produktbild zeigt Bier im Glas"
     },
     {
       "id": "at-brauerei-murauer-hoamat-weisse",
@@ -2051,7 +2209,9 @@
       "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.trumer.at/Content/uploads/freispiel/generated/freispiel_Trumer-Freispiel-mit-HG-320x461.jpg",
+      "image_source": "https://www.trumer.at/bier/"
     },
     {
       "id": "at-trumer-obertrumer-original-bio-zwickl",
@@ -2061,7 +2221,9 @@
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.trumer.at/Content/uploads/obertrumer-original-bio-zwickl/generated/obertrumer-original-bio-zwickl_small-image-Obertrumer-Original-320x461.jpg",
+      "image_source": "https://www.trumer.at/bier/"
     },
     {
       "id": "at-trumer-obertrumer-maerzen",
@@ -2071,7 +2233,9 @@
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.trumer.at/Content/uploads/beer-obertrumer-maerzen/generated/beer-obertrumer-maerzen_Obertrumer-Marzen-mit-HG-320x461.jpg",
+      "image_source": "https://www.trumer.at/bier/"
     },
     {
       "id": "at-trumer-trumer-hopfenspiel",
@@ -2081,7 +2245,9 @@
       "abv": 2.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.trumer.at/Content/uploads/hopfenspiel/generated/hopfenspiel_thumbnail-Trumer-Hopfenspiel-Website-mit-HG-320x461.jpg",
+      "image_source": "https://www.trumer.at/bier/"
     },
     {
       "id": "at-trumer-obertrumer-hopfen-helles",
@@ -2101,7 +2267,9 @@
       "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.trumer.at/Content/uploads/beer-salzburger-landbier/generated/Salzburger-Landbier-small-image-1620x2310px-320x461.jpg",
+      "image_source": "https://www.trumer.at/bier/"
     },
     {
       "id": "at-trumer-obertrumer-bio-herbstbier",
@@ -2111,7 +2279,9 @@
       "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.trumer.at/Content/uploads/obertrumer-herbstbier/generated/obertrumer-herbstbier_thumbnail-Obertrumer-Bio-Herbstbier-mit-HG-320x461.jpg",
+      "image_source": "https://www.trumer.at/bier/"
     },
     {
       "id": "at-trumer-obertrumer-radler-zitrone",
@@ -2121,7 +2291,9 @@
       "abv": 2.3,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.trumer.at/Content/uploads/beer-obertrumer-radler-zitrone/generated/beer-obertrumer-radler-zitrone_Obertrumer-Radler-Zitrone-mit-HG-320x461.jpg",
+      "image_source": "https://www.trumer.at/bier/"
     },
     {
       "id": "at-mohrenbrauerei-mohrenbraeu-pfiff",
@@ -2131,7 +2303,10 @@
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.mohrenbrauerei.at/wp-content/uploads/2023/11/Pfiff.png",
+      "image_source": "https://www.mohrenbrauerei.at/unser-bier/mohren-biersortiment/mohren-pfiff/",
+      "image_license": "Downloadcenter: https://www.mohrenbrauerei.at/downloads/"
     },
     {
       "id": "at-mohrenbrauerei-mohrenbraeu-festbock",
@@ -2156,7 +2331,10 @@
       "abv": 5.1,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.mohrenbrauerei.at/wp-content/uploads/2023/11/Helles.png",
+      "image_source": "https://www.mohrenbrauerei.at/unser-bier/mohren-biersortiment/mohren-helles/",
+      "image_license": "Downloadcenter: https://www.mohrenbrauerei.at/downloads/"
     },
     {
       "id": "at-mohrenbrauerei-mohrenbraeu-gold",
@@ -2181,7 +2359,10 @@
       ],
       "barcode_volumes": {
         "9013500011088": 330
-      }
+      },
+      "image_url": "https://www.mohrenbrauerei.at/wp-content/uploads/2025/03/Pils.png",
+      "image_source": "https://www.mohrenbrauerei.at/unser-bier/mohren-biersortiment/mohren-pilsner/",
+      "image_license": "Downloadcenter: https://www.mohrenbrauerei.at/downloads/"
     },
     {
       "id": "at-mohrenbrauerei-mohrenbraeu-gambrinus",
@@ -2221,7 +2402,10 @@
       ],
       "barcode_volumes": {
         "9013500008064": 500
-      }
+      },
+      "image_url": "https://www.mohrenbrauerei.at/wp-content/uploads/2023/11/Weizen.png",
+      "image_source": "https://www.mohrenbrauerei.at/unser-bier/mohren-biersortiment/mohrenbraeu-weizen/",
+      "image_license": "Downloadcenter: https://www.mohrenbrauerei.at/downloads/"
     },
     {
       "id": "at-mohrenbrauerei-mohrenbraeu-pale-ale",
@@ -2341,7 +2525,9 @@
       ],
       "barcode_volumes": {
         "90031151": 500
-      }
+      },
+      "image_url": "https://www.kaiserbier.at/wp-content/uploads/2013/03/bier1-1.png",
+      "image_source": "https://www.kaiserbier.at/wp-json/wp/v2/media?parent=1064&status=inherit"
     },
     {
       "id": "at-kaiser-kaiser-premium",
@@ -2361,7 +2547,9 @@
       "abv": 5.7,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.kaiserbier.at/wp-content/uploads/2013/03/bier3-1.png",
+      "image_source": "https://www.kaiserbier.at/wp-json/wp/v2/media?parent=1064&status=inherit"
     },
     {
       "id": "at-kaiser-kaiser-doppelmalz",
@@ -2371,7 +2559,9 @@
       "abv": 4.7,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.kaiserbier.at/wp-content/uploads/2013/03/Kaiser-Doppelmalz.png",
+      "image_source": "https://www.kaiserbier.at/wp-json/wp/v2/media?search=doppelmalz&per_page=2&status=inherit"
     },
     {
       "id": "at-kaiser-kaiser-ruperti",
@@ -2451,7 +2641,9 @@
       "abv": 5.6,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.fohrenburger.at/media/image-117.png",
+      "image_source": "https://www.fohrenburger.at/sortiment/"
     },
     {
       "id": "at-brauerei-fohrenburger-stiftle-stift",
@@ -2463,7 +2655,9 @@
       "is_alcohol_free": false,
       "barcodes": [
         "90165078"
-      ]
+      ],
+      "image_url": "https://www.fohrenburger.at/media/stiftle-stift_group.png",
+      "image_source": "https://www.fohrenburger.at/sortiment/"
     },
     {
       "id": "at-brauerei-fohrenburger-saurer-radler",
@@ -2473,7 +2667,9 @@
       "abv": 3.3,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.fohrenburger.at/media/saurer-radler_group.png",
+      "image_source": "https://www.fohrenburger.at/sortiment/"
     },
     {
       "id": "at-brauerei-fohrenburger-alkoholfrei",
@@ -2488,7 +2684,9 @@
       ],
       "barcode_volumes": {
         "90165061": 500
-      }
+      },
+      "image_url": "https://www.fohrenburger.at/media/alkoholfrei_group.png",
+      "image_source": "https://www.fohrenburger.at/sortiment/"
     },
     {
       "id": "at-brauerei-fohrenburger-weizen",
@@ -2498,7 +2696,9 @@
       "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.fohrenburger.at/media/weizen_group.png",
+      "image_source": "https://www.fohrenburger.at/sortiment/"
     },
     {
       "id": "at-brauerei-fohrenburger-weizen-alkoholfrei",
@@ -2508,7 +2708,9 @@
       "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.fohrenburger.at/media/weizen_alkoholfrei.png",
+      "image_source": "https://www.fohrenburger.at/sortiment/"
     },
     {
       "id": "at-brauerei-engelburg-braeu",
@@ -2518,7 +2720,9 @@
       "abv": 4.2,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.fohrenburger.at/media/engelburg.png",
+      "image_source": "https://www.fohrenburger.at/sortiment/"
     },
     {
       "id": "at-privatbrauerei-egger-zwickl-rosl",
@@ -2538,7 +2742,10 @@
       "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://egger-bier.at/site/assets/files/1510/egger-zisch-0-33.1200x630.png",
+      "image_source": "https://egger-bier.at/sortiment/egger-zisch/",
+      "image_license": "Pressebereich: https://egger-bier.at/presse/"
     },
     {
       "id": "at-privatbrauerei-egger-hopf-n-roll",
@@ -2553,7 +2760,10 @@
       ],
       "barcode_volumes": {
         "9015180126045": 330
-      }
+      },
+      "image_url": "https://egger-bier.at/site/assets/files/2956/egger-hopn-roll-0-33.1200x630.png",
+      "image_source": "https://egger-bier.at/sortiment/egger-hopfnroll/",
+      "image_license": "Pressebereich: https://egger-bier.at/presse/"
     },
     {
       "id": "at-privatbrauerei-egger-zitrusradler",
@@ -2563,7 +2773,10 @@
       "abv": 2.5,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://egger-bier.at/site/assets/files/1489/egger-zitrus-radler-0-33.1200x630.png",
+      "image_source": "https://egger-bier.at/sortiment/egger-zitrusradler/",
+      "image_license": "Pressebereich: https://egger-bier.at/presse/"
     },
     {
       "id": "at-privatbrauerei-zwettler-saphir",
@@ -2573,7 +2786,10 @@
       "abv": 5.3,
       "ibu": 40,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zwettler.at/wp-content/uploads/2025/09/Zwettler_Saphir-e1757936445503.png",
+      "image_source": "https://www.zwettler.at/sortiment/",
+      "image_license": "Mediendatenbank: https://www.zwettler.at/mediendatenbank/ (Produktabbildungen zum Download)"
     },
     {
       "id": "at-privatbrauerei-zwettler-frei-alkoholfrei",
@@ -2588,7 +2804,10 @@
       ],
       "barcode_volumes": {
         "9008300000554": 330
-      }
+      },
+      "image_url": "https://www.zwettler.at/wp-content/uploads/2025/06/9008300000554_Zwettler_FREI_033-removebg-preview-e1758087462424.png",
+      "image_source": "https://www.zwettler.at/sortiment/",
+      "image_license": "Mediendatenbank: https://www.zwettler.at/mediendatenbank/"
     },
     {
       "id": "at-privatbrauerei-zwettler-export-lager",
@@ -2598,7 +2817,10 @@
       "abv": 5.0,
       "ibu": 23,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zwettler.at/wp-content/uploads/2025/09/Export-Lager-e1757936521160.png",
+      "image_source": "https://www.zwettler.at/sortiment/",
+      "image_license": "Mediendatenbank: https://www.zwettler.at/mediendatenbank/"
     },
     {
       "id": "at-privatbrauerei-zwettler-zwickl",
@@ -2608,7 +2830,10 @@
       "abv": 5.5,
       "ibu": 28,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zwettler.at/wp-content/uploads/2025/09/Zwettler_Zwickl-e1757936552928.png",
+      "image_source": "https://www.zwettler.at/sortiment/",
+      "image_license": "Mediendatenbank: https://www.zwettler.at/mediendatenbank/"
     },
     {
       "id": "at-privatbrauerei-zwettler-dunkles",
@@ -2618,7 +2843,10 @@
       "abv": 3.4,
       "ibu": 16,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zwettler.at/wp-content/uploads/2022/02/Dunkles-2-e1757936584579.png",
+      "image_source": "https://www.zwettler.at/sortiment/",
+      "image_license": "Mediendatenbank: https://www.zwettler.at/mediendatenbank/"
     },
     {
       "id": "at-privatbrauerei-zwettler-pils-classic",
@@ -2628,7 +2856,10 @@
       "abv": 4.9,
       "ibu": 27,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zwettler.at/wp-content/uploads/2022/02/Dayton-336x1024.png",
+      "image_source": "https://www.zwettler.at/sortiment/",
+      "image_license": "Mediendatenbank: https://www.zwettler.at/mediendatenbank/"
     },
     {
       "id": "at-privatbrauerei-zwettler-stiftsbraeu",
@@ -2638,7 +2869,10 @@
       "abv": 4.2,
       "ibu": 17,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zwettler.at/wp-content/uploads/2022/02/Zwettler_Stiftsbraeu-e1757936617259.png",
+      "image_source": "https://www.zwettler.at/sortiment/",
+      "image_license": "Mediendatenbank: https://www.zwettler.at/mediendatenbank/"
     },
     {
       "id": "at-privatbrauerei-zwettler-luftikus",
@@ -2648,7 +2882,10 @@
       "abv": 0.5,
       "ibu": 21,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zwettler.at/wp-content/uploads/2025/09/Zwettler_Luftikus-e1757936647491.png",
+      "image_source": "https://www.zwettler.at/sortiment/",
+      "image_license": "Mediendatenbank: https://www.zwettler.at/mediendatenbank/"
     },
     {
       "id": "at-privatbrauerei-zwettler-radler-citrus-naturtrueb",
@@ -2658,7 +2895,10 @@
       "abv": 2.0,
       "ibu": 9,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zwettler.at/wp-content/uploads/2025/09/Zwettler_Radler-e1757936683407.png",
+      "image_source": "https://www.zwettler.at/sortiment/",
+      "image_license": "Mediendatenbank: https://www.zwettler.at/mediendatenbank/"
     },
     {
       "id": "at-privatbrauerei-kuenringer-festbock",
@@ -2668,7 +2908,10 @@
       "abv": 6.8,
       "ibu": 27,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zwettler.at/wp-content/uploads/2025/09/Zwettler_Festbock-e1757936717270.png",
+      "image_source": "https://www.zwettler.at/sortiment/",
+      "image_license": "Mediendatenbank: https://www.zwettler.at/mediendatenbank/"
     },
     {
       "id": "at-braucommune-freistaedter-maerzen",
@@ -2678,7 +2921,10 @@
       "abv": 4.8,
       "ibu": 22,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2022/06/FREISTAEDTER_Flasche_Maerzen.png",
+      "image_source": "https://www.freistaedter-bier.at/produkte/",
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
     },
     {
       "id": "at-braucommune-freistaedter-bio-zwickl",
@@ -2693,7 +2939,10 @@
       ],
       "barcode_volumes": {
         "90104114": 330
-      }
+      },
+      "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2022/02/FREISTAEDTER_Flasche_Bio-Zwickl.png",
+      "image_source": "https://www.freistaedter-bier.at/produkte/",
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
     },
     {
       "id": "at-braucommune-freistaedter-junghopfenpils",
@@ -2703,7 +2952,10 @@
       "abv": 4.8,
       "ibu": 33,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2022/02/FREISTAEDTER_Flasche_Junghopfenpils.png",
+      "image_source": "https://www.freistaedter-bier.at/produkte/",
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
     },
     {
       "id": "at-braucommune-freistaedter-pegasus",
@@ -2713,7 +2965,10 @@
       "abv": 5.4,
       "ibu": 24,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2022/06/FREISTAEDTER_Flasche_Pegasus.png",
+      "image_source": "https://www.freistaedter-bier.at/produkte/",
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
     },
     {
       "id": "at-braucommune-freistaedter-imperator",
@@ -2725,7 +2980,10 @@
       "is_alcohol_free": false,
       "barcodes": [
         "90104169"
-      ]
+      ],
+      "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2022/02/FREISTAEDTER_Flasche_Imperator.png",
+      "image_source": "https://www.freistaedter-bier.at/produkte/",
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
     },
     {
       "id": "at-braucommune-freistaedter-traditionsbock",
@@ -2735,7 +2993,10 @@
       "abv": 7.0,
       "ibu": 26,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2025/10/Heller_Bock_Flasche_ohneSchatten_Website_FINAL.png",
+      "image_source": "https://www.freistaedter-bier.at/produkte/",
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
     },
     {
       "id": "at-braucommune-freistaedter-oktoberbier",
@@ -2745,7 +3006,10 @@
       "abv": 5.3,
       "ibu": 28,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2022/06/Oktoberbier_Flasche_033l_MW_ohneSchatten.png",
+      "image_source": "https://www.freistaedter-bier.at/produkte/",
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
     },
     {
       "id": "at-braucommune-freistaedter-lager",
@@ -2757,7 +3021,10 @@
       "is_alcohol_free": false,
       "barcodes": [
         "90104107"
-      ]
+      ],
+      "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2022/06/FREISTAEDTER_Flasche_Lager.png",
+      "image_source": "https://www.freistaedter-bier.at/produkte/",
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
     },
     {
       "id": "at-braucommune-freistaedter-imperial-stout",
@@ -2777,7 +3044,10 @@
       "abv": 0.5,
       "ibu": 29,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2025/10/Alkoholfreies_Bier_Flasche_05l_korkenNEU_ohneSchatten.png",
+      "image_source": "https://www.freistaedter-bier.at/produkte/",
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
     },
     {
       "id": "at-braucommune-freistaedter-alkoholfrei-grapefruit-radler",
@@ -2787,7 +3057,10 @@
       "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2022/06/Grape_Radler-05_Flasche_korkenNEU_ohneSchatten.png",
+      "image_source": "https://www.freistaedter-bier.at/produkte/",
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
     },
     {
       "id": "at-brauerei-classic-maerzen",
@@ -2799,7 +3072,9 @@
       "is_alcohol_free": false,
       "barcodes": [
         "90091148"
-      ]
+      ],
+      "image_url": "https://schloss-eggenberg.at/wp-content/uploads/2024/05/egg_o33_MaerzenClassic_mitGlas_betaut_2025_1704x2118px.png",
+      "image_source": "https://schloss-eggenberg.at/biere/classic-maerzen/"
     },
     {
       "id": "at-brauerei-gold",
@@ -2809,7 +3084,10 @@
       "abv": 5.3,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://frastanzer.at/sites/default/files/styles/product_slider_xxlarge_1x/public/2024-04/frastanzer-bier-gold-spezial-vorarlberg.png?itok=1iTyTlzV",
+      "image_source": "https://frastanzer.at/",
+      "image_license": "Pressebereich: © frastanzer, Produktbilder nur auf Anfrage"
     },
     {
       "id": "at-brauerei-hopfenkoenig",
@@ -2819,7 +3097,10 @@
       "abv": 5.1,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://schloss-eggenberg.at/wp-content/uploads/2024/05/egg_o33_HopfenKoenig_3er_betaut_2025_1704x2118px.png",
+      "image_source": "https://schloss-eggenberg.at/biere/hopfenkoenig/",
+      "image_license": "Downloads: https://schloss-eggenberg.at/downloads/ (nur Logos/Umwelterklärung)"
     },
     {
       "id": "at-brauerei-malzmeister-dunkel",
@@ -2839,7 +3120,9 @@
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://schloss-eggenberg.at/wp-content/uploads/2024/05/egg_05_Naturbursch_mitGlas_2025_1704x2118px.png",
+      "image_source": "https://schloss-eggenberg.at/biere/naturbursch-bio-zwickl/"
     },
     {
       "id": "at-brauerei-urbock-23",
@@ -2849,7 +3132,9 @@
       "abv": 9.6,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://schloss-eggenberg.at/wp-content/uploads/2024/05/o33L_Urbock_mitGlas_2025_1704x2118px-1.png",
+      "image_source": "https://schloss-eggenberg.at/biere/urbock-23/"
     },
     {
       "id": "at-brauerei-goldener-bock",
@@ -2959,7 +3244,10 @@
       "abv": 6.2,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2025/01/Abteibier-2025-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/ ; Downloads: https://www.stiftsbrauerei-schlaegl.at/downloads/"
     },
     {
       "id": "at-stiftsbrauerei-boehmerwald-zwickl",
@@ -2969,7 +3257,10 @@
       "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2023/10/Boehmerwald-Zwickl-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-stiftsbrauerei-chorherren-pils",
@@ -2979,7 +3270,10 @@
       "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2023/10/Chorherrenpils-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-stiftsbrauerei-das-kleine-feine",
@@ -2989,7 +3283,10 @@
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2024/11/Das-Kleine-Feine-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-stiftsbrauerei-der-entdecker",
@@ -2999,7 +3296,10 @@
       "abv": 4.6,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2024/05/der-Entdecker_220x680-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-stiftsbrauerei-der-entschlossene",
@@ -3009,7 +3309,10 @@
       "abv": 5.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2026/03/der-entschlossene-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-stiftsbrauerei-der-maerchenprinz",
@@ -3019,7 +3322,10 @@
       "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2026/06/der-maerchenprinz-web-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-stiftsbrauerei-die-blumige",
@@ -3029,7 +3335,10 @@
       "abv": 6.5,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2026/05/die-blumige-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-stiftsbrauerei-die-mutige",
@@ -3039,7 +3348,10 @@
       "abv": 5.6,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2024/08/die-Mutige_220x680-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-stiftsbrauerei-heimat-bio-bier",
@@ -3049,7 +3361,10 @@
       "abv": 4.5,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2023/10/Heimat-Bio-Bier-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-stiftsbrauerei-inprimus-kristall",
@@ -3059,7 +3374,10 @@
       "abv": 6.3,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2023/11/inPrimus_Kristall-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-stiftsbrauerei-kristall",
@@ -3084,7 +3402,10 @@
       "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2023/10/Malz-Koenig-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-stiftsbrauerei-roggen-gold",
@@ -3094,7 +3415,10 @@
       "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2023/10/Roggen-Gold-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-stiftsbrauerei-stifter-bier",
@@ -3104,7 +3428,10 @@
       "abv": 5.7,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2023/10/Stifter-Bier-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-stiftsbrauerei-unbeschwert",
@@ -3114,7 +3441,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2023/10/Unbeschwert-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-stiftsbrauerei-urquell",
@@ -3124,7 +3454,10 @@
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2023/10/Urquell-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-stiftsbrauerei-zitronen-radler",
@@ -3134,7 +3467,10 @@
       "abv": 2.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2026/02/Zitronen-Radler-220x683-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-brauhaus-edelguss",
@@ -3144,7 +3480,10 @@
       "abv": 4.9,
       "ibu": 20,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/BRGW_Edelguss_050-MW-uai-258x667.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/",
+      "image_license": "Downloadbereich: https://www.brauhaus-gusswerk.at/downloads/"
     },
     {
       "id": "at-brauhaus-edelguss-radler",
@@ -3154,7 +3493,9 @@
       "abv": 2.9,
       "ibu": 13,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/EdelgussRadler.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-weizenguss",
@@ -3164,7 +3505,9 @@
       "abv": 5.4,
       "ibu": 17,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/Weizenguss.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-weizenguss-bio-alkoholfrei",
@@ -3174,7 +3517,9 @@
       "abv": null,
       "ibu": 15,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/Weizenguss_AF.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-red-ale",
@@ -3184,7 +3529,9 @@
       "abv": 4.7,
       "ibu": 25,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/RedAle.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-austrian-amber-ale",
@@ -3194,7 +3541,9 @@
       "abv": 5.4,
       "ibu": 38,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/AAA.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-citra-beach",
@@ -3204,7 +3553,9 @@
       "abv": 4.5,
       "ibu": 26,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/CitraBeach.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-das-schwarze-schaf",
@@ -3214,7 +3565,9 @@
       "abv": 5.0,
       "ibu": 35,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/SchwarzeSchaf.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-die-schwarze-kuh",
@@ -3224,7 +3577,9 @@
       "abv": 9.2,
       "ibu": 54,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/SchwarzeKuh.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-die-alte-kuh",
@@ -3234,7 +3589,9 @@
       "abv": 10.5,
       "ibu": 50,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/AlteKuh_neu.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-horny-betty",
@@ -3244,7 +3601,9 @@
       "abv": 9.0,
       "ibu": 36,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/HornyBetty.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-alte-betty",
@@ -3254,7 +3613,9 @@
       "abv": 10.3,
       "ibu": 36,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/AlteBetty.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-dies-irae",
@@ -3264,7 +3625,9 @@
       "abv": 9.5,
       "ibu": 56,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/Dies_Irae_NEU.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-eisbergbock",
@@ -3274,7 +3637,9 @@
       "abv": 11.5,
       "ibu": 35,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/Eisbergbock.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-krinnawible",
@@ -3284,7 +3649,9 @@
       "abv": 14.5,
       "ibu": 36,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/Krinnawible.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-krispindl",
@@ -3294,7 +3661,9 @@
       "abv": 3.3,
       "ibu": 28,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/Krispindl.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-nicobar-ipa",
@@ -3304,7 +3673,10 @@
       "abv": 6.4,
       "ibu": 58,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/BRGW_Nicobar_IPA_033-EW-uai-258x667.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/nicobar-ipa/",
+      "image_license": "Downloadbereich: https://www.brauhaus-gusswerk.at/downloads/"
     },
     {
       "id": "at-brauhaus-nicobar-ipa-alkoholfrei",
@@ -3314,7 +3686,9 @@
       "abv": null,
       "ibu": 30,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/Nicobar-AF.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-jakobsgold-alkoholfrei",
@@ -3324,7 +3698,9 @@
       "abv": null,
       "ibu": 24,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/JakobsgoldAlkoholfrei_2024.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-glutenfrei-lager",
@@ -3334,7 +3710,9 @@
       "abv": 4.9,
       "ibu": 21,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/GlutenfreiLager.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-glutenfrei-rhabarber-radler",
@@ -3344,7 +3722,9 @@
       "abv": 2.5,
       "ibu": 12,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/GF_RhabarberRadler.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-steinbier",
@@ -3359,7 +3739,9 @@
       ],
       "barcode_volumes": {
         "9120060220673": 330
-      }
+      },
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/Steinbier_neu.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauhaus-winter-steinbier",
@@ -3369,7 +3751,9 @@
       "abv": 6.44,
       "ibu": 29,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauhaus-gusswerk.at/wp-content/uploads/WinterSteinbier_neu.png",
+      "image_source": "https://www.brauhaus-gusswerk.at/unser-sortiment/edelguss/"
     },
     {
       "id": "at-brauerei-goldlager",
@@ -3404,7 +3788,9 @@
       ],
       "barcode_volumes": {
         "90205217": 500
-      }
+      },
+      "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/Maerzen.png",
+      "image_source": "https://www.zillertal-bier.at/sortiment/bierspezialitaeten/maerzen/"
     },
     {
       "id": "at-brauerei-dunkel",
@@ -3414,7 +3800,9 @@
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/Zillertal_05_Dunkel_Glas_2024_sRGB.png",
+      "image_source": "https://www.zillertal-bier.at/sortiment/bierspezialitaeten/dunkel/"
     },
     {
       "id": "at-brauerei-heimatbier",
@@ -3492,7 +3880,10 @@
         "90288197": 500,
         "9028800638590": 500,
         "90288647": 330
-      }
+      },
+      "image_url": "https://frastanzer.at/sites/default/files/styles/product_slider_xxlarge_1x/public/2024-04/frastanzer-bier-natur-radler-bio.png?itok=RssM9JjS",
+      "image_source": "https://frastanzer.at/",
+      "image_license": "Pressebereich: © frastanzer, Produktbilder nur auf Anfrage"
     },
     {
       "id": "at-brauerei-tiroler-radler-sauer",
@@ -3522,7 +3913,9 @@
       "abv": 5.1,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.braugasthof-vitzthum.at/files/2025/12/04/export.png",
+      "image_source": "https://www.braugasthof-vitzthum.at/brauerei/biersorten"
     },
     {
       "id": "at-brauerei-dunkles-weissbier",
@@ -3532,7 +3925,9 @@
       "abv": 5.1,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.braugasthof-vitzthum.at/files/2025/12/04/dkl_weissbier.jpg-2.png",
+      "image_source": "https://www.braugasthof-vitzthum.at/brauerei/biersorten"
     },
     {
       "id": "at-brauerei-helles-weissbier",
@@ -3542,7 +3937,9 @@
       "abv": 5.1,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.braugasthof-vitzthum.at/files/2025/12/04/weissbier.png",
+      "image_source": "https://www.braugasthof-vitzthum.at/brauerei/biersorten"
     },
     {
       "id": "at-brauerei-pils",
@@ -3559,7 +3956,9 @@
       "barcode_volumes": {
         "9120060130415": 330,
         "9002882000056": 330
-      }
+      },
+      "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/zb_biere-falstaff_2024_pils.png",
+      "image_source": "https://www.zillertal-bier.at/sortiment/bierspezialitaeten/pils/"
     },
     {
       "id": "at-brauerei-bock-dunkel",
@@ -3569,7 +3968,9 @@
       "abv": 7.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.braugasthof-vitzthum.at/files/2025/12/04/bockdunkel.png",
+      "image_source": "https://www.braugasthof-vitzthum.at/brauerei/biersorten"
     },
     {
       "id": "at-brauerei-bock-hell",
@@ -3579,7 +3980,9 @@
       "abv": 7.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.braugasthof-vitzthum.at/files/2025/12/04/bockhell.png",
+      "image_source": "https://www.braugasthof-vitzthum.at/brauerei/biersorten"
     },
     {
       "id": "at-brauerei-premium",
@@ -3589,7 +3992,9 @@
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.braugasthof-vitzthum.at/files/2025/12/04/premium.png",
+      "image_source": "https://www.braugasthof-vitzthum.at/brauerei/biersorten"
     },
     {
       "id": "at-brauerei-falstaff",
@@ -3599,7 +4004,9 @@
       "abv": 5.4,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.braugasthof-vitzthum.at/files/2025/12/04/fallstaff.png",
+      "image_source": "https://www.braugasthof-vitzthum.at/brauerei/biersorten"
     },
     {
       "id": "at-brauerei-hell-leicht",
@@ -3609,7 +4016,9 @@
       "abv": 2.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.braugasthof-vitzthum.at/files/2025/12/04/leichtbier.png",
+      "image_source": "https://www.braugasthof-vitzthum.at/brauerei/biersorten"
     },
     {
       "id": "at-brauerei-vicedominator",
@@ -3629,7 +4038,9 @@
       "abv": 2.4,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.braugasthof-vitzthum.at/files/2025/12/04/radler.png",
+      "image_source": "https://www.braugasthof-vitzthum.at/brauerei/biersorten"
     },
     {
       "id": "at-bierol-the-padawan-pale-ale",
@@ -3639,7 +4050,9 @@
       "abv": 5.6,
       "ibu": 45,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bierol.at/cdn/shop/files/bierol_dosen_the-padawan_front_white_rz.jpg?v=1722330578",
+      "image_source": "https://bierol.at/products/padawan"
     },
     {
       "id": "at-bierol-el-patron-double-ipa",
@@ -3649,7 +4062,9 @@
       "abv": 8.2,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bierol.at/cdn/shop/files/bierol_dosen_el-patron_front_white_rz.jpg?v=1722330157",
+      "image_source": "https://bierol.at/products/el-patron-0-33l-dose"
     },
     {
       "id": "at-bierol-mountain-pale-ale-ipa",
@@ -3659,7 +4074,9 @@
       "abv": 6.3,
       "ibu": 60,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bierol.at/cdn/shop/files/bierol_dosen330ml_mtn-pale-ale_front_white_rz.jpg?v=1722330386",
+      "image_source": "https://bierol.at/products/mountain-pale-ale-0-33l-dose-1"
     },
     {
       "id": "at-bierol-bierol-helles-lagerbier",
@@ -3669,7 +4086,9 @@
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bierol.at/cdn/shop/files/bierol_dosen440ml_helles_front_white_rz_5efe7180-4c28-464b-9c27-85ea252869a6.jpg?v=1727335518",
+      "image_source": "https://bierol.at/products/bierol-helles-0-44l-dose-1"
     },
     {
       "id": "at-bierol-bierol-sommerbier",
@@ -3679,7 +4098,9 @@
       "abv": 3.5,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bierol.at/cdn/shop/files/bierol_dosen330ml_sommerbier_front_white_rz_1_db7bf49d-858c-420f-8c46-ac5226fc06bf.webp?v=1782233317",
+      "image_source": "https://bierol.at/products/bierol-sommerbier-1"
     },
     {
       "id": "at-bierol-fraxbie-session-ipa",
@@ -3689,7 +4110,9 @@
       "abv": 3.7,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bierol.at/cdn/shop/files/bierol_dosen_fraxbie_front_white_rz_ee6a1ba4-78e8-4d62-927e-2e3940ebf676.jpg?v=1755182620",
+      "image_source": "https://bierol.at/products/fraxbie-pad-330ml-dose-1"
     },
     {
       "id": "at-bierol-haumtaucher-ipa",
@@ -3699,7 +4122,9 @@
       "abv": 4.5,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bierol.at/cdn/shop/files/bierol_dosen_haumtaucher_front_white_rz_545cb1d1-01da-474b-85ff-f577fd3dd5d6.png?v=1748959599",
+      "image_source": "https://bierol.at/products/haumtaucher-ipa-330ml-dose-1"
     },
     {
       "id": "at-bierol-hardigatti-2026-hazy-ipa",
@@ -3709,7 +4134,9 @@
       "abv": 6.5,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bierol.at/cdn/shop/files/bierol_hartigatt.jpg?v=1770281979",
+      "image_source": "https://bierol.at/products/hardigatti-2026-hazy-ipa-0-33l-dose-1"
     },
     {
       "id": "at-bierol-schafehax-neipa",
@@ -3719,7 +4146,9 @@
       "abv": 6.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bierol.at/cdn/shop/files/neipa_schafehax_cbb3759c-a2df-46ee-a4d0-021e0f34cb59.jpg?v=1773589083",
+      "image_source": "https://bierol.at/products/schafehax"
     },
     {
       "id": "at-bierol-sunn-seiterl-bio-golden-ale",
@@ -3729,7 +4158,9 @@
       "abv": 4.7,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bierol.at/cdn/shop/files/bierol_dosen_sunn-seiterl_front_white_rz.jpg?v=1722330510",
+      "image_source": "https://bierol.at/products/sunn-seiterl-bio-golden-ale-0-33l-dose"
     },
     {
       "id": "at-bierol-oha-bier-pale-ale",
@@ -3739,7 +4170,9 @@
       "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bierol.at/cdn/shop/files/oha_produkt-min.webp?v=1751554112",
+      "image_source": "https://bierol.at/products/oha-bier-pale-330ml-dose-alkoholfrei"
     },
     {
       "id": "at-bierol-zapfn-bio-zirbenradler",
@@ -3749,7 +4182,9 @@
       "abv": 2.5,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bierol.at/cdn/shop/files/bierol_dosen_zapfn_front_white_rz.jpg?v=1722330611",
+      "image_source": "https://bierol.at/products/zapfn-bio-zirbenradler-0-33l-dose-1"
     },
     {
       "id": "at-bierol-vogelsang-schnepfenstrauss",
@@ -3769,7 +4204,9 @@
       "abv": 5.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bierol.at/cdn/shop/files/BIPA_Webshop_Dose_66cd2ae2-9fad-4859-a10e-f06087791518.webp?v=1752561070",
+      "image_source": "https://bierol.at/products/vogelsang-schopfwachtel-0-33l-dose"
     },
     {
       "id": "at-loncium-bio-classic",
@@ -3779,7 +4216,9 @@
       "abv": 4.9,
       "ibu": 25,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/classic_close.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-loncium-bio-helles",
@@ -3789,7 +4228,9 @@
       "abv": 4.9,
       "ibu": 25,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/helles_close.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-loncium-bio-gailtaler-weisse",
@@ -3799,7 +4240,9 @@
       "abv": 5.2,
       "ibu": 25,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/gailtalerweisse_close.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-loncium-bio-austrian-amber-lager",
@@ -3809,7 +4252,9 @@
       "abv": 5.5,
       "ibu": 22,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/austrianamber_close.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-loncium-bio-schwarze-gams",
@@ -3819,7 +4264,9 @@
       "abv": 6.2,
       "ibu": 23,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/schwarzegams_close.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-loncium-bio-dunkler-weizenbock",
@@ -3829,7 +4276,9 @@
       "abv": 6.8,
       "ibu": 18,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/weizenbock_close.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-loncium-royal-dark",
@@ -3839,7 +4288,9 @@
       "abv": 5.7,
       "ibu": 20,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/royaldark_close.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-loncium-freepa",
@@ -3849,7 +4300,9 @@
       "abv": 0.5,
       "ibu": 45,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/freepa_close.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-loncium-carinthi-p-a",
@@ -3859,7 +4312,9 @@
       "abv": 5.6,
       "ibu": 45,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/carinthipa_close.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-loncium-juicy-neipa",
@@ -3869,7 +4324,9 @@
       "abv": 5.7,
       "ibu": 45,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/juicyneipa_close.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-loncium-hazy-neipa",
@@ -3879,7 +4336,9 @@
       "abv": 0.5,
       "ibu": 40,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/hazyneipa_close.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-loncium-rogg-n-roll",
@@ -3889,7 +4348,9 @@
       "abv": 5.4,
       "ibu": 23,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/roggnroll_close.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-loncium-illuminati",
@@ -3899,7 +4360,9 @@
       "abv": 6.5,
       "ibu": 22,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/illuminati.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-loncium-rose",
@@ -3909,7 +4372,9 @@
       "abv": 4.7,
       "ibu": 15,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/rose_close.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-loncium-downhill",
@@ -3919,7 +4384,9 @@
       "abv": 4.9,
       "ibu": 20,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/downhill.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-loncium-lemonrose-mary",
@@ -3929,7 +4396,9 @@
       "abv": 5.5,
       "ibu": 18,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/lemonrosemary.png",
+      "image_source": "https://www.loncium.at/"
     },
     {
       "id": "at-stiegl-hausbier-nr-55",
@@ -4547,7 +5016,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.hirterbier.at/wp-content/uploads/Hirter-Bieressig-Dunkel_1.webp",
+      "image_source": "https://www.hirterbier.at/produkt/bieressig-dunkel/"
     },
     {
       "id": "at-ottakringer-brauwerk-sunbeam-blonde",
@@ -4557,7 +5028,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauwerk.wien/media/2020/07/BW_SUNBEAM_Blonde_RGB_72dpi.png",
+      "image_source": "https://www.brauwerk.wien/",
+      "image_license": "Downloadbereich: https://www.brauwerk.wien/downloads/"
     },
     {
       "id": "at-ottakringer-brauwerk-black-proud-porter",
@@ -4567,7 +5041,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauwerk.wien/media/2019/03/BW_BLACKPROUD_Porter_RGB_72dpi-EBS2020.png",
+      "image_source": "https://www.brauwerk.wien/",
+      "image_license": "Downloadbereich: https://www.brauwerk.wien/downloads/"
     },
     {
       "id": "at-ottakringer-brauwerk-felber-hopfenmadl-hoppy-vienna-lager",
@@ -4577,7 +5054,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauwerk.wien/media/2021/01/Felber-A4.png",
+      "image_source": "https://www.brauwerk.wien/",
+      "image_license": "Downloadbereich: https://www.brauwerk.wien/downloads/"
     },
     {
       "id": "at-brew-age-alphatier-new-england-ipa",
@@ -4587,7 +5067,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://brewage.at/wp-content/uploads/2020/03/Brew-Age-Alphatier-New-England-IPA-600x750.jpg",
+      "image_source": "https://brewage.at/produkt/alphatier/",
+      "image_license": "Pressebereich: https://brewage.at/presse/"
     },
     {
       "id": "at-privatbrauerei-zwettl-weitra-braeu-weitra-braeu-das-ohne-alkoholfreies",
@@ -4597,7 +5080,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zwettler.at/wp-content/uploads/downloads/9008300000615_Weitra_DasOhne_BIO_alkoholfrei_033.jpg",
+      "image_source": "https://www.zwettler.at/mediendatenbank/",
+      "image_license": "Mediendatenbank Zwettler: offizielle Produktabbildungen zum Download"
     },
     {
       "id": "at-brauerei-frastanz-s-klenne",
@@ -4607,7 +5093,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://frastanzer.at/sites/default/files/styles/product_slider_xxlarge_1x/public/2024-04/frastanzer-bier-sklenne-vorarlberg.png?itok=1m_xTUwD",
+      "image_source": "https://frastanzer.at/",
+      "image_license": "Pressebereich: https://frastanzer.at/presse-downloads - Copyright Brauerei Frastanz eGen, Verwendung nur mit Hinweis '© frastanzer', Produktbilder auf Anfrage"
     },
     {
       "id": "at-brauerei-frastanz-s-dunkle-bio",
@@ -4617,7 +5106,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://frastanzer.at/sites/default/files/styles/product_slider_xxlarge_1x/public/2024-04/frastanzer-bier-sdunkle-bio_0.png?itok=MGNICzzK",
+      "image_source": "https://frastanzer.at/",
+      "image_license": "Pressebereich: © frastanzer, Produktbilder nur auf Anfrage"
     },
     {
       "id": "at-brauerei-frastanz-3-schwestern-bock-bio",
@@ -4627,7 +5119,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://frastanzer.at/sites/default/files/styles/product_slider_xxlarge_1x/public/2024-04/frastanzer-bier-bock-bio.png?itok=Z7XlwTMP",
+      "image_source": "https://frastanzer.at/",
+      "image_license": "Pressebereich: © frastanzer, Produktbilder nur auf Anfrage"
     },
     {
       "id": "at-brauerei-frastanz-s-jubi",
@@ -4637,7 +5132,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://frastanzer.at/sites/default/files/styles/product_slider_xxlarge_1x/public/2024-04/frastanzer-bier-jubi_vorarlberg.png?itok=G3dizmWJ",
+      "image_source": "https://frastanzer.at/",
+      "image_license": "Pressebereich: © frastanzer, Produktbilder nur auf Anfrage"
     },
     {
       "id": "at-brauerei-frastanz-freibier",
@@ -4647,7 +5145,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://frastanzer.at/sites/default/files/styles/product_slider_xxlarge_1x/public/2024-04/frastanzer-bier-freibier_bio.png?itok=NclT3TX-",
+      "image_source": "https://frastanzer.at/",
+      "image_license": "Pressebereich: © frastanzer, Produktbilder nur auf Anfrage"
     },
     {
       "id": "at-brauerei-frastanz-helles",
@@ -4657,7 +5158,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://frastanzer.at/sites/default/files/styles/product_slider_xxlarge_1x/public/2024-04/frastanzer-bier-helles-bio.png?itok=XZ4RgSlT",
+      "image_source": "https://frastanzer.at/",
+      "image_license": "Pressebereich: © frastanzer, Produktbilder nur auf Anfrage"
     },
     {
       "id": "at-brauerei-frastanz-handcrafted-hoppy",
@@ -4667,7 +5171,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://frastanzer.at/sites/default/files/styles/product_slider_xxlarge_1x/public/2024-04/frastanzer-bier-hoppy_bio.png?itok=kiA3m_yV",
+      "image_source": "https://frastanzer.at/",
+      "image_license": "Pressebereich: © frastanzer, Produktbilder nur auf Anfrage"
     },
     {
       "id": "at-brauerei-egg-egger-waelder",
@@ -4677,7 +5184,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://brauereiegg.imgix.net/media/pages/produkte/bier/egger-walder/f05636be3e-1741699515/egger-walder-033-beerstar.png?auto=compress,format&fit=crop&h=600&quality=40",
+      "image_source": "https://www.brauerei-egg.at/produkte/bier/egger-walder",
+      "image_license": "Downloadbereich: https://www.brauerei-egg.at/downloads"
     },
     {
       "id": "at-brauerei-egg-egger-edel-pils",
@@ -4687,7 +5197,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://brauereiegg.imgix.net/media/pages/produkte/bier/egger-edel-pils/26a6157ee6-1662468321/egger-pils-033.png?auto=compress,format&fit=crop&h=600&quality=40",
+      "image_source": "https://www.brauerei-egg.at/produkte/bier/egger-edel-pils",
+      "image_license": "Downloadbereich: https://www.brauerei-egg.at/downloads"
     },
     {
       "id": "at-brauerei-egg-egger-heller-jokl",
@@ -4697,7 +5210,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://brauereiegg.imgix.net/media/pages/home/8e3d76943d-1691478192/egger-heller-jokl.png?auto=compress,format&fit=crop&w=551",
+      "image_source": "https://www.brauerei-egg.at/",
+      "image_license": "Downloadbereich: https://www.brauerei-egg.at/downloads"
     },
     {
       "id": "at-zillertal-bier-zeller-hell",
@@ -4707,7 +5223,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/Zillertal_05_Zeller_Hell_Front_betaut_mit_Glas_ohne_Logo_2024_neu_sRGB.png",
+      "image_source": "https://www.zillertal-bier.at/sortiment/bierspezialitaeten/zeller-hell/",
+      "image_license": "Downloads: https://www.zillertal-bier.at/service/downloads/ (nur Stimmungsbilder)"
     },
     {
       "id": "at-zillertal-bier-biozwickl",
@@ -4717,7 +5236,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/zb_biere-falstaff_2024_BioZwickl_02.png",
+      "image_source": "https://www.zillertal-bier.at/sortiment/bierspezialitaeten/biozwickl/"
     },
     {
       "id": "at-zillertal-bier-weissbier-hell",
@@ -4727,7 +5248,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/zb_biere-falstaff_2024_weisbier-hell.png",
+      "image_source": "https://www.zillertal-bier.at/sortiment/bierspezialitaeten/weissbier-hell/"
     },
     {
       "id": "at-zillertal-bier-tyroler-hell",
@@ -4737,7 +5260,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/Zillertal_033_Tyroler_Hell_Glas_ohne_Logo_2024_neu_sRGB.png",
+      "image_source": "https://www.zillertal-bier.at/sortiment/bierspezialitaeten/tyroler-hell/"
     },
     {
       "id": "at-zillertal-bier-bioradler",
@@ -4747,7 +5272,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/zb_biere-falstaff_2024_bio-radler.png",
+      "image_source": "https://www.zillertal-bier.at/sortiment/bierspezialitaeten/bioradler/"
     },
     {
       "id": "at-zillertal-bier-gauder-bock",
@@ -4757,7 +5284,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/Zillertal_05_Gauder_Bock_Glas_ohne_Logo_2024_neu_sRGB.png",
+      "image_source": "https://www.zillertal-bier.at/sortiment/bierspezialitaeten/gauder-bock/"
     },
     {
       "id": "at-zillertal-bier-525-tyroler-jubilaeumsbock",
@@ -4767,7 +5296,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/525.png",
+      "image_source": "https://www.zillertal-bier.at/sortiment/spezialbiere/525/"
     },
     {
       "id": "at-zillertal-bier-granat",
@@ -4777,7 +5308,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/zb_biere-falstaff_2024_granat_01.png",
+      "image_source": "https://www.zillertal-bier.at/sortiment/spezialbiere/granat/"
     },
     {
       "id": "at-zillertal-bier-517-dinkel-weizen",
@@ -4787,7 +5320,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/zb_biere-falstaff_2024_517_01.png",
+      "image_source": "https://www.zillertal-bier.at/sortiment/spezialbiere/517/"
     },
     {
       "id": "at-zillertal-bier-gauder-steinbock-naturtrueb",
@@ -4797,7 +5332,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/zb_biere-falstaff_2024_gauder-steinbock_naturtrueb_01.png",
+      "image_source": "https://www.zillertal-bier.at/sortiment/spezialbiere/gauder-steinbock/"
     },
     {
       "id": "at-die-weisse-salzburg-die-weisse-hell-das-original",
@@ -4837,7 +5374,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bierol.at/cdn/shop/files/Schnepfenstraus.png?v=1724680119",
+      "image_source": "https://bierol.at/products/vogelsang-schnepfenstraus-0-33l-dose"
     },
     {
       "id": "at-braucommune-in-freistadt-freistaedter-spezialitaeten-sortiment",
@@ -4847,7 +5386,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2022/05/freistaedter_spezialitaeten.png",
+      "image_source": "https://www.freistaedter-bier.at/produkte/",
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
     },
     {
       "id": "at-stiftsbrauerei-schlaegl-bierabo-charakterstark",
@@ -4857,7 +5399,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2023/10/Bierabo_Titelbild-600x450-c-default.png",
+      "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
     },
     {
       "id": "at-privatbrauerei-schnaitl-schnaitl-original",
@@ -4867,7 +5412,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://cdn.prod.website-files.com/61815709cb443cd767e74221/65bb9715c67879aa0d97949f_original_arrangement_1000.png",
+      "image_source": "https://www.schnaitl.at/die-biere/schnaitl-original"
     },
     {
       "id": "at-privatbrauerei-schnaitl-schnaitl-dunkel",
@@ -4877,7 +5424,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://cdn.prod.website-files.com/61815709cb443cd767e74221/65bb9729ba72e0c9b28ce6d7_dunkel_arrangement-1000px.png",
+      "image_source": "https://www.schnaitl.at/die-biere/schnaitl-dunkel"
     },
     {
       "id": "at-privatbrauerei-schnaitl-schnaitl-naturtrueb",
@@ -4887,7 +5436,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://cdn.prod.website-files.com/61815709cb443cd767e74221/61925e0b93ebf65d7811477a_naturtrueb_2000.png",
+      "image_source": "https://www.schnaitl.at/die-biere/schnaitl-naturtrub"
     },
     {
       "id": "at-privatbrauerei-schnaitl-schnaitl-pils-de-luxe",
@@ -4897,7 +5448,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://cdn.prod.website-files.com/61815709cb443cd767e74221/65bb970553137b10ada18f6d_pils_de_luxe_arrangement_1000.png",
+      "image_source": "https://www.schnaitl.at/die-biere/schnaitl-pils-de-luxe"
     },
     {
       "id": "at-privatbrauerei-schnaitl-bayern-weisse-hell",
@@ -4907,7 +5460,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://cdn.prod.website-files.com/61815709cb443cd767e74221/61925b125227a17a8b9ca5da_bayern_weisse_hell_2000.png",
+      "image_source": "https://www.schnaitl.at/die-biere/bayern-weisse-hell"
     },
     {
       "id": "at-privatbrauerei-schnaitl-schnaitl-boehmisches-lager",
@@ -4917,7 +5472,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://cdn.prod.website-files.com/61815709cb443cd767e74221/651d87db29f290d6d83606a1_boehmisches-lager_2000.png",
+      "image_source": "https://www.schnaitl.at/die-biere/schnaitl-bohmisches-lager"
     },
     {
       "id": "at-privatbrauerei-schnaitl-schnaitl-festbock",
@@ -4927,7 +5484,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://cdn.prod.website-files.com/61812ea7426f07ad7ba0abda/692718018e1e027b526ac94b_65bb968f50760203baa53a69_festbock_arrangement_1000_ohne-schatten.png",
+      "image_source": "https://www.schnaitl.at/"
     },
     {
       "id": "at-privatbrauerei-schnaitl-stille-nacht-festbier-4er-karton-0-33-l",
@@ -4937,7 +5496,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://cdn.prod.website-files.com/61812ea7426f07ad7ba0abda/619270a644ab472c0ba0db4c_SCH_StilleNacht_330ml-Karton_10-2015.png",
+      "image_source": "https://www.schnaitl.at/die-biere/schnaitl-original"
     },
     {
       "id": "at-brauerei-raschhofer-raschhofer-zwickl",
@@ -4947,7 +5508,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.raschhoferbier.at/images/produkte/zwicklbier.jpg",
+      "image_source": "https://www.raschhoferbier.at/"
     },
     {
       "id": "at-brauerei-raschhofer-raschhofer-pils",
@@ -4957,7 +5520,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.raschhoferbier.at/images/produkte/pils.jpg",
+      "image_source": "https://www.raschhoferbier.at/"
     },
     {
       "id": "at-brauerei-raschhofer-raschhofer-weizen-hell",
@@ -4967,7 +5532,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.raschhoferbier.at/images/produkte/weizen_hell.jpg",
+      "image_source": "https://www.raschhoferbier.at/"
     },
     {
       "id": "at-brauerei-raschhofer-raschhofer-innviertler-hell",
@@ -4977,7 +5544,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.raschhoferbier.at/images/produkte/innviertler_hell.jpg",
+      "image_source": "https://www.raschhoferbier.at/"
     },
     {
       "id": "at-brauerei-raschhofer-silberpfeil-pale-ale",
@@ -4987,7 +5556,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.raschhoferbier.at/images/produkte/craft_beer_silberpfeil.jpg",
+      "image_source": "https://www.raschhoferbier.at/"
     },
     {
       "id": "at-brauerei-raschhofer-tausendsassa",
@@ -4997,7 +5568,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.raschhoferbier.at/images/produkte/craft_beer_tausendsassa.jpg",
+      "image_source": "https://www.raschhoferbier.at/"
     },
     {
       "id": "at-brauerei-raschhofer-roter-engel-red-ale",
@@ -5007,7 +5580,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.raschhoferbier.at/images/produkte/craft_beer_roter_engel.jpg",
+      "image_source": "https://www.raschhoferbier.at/"
     },
     {
       "id": "at-brauerei-raschhofer-teufelskerl-bock",
@@ -5017,7 +5592,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.raschhoferbier.at/images/produkte/craft_beer_teufelskerl.jpg",
+      "image_source": "https://www.raschhoferbier.at/"
     },
     {
       "id": "at-brauerei-raschhofer-der-zwicklradler",
@@ -5027,7 +5604,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.raschhoferbier.at/images/produkte/craft_beer_zwickl_radler.jpg",
+      "image_source": "https://www.raschhoferbier.at/"
     },
     {
       "id": "at-brauerei-jos-baumgartner-schaerding-baumgartner-zwickl",
@@ -5037,7 +5616,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauerei-baumgartner.at/uploads/produkte/Zwickl_Hell_05l_2025-07-24-090159_kdgv.jpg",
+      "image_source": "https://www.brauerei-baumgartner.at/biere/zwickl",
+      "image_license": "Downloadbereich: https://www.brauerei-baumgartner.at/service/downloads"
     },
     {
       "id": "at-brauerei-jos-baumgartner-schaerding-baumgartner-hell",
@@ -5047,7 +5629,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauerei-baumgartner.at/uploads/produkte/Hell_033l.jpg",
+      "image_source": "https://www.brauerei-baumgartner.at/biere/hell",
+      "image_license": "Downloadbereich: https://www.brauerei-baumgartner.at/service/downloads"
     },
     {
       "id": "at-brauerei-jos-baumgartner-schaerding-baumgartner-export",
@@ -5057,7 +5642,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauerei-baumgartner.at/uploads/produkte/Export_05l.jpg",
+      "image_source": "https://www.brauerei-baumgartner.at/biere/export",
+      "image_license": "Downloadbereich: https://www.brauerei-baumgartner.at/service/downloads"
     },
     {
       "id": "at-brauerei-jos-baumgartner-schaerding-baumgartner-pils",
@@ -5067,7 +5655,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauerei-baumgartner.at/uploads/produkte/Pils_033l.jpg",
+      "image_source": "https://www.brauerei-baumgartner.at/biere/pils",
+      "image_license": "Downloadbereich: https://www.brauerei-baumgartner.at/service/downloads"
     },
     {
       "id": "at-brauerei-jos-baumgartner-schaerding-baumgartner-bock",
@@ -5077,7 +5668,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauerei-baumgartner.at/uploads/produkte/Bock_033l.jpg",
+      "image_source": "https://www.brauerei-baumgartner.at/biere/bock",
+      "image_license": "Downloadbereich: https://www.brauerei-baumgartner.at/service/downloads"
     },
     {
       "id": "at-brauerei-jos-baumgartner-schaerding-baumgartner-baunti-lager",
@@ -5087,7 +5681,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.brauerei-baumgartner.at/uploads/produkte/Baunti_033l.jpg",
+      "image_source": "https://www.brauerei-baumgartner.at/biere/baunti-lager",
+      "image_license": "Downloadbereich: https://www.brauerei-baumgartner.at/service/downloads"
     },
     {
       "id": "at-privatbrauerei-gols-golser-bio-premium",
@@ -5097,7 +5694,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.golserbier.at/img/product/premium330.jpg",
+      "image_source": "https://www.golserbier.at/bier_premium.html",
+      "image_license": "Downloads: https://www.golserbier.at/downloads.php (Produktfolder-PDF)"
     },
     {
       "id": "at-huber-braeu-st-johanner-original",
@@ -5107,7 +5707,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.huberbraeu.at/typo3temp/pics/6766aa8fce.png",
+      "image_source": "https://www.huberbraeu.at/Sortiment.9.0.html",
+      "image_license": "Mediadownloads: https://www.huberbraeu.at/Mediadownloads.50.0.html"
     },
     {
       "id": "at-huber-braeu-der-juchizza",
@@ -5117,7 +5720,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.huberbraeu.at/typo3temp/pics/c295a46963.png",
+      "image_source": "https://www.huberbraeu.at/Sortiment.9.0.html",
+      "image_license": "Mediadownloads: https://www.huberbraeu.at/Mediadownloads.50.0.html"
     },
     {
       "id": "at-huber-braeu-grapefruit-weissbier-radler",
@@ -5127,7 +5733,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.huberbraeu.at/typo3temp/pics/ea1be6ec05.png",
+      "image_source": "https://www.huberbraeu.at/Sortiment.9.0.html",
+      "image_license": "Mediadownloads: https://www.huberbraeu.at/Mediadownloads.50.0.html"
     },
     {
       "id": "at-huber-braeu-meisterpils",
@@ -5137,7 +5746,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.huberbraeu.at/typo3temp/pics/13296f3010.png",
+      "image_source": "https://www.huberbraeu.at/Sortiment.9.0.html",
+      "image_license": "Mediadownloads: https://www.huberbraeu.at/Mediadownloads.50.0.html"
     },
     {
       "id": "at-huber-braeu-spezial",
@@ -5147,7 +5759,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.huberbraeu.at/typo3temp/pics/2bb043c64b.png",
+      "image_source": "https://www.huberbraeu.at/Sortiment.9.0.html",
+      "image_license": "Mediadownloads: https://www.huberbraeu.at/Mediadownloads.50.0.html"
     },
     {
       "id": "at-huber-braeu-huber-bock",
@@ -5157,7 +5772,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.huberbraeu.at/typo3temp/pics/cbdd28053c.png",
+      "image_source": "https://www.huberbraeu.at/Sortiment.9.0.html",
+      "image_license": "Mediadownloads: https://www.huberbraeu.at/Mediadownloads.50.0.html"
     },
     {
       "id": "at-huber-braeu-augustinus",
@@ -5167,7 +5785,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.huberbraeu.at/typo3temp/pics/5c0d16624a.png",
+      "image_source": "https://www.huberbraeu.at/Sortiment.9.0.html",
+      "image_license": "Mediadownloads: https://www.huberbraeu.at/Mediadownloads.50.0.html"
     },
     {
       "id": "at-huber-braeu-tiroler-hefeweizen-hell",
@@ -5177,7 +5798,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.huberbraeu.at/typo3temp/pics/fcf9e35b79.png",
+      "image_source": "https://www.huberbraeu.at/Sortiment.9.0.html",
+      "image_license": "Mediadownloads: https://www.huberbraeu.at/Mediadownloads.50.0.html"
     },
     {
       "id": "at-huber-braeu-die-leichte-weisse",
@@ -5187,7 +5811,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.huberbraeu.at/typo3temp/pics/ce2d2d39b2.png",
+      "image_source": "https://www.huberbraeu.at/Sortiment.9.0.html",
+      "image_license": "Mediadownloads: https://www.huberbraeu.at/Mediadownloads.50.0.html"
     },
     {
       "id": "at-huber-braeu-weissbier-alkoholfrei",
@@ -5197,7 +5824,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.huberbraeu.at/typo3temp/pics/b8c2b74f96.png",
+      "image_source": "https://www.huberbraeu.at/Sortiment.9.0.html",
+      "image_license": "Mediadownloads: https://www.huberbraeu.at/Mediadownloads.50.0.html"
     },
     {
       "id": "at-bevog-bitz",
@@ -5207,7 +5837,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/Bitz-12_1200x1200.jpg?v=1785318390",
+      "image_source": "https://bevog.com/collections/regular-beer/products/bitz",
+      "image_license": "bevog.at leitet auf bevog.com (herstellereigener Shop) um"
     },
     {
       "id": "at-bevog-tak",
@@ -5217,7 +5850,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/IMG_8464_web_1200x1200.jpg?v=1726656042",
+      "image_source": "https://bevog.com/collections/regular-beer/products/tak-pale-ale"
     },
     {
       "id": "at-bevog-deetz",
@@ -5227,7 +5862,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/IMG_8793_1200x1200.jpg?v=1726656148",
+      "image_source": "https://bevog.com/collections/regular-beer/products/deetz-golden-ale"
     },
     {
       "id": "at-bevog-helles-0-33l",
@@ -5237,7 +5874,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/IMG_5726_1200x1200.jpg?v=1766140116",
+      "image_source": "https://bevog.com/collections/regular-beer/products/helles-0-33l"
     },
     {
       "id": "at-bevog-pilsner",
@@ -5247,7 +5886,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/IMG_6616_square_1200x1200.jpg?v=1748939626",
+      "image_source": "https://bevog.com/collections/regular-beer/products/pilsner"
     },
     {
       "id": "at-bevog-woo",
@@ -5257,7 +5898,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/IMG_6716-oshop_1200x1200.jpg?v=1726740056",
+      "image_source": "https://bevog.com/collections/regular-beer/products/woo"
     },
     {
       "id": "at-bevog-ledena",
@@ -5267,7 +5910,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/449466874_10145028267044362_3821060724006211878_n_1200x1200.jpg?v=1724154742",
+      "image_source": "https://bevog.com/collections/regular-beer/products/ledena"
     },
     {
       "id": "at-bevog-helles-bottle",
@@ -5277,7 +5922,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/helles-bottle-mock_1200x1200.jpg?v=1773822819",
+      "image_source": "https://bevog.com/collections/regular-beer/products/helles-bottle"
     },
     {
       "id": "at-bevog-prh-2-6-lite-ale",
@@ -5287,7 +5934,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/PRH-26-mock-01_1200x1200.jpg?v=1786311724",
+      "image_source": "https://bevog.com/collections/who-cares/products/prh-2-6-lite-ale"
     },
     {
       "id": "at-bevog-cao-vit-gibbon",
@@ -5297,7 +5946,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/Gibbon-image_1200x1200.png?v=1783667291",
+      "image_source": "https://bevog.com/collections/who-cares/products/cao-vit-gibbon"
     },
     {
       "id": "at-bevog-hana",
@@ -5307,7 +5958,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/IMG_9648-copy-web-1-1_1200x1200.jpg?v=1760530330",
+      "image_source": "https://bevog.com/collections/who-cares/products/hana"
     },
     {
       "id": "at-bevog-macedonian-grayling",
@@ -5317,7 +5970,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/mac-grayling-image_1200x1200.jpg?v=1783667486",
+      "image_source": "https://bevog.com/collections/who-cares/products/macedonian-grayling-12-pack"
     },
     {
       "id": "at-bevog-lola",
@@ -5327,7 +5982,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/IMG_0745-press_1200x1200.jpg?v=1748252243",
+      "image_source": "https://bevog.com/collections/who-cares/products/lola"
     },
     {
       "id": "at-bevog-aline-2025",
@@ -5337,7 +5994,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/IMG_5876-web_1200x1200.jpg?v=1770108058",
+      "image_source": "https://bevog.com/collections/paperback-series/products/aline-2025"
     },
     {
       "id": "at-bevog-hagger-12-25",
@@ -5347,7 +6006,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/Hagger-12-25-web_786d5269-c472-49b3-8206-e16a2ab99299_1200x1200.jpg?v=1770115086",
+      "image_source": "https://bevog.com/collections/paperback-series/products/hagger-12-25"
     },
     {
       "id": "at-bevog-wolgor-12-25",
@@ -5357,7 +6018,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/IMG_6877-copy-wolgor-25_1200x1200.jpg?v=1770214778",
+      "image_source": "https://bevog.com/collections/paperback-series/products/wolgor-12-25"
     },
     {
       "id": "at-bevog-tri-2024",
@@ -5367,7 +6030,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/tri-24_web_1200x1200.jpg?v=1734687000",
+      "image_source": "https://bevog.com/collections/paperback-series/products/tri-2024"
     },
     {
       "id": "at-bevog-grape-ale-ii-0-75l",
@@ -5377,7 +6042,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://bevog.com/cdn/shop/files/Grape-ale-II-web_1200x1200.jpg?v=1734685542",
+      "image_source": "https://bevog.com/collections/paperback-series/products/grape-ale-ii-0-75l"
     },
     {
       "id": "at-bio-brauerei-schremser-schremser-roggen-bio-bier",
@@ -5387,7 +6054,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://schremser.at/wp-content/uploads/2020/09/Schremser_RoggenBioBier_main.jpg",
+      "image_source": "https://schremser.at/produkt/schremser-roggen-bio-bier/"
     },
     {
       "id": "at-bio-brauerei-schremser-schremser-naturparkradler-naturtrueb",
@@ -5397,7 +6066,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://schremser.at/wp-content/uploads/2020/09/Schremser-Naturpark-Radler.jpg",
+      "image_source": "https://schremser.at/produkt/schremser-naturparkradler-naturtrub/"
     },
     {
       "id": "at-puntigamer-puntigamer-frei-radler",
@@ -5407,7 +6078,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.puntigamer.at/wp-content/uploads/2013/03/bier3.png",
+      "image_source": "https://www.puntigamer.at/wp-json/wp/v2/media?parent=1064"
     },
     {
       "id": "at-schwechater-schwechater-bier-maerzen",
@@ -5417,7 +6090,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.schwechater.at/wp-content/uploads/2025/07/SA-Maerzen-Home-.png",
+      "image_source": "https://www.schwechater.at/wp-json/wp/v2/media?search=Home"
     },
     {
       "id": "at-schwechater-schwechater-alkoholfrei-dose",
@@ -5427,7 +6102,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.schwechater.at/wp-content/uploads/2025/07/SA-AF-Dose-Home.png",
+      "image_source": "https://www.schwechater.at/wp-json/wp/v2/media?search=SA&per_page=3"
     },
     {
       "id": "at-kaiser-kaiser-sport-radler",
@@ -5437,7 +6114,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.kaiserbier.at/wp-content/uploads/2013/03/bier4-1.png",
+      "image_source": "https://www.kaiserbier.at/wp-json/wp/v2/media?parent=1064&status=inherit&page=2"
     },
     {
       "id": "at-edelweiss-edelweiss-alkoholfrei",
@@ -5447,7 +6126,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.edelweissbier.at/wp-content/uploads/2019/01/alkoholfrei.png",
+      "image_source": "https://www.edelweissbier.at/wp-json/wp/v2/media?search=alkoholfrei&per_page=2&status=inherit",
+      "image_license": "Presse & Service: https://www.edelweissbier.at/presse-service/"
     },
     {
       "id": "at-edelweiss-edelweiss-hofbraeu",
@@ -5457,7 +6139,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.edelweissbier.at/wp-content/uploads/2019/01/hofbraeu.png",
+      "image_source": "https://www.edelweissbier.at/wp-json/wp/v2/media?search=hofbraeu&per_page=2&status=inherit",
+      "image_license": "Presse & Service: https://www.edelweissbier.at/presse-service/"
     },
     {
       "id": "at-edelweiss-edelweiss-dunkel",
@@ -5467,7 +6152,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.edelweissbier.at/wp-content/uploads/2016/12/dunkel-139x380.png",
+      "image_source": "https://www.edelweissbier.at/wp-json/wp/v2/media?search=dunkel&per_page=2&status=inherit",
+      "image_license": "Presse & Service: https://www.edelweissbier.at/presse-service/"
     },
     {
       "id": "at-edelweiss-edelweiss-gamsbock",
@@ -5477,7 +6165,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.edelweissbier.at/wp-content/uploads/2019/01/gamsbock.png",
+      "image_source": "https://www.edelweissbier.at/wp-json/wp/v2/media?search=gamsbock&per_page=2&status=inherit",
+      "image_license": "Presse & Service: https://www.edelweissbier.at/presse-service/"
     },
     {
       "id": "at-neufeldner-biobrauerei-maerzen-0-5l",
@@ -5487,7 +6178,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://biobrauerei.at/wp-content/uploads/Maerzen-scaled.png",
+      "image_source": "https://biobrauerei.at/produkt/biobier/maerzen-05l-e-199/"
     },
     {
       "id": "at-neufeldner-biobrauerei-sommer-bier-0-33l",
@@ -5497,7 +6190,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://biobrauerei.at/wp-content/uploads/Sommerbier_033_frei.png",
+      "image_source": "https://biobrauerei.at/produkt/biobier/sommer-bier-033l-limited-edition/"
     },
     {
       "id": "at-neufeldner-biobrauerei-zwickl-0-5l",
@@ -5507,7 +6202,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://biobrauerei.at/wp-content/uploads/neufeldner_zwickl_05l-scaled.jpg",
+      "image_source": "https://biobrauerei.at/produkt/biobier/zwickl-05l/"
     },
     {
       "id": "at-neufeldner-biobrauerei-muehlviertler-weisse-0-5l",
@@ -5517,7 +6214,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://biobrauerei.at/wp-content/uploads/weissepng.png",
+      "image_source": "https://biobrauerei.at/produkt/biobier/muehlviertler-weisse/"
     },
     {
       "id": "at-neufeldner-biobrauerei-hopferl-0-5l",
@@ -5527,7 +6226,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://biobrauerei.at/wp-content/uploads/neufeldner_hopferl_05l-scaled.jpg",
+      "image_source": "https://biobrauerei.at/produkt/biobier/hopferl-05l/"
     },
     {
       "id": "at-neufeldner-biobrauerei-citrus-radler-alkoholfrei-0-33l",
@@ -5537,7 +6238,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://biobrauerei.at/wp-content/uploads/Radler-scaled.jpg",
+      "image_source": "https://biobrauerei.at/produkt/biobier/citrus-radler-alkoholfrei/"
     },
     {
       "id": "at-neufeldner-biobrauerei-pils-naturtrueb-0-33l",
@@ -5547,7 +6250,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://biobrauerei.at/wp-content/uploads/pils.png",
+      "image_source": "https://biobrauerei.at/produkt/biobier/pils-naturtrueb/"
     },
     {
       "id": "at-villacher-bier-villacher-freilich-0-0",
@@ -5557,7 +6262,10 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.villacher.com/media/villacher_freilich_05_glas-1.png",
+      "image_source": "https://www.villacher.com/sortiment/",
+      "image_license": "villacher-bier.at ist tot; aktive Herstellerdomain ist villacher.com"
     },
     {
       "id": "at-villacher-bier-villacher-glockner-pils",
@@ -5567,7 +6275,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.villacher.com/media/villacher-glockner-pils-glas.png",
+      "image_source": "https://www.villacher.com/sortiment/"
     },
     {
       "id": "at-villacher-bier-villacher-draustadt-lager",
@@ -5577,7 +6287,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.villacher.com/media/villacher-draustadt-lager-glas-1.png",
+      "image_source": "https://www.villacher.com/sortiment/"
     },
     {
       "id": "at-villacher-bier-villacher-keller-dunkles",
@@ -5587,7 +6299,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.villacher.com/media/villacher-keller-dunkles-glas.png",
+      "image_source": "https://www.villacher.com/sortiment/"
     },
     {
       "id": "at-villacher-bier-villacher-special-blonde",
@@ -5597,7 +6311,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.villacher.com/media/villacher-special-blonde-glas.png",
+      "image_source": "https://www.villacher.com/sortiment/"
     },
     {
       "id": "at-schladminger-schladminger-schnee-weisse-bio",
@@ -5607,7 +6323,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.schladmingerbier.at/media/schladmingerbier-schnee-weisse-bio.png",
+      "image_source": "https://www.schladmingerbier.at/unser-bier/"
     },
     {
       "id": "at-schladminger-schladminger-sepp",
@@ -5617,7 +6335,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.schladmingerbier.at/media/schladmingerbier-sepp-1.png",
+      "image_source": "https://www.schladmingerbier.at/unser-bier/"
     },
     {
       "id": "at-schladminger-schladminger-sortiment-biozwickl-schnee-weisse-maerzen-se",
@@ -5627,7 +6347,9 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": []
+      "barcodes": [],
+      "image_url": "https://www.schladmingerbier.at/media/schladmingerbier-sortiment.png",
+      "image_source": "https://www.schladmingerbier.at/unser-bier/"
     }
   ]
 }
