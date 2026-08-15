@@ -57,6 +57,16 @@ Ende. Wer glaubt, er sei sichtbar, sitzt dann vergeblich im Wirtshaus.
 das Banner sagt es dazu: „Verlängert … — aber ohne Verbindung. Deine
 Freunde sehen noch das alte Ende."
 
+**Und dabei ging es zwischenzeitlich schlimmer kaputt.** Die erste Fassung
+sparte den Serveraufruf aus, wenn `!isRemoteId(current.id)` — gedacht als
+„rein lokale Session hat keinen Server-Zwilling". Das Präfix `remote-`
+tragen aber ausschließlich **fremde** Sessions; die eigene ID ist eine
+blanke UUID und zugleich die Server-ID. Die Bedingung griff also immer,
+das Verlängern erreichte den Server nie und meldete trotzdem Erfolg — die
+Verschlimmerung dessen, was der Umbau beheben sollte. Aufgefallen ist es
+beim Review der Folgeänderung. Festgehalten in
+`test/session_id_test.dart`.
+
 **Bewusst keine Warteschlange** nach dem Muster `venue_edit_queue`,
 obwohl die Konventionen sie für Schreibpfade vorsehen: Eine Verlängerung
 ist an den Moment gebunden. Stunden später nachgereicht würde sie eine

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/format.dart';
 import '../../data/providers.dart';
+import '../../widgets/beacon_messages.dart';
 
 /// Adaptive Navigation: Tab-Bar auf Telefonen, Navigation-Rail ab 800 px
 /// (Windows/Desktop/Tablet). Die Hero-Aktionen (Scan, Beacon) leben auf dem
@@ -74,6 +75,10 @@ class AppShell extends ConsumerWidget {
     // Hält den automatischen Konto-Abgleich am Leben: offline entstandene
     // Check-ins werden nachgereicht, sobald Verbindung und Konto da sind.
     ref.watch(checkinAutoSyncProvider);
+    // Schließt Beacons, die der Server noch als laufend führt, obwohl
+    // lokal keiner mehr läuft — die Reparatur für ein Beenden ohne
+    // Verbindung. Ohne sie zeigte die Karte den Aufenthaltsort weiter.
+    ref.watch(sessionReconcileProvider);
     // Ebenso den Gasthaus-Cache (gemeinsame Venue-DB aus Supabase)…
     ref.watch(venueSyncProvider);
     // …und die Warteschlange gelöschter Check-ins.
@@ -107,8 +112,14 @@ class AppShell extends ConsumerWidget {
                       child: const Text('Verlängern'),
                     ),
                     TextButton(
-                      onPressed: () =>
-                          ref.read(actionsProvider).endMySession(),
+                      onPressed: () async {
+                        final messenger = ScaffoldMessenger.of(context);
+                        final synced =
+                            await ref.read(actionsProvider).endMySession();
+                        if (synced == false) {
+                          messenger.showSnackBar(beaconEndFailedSnackBar);
+                        }
+                      },
                       child: const Text('Beenden'),
                     ),
                   ],

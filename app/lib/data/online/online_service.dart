@@ -663,7 +663,13 @@ class OnlineService {
     }
   }
 
-  Future<void> respondRequest(String friendshipId, {required bool accept}) async {
+  /// Freundschaftsanfrage annehmen oder ablehnen.
+  ///
+  /// Gibt zurück, ob der Server es übernommen hat. Eine stille
+  /// Erfolgsmeldung wäre hier besonders irreführend: Wer glaubt,
+  /// abgelehnt zu haben, rechnet nicht mehr damit, gesehen zu werden.
+  Future<bool> respondRequest(String friendshipId,
+      {required bool accept}) async {
     try {
       if (accept) {
         await _client
@@ -672,18 +678,26 @@ class OnlineService {
       } else {
         await _client.from('friendships').delete().eq('id', friendshipId);
       }
-    } catch (_) {}
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   /// 🍺 Bierlaune setzen (bis [until]) oder beenden (null).
-  Future<void> setBierlaune(DateTime? until) async {
+  /// Gibt zurück, ob der Server es übernommen hat — die Bierlaune ist
+  /// nur dann etwas wert, wenn Freunde sie sehen.
+  Future<bool> setBierlaune(DateTime? until) async {
     final me = currentUser;
-    if (me == null) return;
+    if (me == null) return false;
     try {
       await _client.from('profiles').update({
         'thirsty_until': until?.toUtc().toIso8601String(),
       }).eq('id', me.id);
-    } catch (_) {}
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<List<RemoteProfile>> friends() async {
@@ -743,16 +757,22 @@ class OnlineService {
     return null;
   }
 
-  Future<void> unblockProfile(String profileId) async {
+  /// Gibt zurück, ob der Server es übernommen hat. Blockieren und
+  /// Entsperren sind Sicherheitsentscheidungen — über deren Ausgang darf
+  /// die App nicht schweigen.
+  Future<bool> unblockProfile(String profileId) async {
     final me = currentUser;
-    if (me == null) return;
+    if (me == null) return false;
     try {
       await _client
           .from('blocks')
           .delete()
           .eq('blocker_id', me.id)
           .eq('blocked_id', profileId);
-    } catch (_) {}
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   /// Eigene Blockliste (nur der Blockierende sieht sie – RLS).
@@ -931,9 +951,12 @@ class OnlineService {
   /// Eigene Session online spiegeln (Fehler still: lokal gilt weiter).
   /// [crewId] gehört zu `visibility == crew` (RLS zeigt die Session dann
   /// nur den Crew-Mitgliedern).
-  Future<void> upsertSession(local.Session session, {String? crewId}) async {
+  /// Fehler bleiben still: Lokal gilt die Session weiter, und
+  /// [endStaleSessions] räumt einen Beacon auf, der es nie zum Server
+  /// geschafft hat. Rückgabe sagt trotzdem, ob es ankam.
+  Future<bool> upsertSession(local.Session session, {String? crewId}) async {
     final me = currentUser;
-    if (me == null) return;
+    if (me == null) return false;
     final isCrew =
         session.visibility == local.SessionVisibility.crew && crewId != null;
     try {
@@ -952,7 +975,10 @@ class OnlineService {
         'latitude': session.latitude,
         'longitude': session.longitude,
       });
-    } catch (_) {}
+    } catch (_) {
+      return false;
+    }
+    return true;
   }
 
   /// Neues Ende einer laufenden Session übertragen (Verlängern).
@@ -976,13 +1002,59 @@ class OnlineService {
     }
   }
 
-  Future<void> endSession(String sessionId) async {
+  /// Beacon serverseitig beenden.
+  ///
+  /// Gibt zurück, ob es angekommen ist. Schlägt es fehl, zeigt der Server
+  /// Freunden weiter den Aufenthaltsort — bis `end_expired_sessions()`
+  /// per Cron greift, und das kann Stunden dauern. Deshalb räumt
+  /// [endStaleSessions] beim nächsten Abgleich nach.
+  Future<bool> endSession(String sessionId) async {
     try {
       await _client.from('sessions').update({
         'status': 'ended',
         'ended_at': DateTime.now().toUtc().toIso8601String(),
       }).eq('id', sessionId);
-    } catch (_) {}
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// IDs der eigenen Sessions, die der Server noch als laufend führt.
+  Future<List<String>> myActiveSessionIds() async {
+    final me = currentUser;
+    if (me == null) return const [];
+    try {
+      final rows = await _client
+          .from('sessions')
+          .select('id')
+          .eq('host_id', me.id)
+          .eq('status', 'active') as List<dynamic>;
+      return [for (final r in rows) (r as Map)['id'] as String];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Beendet serverseitig alles, was lokal nicht (mehr) läuft.
+  ///
+  /// Das ist die Reparatur für ein fehlgeschlagenes [endSession]: Ein
+  /// Beacon, den der Nutzer beendet hat, der aber mangels Verbindung
+  /// stehen blieb, verschwindet spätestens beim nächsten Abgleich.
+  ///
+  /// Nachziehen ist hier — anders als beim Verlängern — gefahrlos: Es
+  /// verringert Sichtbarkeit immer, erhöht sie nie. Ein spät
+  /// nachgereichtes Beenden kann nichts kaputt machen.
+  ///
+  /// Rückgabe: Anzahl der aufgeräumten Sessions.
+  Future<int> endStaleSessions({String? keepSessionId}) async {
+    final offen = await myActiveSessionIds();
+    var beendet = 0;
+    for (final id in offen) {
+      if (id == keepSessionId) continue;
+      if (await endSession(id)) beendet++;
+    }
+    return beendet;
   }
 
   /// Aktive Sessions der Freunde. Realtime-Stream; RLS filtert serverseitig
@@ -1057,16 +1129,25 @@ class OnlineService {
     }
   }
 
-  Future<void> joinSession(String sessionId, {required bool joined}) async {
+  /// „Bin dabei" bzw. Zuprosten spiegeln.
+  ///
+  /// Fehler bleiben still, und das ist hier vertretbar: Lokal ist die
+  /// Teilnahme vermerkt, es geht nichts verloren, und niemand trifft auf
+  /// dieser Grundlage eine Entscheidung über Sichtbarkeit. Der Rückgabewert
+  /// steht trotzdem zur Verfügung, damit ein Aufrufer es wissen KANN.
+  Future<bool> joinSession(String sessionId, {required bool joined}) async {
     final me = currentUser;
-    if (me == null) return;
+    if (me == null) return false;
     try {
       await _client.from('session_participants').upsert({
         'session_id': sessionId,
         'profile_id': me.id,
         'kind': joined ? 'joined' : 'toast',
       });
-    } catch (_) {}
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   // --------------------------------------------------------------------------
@@ -1118,32 +1199,47 @@ class OnlineService {
 
   /// Check-in-Foto aus dem Bucket entfernen. Best effort — ein verwaistes
   /// Bild ist harmlos, ein fehlgeschlagener Aufruf darf nichts blockieren.
-  Future<void> deleteCheckinPhoto(String photoUrl) async {
+  /// Aufräumen im Bucket. Fehler bleiben still und das ist vertretbar:
+  /// Der Check-in ist gelöscht, zurück bleibt allenfalls eine verwaiste
+  /// Datei — ärgerlich, aber niemand sieht sie, und kein Zustand hängt
+  /// davon ab.
+  Future<bool> deleteCheckinPhoto(String photoUrl) async {
     final me = currentUser;
-    if (me == null) return;
+    if (me == null) return false;
     // Öffentliche URL → Objektpfad (…/beer-photos/<profil>/<datei>).
     const marker = '/beer-photos/';
     final index = photoUrl.indexOf(marker);
-    if (index < 0) return;
+    if (index < 0) return false;
     final path = photoUrl.substring(index + marker.length).split('?').first;
     // Nur eigene Objekte anfassen, auch wenn die Storage-Policy es ohnehin
     // erzwingt.
-    if (!path.startsWith('${me.id}/')) return;
+    if (!path.startsWith('${me.id}/')) return false;
     try {
       await _client.storage.from('beer-photos').remove([path]);
-    } catch (_) {}
+    } catch (_) {
+      return false;
+    }
+    return true;
   }
 
   /// Eigenen Check-in online spiegeln (denormalisiert, gleiche Zeile wie
   /// der Upload-Assistent).
-  Future<void> insertCheckin(local.CheckinDetails details) async {
+  /// Fehler bleiben still, weil es einen echten Nachreich-Pfad gibt:
+  /// `checkinAutoSyncProvider` überträgt offen gebliebene Check-ins bei
+  /// Anmeldung, nach jedem lokalen Check-in und alle fünf Minuten, und der
+  /// Upsert über die Client-UUID macht das idempotent. Hier zu lärmen
+  /// hieße, den Nutzer für etwas zu behelligen, das sich von selbst löst.
+  Future<bool> insertCheckin(local.CheckinDetails details) async {
     final me = currentUser;
-    if (me == null) return;
+    if (me == null) return false;
     final row = uploadRow(details, me.id);
-    if (row == null) return;
+    if (row == null) return false;
     try {
       await _client.from('checkins').upsert(row);
-    } catch (_) {}
+    } catch (_) {
+      return false;
+    }
+    return true;
   }
 
   // --------------------------------------------------------------------------
@@ -1519,12 +1615,18 @@ class OnlineService {
   /// Abschluss melden. Seit Migration 0014 validiert der SERVER die Regel
   /// gegen die Online-Check-ins (direkte Inserts sind gesperrt) — ein
   /// manipulierter Client kann keine Abschlüsse mehr erfinden.
-  Future<void> completeChallenge(String challengeId) async {
-    if (currentUser == null) return;
+  /// Serverseitige Bestätigung eines Abschlusses. Fehler bleiben still:
+  /// Das Abzeichen ist lokal bereits vergeben, und die Wiederherstellung
+  /// holt den Serverstand beim nächsten Anmelden nach.
+  Future<bool> completeChallenge(String challengeId) async {
+    if (currentUser == null) return false;
     try {
       await _client
           .rpc('complete_challenge', params: {'p_challenge': challengeId});
-    } catch (_) {}
+    } catch (_) {
+      return false;
+    }
+    return true;
   }
 
   /// 🏅 Datenpflege-Bestenliste (aggregierte Punkte, private Profile
@@ -1733,9 +1835,12 @@ class OnlineService {
   }
 
   /// Wunschlisten-Eintrag serverseitig setzen/entfernen (best effort).
-  Future<void> setWishlistRemote(String beerKey, {required bool add}) async {
+  /// Spiegelung der Wunschliste. Fehler bleiben still: Lokal ist die
+  /// Wahrheit, und `cloudRestoreProvider` gleicht beide Seiten per
+  /// Vereinigung wieder an — es kann nichts verloren gehen.
+  Future<bool> setWishlistRemote(String beerKey, {required bool add}) async {
     final me = currentUser;
-    if (me == null) return;
+    if (me == null) return false;
     try {
       if (add) {
         await _client.from('wishlist_items').upsert({
@@ -1749,7 +1854,10 @@ class OnlineService {
             .eq('profile_id', me.id)
             .eq('beer_key', beerKey);
       }
-    } catch (_) {}
+    } catch (_) {
+      return false;
+    }
+    return true;
   }
 
   Future<List<RemoteCheckin>> friendCheckins({int limit = 50}) async {

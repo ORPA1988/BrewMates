@@ -7,6 +7,7 @@ import '../../data/db/database.dart';
 import '../../data/providers.dart';
 import '../../widgets/badge_celebration.dart';
 import '../../widgets/checkin_card.dart';
+import '../../widgets/beacon_messages.dart';
 
 /// „Der Abend": Live-Ansicht einer Session; beendete Sessions werden zum
 /// Erinnerungs-Album (gleicher Screen, nur ohne Aktions-Buttons).
@@ -16,8 +17,11 @@ class SessionDetailScreen extends ConsumerWidget {
   final String sessionId;
 
   Future<void> _endSession(BuildContext context, WidgetRef ref) async {
-    await ref.read(actionsProvider).endMySession();
-    if (context.mounted) context.pop();
+    final messenger = ScaffoldMessenger.of(context);
+    final synced = await ref.read(actionsProvider).endMySession();
+    if (!context.mounted) return;
+    if (synced == false) messenger.showSnackBar(beaconEndFailedSnackBar);
+    context.pop();
   }
 
   Future<void> _toast(BuildContext context, WidgetRef ref) async {
