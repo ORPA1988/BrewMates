@@ -26,6 +26,11 @@ jobs:
       # ist, ohne Logs zu öffnen. `--min` ist eine Ratsche: Sie darf steigen,
       # nie sinken. Wer sie senkt, muss das im Diff begründen.
       - run: dart ../tools/coverage_report.dart --min 31
+      # Die acht JSON-Dateien sind der Inhalt der App und werden
+      # redaktionell gepflegt — künftig auch von Menschen, die den Code
+      # nicht kennen. Ein doppelter Barcode schickt den Scanner auf das
+      # falsche Bier; das fällt beim Lesen nicht auf.
+      - run: dart ../tools/validate_data.dart
       # Fängt dart:io-Regressionen: die App muss auch fürs Web bauen
       # (GitHub-Pages-Deployment, siehe pages.yml).
       - run: flutter build web --release
