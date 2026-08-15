@@ -30,6 +30,14 @@ klemmt, kostet den gesamten sozialen Teil.
   Sichtbarkeitsregeln; wer blockiert hat, ist für den anderen unsichtbar —
   umgekehrt bleibt die eigene Blockliste einsehbar, sonst ließe sie sich
   nicht verwalten
+- **Suche skaliert** (0027, 2026-08-15): `pg_trgm`-GIN-Indizes auf
+  `username` und `display_name`. Die Suche fragt `ilike 'begriff%'` und
+  `ilike '%begriff%'` ab — beides kann ein B-Tree nicht bedienen, Postgres
+  las bisher bei **jedem Tastendruck** die ganze Tabelle. Bei zwei
+  Profilen unmessbar; das ist der Grund, warum es niemandem auffiel, kein
+  Gegenargument. Die Erweiterung liegt im Schema `extensions`, nicht in
+  `public` — der Advisor-Befund zu Erweiterungen in `public` (PostGIS)
+  muss nicht wachsen.
 - **Fehlschläge werden gemeldet** (2026-08-15, Backlog A-8): Anfrage
   annehmen/ablehnen und Blockierung aufheben schluckten Fehler und zeigten
   trotzdem Erfolg. Beides sind Entscheidungen über Sichtbarkeit — wer
