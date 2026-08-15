@@ -68,7 +68,13 @@ Serveraufruf.
   `online.sessions.end(...)`. **Bereiche sind Klassen, keine Extensions** —
   Extension-Methoden sind statisch gebunden und ließen sich im Test nicht
   überschreiben.
-- `data/providers.dart` (~940 Z.) — sämtliche Riverpod-Provider
+- ~~`data/providers.dart`~~ — am 15.08.2026 aufgeteilt: `data/providers/`
+  mit `online`, `feed`, `challenges`, `sessions`, `beers`, `venues`,
+  `wartung`, `entdecken`. Der Kern hält Infrastruktur und `BrewActions`
+  (505 Z.). Als **`part`**, nicht als eigene Bibliotheken: Die Provider
+  teilen private Helfer (`_now`, `_syncTickProvider`), und ein `part`
+  teilt den Namensraum. Anders als bei Methoden gibt es hier kein
+  Dispatch-Problem — es sind Variablen auf oberster Ebene.
 
 Beide wachsen mit jedem Feature. **Neue Funktionen bekommen eine eigene
 Datei**, nicht noch einen Block in diesen beiden. Siehe Backlog B-3.
