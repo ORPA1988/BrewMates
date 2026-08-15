@@ -12,10 +12,10 @@ Stelle: Sie stammen aus der Zeit, als „viele Daten" fünf Check-ins hieß.
 
 | Befund | Schwere | Betrifft |
 |---|---|---|
-| Listen bauen alle Einträge sofort | **hoch** | Feed, Tagebuch, Biere, Gasthäuser, Bestenliste |
-| Feed-Abfrage ohne Obergrenze (lokal) | **hoch** | Feed |
-| Eigene Check-ins nicht löschbar | **hoch** | Feed, Tagebuch |
-| Fehlender Index auf `checkins.created_at` | mittel | Feed |
+| ~~Listen konstruieren alle Einträge je Rebuild~~ | erledigt | Feed, Tagebuch, Biere, Gasthäuser, Bestenliste |
+| ~~Feed-Abfrage ohne Obergrenze (lokal)~~ | erledigt | Feed |
+| ~~Eigene Check-ins nicht löschbar~~ | erledigt | Feed, Tagebuch |
+| ~~Fehlender Index auf `checkins.created_at`~~ | erledigt (0020) | Feed |
 | Freundessuche über `display_name` ohne Trigram-Index | mittel | Freundessuche |
 | Statistiken bleiben unter ihren Möglichkeiten | mittel | Profil |
 | Cloud-Wiederherstellung holt immer alles | mittel | Synchronisation |
@@ -25,38 +25,60 @@ Stelle: Sie stammen aus der Zeit, als „viele Daten" fünf Check-ins hieß.
 
 ## Die Listen sind das dringendste Problem
 
-In den Bildschirmen stehen **26 eifrige Listen** (`ListView(children: […])`)
-und **eine einzige faule** (`ListView.builder`). Eine eifrige Liste baut
-jeden Eintrag sofort — auch die 800, die niemand sieht.
+Zwei Befunde, die zusammengehören — der zweite ist der schwerere.
 
-Für Formulare ist das richtig und harmlos: Ein Bearbeiten-Bildschirm hat
-zwölf Felder, fertig. Für alles, was mit der Nutzung **wächst**, ist es
-falsch:
+**Erstens: unbegrenzte Abfragen.** `watchFeed()` hatte gar keine
+Obergrenze: Es las *alle* Check-ins aus SQLite, verband sie mit Bier,
+Brauerei und Profil und legte für jeden ein `CheckinDetails`-Objekt an.
+Das ist echte, eifrige Arbeit — sie fällt bei jedem Datenbank-Ereignis neu
+an und wächst linear mit dem Bestand. Die Serverseite war mit 50 gedeckelt,
+aber ohne „mehr laden": Wer länger weg war, sah den Rest nie.
+
+**Zweitens: eifrig konstruierte Listen.** In den Bildschirmen standen
+**26** `ListView(children: […])` gegen **eine** `ListView.builder`.
+
+Hier ist Genauigkeit wichtig, weil die naheliegende Formulierung falsch
+wäre: Flutter erzeugt die Elemente und Render-Objekte auch bei
+`children:` nur für den sichtbaren Ausschnitt. Was tatsächlich eifrig
+passiert, ist das **Konstruieren der Widget-Beschreibungen** — bei jedem
+Rebuild, für jeden Eintrag. Bei der Bierliste heißt das: 280 Objekte pro
+Tastendruck im Suchfeld. Spürbar wird das früher als die Element-Inflation,
+aber es ist kein Einfrieren, sondern zunehmende Zähigkeit.
+
+Für Formulare ist `children:` richtig und harmlos — ein
+Bearbeiten-Bildschirm hat zwölf Felder, fertig. Falsch ist es für alles,
+was mit der Nutzung **wächst**:
 
 - `feed_screen.dart` — jeder Check-in aller Freunde
 - `diary_screen.dart` — das eigene Tagebuch, wächst ein Leben lang
-- `beers_screen.dart` — 280 Biere heute, mehr morgen
+- `beers_screen.dart` — 280 Biere heute, mehr morgen, neu bei jedem
+  Tastendruck
 - `venues_list_screen.dart` — alle Gasthäuser
 - `leaderboard_screen.dart` — alle Beitragenden
 
-Bei den heutigen Datenmengen merkt das niemand. Bei tausend Check-ins wird
-das Öffnen des Tagebuchs zur Gedenkminute. Die Umstellung ist mechanisch
-(`ListView.builder` mit `itemCount`) und sollte passieren, bevor jemand
-genug Daten hat, um es zu spüren.
+**Erledigt seit 0.9.14:** `watchFeed` nimmt eine Obergrenze; Feed und
+Tagebuch laden 30er-Seiten und wachsen beim Scrollen. Feed, Tagebuch,
+Bierliste, Gasthausliste und Bestenliste bauen faul. Die Suche im
+Tagebuch wanderte dabei in die Abfrage — ein Filter über das geladene
+Fenster hätte sonst nur noch die letzten Seiten durchsucht, und das wäre
+eine schlechtere Suche als vorher gewesen.
 
-**Verschärfend beim Feed:** Die lokale Abfrage `watchFeed()` hat gar keine
-Obergrenze — sie liest alle Check-ins, sortiert sie und gibt sie
-vollständig zurück. Die Serverseite ist mit 50 gedeckelt, aber ohne
-„mehr laden": Wer länger weg war, sieht den Rest nie. Beides gehört
-zusammen gelöst — Seitenweise nachladen statt alles auf einmal.
+Die verbleibenden `children:`-Listen sind Formulare und
+Detailbildschirme mit fester Anzahl Zeilen. Dort ist die eifrige Variante
+richtig und bleibt.
 
 ## Fehlende Datenbank-Indizes
 
-Der Feed sortiert nach `created_at` absteigend, aber auf `checkins` gibt es
-nur Indizes für `profile_id`, `beer_id` und `session_id`. Solange die
-Tabelle klein ist, sortiert Postgres eben durch; ab einigen zehntausend
-Zeilen wird das teuer. Richtig wäre ein zusammengesetzter Index
-`(profile_id, created_at desc)`, der beides bedient.
+Der Freundes-Feed fragt `profile_id <> ich` und sortiert nach
+`created_at desc`. Auf `checkins` liegt seit 0001 ein zusammengesetzter
+Index `(profile_id, created_at desc)` — der bedient das eigene Tagebuch
+perfekt, dem Feed hilft er aber nicht: Die führende Spalte ist hier nicht
+per Gleichheit eingeschränkt, also fällt Postgres auf einen vollen
+Durchlauf mit anschließendem Sortieren zurück.
+
+Was fehlte, war ein eigener Index auf `(created_at desc)` — nachgeliefert
+in **Migration 0020**. Solange die Tabelle klein ist, merkt das niemand;
+ab einigen zehntausend Zeilen wird das Sortieren teuer.
 
 Die Freundessuche, die seit heute auch den Anzeigenamen durchsucht,
 benutzt `ilike '%begriff%'`. Ein solcher Ausdruck kann einen normalen
@@ -66,12 +88,11 @@ Kein Fehler, aber eine Schuld, die man kennen muss.
 
 ## Was funktional fehlt
 
-**Check-ins lassen sich nicht löschen.** Weder im Feed noch im Tagebuch.
-Wer sich vertippt, das falsche Bier scannt oder einen Abend nicht
-dokumentiert haben möchte, hat keine Handhabe außer der Löschung des
-ganzen Kontos. Das ist die klarste Lücke im Bestand — und der Grund, warum
-sie als [Funktion 19](features/19-feed-eintraege-loeschen.md) als erstes
-dran ist.
+**~~Check-ins lassen sich nicht löschen.~~** War die klarste Lücke im
+Bestand: Wer sich vertippte oder das falsche Bier scannte, hatte keine
+Handhabe außer der Löschung des ganzen Kontos. Seit 0.9.14 erledigt,
+siehe [Funktion 19](features/19-feed-eintraege-loeschen.md). Offen bleibt
+das **Bearbeiten** — es deckt vermutlich die Hälfte der Löschwünsche ab.
 
 **Die Statistiken bleiben unter ihren Möglichkeiten.** Das Profil zeigt
 Zähler: Check-ins, Stile, Länder, Wochen-Serie. Fast alle Daten für echte
@@ -116,19 +137,19 @@ Grobe Einschätzung, ab wann welcher Punkt weh tut:
 | Größe | Was passiert |
 |---|---|
 | **~50 Nutzer** | Nichts. Der heutige Stand trägt das mühelos. |
-| **~500 Nutzer / 10.000 Check-ins** | Tagebuch und Feed werden spürbar träge (eifrige Listen). Der fehlende `created_at`-Index macht sich bemerkbar. |
+| **~500 Nutzer / 10.000 Check-ins** | ~~Tagebuch und Feed werden träge~~ — entschärft durch Seitenladen und Index 0020. |
 | **~5.000 Nutzer** | Die Freundessuche ohne Trigram-Index wird langsam. Die Cloud-Wiederherstellung, die immer alles holt, wird beim Gerätewechsel unangenehm. |
 | **~50.000 Nutzer** | Die Community-Datenbank als acht Volldateien im Bundle ist nicht mehr sinnvoll; es braucht serverseitige Suche statt lokaler Vollkopie. |
 
-Die ersten beiden Stufen sind mit überschaubarem Aufwand zu entschärfen
-und sollten vor dem Play-Store-Start erledigt sein. Die letzte ist ein
-Umbau, der jetzt weder nötig noch klug wäre.
+Die zweite Stufe ist erledigt. Die dritte ist mit überschaubarem Aufwand
+zu entschärfen, die letzte wäre ein Umbau, der jetzt weder nötig noch
+klug wäre.
 
 ## Empfohlene Reihenfolge
 
-1. **Check-ins löschbar machen** — echte Nutzerlücke, klein umzusetzen
-2. **Listen auf faules Bauen umstellen** + Feed seitenweise laden —
-   mechanisch, verhindert das absehbare Trägewerden
-3. **Index auf `checkins(profile_id, created_at desc)`** — eine Migration
-4. **Gebinde erfassen**, dann die Statistiken darauf aufbauen
+1. ~~Check-ins löschbar machen~~ — erledigt (0.9.14)
+2. ~~Listen auf faules Bauen umstellen + Feed seitenweise laden~~ —
+   erledigt (0.9.14)
+3. ~~Index für den Feed~~ — erledigt (Migration 0020)
+4. **Füllmenge erfassen**, dann die Statistiken darauf aufbauen
 5. Alles Weitere nach Roadmap

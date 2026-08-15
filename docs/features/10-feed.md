@@ -1,8 +1,7 @@
 # 10 Feed
 
-> **Status:** 🟡 teilweise — der Strom funktioniert, aber Einträge sind
-> nicht löschbar, es gibt keine Statistiken und die Liste ist nicht auf
-> Wachstum ausgelegt.
+> **Status:** 🟡 teilweise — Strom, Löschen und Seitenladen stehen;
+> es fehlen noch die Statistiken.
 > **Seit:** 0.2.0, Toasts/Kommentare online seit 0.9.9 ·
 > **Zuletzt geprüft:** 2026-08-15
 
@@ -44,27 +43,31 @@ Alle.
 
 ## Skalierung
 
-**Der schwächste Punkt der App** (siehe [Audit](../12-funktionsaudit.md)):
+War der schwächste Punkt der App, seit 0.9.14 entschärft:
 
-- `ListView(children: […])` baut **jeden** Eintrag sofort, auch die
-  ungesehenen
-- die lokale Abfrage `watchFeed()` hat **keine** Obergrenze
-- serverseitig sind 50 Einträge das Ende — ohne „mehr laden" sieht man
-  ältere nie
-- `checkins` hat keinen Index auf `created_at`, wonach sortiert wird
+- `watchFeed(limit:)` statt unbegrenzter Abfrage; Feed und Tagebuch laden
+  30er-Seiten und wachsen beim Scrollen (`PagedCheckinList`)
+- serverseitig folgt `friendCheckins(limit:)` demselben Fenster — „mehr
+  laden" holt auch ältere Einträge der Freunde nach
+- `ListView.builder` statt `children:` — bei jedem Rebuild entstehen nur
+  noch die sichtbaren Karten
+- Migration 0020 bringt den Index `checkins(created_at desc)`, den die
+  Feed-Abfrage braucht (der vorhandene `(profile_id, created_at desc)`
+  hilft ihr nicht, weil `profile_id` per `<>` gefiltert wird)
 
-Heute unauffällig, ab einigen tausend Check-ins spürbar. Die Umstellung
-ist mechanisch und sollte vor dem Play-Store-Start passieren.
+Der Upload-Assistent liest bewusst weiter den **ungekürzten** Bestand:
+Sonst bliebe genau der alte, offline entstandene Check-in unentdeckt, für
+den es ihn gibt.
 
 ## Umsetzungsstatus
 
-Der Kern läuft. Es fehlen: Löschen, Statistiken, Seitenweise-Laden.
+Kern, Löschen und Seitenladen stehen. Es fehlen die Statistiken.
 
 ## Umsetzungsplan
 
-1. [Einträge löschen](19-feed-eintraege-loeschen.md)
-2. `ListView.builder` + seitenweises Nachladen, lokal und serverseitig
-3. Index `checkins(profile_id, created_at desc)` per Migration
+1. ~~[Einträge löschen](19-feed-eintraege-loeschen.md)~~ — erledigt
+2. ~~`ListView.builder` + seitenweises Nachladen~~ — erledigt
+3. ~~Index per Migration~~ — erledigt (0020)
 4. [Statistiken](20-feed-statistiken.md) als eigener Bereich
 
 ## Offene Punkte / Ideen

@@ -1,7 +1,7 @@
 # 02 Check-ins
 
-> **Status:** 🟢 fertig — aber nicht löschbar und nicht bearbeitbar, siehe
-> [Funktion 19](19-feed-eintraege-loeschen.md).
+> **Status:** 🟢 fertig — löschbar seit 0.9.14
+> ([Funktion 19](19-feed-eintraege-loeschen.md)); Bearbeiten fehlt noch.
 > **Seit:** 0.1.0 · **Zuletzt geprüft:** 2026-08-15
 
 ## Zielsetzung
@@ -46,10 +46,9 @@ entfällt der Foto-Schritt, der Rest funktioniert.
 
 ## Skalierung
 
-Das Schreiben ist unkritisch. Das **Lesen** ist es nicht: `watchFeed()`
-und das Tagebuch holen alle Check-ins ohne Obergrenze, und die Listen
-bauen jeden Eintrag sofort (siehe [Audit](../12-funktionsaudit.md)). Bei
-einigen tausend eigenen Check-ins wird das spürbar.
+Das Schreiben ist unkritisch. Das Lesen war es nicht — `watchFeed()` und
+das Tagebuch holten alle Check-ins ohne Obergrenze; seit 0.9.14 laden
+beide seitenweise (siehe [Audit](../12-funktionsaudit.md)).
 
 Der denormalisierte Bier-/Brauereiname ist bewusst redundant: Er macht den
 Feed schnell, bedeutet aber, dass Umbenennungen nachgezogen werden müssen
@@ -57,15 +56,16 @@ Feed schnell, bedeutet aber, dass Umbenennungen nachgezogen werden müssen
 
 ## Umsetzungsstatus
 
-Vollständig bis auf zwei Lücken: **Löschen** und **Bearbeiten**. Beides
-zusammen ist der häufigste zu erwartende Wunsch.
+Vollständig bis auf eine Lücke: **Bearbeiten**. Löschen gibt es seit
+0.9.14.
 
 ## Umsetzungsplan
 
-1. [Löschen](19-feed-eintraege-loeschen.md) — als nächstes
+1. ~~[Löschen](19-feed-eintraege-loeschen.md)~~ — erledigt
 2. Bearbeiten (Bewertung, Notiz, Tags nachträglich ändern)
 3. Füllmenge erfassen für [Statistiken](20-feed-statistiken.md)
-4. Listen auf faules Bauen umstellen, Feed seitenweise laden
+4. ~~Listen auf faules Bauen umstellen, Feed seitenweise laden~~ —
+   erledigt
 
 ## Offene Punkte / Ideen
 

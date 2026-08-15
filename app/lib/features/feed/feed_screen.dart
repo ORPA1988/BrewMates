@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/providers.dart';
-import '../../widgets/checkin_card.dart';
+import '../../widgets/paged_checkin_list.dart';
 
 /// Feed: der chronologische Check-in-Strom aller Freunde.
 /// (Aktive Sessions leben prominent auf dem Home-Tab.)
@@ -21,11 +21,9 @@ class FeedScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('Fehler beim Laden: $e')),
         data: (feed) {
           if (feed.isEmpty) return const _EmptyState();
-          return ListView(
-            children: [
-              for (final details in feed) CheckinCard(details: details),
-              const SizedBox(height: 16),
-            ],
+          return PagedCheckinList(
+            items: feed,
+            limitProvider: feedLimitProvider,
           );
         },
       ),

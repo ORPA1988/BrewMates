@@ -1,7 +1,7 @@
 # 13 Statistiken & Tagebuch
 
-> **Status:** 🟡 teilweise — Tagebuch mit Suche steht, die Auswertung
-> beschränkt sich auf vier Zähler.
+> **Status:** 🟡 teilweise — Tagebuch mit Suche und Seitenladen steht,
+> die Auswertung beschränkt sich auf vier Zähler.
 > **Seit:** 0.2.0, Wochen-Serie seit 0.9.12 · **Zuletzt geprüft:** 2026-08-15
 
 ## Zielsetzung
@@ -43,11 +43,15 @@ Alle.
 
 ## Skalierung
 
-Das Tagebuch lädt alle eigenen Check-ins und baut die Liste vollständig
-auf (siehe [Audit](../12-funktionsaudit.md)). Genau hier wächst die
-Datenmenge am zuverlässigsten — ein Tagebuch, das nach zwei Jahren
-Nutzung hakt, ist ein Eigentor. Umstellung auf faules Bauen und
-seitenweises Laden ist überfällig, bevor jemand so viele Daten hat.
+Seit 0.9.14 lädt das Tagebuch 30er-Seiten und baut faul. Genau hier
+wächst die Datenmenge am zuverlässigsten — ein Tagebuch, das nach zwei
+Jahren Nutzung hakt, wäre ein Eigentor.
+
+Die Suche läuft dabei **in der Abfrage** (`watchFeed(search:)`), nicht
+über das geladene Fenster. Der bequemere Weg hätte die Suche schleichend
+verschlechtert: Sie hätte nur noch gefunden, was ohnehin schon geladen
+war. Die Gesamtzahl im Kopfbereich kommt aus einer eigenen
+Zählabfrage, damit sie den echten Bestand nennt und nicht die Fenstergröße.
 
 ## Umsetzungsstatus
 
@@ -58,7 +62,8 @@ Gebinde, Zeitpunkt, Gasthaus.
 ## Umsetzungsplan
 
 1. [Statistiken](20-feed-statistiken.md) mit Filtern und Aufteilungen
-2. Tagebuch auf faules Bauen und seitenweises Laden umstellen
+2. ~~Tagebuch auf faules Bauen und seitenweises Laden umstellen~~ —
+   erledigt (0.9.14)
 3. Filter im Tagebuch (Zeitraum, Stil, Bewertung)
 
 ## Offene Punkte / Ideen

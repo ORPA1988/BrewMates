@@ -487,7 +487,20 @@ class AppDatabase extends _$AppDatabase {
   // Feed
   // --------------------------------------------------------------------------
 
-  Stream<List<CheckinDetails>> watchFeed({String? onlyProfileId}) {
+  /// Check-ins mit Bier, Brauerei und Autor, neueste zuerst.
+  ///
+  /// [limit] begrenzt die Zeilen (Feed und Tagebuch laden seitenweise
+  /// nach). Ohne Grenze wächst die Abfrage mit jedem Check-in — das ist
+  /// nur für Auswertungen über den Gesamtbestand gedacht.
+  ///
+  /// [search] filtert über Bier, Brauerei, Stil und Notiz. Die Suche
+  /// gehört in die Abfrage und nicht hinter das Fenster: Sonst fände das
+  /// Tagebuch nur, was ohnehin schon geladen war.
+  Stream<List<CheckinDetails>> watchFeed({
+    String? onlyProfileId,
+    int? limit,
+    String? search,
+  }) {
     final query = select(checkins).join([
       innerJoin(beers, beers.id.equalsExp(checkins.beerId)),
       innerJoin(breweries, breweries.id.equalsExp(beers.breweryId)),
@@ -497,6 +510,15 @@ class AppDatabase extends _$AppDatabase {
     if (onlyProfileId != null) {
       query.where(checkins.profileId.equals(onlyProfileId));
     }
+    final term = search?.trim().toLowerCase();
+    if (term != null && term.isNotEmpty) {
+      final pattern = '%$term%';
+      query.where(beers.name.lower().like(pattern) |
+          breweries.name.lower().like(pattern) |
+          beers.style.lower().like(pattern) |
+          checkins.note.lower().like(pattern));
+    }
+    if (limit != null) query.limit(limit);
     return query.watch().map((rows) => rows
         .map((row) => CheckinDetails(
               checkin: row.readTable(checkins),
@@ -505,6 +527,16 @@ class AppDatabase extends _$AppDatabase {
               author: row.readTable(profiles),
             ))
         .toList());
+  }
+
+  /// Anzahl eigener Check-ins (für „alles geladen?" und Statistiken).
+  Stream<int> watchCheckinCount(String profileId) {
+    final count = checkins.id.count();
+    return (selectOnly(checkins)
+          ..addColumns([count])
+          ..where(checkins.profileId.equals(profileId)))
+        .watchSingle()
+        .map((row) => row.read(count) ?? 0);
   }
 
   Stream<List<CheckinDetails>> watchSessionCheckins(String sessionId) {

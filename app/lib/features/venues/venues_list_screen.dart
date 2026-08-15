@@ -239,19 +239,20 @@ class _VenuesListScreenState extends ConsumerState<VenuesListScreen> {
                       ),
                     ),
                   )
-                : ListView(
+                : ListView.builder(
                     padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-                    children: [
-                      for (final venue in venues)
-                        VenueTile(
-                          venue: venue,
-                          canEdit: myUid != null &&
-                              (venue.createdBy == myUid || myLevel >= 2),
-                          distanceKm: _sort == VenueSort.distance
-                              ? venueDistanceKm(venue, _here)
-                              : null,
-                        ),
-                    ],
+                    itemCount: venues.length,
+                    itemBuilder: (context, index) {
+                      final venue = venues[index];
+                      return VenueTile(
+                        venue: venue,
+                        canEdit: myUid != null &&
+                            (venue.createdBy == myUid || myLevel >= 2),
+                        distanceKm: _sort == VenueSort.distance
+                            ? venueDistanceKm(venue, _here)
+                            : null,
+                      );
+                    },
                   ),
           ),
         ],

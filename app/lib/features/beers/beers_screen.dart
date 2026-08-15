@@ -170,60 +170,69 @@ class _BeersScreenState extends ConsumerState<BeersScreen> {
                     sortedVenues.isEmpty) {
                   return const _EmptyResults();
                 }
+                // Die drei Abschnitte zu einer flachen Zeilenliste
+                // ausrollen: Nur so baut die Liste faul — sonst entstünden
+                // bei jedem Tastendruck im Suchfeld alle Einträge neu.
+                final rows = <Widget Function(BuildContext)>[];
+                if (sortedVenues.isNotEmpty) {
+                  rows.add((context) => Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                  'Gasthäuser (${sortedVenues.length})',
+                                  style:
+                                      Theme.of(context).textTheme.titleSmall),
+                            ),
+                            // Preis-Radar: günstigstes 0,5 l zuerst.
+                            FilterChip(
+                              label: const Text('🍺 günstig zuerst'),
+                              selected: _cheapestFirst,
+                              onSelected: (v) =>
+                                  setState(() => _cheapestFirst = v),
+                            ),
+                          ],
+                        ),
+                      ));
+                  for (final venue in sortedVenues) {
+                    rows.add((context) => VenueTile(
+                          venue: venue,
+                          canEdit: myUid != null &&
+                              (venue.createdBy == myUid || myLevel >= 2),
+                        ));
+                  }
+                }
+                if (breweryHits.isNotEmpty) {
+                  rows.add((context) => Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                        child: Text('Brauereien (${breweryHits.length})',
+                            style: Theme.of(context).textTheme.titleSmall),
+                      ));
+                  for (final brewery in breweryHits) {
+                    rows.add((context) => _BreweryTile(brewery: brewery));
+                  }
+                  if (visible.isNotEmpty) {
+                    rows.add((context) => Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                          child: Text('Biere (${visible.length})',
+                              style: Theme.of(context).textTheme.titleSmall),
+                        ));
+                  }
+                }
+                for (final item in visible) {
+                  rows.add((context) => _BeerTile(item: item));
+                }
+
                 // Pull-to-Refresh = Datenbank von GitHub aktualisieren
                 // (gleiche Aktion wie der Sync-Knopf oben).
                 return RefreshIndicator(
                   onRefresh: _syncNow,
-                  child: ListView(
+                  child: ListView.builder(
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.only(bottom: 24),
-                    children: [
-                      if (sortedVenues.isNotEmpty) ...[
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                    'Gasthäuser (${sortedVenues.length})',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleSmall),
-                              ),
-                              // Preis-Radar: günstigstes 0,5 l zuerst.
-                              FilterChip(
-                                label: const Text('🍺 günstig zuerst'),
-                                selected: _cheapestFirst,
-                                onSelected: (v) =>
-                                    setState(() => _cheapestFirst = v),
-                              ),
-                            ],
-                          ),
-                        ),
-                        for (final venue in sortedVenues)
-                          VenueTile(
-                            venue: venue,
-                            canEdit: myUid != null &&
-                                (venue.createdBy == myUid || myLevel >= 2),
-                          ),
-                      ],
-                      if (breweryHits.isNotEmpty) ...[
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-                          child: Text('Brauereien (${breweryHits.length})',
-                              style: Theme.of(context).textTheme.titleSmall),
-                        ),
-                        for (final brewery in breweryHits)
-                          _BreweryTile(brewery: brewery),
-                        if (visible.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-                            child: Text('Biere (${visible.length})',
-                                style: Theme.of(context).textTheme.titleSmall),
-                          ),
-                      ],
-                      for (final item in visible) _BeerTile(item: item),
-                    ],
+                    itemCount: rows.length,
+                    itemBuilder: (context, index) => rows[index](context),
                   ),
                 );
               },

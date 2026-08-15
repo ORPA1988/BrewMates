@@ -125,7 +125,9 @@ final remoteFeedProvider = FutureProvider<List<RemoteCheckin>>((ref) async {
   ref.watch(clockProvider);
   final online = await ref.watch(onlineServiceProvider.future);
   if (online == null || online.currentUser == null) return const [];
-  return online.friendCheckins();
+  // Gleiches Fenster wie der lokale Teil – „mehr laden" holt auch
+  // serverseitig nach, statt bei den ersten 50 stehenzubleiben.
+  return online.friendCheckins(limit: ref.watch(feedLimitProvider));
 });
 
 final onlineFriendsProvider =
@@ -244,25 +246,60 @@ final friendsProvider = StreamProvider<List<Profile>>(
 // Feed, Toasts, Kommentare
 // ============================================================================
 
+/// Seitengröße für Feed und Tagebuch. Beide laden zunächst eine Seite und
+/// erweitern das Fenster, sobald der Mensch ans Ende scrollt — ohne
+/// Obergrenze würde jeder Check-in eines ganzen Bierlebens auf einmal
+/// gelesen und gebaut.
+const feedPageSize = 30;
+
+/// Aktuelles Fenster des Feeds (wächst um [feedPageSize] je „mehr laden").
+final feedLimitProvider = StateProvider<int>((ref) {
+  // Neue Anmeldung = neuer Feed: Fenster zurücksetzen.
+  ref.watch(onlineUserProvider);
+  return feedPageSize;
+});
+
+/// Aktuelles Fenster des Tagebuchs.
+final diaryLimitProvider = StateProvider<int>((ref) => feedPageSize);
+
 /// Feed: abgemeldet = lokale Daten inkl. Demo-Freunde; angemeldet = eigene
 /// lokale Check-ins + die echter Freunde (Demo-Inhalte verschwinden).
 final feedProvider = StreamProvider<List<CheckinDetails>>((ref) {
   final db = ref.watch(databaseProvider);
-  if (!ref.watch(isSignedInProvider)) return db.watchFeed();
+  final limit = ref.watch(feedLimitProvider);
+  if (!ref.watch(isSignedInProvider)) return db.watchFeed(limit: limit);
   final remote = ref.watch(remoteFeedProvider).valueOrNull ?? const [];
-  return db.watchFeed().map((locals) {
+  return db.watchFeed(limit: limit).map((locals) {
     final merged = [
       ...locals.where((c) => c.author.isMe),
       ...remote.map(remoteCheckinToDetails),
     ]..sort((a, b) => b.checkin.createdAt.compareTo(a.checkin.createdAt));
-    return merged;
+    // Eigene und fremde Einträge kommen aus zwei Quellen mit je eigenem
+    // Fenster – nach dem Mischen auf die Seitengröße stutzen, sonst
+    // springt die Länge unvorhersehbar.
+    return merged.length > limit ? merged.sublist(0, limit) : merged;
   });
 });
+
+/// Suchbegriff des Tagebuchs. Liegt im Provider statt im Bildschirm,
+/// damit die Suche in die Abfrage wandern kann.
+final diarySearchProvider = StateProvider<String>((ref) => '');
 
 final myDiaryProvider = StreamProvider<List<CheckinDetails>>((ref) {
   final me = ref.watch(meProvider).valueOrNull;
   if (me == null) return const Stream.empty();
-  return ref.watch(databaseProvider).watchFeed(onlyProfileId: me.id);
+  return ref.watch(databaseProvider).watchFeed(
+        onlyProfileId: me.id,
+        limit: ref.watch(diaryLimitProvider),
+        search: ref.watch(diarySearchProvider),
+      );
+});
+
+/// Gesamtzahl eigener Check-ins — für „alles geladen?" und Statistiken.
+final myCheckinCountProvider = StreamProvider<int>((ref) {
+  final me = ref.watch(meProvider).valueOrNull;
+  if (me == null) return Stream.value(0);
+  return ref.watch(databaseProvider).watchCheckinCount(me.id);
 });
 
 /// Lokale Check-ins, die noch nicht im Online-Konto liegen – z. B. weil sie
@@ -272,9 +309,14 @@ final pendingCheckinUploadProvider =
   if (!ref.watch(isSignedInProvider)) return null;
   final online = await ref.watch(onlineServiceProvider.future);
   if (online == null) return null;
-  final diary = await ref.watch(myDiaryProvider.future);
+  final me = ref.watch(meProvider).valueOrNull;
+  if (me == null) return null;
+  // Bewusst der ungekürzte Bestand, NICHT das Tagebuch-Fenster: Sonst
+  // bliebe genau der alte, offline entstandene Check-in unentdeckt, für
+  // den es den Assistenten gibt.
+  final mine = await ref.watch(databaseProvider).myCheckinsDetailed(me.id);
   final candidates = [
-    for (final d in diary)
+    for (final d in mine)
       if (OnlineService.isUploadable(d)) d,
   ];
   if (candidates.isEmpty) return const [];
