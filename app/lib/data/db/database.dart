@@ -51,6 +51,9 @@ class Breweries extends Table {
   IntColumn get annualOutputHl => integer().nullable()();
   IntColumn get revenueEur => integer().nullable()();
   TextColumn get notes => text().nullable()();
+
+  /// Hintergrundgeschichte der Brauerei (siehe [Beers.story]).
+  TextColumn get story => text().nullable()();
   TextColumn get dataStatus => text().nullable()();
 
   @override
@@ -80,6 +83,11 @@ class Beers extends Table {
 
   /// Etikett-/Produktfoto als URL (Open Food Facts, CC-BY-SA – nur verlinkt).
   TextColumn get imageUrl => text().nullable()();
+
+  /// Hintergrundgeschichte: zwei bis fünf Sätze, wie ein Mensch sie
+  /// erzählen würde. Kein Werbetext, kein Wikipedia-Auszug — und lieber
+  /// leer als erfunden.
+  TextColumn get story => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -153,6 +161,12 @@ class Checkins extends Table {
 
   /// Foto des Check-ins (öffentliche URL im beer-photos-Bucket).
   TextColumn get photoUrl => text().nullable()();
+
+  /// Füllmenge in Millilitern. Ohne sie gibt es keine Literangabe — und
+  /// genau danach fragt man als erstes, wenn man ein Jahr zurückblickt.
+  /// Alte Check-ins haben keine; die Auswertung schätzt dort nach Gebinde
+  /// und weist das aus.
+  IntColumn get volumeMl => integer().nullable()();
   DateTimeColumn get createdAt => dateTime()();
 
   @override
@@ -194,6 +208,19 @@ class VenueEditQueue extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get venueId => text().nullable()();
   TextColumn get payloadJson => text()();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
+/// Offline-Warteschlange für gelöschte eigene Check-ins.
+///
+/// Die lokale Zeile verschwindet sofort (das Löschen soll sich sofort
+/// anfühlen); der Server erfährt es beim nächsten Sync. `photoUrl` wird
+/// mitgeführt, weil die Check-in-Zeile zu diesem Zeitpunkt schon weg ist,
+/// das Bild im Bucket aber noch aufgeräumt werden muss.
+class CheckinDeleteQueue extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get checkinId => text()();
+  TextColumn get photoUrl => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
 }
 
@@ -310,6 +337,7 @@ class ProfileStats {
   WishlistItems,
   ChallengeCache,
   VenueEditQueue,
+  CheckinDeleteQueue,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
@@ -319,7 +347,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(openInMemory());
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -430,6 +458,19 @@ class AppDatabase extends _$AppDatabase {
             // v9: Foto-Check-ins.
             await m.addColumn(checkins, checkins.photoUrl);
           }
+          if (from < 10) {
+            // v10: Offline-Warteschlange für gelöschte eigene Check-ins.
+            await m.createTable(checkinDeleteQueue);
+          }
+          if (from < 11) {
+            // v11: Füllmenge je Check-in (Grundlage der Literauswertung).
+            await m.addColumn(checkins, checkins.volumeMl);
+          }
+          if (from < 12) {
+            // v12: Hintergrundgeschichten zu Bier und Brauerei.
+            await m.addColumn(beers, beers.story);
+            await m.addColumn(breweries, breweries.story);
+          }
         },
       );
 
@@ -469,7 +510,20 @@ class AppDatabase extends _$AppDatabase {
   // Feed
   // --------------------------------------------------------------------------
 
-  Stream<List<CheckinDetails>> watchFeed({String? onlyProfileId}) {
+  /// Check-ins mit Bier, Brauerei und Autor, neueste zuerst.
+  ///
+  /// [limit] begrenzt die Zeilen (Feed und Tagebuch laden seitenweise
+  /// nach). Ohne Grenze wächst die Abfrage mit jedem Check-in — das ist
+  /// nur für Auswertungen über den Gesamtbestand gedacht.
+  ///
+  /// [search] filtert über Bier, Brauerei, Stil und Notiz. Die Suche
+  /// gehört in die Abfrage und nicht hinter das Fenster: Sonst fände das
+  /// Tagebuch nur, was ohnehin schon geladen war.
+  Stream<List<CheckinDetails>> watchFeed({
+    String? onlyProfileId,
+    int? limit,
+    String? search,
+  }) {
     final query = select(checkins).join([
       innerJoin(beers, beers.id.equalsExp(checkins.beerId)),
       innerJoin(breweries, breweries.id.equalsExp(beers.breweryId)),
@@ -479,6 +533,15 @@ class AppDatabase extends _$AppDatabase {
     if (onlyProfileId != null) {
       query.where(checkins.profileId.equals(onlyProfileId));
     }
+    final term = search?.trim().toLowerCase();
+    if (term != null && term.isNotEmpty) {
+      final pattern = '%$term%';
+      query.where(beers.name.lower().like(pattern) |
+          breweries.name.lower().like(pattern) |
+          beers.style.lower().like(pattern) |
+          checkins.note.lower().like(pattern));
+    }
+    if (limit != null) query.limit(limit);
     return query.watch().map((rows) => rows
         .map((row) => CheckinDetails(
               checkin: row.readTable(checkins),
@@ -487,6 +550,16 @@ class AppDatabase extends _$AppDatabase {
               author: row.readTable(profiles),
             ))
         .toList());
+  }
+
+  /// Anzahl eigener Check-ins (für „alles geladen?" und Statistiken).
+  Stream<int> watchCheckinCount(String profileId) {
+    final count = checkins.id.count();
+    return (selectOnly(checkins)
+          ..addColumns([count])
+          ..where(checkins.profileId.equals(profileId)))
+        .watchSingle()
+        .map((row) => row.read(count) ?? 0);
   }
 
   Stream<List<CheckinDetails>> watchSessionCheckins(String sessionId) {
@@ -651,6 +724,12 @@ class AppDatabase extends _$AppDatabase {
                 t.expiresAt.isBiggerThanValue(now))
             ..limit(1))
           .getSingleOrNull();
+
+  /// Neues Ende einer laufenden Session (Verlängern).
+  Future<void> setSessionExpiry(String id, DateTime until) async {
+    await (update(sessions)..where((t) => t.id.equals(id)))
+        .write(SessionsCompanion(expiresAt: Value(until)));
+  }
 
   Future<void> endSession(String id, DateTime now) async {
     await (update(sessions)..where((t) => t.id.equals(id))).write(
@@ -894,6 +973,76 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> deleteVenueEdit(int id) async {
     await (delete(venueEditQueue)..where((t) => t.id.equals(id))).go();
+  }
+
+  // --------------------------------------------------------------------------
+  // Check-ins löschen (lokal sofort, Server beim nächsten Sync)
+  // --------------------------------------------------------------------------
+
+  /// Hat der Mensch dieses Bier schon einmal eingecheckt?
+  ///
+  /// Damit erkennt der Scanner das „erste Mal", ohne dafür eine eigene
+  /// Tabelle gesehener Geschichten zu brauchen.
+  Future<bool> hasCheckinForBeer(String profileId, String beerId) async {
+    final row = await (select(checkins)
+          ..where((t) => t.profileId.equals(profileId) & t.beerId.equals(beerId))
+          ..limit(1))
+        .getSingleOrNull();
+    return row != null;
+  }
+
+  Future<Checkin?> findCheckin(String id) =>
+      (select(checkins)..where((t) => t.id.equals(id))).getSingleOrNull();
+
+  /// Stellt einen gelöschten Check-in wieder her („Rückgängig").
+  Future<void> restoreCheckinRow(Checkin row) async {
+    await into(checkins).insertOnConflictUpdate(row);
+  }
+
+  /// Löscht einen eigenen Check-in lokal samt Toasts und Kommentaren und
+  /// merkt ihn für den Server vor.
+  ///
+  /// Der Aufrufer stellt sicher, dass es sich um einen eigenen Check-in
+  /// handelt — die Server-Policy erzwingt es zusätzlich.
+  Future<void> deleteCheckinLocal(
+    String checkinId, {
+    String? photoUrl,
+    required DateTime now,
+    bool queueForServer = true,
+  }) async {
+    await transaction(() async {
+      await (delete(toasts)..where((t) => t.checkinId.equals(checkinId))).go();
+      await (delete(comments)..where((t) => t.checkinId.equals(checkinId)))
+          .go();
+      await (delete(checkins)..where((t) => t.id.equals(checkinId))).go();
+      if (queueForServer) {
+        await into(checkinDeleteQueue).insert(
+          CheckinDeleteQueueCompanion.insert(
+            checkinId: checkinId,
+            photoUrl: Value(photoUrl),
+            createdAt: now,
+          ),
+        );
+      }
+    });
+  }
+
+  /// Wartende Löschungen in Erfassungsreihenfolge (FIFO).
+  Future<List<CheckinDeleteQueueData>> pendingCheckinDeletes() =>
+      (select(checkinDeleteQueue)..orderBy([(t) => OrderingTerm.asc(t.id)]))
+          .get();
+
+  Future<void> deleteCheckinDeleteEntry(int id) async {
+    await (delete(checkinDeleteQueue)..where((t) => t.id.equals(id))).go();
+  }
+
+  /// Nimmt eine Löschung zurück („Rückgängig"), solange sie noch nicht
+  /// übertragen wurde. Der Check-in selbst wird vom Aufrufer wieder
+  /// eingefügt; hier verschwindet nur der Auftrag.
+  Future<void> cancelCheckinDelete(String checkinId) async {
+    await (delete(checkinDeleteQueue)
+          ..where((t) => t.checkinId.equals(checkinId)))
+        .go();
   }
 
   /// Anzahl wartender Einträge (für Sync-Status-Anzeigen).

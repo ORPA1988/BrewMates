@@ -16,6 +16,13 @@ keine gleichrangigen Einstiege mehr.
 Zeitschätzungen gelten für ein Team von **2–3 Entwicklern**; **mit
 KI-Unterstützung deutlich schneller** (erfahrungsgemäß etwa halbe bis drittel Zeit).
 
+> **Diese Roadmap sagt, wann etwas kommt.** Was eine Funktion ist, wie sie
+> gebaut ist und wie weit sie steht, steht je Funktion in einem eigenen
+> Dokument unter **[docs/features/](features/README.md)** — samt
+> Zielsetzung, technischer Umsetzung, Plattformen, Skalierung und
+> Umsetzungsplan. Der aktuelle Gesamtbefund zu allen bestehenden
+> Funktionen steht im **[Funktionsaudit](12-funktionsaudit.md)**.
+
 ## Was sich gegenüber Roadmap 1.0 geändert hat
 
 - **Hero-Aktionen statt Tab-zentriertem Einstieg**: Die alte Roadmap dachte die
@@ -119,11 +126,62 @@ Kosten trägt (siehe [docs/09](09-wachstum-und-geschaeftsmodell.md)).
       Etikett genügt — *Vorstufe fertig: Foto + EAN landen beim Anlegen
       direkt in der Community-DB (Migration 0010), die Community validiert
       über Check-ins vs. „Kein Bier"-Meldungen (±10-Regel)*
-- [ ] **Crews** (Gruppen) mit Crew-Feed und Crew-Beacons
+- [x] **Crews** (Gruppen) mit Crew-Beacons — *seit 0.9.12: anlegen,
+      Einladungscode, Mitglieder, Sichtbarkeit „nur meine Crew";
+      **Crew-Feed steht noch aus** (siehe
+      [Funktion 09](features/09-crews.md))*
 - [ ] **Monetarisierung gemäß docs/09**: Premium („BrewMates Pro") zuerst,
       Werbung nur optional und dezent – Kernfunktionen bleiben gratis
-- [ ] **Bier-DB über Österreich hinaus**: Erweiterung auf den DACH-Raum
-      (Deutschland, Schweiz) mit demselben Community-Workflow
+- [x] **Bier-DB über Österreich hinaus**: Erweiterung auf den DACH-Raum
+      (Deutschland, Schweiz) mit demselben Community-Workflow — *seit
+      0.9.13: 95 Biere / 40 Brauereien Restdeutschland + 45 Biere /
+      18 Brauereien Schweiz (`beers-de/ch.json`, `breweries-de/ch.json`)*
+
+---
+
+## Stufe D — „Nachschärfen & Abstufen" *(✅ abgeschlossen mit 0.10.0-beta)*
+
+Ziel: die Lücken schließen, die das [Funktionsaudit](12-funktionsaudit.md)
+gefunden hat, und den Daten mehr Bedeutung geben. Jeder Punkt hat ein
+eigenes Dokument mit Umsetzungsplan.
+
+**Lücken im Bestand (0.9.14):**
+
+- [x] **[Feed-Einträge löschen](features/19-feed-eintraege-loeschen.md)** —
+      eigene Check-ins entfernen, offlinefähig, mit „Rückgängig"
+      (Drift v10, `checkin_delete_queue`)
+- [x] **Listen auf Wachstum vorbereitet** — Feed und Tagebuch laden
+      30er-Seiten, fünf wachsende Listen bauen faul, Migration 0020 bringt
+      den fehlenden `created_at`-Index
+- [x] **[Freunde per QR-Code](features/22-freunde-per-qr-code.md)** —
+      Code anzeigen und scannen (`qr_flutter`, `mobile_scanner`)
+- [x] **[Beacon-Laufzeit](features/23-beacon-laufzeit.md)** — 30 min bis
+      12 h, verlängerbar, Grenzen serverseitig (0021)
+
+**Mehr Bedeutung (0.9.15 / 0.9.16):**
+
+- [x] **[Statistiken](features/20-feed-statistiken.md)** — Menge, Land,
+      Stil, Gebinde, Zeitraum und Filter; Füllmenge je Check-in neu
+      (Drift v11, 0022)
+- [x] **[Hintergrundgeschichten](features/21-hintergrundgeschichten.md)** —
+      Feld, Anzeige und Erst-Scan-Hinweis (Drift v12, 0023); 30 von 125
+      Brauereien erzählt, der Rest folgt bei der laufenden Datenpflege
+
+**Abstufung (0.10):**
+
+- [x] **[Freundeskreise](features/24-freundeskreise.md)** — Bekannte,
+      Freunde, Best Buddys; Beacon-Position und Bierlaune serverseitig
+      abgestuft (0024). Offen: Aufteilung je Zeile einstellbar,
+      Session-Sichtbarkeit „nur Best Buddys"
+
+**Später — Wirtschaftliches (nach 1.0):**
+
+- [ ] **[Brauerei-Besitz](features/25-brauerei-besitz.md)** — echte
+      Betreiber beantragen ihre Brauerei, Admins verifizieren, danach
+      pflegen sie ihre Daten selbst.
+- [ ] **[Bier-Angebote](features/26-bier-angebote.md)** — sehr späte
+      Ausbaustufe; das Dokument hält vor allem die Leitplanken fest,
+      damit sie nicht später verhandelt werden.
 
 ---
 

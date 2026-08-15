@@ -3,7 +3,7 @@ class AppConfig {
   /// Laufende App-Version — MUSS mit `version:` in pubspec.yaml
   /// übereinstimmen (Test pubspec_version_sync_test.dart erzwingt das).
   /// Grundlage für den automatischen Update-Check gegen GitHub-Releases.
-  static const appVersion = '0.9.12-beta+16';
+  static const appVersion = '0.10.0-beta+18';
 
   static const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
   static const supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');

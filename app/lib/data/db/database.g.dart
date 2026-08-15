@@ -480,6 +480,11 @@ class $BreweriesTable extends Breweries
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
       'notes', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _storyMeta = const VerificationMeta('story');
+  @override
+  late final GeneratedColumn<String> story = GeneratedColumn<String>(
+      'story', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _dataStatusMeta =
       const VerificationMeta('dataStatus');
   @override
@@ -502,6 +507,7 @@ class $BreweriesTable extends Breweries
         annualOutputHl,
         revenueEur,
         notes,
+        story,
         dataStatus
       ];
   @override
@@ -581,6 +587,10 @@ class $BreweriesTable extends Breweries
       context.handle(
           _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
     }
+    if (data.containsKey('story')) {
+      context.handle(
+          _storyMeta, story.isAcceptableOrUnknown(data['story']!, _storyMeta));
+    }
     if (data.containsKey('data_status')) {
       context.handle(
           _dataStatusMeta,
@@ -624,6 +634,8 @@ class $BreweriesTable extends Breweries
           .read(DriftSqlType.int, data['${effectivePrefix}revenue_eur']),
       notes: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}notes']),
+      story: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}story']),
       dataStatus: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}data_status']),
     );
@@ -650,6 +662,9 @@ class Brewery extends DataClass implements Insertable<Brewery> {
   final int? annualOutputHl;
   final int? revenueEur;
   final String? notes;
+
+  /// Hintergrundgeschichte der Brauerei (siehe [Beers.story]).
+  final String? story;
   final String? dataStatus;
   const Brewery(
       {required this.id,
@@ -666,6 +681,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       this.annualOutputHl,
       this.revenueEur,
       this.notes,
+      this.story,
       this.dataStatus});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -703,6 +719,9 @@ class Brewery extends DataClass implements Insertable<Brewery> {
     }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || story != null) {
+      map['story'] = Variable<String>(story);
     }
     if (!nullToAbsent || dataStatus != null) {
       map['data_status'] = Variable<String>(dataStatus);
@@ -745,6 +764,8 @@ class Brewery extends DataClass implements Insertable<Brewery> {
           : Value(revenueEur),
       notes:
           notes == null && nullToAbsent ? const Value.absent() : Value(notes),
+      story:
+          story == null && nullToAbsent ? const Value.absent() : Value(story),
       dataStatus: dataStatus == null && nullToAbsent
           ? const Value.absent()
           : Value(dataStatus),
@@ -769,6 +790,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       annualOutputHl: serializer.fromJson<int?>(json['annualOutputHl']),
       revenueEur: serializer.fromJson<int?>(json['revenueEur']),
       notes: serializer.fromJson<String?>(json['notes']),
+      story: serializer.fromJson<String?>(json['story']),
       dataStatus: serializer.fromJson<String?>(json['dataStatus']),
     );
   }
@@ -790,6 +812,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       'annualOutputHl': serializer.toJson<int?>(annualOutputHl),
       'revenueEur': serializer.toJson<int?>(revenueEur),
       'notes': serializer.toJson<String?>(notes),
+      'story': serializer.toJson<String?>(story),
       'dataStatus': serializer.toJson<String?>(dataStatus),
     };
   }
@@ -809,6 +832,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
           Value<int?> annualOutputHl = const Value.absent(),
           Value<int?> revenueEur = const Value.absent(),
           Value<String?> notes = const Value.absent(),
+          Value<String?> story = const Value.absent(),
           Value<String?> dataStatus = const Value.absent()}) =>
       Brewery(
         id: id ?? this.id,
@@ -826,6 +850,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
             annualOutputHl.present ? annualOutputHl.value : this.annualOutputHl,
         revenueEur: revenueEur.present ? revenueEur.value : this.revenueEur,
         notes: notes.present ? notes.value : this.notes,
+        story: story.present ? story.value : this.story,
         dataStatus: dataStatus.present ? dataStatus.value : this.dataStatus,
       );
   Brewery copyWithCompanion(BreweriesCompanion data) {
@@ -847,6 +872,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       revenueEur:
           data.revenueEur.present ? data.revenueEur.value : this.revenueEur,
       notes: data.notes.present ? data.notes.value : this.notes,
+      story: data.story.present ? data.story.value : this.story,
       dataStatus:
           data.dataStatus.present ? data.dataStatus.value : this.dataStatus,
     );
@@ -869,6 +895,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
           ..write('annualOutputHl: $annualOutputHl, ')
           ..write('revenueEur: $revenueEur, ')
           ..write('notes: $notes, ')
+          ..write('story: $story, ')
           ..write('dataStatus: $dataStatus')
           ..write(')'))
         .toString();
@@ -890,6 +917,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       annualOutputHl,
       revenueEur,
       notes,
+      story,
       dataStatus);
   @override
   bool operator ==(Object other) =>
@@ -909,6 +937,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
           other.annualOutputHl == this.annualOutputHl &&
           other.revenueEur == this.revenueEur &&
           other.notes == this.notes &&
+          other.story == this.story &&
           other.dataStatus == this.dataStatus);
 }
 
@@ -927,6 +956,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
   final Value<int?> annualOutputHl;
   final Value<int?> revenueEur;
   final Value<String?> notes;
+  final Value<String?> story;
   final Value<String?> dataStatus;
   final Value<int> rowid;
   const BreweriesCompanion({
@@ -944,6 +974,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
     this.annualOutputHl = const Value.absent(),
     this.revenueEur = const Value.absent(),
     this.notes = const Value.absent(),
+    this.story = const Value.absent(),
     this.dataStatus = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -962,6 +993,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
     this.annualOutputHl = const Value.absent(),
     this.revenueEur = const Value.absent(),
     this.notes = const Value.absent(),
+    this.story = const Value.absent(),
     this.dataStatus = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
@@ -983,6 +1015,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
     Expression<int>? annualOutputHl,
     Expression<int>? revenueEur,
     Expression<String>? notes,
+    Expression<String>? story,
     Expression<String>? dataStatus,
     Expression<int>? rowid,
   }) {
@@ -1001,6 +1034,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
       if (annualOutputHl != null) 'annual_output_hl': annualOutputHl,
       if (revenueEur != null) 'revenue_eur': revenueEur,
       if (notes != null) 'notes': notes,
+      if (story != null) 'story': story,
       if (dataStatus != null) 'data_status': dataStatus,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1021,6 +1055,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
       Value<int?>? annualOutputHl,
       Value<int?>? revenueEur,
       Value<String?>? notes,
+      Value<String?>? story,
       Value<String?>? dataStatus,
       Value<int>? rowid}) {
     return BreweriesCompanion(
@@ -1038,6 +1073,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
       annualOutputHl: annualOutputHl ?? this.annualOutputHl,
       revenueEur: revenueEur ?? this.revenueEur,
       notes: notes ?? this.notes,
+      story: story ?? this.story,
       dataStatus: dataStatus ?? this.dataStatus,
       rowid: rowid ?? this.rowid,
     );
@@ -1088,6 +1124,9 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
+    if (story.present) {
+      map['story'] = Variable<String>(story.value);
+    }
     if (dataStatus.present) {
       map['data_status'] = Variable<String>(dataStatus.value);
     }
@@ -1114,6 +1153,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
           ..write('annualOutputHl: $annualOutputHl, ')
           ..write('revenueEur: $revenueEur, ')
           ..write('notes: $notes, ')
+          ..write('story: $story, ')
           ..write('dataStatus: $dataStatus, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -1212,6 +1252,11 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
   late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
       'image_url', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _storyMeta = const VerificationMeta('story');
+  @override
+  late final GeneratedColumn<String> story = GeneratedColumn<String>(
+      'story', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1226,7 +1271,8 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
         descriptionCommunity,
         communityRating,
         barcodes,
-        imageUrl
+        imageUrl,
+        story
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1307,6 +1353,10 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
       context.handle(_imageUrlMeta,
           imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta));
     }
+    if (data.containsKey('story')) {
+      context.handle(
+          _storyMeta, story.isAcceptableOrUnknown(data['story']!, _storyMeta));
+    }
     return context;
   }
 
@@ -1342,6 +1392,8 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
           .read(DriftSqlType.string, data['${effectivePrefix}barcodes'])!,
       imageUrl: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}image_url']),
+      story: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}story']),
     );
   }
 
@@ -1373,6 +1425,11 @@ class Beer extends DataClass implements Insertable<Beer> {
 
   /// Etikett-/Produktfoto als URL (Open Food Facts, CC-BY-SA – nur verlinkt).
   final String? imageUrl;
+
+  /// Hintergrundgeschichte: zwei bis fünf Sätze, wie ein Mensch sie
+  /// erzählen würde. Kein Werbetext, kein Wikipedia-Auszug — und lieber
+  /// leer als erfunden.
+  final String? story;
   const Beer(
       {required this.id,
       required this.breweryId,
@@ -1386,7 +1443,8 @@ class Beer extends DataClass implements Insertable<Beer> {
       this.descriptionCommunity,
       this.communityRating,
       required this.barcodes,
-      this.imageUrl});
+      this.imageUrl,
+      this.story});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1415,6 +1473,9 @@ class Beer extends DataClass implements Insertable<Beer> {
     if (!nullToAbsent || imageUrl != null) {
       map['image_url'] = Variable<String>(imageUrl);
     }
+    if (!nullToAbsent || story != null) {
+      map['story'] = Variable<String>(story);
+    }
     return map;
   }
 
@@ -1441,6 +1502,8 @@ class Beer extends DataClass implements Insertable<Beer> {
       imageUrl: imageUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(imageUrl),
+      story:
+          story == null && nullToAbsent ? const Value.absent() : Value(story),
     );
   }
 
@@ -1462,6 +1525,7 @@ class Beer extends DataClass implements Insertable<Beer> {
       communityRating: serializer.fromJson<double?>(json['communityRating']),
       barcodes: serializer.fromJson<String>(json['barcodes']),
       imageUrl: serializer.fromJson<String?>(json['imageUrl']),
+      story: serializer.fromJson<String?>(json['story']),
     );
   }
   @override
@@ -1481,6 +1545,7 @@ class Beer extends DataClass implements Insertable<Beer> {
       'communityRating': serializer.toJson<double?>(communityRating),
       'barcodes': serializer.toJson<String>(barcodes),
       'imageUrl': serializer.toJson<String?>(imageUrl),
+      'story': serializer.toJson<String?>(story),
     };
   }
 
@@ -1497,7 +1562,8 @@ class Beer extends DataClass implements Insertable<Beer> {
           Value<String?> descriptionCommunity = const Value.absent(),
           Value<double?> communityRating = const Value.absent(),
           String? barcodes,
-          Value<String?> imageUrl = const Value.absent()}) =>
+          Value<String?> imageUrl = const Value.absent(),
+          Value<String?> story = const Value.absent()}) =>
       Beer(
         id: id ?? this.id,
         breweryId: breweryId ?? this.breweryId,
@@ -1516,6 +1582,7 @@ class Beer extends DataClass implements Insertable<Beer> {
             : this.communityRating,
         barcodes: barcodes ?? this.barcodes,
         imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
+        story: story.present ? story.value : this.story,
       );
   Beer copyWithCompanion(BeersCompanion data) {
     return Beer(
@@ -1541,6 +1608,7 @@ class Beer extends DataClass implements Insertable<Beer> {
           : this.communityRating,
       barcodes: data.barcodes.present ? data.barcodes.value : this.barcodes,
       imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
+      story: data.story.present ? data.story.value : this.story,
     );
   }
 
@@ -1559,7 +1627,8 @@ class Beer extends DataClass implements Insertable<Beer> {
           ..write('descriptionCommunity: $descriptionCommunity, ')
           ..write('communityRating: $communityRating, ')
           ..write('barcodes: $barcodes, ')
-          ..write('imageUrl: $imageUrl')
+          ..write('imageUrl: $imageUrl, ')
+          ..write('story: $story')
           ..write(')'))
         .toString();
   }
@@ -1578,7 +1647,8 @@ class Beer extends DataClass implements Insertable<Beer> {
       descriptionCommunity,
       communityRating,
       barcodes,
-      imageUrl);
+      imageUrl,
+      story);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1595,7 +1665,8 @@ class Beer extends DataClass implements Insertable<Beer> {
           other.descriptionCommunity == this.descriptionCommunity &&
           other.communityRating == this.communityRating &&
           other.barcodes == this.barcodes &&
-          other.imageUrl == this.imageUrl);
+          other.imageUrl == this.imageUrl &&
+          other.story == this.story);
 }
 
 class BeersCompanion extends UpdateCompanion<Beer> {
@@ -1612,6 +1683,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
   final Value<double?> communityRating;
   final Value<String> barcodes;
   final Value<String?> imageUrl;
+  final Value<String?> story;
   final Value<int> rowid;
   const BeersCompanion({
     this.id = const Value.absent(),
@@ -1627,6 +1699,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     this.communityRating = const Value.absent(),
     this.barcodes = const Value.absent(),
     this.imageUrl = const Value.absent(),
+    this.story = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   BeersCompanion.insert({
@@ -1643,6 +1716,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     this.communityRating = const Value.absent(),
     this.barcodes = const Value.absent(),
     this.imageUrl = const Value.absent(),
+    this.story = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         breweryId = Value(breweryId),
@@ -1662,6 +1736,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     Expression<double>? communityRating,
     Expression<String>? barcodes,
     Expression<String>? imageUrl,
+    Expression<String>? story,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1679,6 +1754,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       if (communityRating != null) 'community_rating': communityRating,
       if (barcodes != null) 'barcodes': barcodes,
       if (imageUrl != null) 'image_url': imageUrl,
+      if (story != null) 'story': story,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1697,6 +1773,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       Value<double?>? communityRating,
       Value<String>? barcodes,
       Value<String?>? imageUrl,
+      Value<String?>? story,
       Value<int>? rowid}) {
     return BeersCompanion(
       id: id ?? this.id,
@@ -1712,6 +1789,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       communityRating: communityRating ?? this.communityRating,
       barcodes: barcodes ?? this.barcodes,
       imageUrl: imageUrl ?? this.imageUrl,
+      story: story ?? this.story,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1759,6 +1837,9 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     if (imageUrl.present) {
       map['image_url'] = Variable<String>(imageUrl.value);
     }
+    if (story.present) {
+      map['story'] = Variable<String>(story.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1781,6 +1862,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
           ..write('communityRating: $communityRating, ')
           ..write('barcodes: $barcodes, ')
           ..write('imageUrl: $imageUrl, ')
+          ..write('story: $story, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3404,6 +3486,12 @@ class $CheckinsTable extends Checkins with TableInfo<$CheckinsTable, Checkin> {
   late final GeneratedColumn<String> photoUrl = GeneratedColumn<String>(
       'photo_url', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _volumeMlMeta =
+      const VerificationMeta('volumeMl');
+  @override
+  late final GeneratedColumn<int> volumeMl = GeneratedColumn<int>(
+      'volume_ml', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -3423,6 +3511,7 @@ class $CheckinsTable extends Checkins with TableInfo<$CheckinsTable, Checkin> {
         flavorTags,
         servingStyle,
         photoUrl,
+        volumeMl,
         createdAt
       ];
   @override
@@ -3483,6 +3572,10 @@ class $CheckinsTable extends Checkins with TableInfo<$CheckinsTable, Checkin> {
       context.handle(_photoUrlMeta,
           photoUrl.isAcceptableOrUnknown(data['photo_url']!, _photoUrlMeta));
     }
+    if (data.containsKey('volume_ml')) {
+      context.handle(_volumeMlMeta,
+          volumeMl.isAcceptableOrUnknown(data['volume_ml']!, _volumeMlMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -3521,6 +3614,8 @@ class $CheckinsTable extends Checkins with TableInfo<$CheckinsTable, Checkin> {
               DriftSqlType.string, data['${effectivePrefix}serving_style'])),
       photoUrl: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}photo_url']),
+      volumeMl: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}volume_ml']),
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
     );
@@ -3555,6 +3650,12 @@ class Checkin extends DataClass implements Insertable<Checkin> {
 
   /// Foto des Check-ins (öffentliche URL im beer-photos-Bucket).
   final String? photoUrl;
+
+  /// Füllmenge in Millilitern. Ohne sie gibt es keine Literangabe — und
+  /// genau danach fragt man als erstes, wenn man ein Jahr zurückblickt.
+  /// Alte Check-ins haben keine; die Auswertung schätzt dort nach Gebinde
+  /// und weist das aus.
+  final int? volumeMl;
   final DateTime createdAt;
   const Checkin(
       {required this.id,
@@ -3568,6 +3669,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
       required this.flavorTags,
       this.servingStyle,
       this.photoUrl,
+      this.volumeMl,
       required this.createdAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -3598,6 +3700,9 @@ class Checkin extends DataClass implements Insertable<Checkin> {
     if (!nullToAbsent || photoUrl != null) {
       map['photo_url'] = Variable<String>(photoUrl);
     }
+    if (!nullToAbsent || volumeMl != null) {
+      map['volume_ml'] = Variable<int>(volumeMl);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -3626,6 +3731,9 @@ class Checkin extends DataClass implements Insertable<Checkin> {
       photoUrl: photoUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(photoUrl),
+      volumeMl: volumeMl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(volumeMl),
       createdAt: Value(createdAt),
     );
   }
@@ -3646,6 +3754,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
       servingStyle: $CheckinsTable.$converterservingStylen
           .fromJson(serializer.fromJson<String?>(json['servingStyle'])),
       photoUrl: serializer.fromJson<String?>(json['photoUrl']),
+      volumeMl: serializer.fromJson<int?>(json['volumeMl']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -3665,6 +3774,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
       'servingStyle': serializer.toJson<String?>(
           $CheckinsTable.$converterservingStylen.toJson(servingStyle)),
       'photoUrl': serializer.toJson<String?>(photoUrl),
+      'volumeMl': serializer.toJson<int?>(volumeMl),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -3681,6 +3791,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
           String? flavorTags,
           Value<ServingStyle?> servingStyle = const Value.absent(),
           Value<String?> photoUrl = const Value.absent(),
+          Value<int?> volumeMl = const Value.absent(),
           DateTime? createdAt}) =>
       Checkin(
         id: id ?? this.id,
@@ -3695,6 +3806,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
         servingStyle:
             servingStyle.present ? servingStyle.value : this.servingStyle,
         photoUrl: photoUrl.present ? photoUrl.value : this.photoUrl,
+        volumeMl: volumeMl.present ? volumeMl.value : this.volumeMl,
         createdAt: createdAt ?? this.createdAt,
       );
   Checkin copyWithCompanion(CheckinsCompanion data) {
@@ -3713,6 +3825,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
           ? data.servingStyle.value
           : this.servingStyle,
       photoUrl: data.photoUrl.present ? data.photoUrl.value : this.photoUrl,
+      volumeMl: data.volumeMl.present ? data.volumeMl.value : this.volumeMl,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -3731,14 +3844,27 @@ class Checkin extends DataClass implements Insertable<Checkin> {
           ..write('flavorTags: $flavorTags, ')
           ..write('servingStyle: $servingStyle, ')
           ..write('photoUrl: $photoUrl, ')
+          ..write('volumeMl: $volumeMl, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, profileId, beerId, sessionId, venueId,
-      venueName, rating, note, flavorTags, servingStyle, photoUrl, createdAt);
+  int get hashCode => Object.hash(
+      id,
+      profileId,
+      beerId,
+      sessionId,
+      venueId,
+      venueName,
+      rating,
+      note,
+      flavorTags,
+      servingStyle,
+      photoUrl,
+      volumeMl,
+      createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3754,6 +3880,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
           other.flavorTags == this.flavorTags &&
           other.servingStyle == this.servingStyle &&
           other.photoUrl == this.photoUrl &&
+          other.volumeMl == this.volumeMl &&
           other.createdAt == this.createdAt);
 }
 
@@ -3769,6 +3896,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
   final Value<String> flavorTags;
   final Value<ServingStyle?> servingStyle;
   final Value<String?> photoUrl;
+  final Value<int?> volumeMl;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const CheckinsCompanion({
@@ -3783,6 +3911,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
     this.flavorTags = const Value.absent(),
     this.servingStyle = const Value.absent(),
     this.photoUrl = const Value.absent(),
+    this.volumeMl = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -3798,6 +3927,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
     this.flavorTags = const Value.absent(),
     this.servingStyle = const Value.absent(),
     this.photoUrl = const Value.absent(),
+    this.volumeMl = const Value.absent(),
     required DateTime createdAt,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
@@ -3816,6 +3946,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
     Expression<String>? flavorTags,
     Expression<String>? servingStyle,
     Expression<String>? photoUrl,
+    Expression<int>? volumeMl,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
@@ -3831,6 +3962,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
       if (flavorTags != null) 'flavor_tags': flavorTags,
       if (servingStyle != null) 'serving_style': servingStyle,
       if (photoUrl != null) 'photo_url': photoUrl,
+      if (volumeMl != null) 'volume_ml': volumeMl,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -3848,6 +3980,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
       Value<String>? flavorTags,
       Value<ServingStyle?>? servingStyle,
       Value<String?>? photoUrl,
+      Value<int?>? volumeMl,
       Value<DateTime>? createdAt,
       Value<int>? rowid}) {
     return CheckinsCompanion(
@@ -3862,6 +3995,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
       flavorTags: flavorTags ?? this.flavorTags,
       servingStyle: servingStyle ?? this.servingStyle,
       photoUrl: photoUrl ?? this.photoUrl,
+      volumeMl: volumeMl ?? this.volumeMl,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
@@ -3904,6 +4038,9 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
     if (photoUrl.present) {
       map['photo_url'] = Variable<String>(photoUrl.value);
     }
+    if (volumeMl.present) {
+      map['volume_ml'] = Variable<int>(volumeMl.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -3927,6 +4064,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
           ..write('flavorTags: $flavorTags, ')
           ..write('servingStyle: $servingStyle, ')
           ..write('photoUrl: $photoUrl, ')
+          ..write('volumeMl: $volumeMl, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -5567,6 +5705,271 @@ class VenueEditQueueCompanion extends UpdateCompanion<VenueEditQueueData> {
   }
 }
 
+class $CheckinDeleteQueueTable extends CheckinDeleteQueue
+    with TableInfo<$CheckinDeleteQueueTable, CheckinDeleteQueueData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CheckinDeleteQueueTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _checkinIdMeta =
+      const VerificationMeta('checkinId');
+  @override
+  late final GeneratedColumn<String> checkinId = GeneratedColumn<String>(
+      'checkin_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _photoUrlMeta =
+      const VerificationMeta('photoUrl');
+  @override
+  late final GeneratedColumn<String> photoUrl = GeneratedColumn<String>(
+      'photo_url', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, checkinId, photoUrl, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'checkin_delete_queue';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<CheckinDeleteQueueData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('checkin_id')) {
+      context.handle(_checkinIdMeta,
+          checkinId.isAcceptableOrUnknown(data['checkin_id']!, _checkinIdMeta));
+    } else if (isInserting) {
+      context.missing(_checkinIdMeta);
+    }
+    if (data.containsKey('photo_url')) {
+      context.handle(_photoUrlMeta,
+          photoUrl.isAcceptableOrUnknown(data['photo_url']!, _photoUrlMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CheckinDeleteQueueData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CheckinDeleteQueueData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      checkinId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}checkin_id'])!,
+      photoUrl: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}photo_url']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $CheckinDeleteQueueTable createAlias(String alias) {
+    return $CheckinDeleteQueueTable(attachedDatabase, alias);
+  }
+}
+
+class CheckinDeleteQueueData extends DataClass
+    implements Insertable<CheckinDeleteQueueData> {
+  final int id;
+  final String checkinId;
+  final String? photoUrl;
+  final DateTime createdAt;
+  const CheckinDeleteQueueData(
+      {required this.id,
+      required this.checkinId,
+      this.photoUrl,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['checkin_id'] = Variable<String>(checkinId);
+    if (!nullToAbsent || photoUrl != null) {
+      map['photo_url'] = Variable<String>(photoUrl);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  CheckinDeleteQueueCompanion toCompanion(bool nullToAbsent) {
+    return CheckinDeleteQueueCompanion(
+      id: Value(id),
+      checkinId: Value(checkinId),
+      photoUrl: photoUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(photoUrl),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory CheckinDeleteQueueData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CheckinDeleteQueueData(
+      id: serializer.fromJson<int>(json['id']),
+      checkinId: serializer.fromJson<String>(json['checkinId']),
+      photoUrl: serializer.fromJson<String?>(json['photoUrl']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'checkinId': serializer.toJson<String>(checkinId),
+      'photoUrl': serializer.toJson<String?>(photoUrl),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  CheckinDeleteQueueData copyWith(
+          {int? id,
+          String? checkinId,
+          Value<String?> photoUrl = const Value.absent(),
+          DateTime? createdAt}) =>
+      CheckinDeleteQueueData(
+        id: id ?? this.id,
+        checkinId: checkinId ?? this.checkinId,
+        photoUrl: photoUrl.present ? photoUrl.value : this.photoUrl,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  CheckinDeleteQueueData copyWithCompanion(CheckinDeleteQueueCompanion data) {
+    return CheckinDeleteQueueData(
+      id: data.id.present ? data.id.value : this.id,
+      checkinId: data.checkinId.present ? data.checkinId.value : this.checkinId,
+      photoUrl: data.photoUrl.present ? data.photoUrl.value : this.photoUrl,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CheckinDeleteQueueData(')
+          ..write('id: $id, ')
+          ..write('checkinId: $checkinId, ')
+          ..write('photoUrl: $photoUrl, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, checkinId, photoUrl, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CheckinDeleteQueueData &&
+          other.id == this.id &&
+          other.checkinId == this.checkinId &&
+          other.photoUrl == this.photoUrl &&
+          other.createdAt == this.createdAt);
+}
+
+class CheckinDeleteQueueCompanion
+    extends UpdateCompanion<CheckinDeleteQueueData> {
+  final Value<int> id;
+  final Value<String> checkinId;
+  final Value<String?> photoUrl;
+  final Value<DateTime> createdAt;
+  const CheckinDeleteQueueCompanion({
+    this.id = const Value.absent(),
+    this.checkinId = const Value.absent(),
+    this.photoUrl = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  CheckinDeleteQueueCompanion.insert({
+    this.id = const Value.absent(),
+    required String checkinId,
+    this.photoUrl = const Value.absent(),
+    required DateTime createdAt,
+  })  : checkinId = Value(checkinId),
+        createdAt = Value(createdAt);
+  static Insertable<CheckinDeleteQueueData> custom({
+    Expression<int>? id,
+    Expression<String>? checkinId,
+    Expression<String>? photoUrl,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (checkinId != null) 'checkin_id': checkinId,
+      if (photoUrl != null) 'photo_url': photoUrl,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  CheckinDeleteQueueCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? checkinId,
+      Value<String?>? photoUrl,
+      Value<DateTime>? createdAt}) {
+    return CheckinDeleteQueueCompanion(
+      id: id ?? this.id,
+      checkinId: checkinId ?? this.checkinId,
+      photoUrl: photoUrl ?? this.photoUrl,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (checkinId.present) {
+      map['checkin_id'] = Variable<String>(checkinId.value);
+    }
+    if (photoUrl.present) {
+      map['photo_url'] = Variable<String>(photoUrl.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CheckinDeleteQueueCompanion(')
+          ..write('id: $id, ')
+          ..write('checkinId: $checkinId, ')
+          ..write('photoUrl: $photoUrl, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5584,6 +5987,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $WishlistItemsTable wishlistItems = $WishlistItemsTable(this);
   late final $ChallengeCacheTable challengeCache = $ChallengeCacheTable(this);
   late final $VenueEditQueueTable venueEditQueue = $VenueEditQueueTable(this);
+  late final $CheckinDeleteQueueTable checkinDeleteQueue =
+      $CheckinDeleteQueueTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5601,7 +6006,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         userBadges,
         wishlistItems,
         challengeCache,
-        venueEditQueue
+        venueEditQueue,
+        checkinDeleteQueue
       ];
 }
 
@@ -6347,6 +6753,7 @@ typedef $$BreweriesTableCreateCompanionBuilder = BreweriesCompanion Function({
   Value<int?> annualOutputHl,
   Value<int?> revenueEur,
   Value<String?> notes,
+  Value<String?> story,
   Value<String?> dataStatus,
   Value<int> rowid,
 });
@@ -6365,6 +6772,7 @@ typedef $$BreweriesTableUpdateCompanionBuilder = BreweriesCompanion Function({
   Value<int?> annualOutputHl,
   Value<int?> revenueEur,
   Value<String?> notes,
+  Value<String?> story,
   Value<String?> dataStatus,
   Value<int> rowid,
 });
@@ -6439,6 +6847,9 @@ class $$BreweriesTableFilterComposer
 
   ColumnFilters<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get story => $composableBuilder(
+      column: $table.story, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get dataStatus => $composableBuilder(
       column: $table.dataStatus, builder: (column) => ColumnFilters(column));
@@ -6517,6 +6928,9 @@ class $$BreweriesTableOrderingComposer
   ColumnOrderings<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get story => $composableBuilder(
+      column: $table.story, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get dataStatus => $composableBuilder(
       column: $table.dataStatus, builder: (column) => ColumnOrderings(column));
 }
@@ -6571,6 +6985,9 @@ class $$BreweriesTableAnnotationComposer
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get story =>
+      $composableBuilder(column: $table.story, builder: (column) => column);
 
   GeneratedColumn<String> get dataStatus => $composableBuilder(
       column: $table.dataStatus, builder: (column) => column);
@@ -6634,6 +7051,7 @@ class $$BreweriesTableTableManager extends RootTableManager<
             Value<int?> annualOutputHl = const Value.absent(),
             Value<int?> revenueEur = const Value.absent(),
             Value<String?> notes = const Value.absent(),
+            Value<String?> story = const Value.absent(),
             Value<String?> dataStatus = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -6652,6 +7070,7 @@ class $$BreweriesTableTableManager extends RootTableManager<
             annualOutputHl: annualOutputHl,
             revenueEur: revenueEur,
             notes: notes,
+            story: story,
             dataStatus: dataStatus,
             rowid: rowid,
           ),
@@ -6670,6 +7089,7 @@ class $$BreweriesTableTableManager extends RootTableManager<
             Value<int?> annualOutputHl = const Value.absent(),
             Value<int?> revenueEur = const Value.absent(),
             Value<String?> notes = const Value.absent(),
+            Value<String?> story = const Value.absent(),
             Value<String?> dataStatus = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -6688,6 +7108,7 @@ class $$BreweriesTableTableManager extends RootTableManager<
             annualOutputHl: annualOutputHl,
             revenueEur: revenueEur,
             notes: notes,
+            story: story,
             dataStatus: dataStatus,
             rowid: rowid,
           ),
@@ -6748,6 +7169,7 @@ typedef $$BeersTableCreateCompanionBuilder = BeersCompanion Function({
   Value<double?> communityRating,
   Value<String> barcodes,
   Value<String?> imageUrl,
+  Value<String?> story,
   Value<int> rowid,
 });
 typedef $$BeersTableUpdateCompanionBuilder = BeersCompanion Function({
@@ -6764,6 +7186,7 @@ typedef $$BeersTableUpdateCompanionBuilder = BeersCompanion Function({
   Value<double?> communityRating,
   Value<String> barcodes,
   Value<String?> imageUrl,
+  Value<String?> story,
   Value<int> rowid,
 });
 
@@ -6859,6 +7282,9 @@ class $$BeersTableFilterComposer extends Composer<_$AppDatabase, $BeersTable> {
 
   ColumnFilters<String> get imageUrl => $composableBuilder(
       column: $table.imageUrl, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get story => $composableBuilder(
+      column: $table.story, builder: (column) => ColumnFilters(column));
 
   $$BreweriesTableFilterComposer get breweryId {
     final $$BreweriesTableFilterComposer composer = $composerBuilder(
@@ -6972,6 +7398,9 @@ class $$BeersTableOrderingComposer
   ColumnOrderings<String> get imageUrl => $composableBuilder(
       column: $table.imageUrl, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get story => $composableBuilder(
+      column: $table.story, builder: (column) => ColumnOrderings(column));
+
   $$BreweriesTableOrderingComposer get breweryId {
     final $$BreweriesTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -7037,6 +7466,9 @@ class $$BeersTableAnnotationComposer
 
   GeneratedColumn<String> get imageUrl =>
       $composableBuilder(column: $table.imageUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get story =>
+      $composableBuilder(column: $table.story, builder: (column) => column);
 
   $$BreweriesTableAnnotationComposer get breweryId {
     final $$BreweriesTableAnnotationComposer composer = $composerBuilder(
@@ -7138,6 +7570,7 @@ class $$BeersTableTableManager extends RootTableManager<
             Value<double?> communityRating = const Value.absent(),
             Value<String> barcodes = const Value.absent(),
             Value<String?> imageUrl = const Value.absent(),
+            Value<String?> story = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               BeersCompanion(
@@ -7154,6 +7587,7 @@ class $$BeersTableTableManager extends RootTableManager<
             communityRating: communityRating,
             barcodes: barcodes,
             imageUrl: imageUrl,
+            story: story,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -7170,6 +7604,7 @@ class $$BeersTableTableManager extends RootTableManager<
             Value<double?> communityRating = const Value.absent(),
             Value<String> barcodes = const Value.absent(),
             Value<String?> imageUrl = const Value.absent(),
+            Value<String?> story = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               BeersCompanion.insert(
@@ -7186,6 +7621,7 @@ class $$BeersTableTableManager extends RootTableManager<
             communityRating: communityRating,
             barcodes: barcodes,
             imageUrl: imageUrl,
+            story: story,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -8367,6 +8803,7 @@ typedef $$CheckinsTableCreateCompanionBuilder = CheckinsCompanion Function({
   Value<String> flavorTags,
   Value<ServingStyle?> servingStyle,
   Value<String?> photoUrl,
+  Value<int?> volumeMl,
   required DateTime createdAt,
   Value<int> rowid,
 });
@@ -8382,6 +8819,7 @@ typedef $$CheckinsTableUpdateCompanionBuilder = CheckinsCompanion Function({
   Value<String> flavorTags,
   Value<ServingStyle?> servingStyle,
   Value<String?> photoUrl,
+  Value<int?> volumeMl,
   Value<DateTime> createdAt,
   Value<int> rowid,
 });
@@ -8481,6 +8919,9 @@ class $$CheckinsTableFilterComposer
 
   ColumnFilters<String> get photoUrl => $composableBuilder(
       column: $table.photoUrl, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get volumeMl => $composableBuilder(
+      column: $table.volumeMl, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -8605,6 +9046,9 @@ class $$CheckinsTableOrderingComposer
   ColumnOrderings<String> get photoUrl => $composableBuilder(
       column: $table.photoUrl, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get volumeMl => $composableBuilder(
+      column: $table.volumeMl, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
@@ -8685,6 +9129,9 @@ class $$CheckinsTableAnnotationComposer
 
   GeneratedColumn<String> get photoUrl =>
       $composableBuilder(column: $table.photoUrl, builder: (column) => column);
+
+  GeneratedColumn<int> get volumeMl =>
+      $composableBuilder(column: $table.volumeMl, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -8807,6 +9254,7 @@ class $$CheckinsTableTableManager extends RootTableManager<
             Value<String> flavorTags = const Value.absent(),
             Value<ServingStyle?> servingStyle = const Value.absent(),
             Value<String?> photoUrl = const Value.absent(),
+            Value<int?> volumeMl = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -8822,6 +9270,7 @@ class $$CheckinsTableTableManager extends RootTableManager<
             flavorTags: flavorTags,
             servingStyle: servingStyle,
             photoUrl: photoUrl,
+            volumeMl: volumeMl,
             createdAt: createdAt,
             rowid: rowid,
           ),
@@ -8837,6 +9286,7 @@ class $$CheckinsTableTableManager extends RootTableManager<
             Value<String> flavorTags = const Value.absent(),
             Value<ServingStyle?> servingStyle = const Value.absent(),
             Value<String?> photoUrl = const Value.absent(),
+            Value<int?> volumeMl = const Value.absent(),
             required DateTime createdAt,
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -8852,6 +9302,7 @@ class $$CheckinsTableTableManager extends RootTableManager<
             flavorTags: flavorTags,
             servingStyle: servingStyle,
             photoUrl: photoUrl,
+            volumeMl: volumeMl,
             createdAt: createdAt,
             rowid: rowid,
           ),
@@ -10502,6 +10953,162 @@ typedef $$VenueEditQueueTableProcessedTableManager = ProcessedTableManager<
     ),
     VenueEditQueueData,
     PrefetchHooks Function()>;
+typedef $$CheckinDeleteQueueTableCreateCompanionBuilder
+    = CheckinDeleteQueueCompanion Function({
+  Value<int> id,
+  required String checkinId,
+  Value<String?> photoUrl,
+  required DateTime createdAt,
+});
+typedef $$CheckinDeleteQueueTableUpdateCompanionBuilder
+    = CheckinDeleteQueueCompanion Function({
+  Value<int> id,
+  Value<String> checkinId,
+  Value<String?> photoUrl,
+  Value<DateTime> createdAt,
+});
+
+class $$CheckinDeleteQueueTableFilterComposer
+    extends Composer<_$AppDatabase, $CheckinDeleteQueueTable> {
+  $$CheckinDeleteQueueTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get checkinId => $composableBuilder(
+      column: $table.checkinId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get photoUrl => $composableBuilder(
+      column: $table.photoUrl, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$CheckinDeleteQueueTableOrderingComposer
+    extends Composer<_$AppDatabase, $CheckinDeleteQueueTable> {
+  $$CheckinDeleteQueueTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get checkinId => $composableBuilder(
+      column: $table.checkinId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get photoUrl => $composableBuilder(
+      column: $table.photoUrl, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$CheckinDeleteQueueTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CheckinDeleteQueueTable> {
+  $$CheckinDeleteQueueTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get checkinId =>
+      $composableBuilder(column: $table.checkinId, builder: (column) => column);
+
+  GeneratedColumn<String> get photoUrl =>
+      $composableBuilder(column: $table.photoUrl, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$CheckinDeleteQueueTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $CheckinDeleteQueueTable,
+    CheckinDeleteQueueData,
+    $$CheckinDeleteQueueTableFilterComposer,
+    $$CheckinDeleteQueueTableOrderingComposer,
+    $$CheckinDeleteQueueTableAnnotationComposer,
+    $$CheckinDeleteQueueTableCreateCompanionBuilder,
+    $$CheckinDeleteQueueTableUpdateCompanionBuilder,
+    (
+      CheckinDeleteQueueData,
+      BaseReferences<_$AppDatabase, $CheckinDeleteQueueTable,
+          CheckinDeleteQueueData>
+    ),
+    CheckinDeleteQueueData,
+    PrefetchHooks Function()> {
+  $$CheckinDeleteQueueTableTableManager(
+      _$AppDatabase db, $CheckinDeleteQueueTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CheckinDeleteQueueTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CheckinDeleteQueueTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CheckinDeleteQueueTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> checkinId = const Value.absent(),
+            Value<String?> photoUrl = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              CheckinDeleteQueueCompanion(
+            id: id,
+            checkinId: checkinId,
+            photoUrl: photoUrl,
+            createdAt: createdAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String checkinId,
+            Value<String?> photoUrl = const Value.absent(),
+            required DateTime createdAt,
+          }) =>
+              CheckinDeleteQueueCompanion.insert(
+            id: id,
+            checkinId: checkinId,
+            photoUrl: photoUrl,
+            createdAt: createdAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$CheckinDeleteQueueTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $CheckinDeleteQueueTable,
+    CheckinDeleteQueueData,
+    $$CheckinDeleteQueueTableFilterComposer,
+    $$CheckinDeleteQueueTableOrderingComposer,
+    $$CheckinDeleteQueueTableAnnotationComposer,
+    $$CheckinDeleteQueueTableCreateCompanionBuilder,
+    $$CheckinDeleteQueueTableUpdateCompanionBuilder,
+    (
+      CheckinDeleteQueueData,
+      BaseReferences<_$AppDatabase, $CheckinDeleteQueueTable,
+          CheckinDeleteQueueData>
+    ),
+    CheckinDeleteQueueData,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -10532,4 +11139,6 @@ class $AppDatabaseManager {
       $$ChallengeCacheTableTableManager(_db, _db.challengeCache);
   $$VenueEditQueueTableTableManager get venueEditQueue =>
       $$VenueEditQueueTableTableManager(_db, _db.venueEditQueue);
+  $$CheckinDeleteQueueTableTableManager get checkinDeleteQueue =>
+      $$CheckinDeleteQueueTableTableManager(_db, _db.checkinDeleteQueue);
 }

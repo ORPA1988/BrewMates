@@ -8,10 +8,12 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
 import '../../widgets/rating_stars.dart';
+import '../beers/story_sheet.dart';
 import 'barcode_lookup.dart';
 
 /// Hero-Funktion „🍺 Bier scannen": Kamera-Scan auf Android/iOS und im
-/// Browser (mobile_scanner lädt die zxing-Bibliothek zur Laufzeit nach),
+/// Browser (mobile_scanner lädt die zxing-Bibliothek zur Laufzeit nach —
+/// aus dem eigenen `web/zxing.js` statt von unpkg.com, siehe [initState]),
 /// manuelle EAN-Eingabe überall (und als einziger Weg auf Desktop).
 /// Die Lookup-Logik lebt in [BarcodeLookup] — dieser Screen ist nur UI.
 class ScanScreen extends ConsumerStatefulWidget {
@@ -30,6 +32,18 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       kIsWeb ||
       defaultTargetPlatform == TargetPlatform.android ||
       defaultTargetPlatform == TargetPlatform.iOS;
+
+  @override
+  void initState() {
+    super.initState();
+    // Web: zxing selbst hosten (web/zxing.js, @zxing/library 0.19.1) statt
+    // es von unpkg.com nachzuladen — VPN/Adblocker blockieren die CDN gern,
+    // dann erkennt der Scanner ohne Fehlermeldung einfach nie einen Code
+    // (gleiche Falle wie einst CanvasKit/Fonts von gstatic). Die relative
+    // URL löst über <base href> korrekt auf; auf Android/iOS ist der
+    // Aufruf ein No-op.
+    MobileScannerPlatform.instance.setBarcodeLibraryScriptUrl('zxing.js');
+  }
 
   @override
   void dispose() {
@@ -117,6 +131,21 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
   Future<void> _showFoundSheet(BeerWithBrewery found) async {
     final beer = found.beer;
     final theme = Theme.of(context);
+
+    // „Wusstest du…?" nur beim ersten Mal: Ein Bier gilt als bekannt,
+    // sobald ein eigener Check-in darauf existiert — dafür braucht es
+    // keine eigene Tabelle gesehener Geschichten.
+    // Hat das Bier keine eigene Geschichte, springt die der Brauerei ein;
+    // das ist der häufigere und oft interessantere Fall.
+    final story = beer.story ?? found.brewery.story;
+    var showStoryHint = false;
+    if (story != null && story.trim().isNotEmpty) {
+      final me = await ref.read(databaseProvider).getMe();
+      showStoryHint = !await ref
+          .read(databaseProvider)
+          .hasCheckinForBeer(me.id, beer.id);
+    }
+    if (!mounted) return;
     await showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -173,6 +202,18 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
                   ),
                 ],
               ),
+              if (showStoryHint) ...[
+                const SizedBox(height: 12),
+                ActionChip(
+                  avatar: const Text('📖'),
+                  label: const Text('Wusstest du …?'),
+                  onPressed: () => showStorySheet(
+                    sheetContext,
+                    title: beer.story != null ? beer.name : found.brewery.name,
+                    story: story!,
+                  ),
+                ),
+              ],
               const SizedBox(height: 16),
               FilledButton.icon(
                 onPressed: () {

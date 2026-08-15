@@ -7,6 +7,49 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/supabase_config.dart';
 import '../db/database.dart' as local;
 
+/// Freundeskreis (0024). Die Reihenfolge trägt die Vergleiche —
+/// `bekannter < freund < buddy`, genau wie im Aufzählungstyp der
+/// Datenbank.
+enum FriendTier { bekannter, freund, buddy }
+
+extension FriendTierLabel on FriendTier {
+  String get label => switch (this) {
+        FriendTier.bekannter => 'Bekannte',
+        FriendTier.freund => 'Freunde',
+        FriendTier.buddy => 'Best Buddys',
+      };
+
+  String get emoji => switch (this) {
+        FriendTier.bekannter => '👋',
+        FriendTier.freund => '🍺',
+        FriendTier.buddy => '🍻',
+      };
+
+  /// Beschreibung für die Auswahl — sagt, was der andere dadurch sieht.
+  String get description => switch (this) {
+        FriendTier.bekannter =>
+          'Sieht deine Check-ins, aber nicht wo du gerade bist.',
+        FriendTier.freund =>
+          'Sieht deine Check-ins, deine Beacons und deine Bierlaune.',
+        FriendTier.buddy =>
+          'Wie Freunde — und du erreichst sie mit „nur Best Buddys".',
+      };
+
+  String get name_ => switch (this) {
+        FriendTier.bekannter => 'bekannter',
+        FriendTier.freund => 'freund',
+        FriendTier.buddy => 'buddy',
+      };
+}
+
+/// Datenbank-Name → Kreis. Unbekanntes fällt auf `freund` zurück, den
+/// Vorgabewert der Migration — niemand verliert versehentlich Sichtbarkeit.
+FriendTier friendTierFromName(String? name) => switch (name) {
+      'bekannter' => FriendTier.bekannter,
+      'buddy' => FriendTier.buddy,
+      _ => FriendTier.freund,
+    };
+
 /// Profil eines echten Nutzers aus Supabase.
 class RemoteProfile {
   const RemoteProfile({
@@ -16,23 +59,38 @@ class RemoteProfile {
     required this.avatarEmoji,
     this.accountNo,
     this.thirstyUntil,
+    this.tier = FriendTier.freund,
   });
 
-  factory RemoteProfile.fromRow(Map<String, dynamic> row) => RemoteProfile(
+  factory RemoteProfile.fromRow(
+    Map<String, dynamic> row, {
+    FriendTier tier = FriendTier.freund,
+  }) =>
+      RemoteProfile(
         id: row['id'] as String,
         username: row['username'] as String,
         displayName: (row['display_name'] as String?) ?? row['username'] as String,
         avatarEmoji: (row['avatar_emoji'] as String?) ?? '🍺',
         accountNo: (row['account_no'] as num?)?.toInt(),
+        // thirsty_until wird nicht mehr direkt mitselektiert — es kommt
+        // über thirstyFriends() bzw. myThirstyUntil(). Das Spaltenrecht
+        // entzieht 0025, sobald keine Clients vor 0.10 mehr zugreifen;
+        // bis dahin liefert der Server die Spalte noch, wir fragen sie
+        // hier nur nicht mehr an. Der Null-Zweig deckt beide Stände ab.
         thirstyUntil: row['thirsty_until'] == null
             ? null
             : DateTime.parse(row['thirsty_until'] as String).toLocal(),
+        tier: tier,
       );
 
   final String id;
   final String username;
   final String displayName;
   final String avatarEmoji;
+
+  /// Mein Kreis für diese Person (einseitig und privat — der andere
+  /// erfährt ihn nie).
+  final FriendTier tier;
 
   /// 🍺 Bierlaune (0018): bis wann Lust auf ein Bier signalisiert wird.
   final DateTime? thirstyUntil;
@@ -167,7 +225,7 @@ class OnlineService {
   final SupabaseClient _client;
 
   static const _profileCols =
-      'id, username, display_name, avatar_emoji, account_no, thirsty_until';
+      'id, username, display_name, avatar_emoji, account_no';
 
   /// Deep-Link, über den OAuth-Anmeldungen in die App zurückkehren.
   static const oauthRedirect = 'de.brewmates.app://login-callback';
@@ -475,14 +533,86 @@ class OnlineService {
   Future<List<RemoteProfile>> searchProfiles(String query) async {
     final term = query.trim().toLowerCase();
     if (term.length < 3) return const [];
+    // Ohne Session keine Suche — und vor allem kein `neq('id', '')`,
+    // das serverseitig als ungültige UUID abbricht (still gefangen =
+    // „keine Treffer", obwohl nur die Anmeldung fehlte).
+    final myId = currentUser?.id;
+    if (myId == null) return const [];
+    // %, Komma und Klammern würden die PostgREST-or()-Syntax bzw. das
+    // LIKE-Muster kapern — in Nutzernamen/Anzeigenamen sind sie eh tabu.
+    final safe = term.replaceAll(RegExp(r'[%,()\\]'), '');
+    if (safe.length < 3) return const [];
     try {
+      // Nutzername als Präfix, Anzeigename als Teilstring: Konten aus
+      // Google-Login/E-Mail-Registrierung tragen den echten Namen oft nur
+      // im display_name (bis 0019 war der username immer mate_<hex>).
       final rows = await _client
           .from('profiles')
           .select(_profileCols)
-          .ilike('username', '$term%')
-          .neq('id', currentUser?.id ?? '')
+          .or('username.ilike.$safe%,display_name.ilike.%$safe%')
+          .neq('id', myId)
+          .order('username', ascending: true)
           .limit(10);
       return [for (final r in rows) RemoteProfile.fromRow(r)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Ein einzelnes Profil über seine ID holen — für den QR-Scan, der eine
+  /// ID statt eines Suchbegriffs liefert.
+  ///
+  /// Null bedeutet: gibt es nicht, ist für uns nicht sichtbar (blockiert,
+  /// privat) oder wir sind offline. Der Aufrufer sagt in allen Fällen
+  /// dasselbe — mehr Auskunft wäre hier eine Auskunft über Fremde.
+  Future<RemoteProfile?> profileById(String profileId) async {
+    if (currentUser == null) return null;
+    try {
+      final row = await _client
+          .from('profiles')
+          .select(_profileCols)
+          .eq('id', profileId)
+          .maybeSingle();
+      return row == null ? null : RemoteProfile.fromRow(row);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Eigene Einstufung eines Freundes setzen. Einseitig und privat —
+  /// der andere erfährt nichts davon.
+  Future<void> setFriendTier(String profileId, FriendTier tier) async {
+    if (currentUser == null) return;
+    try {
+      await _client.rpc('set_friend_tier',
+          params: {'p_other': profileId, 'p_tier': tier.name_});
+    } catch (_) {}
+  }
+
+  /// Eigene Bierlaune. Seit 0024 über eine Funktion statt über die
+  /// Spalte — das Spaltenrecht ist entzogen, damit die Abstufung nicht
+  /// an der App hängt.
+  Future<DateTime?> myThirstyUntil() async {
+    if (currentUser == null) return null;
+    try {
+      final value = await _client.rpc('my_thirsty_until');
+      if (value == null) return null;
+      return DateTime.parse(value as String).toLocal();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Freunde mit aktiver Bierlaune — serverseitig auf Kreis „Freund"
+  /// und höher gefiltert.
+  Future<List<RemoteProfile>> thirstyFriends() async {
+    if (currentUser == null) return const [];
+    try {
+      final rows = await _client.rpc('thirsty_friends');
+      return [
+        for (final r in (rows as List).cast<Map<String, dynamic>>())
+          RemoteProfile.fromRow(r),
+      ];
     } catch (_) {
       return const [];
     }
@@ -554,15 +684,22 @@ class OnlineService {
     try {
       final rows = await _client
           .from('friendships')
-          .select('requester:profiles!friendships_requester_id_fkey($_profileCols), '
+          .select('requester_id, requester_tier, addressee_tier, '
+              'requester:profiles!friendships_requester_id_fkey($_profileCols), '
               'addressee:profiles!friendships_addressee_id_fkey($_profileCols)')
           .eq('status', 'accepted')
           .or('requester_id.eq.${me.id},addressee_id.eq.${me.id}');
       return [
         for (final r in rows)
-          RemoteProfile.fromRow((r['requester'] as Map<String, dynamic>)['id'] == me.id
-              ? r['addressee'] as Map<String, dynamic>
-              : r['requester'] as Map<String, dynamic>),
+          RemoteProfile.fromRow(
+            (r['requester'] as Map<String, dynamic>)['id'] == me.id
+                ? r['addressee'] as Map<String, dynamic>
+                : r['requester'] as Map<String, dynamic>,
+            // Mein Kreis für den anderen steht in „meiner" Spalte.
+            tier: friendTierFromName(r['requester_id'] == me.id
+                ? r['requester_tier'] as String?
+                : r['addressee_tier'] as String?),
+          ),
       ];
     } catch (_) {
       return const [];
@@ -810,6 +947,16 @@ class OnlineService {
     } catch (_) {}
   }
 
+  /// Neues Ende einer laufenden Session übertragen (Verlängern).
+  /// Die Grenzen prüft zusätzlich die `check`-Bedingung aus 0021.
+  Future<void> updateSessionExpiry(String sessionId, DateTime until) async {
+    try {
+      await _client.from('sessions').update({
+        'expires_at': until.toUtc().toIso8601String(),
+      }).eq('id', sessionId);
+    } catch (_) {}
+  }
+
   Future<void> endSession(String sessionId) async {
     try {
       await _client.from('sessions').update({
@@ -924,6 +1071,48 @@ class OnlineService {
     } catch (_) {
       return null;
     }
+  }
+
+  /// Eigenen Check-in serverseitig löschen.
+  ///
+  /// Toasts und Kommentare hängen mit `on delete cascade` daran und
+  /// verschwinden mit; die RLS-Policy lässt nur eigene Zeilen zu.
+  /// Rückgabe: null bei Erfolg, sonst die Fehlermeldung.
+  Future<String?> deleteCheckinRemote(String checkinId) async {
+    final me = currentUser;
+    if (me == null) return 'Nicht angemeldet.';
+    try {
+      await _client
+          .from('checkins')
+          .delete()
+          .eq('id', checkinId)
+          .eq('profile_id', me.id);
+      return null;
+    } on PostgrestException catch (_) {
+      // Zeile längst weg oder fremd: nichts zu tun, aber kein
+      // Verbindungsfehler – die Warteschlange verwirft den Eintrag.
+      return 'Löschen fehlgeschlagen.';
+    } catch (_) {
+      return 'Keine Verbindung – wird später übertragen.';
+    }
+  }
+
+  /// Check-in-Foto aus dem Bucket entfernen. Best effort — ein verwaistes
+  /// Bild ist harmlos, ein fehlgeschlagener Aufruf darf nichts blockieren.
+  Future<void> deleteCheckinPhoto(String photoUrl) async {
+    final me = currentUser;
+    if (me == null) return;
+    // Öffentliche URL → Objektpfad (…/beer-photos/<profil>/<datei>).
+    const marker = '/beer-photos/';
+    final index = photoUrl.indexOf(marker);
+    if (index < 0) return;
+    final path = photoUrl.substring(index + marker.length).split('?').first;
+    // Nur eigene Objekte anfassen, auch wenn die Storage-Policy es ohnehin
+    // erzwingt.
+    if (!path.startsWith('${me.id}/')) return;
+    try {
+      await _client.storage.from('beer-photos').remove([path]);
+    } catch (_) {}
   }
 
   /// Eigenen Check-in online spiegeln (denormalisiert, gleiche Zeile wie
@@ -1399,6 +1588,7 @@ class OnlineService {
           if (t.trim().isNotEmpty) t.trim(),
       ],
       'serving_style': c.servingStyle?.name,
+      'volume_ml': c.volumeMl,
       'photo_url': c.photoUrl,
       'venue_name': c.venueName,
       'visibility': 'friends',
@@ -1455,9 +1645,9 @@ class OnlineService {
     try {
       final rows = await _client
           .from('checkins')
-          .select('id, rating, note, flavor_tags, serving_style, beer_name, '
-              'beer_style, brewery_name, is_alcohol_free, venue_id, '
-              'venue_name, photo_url, created_at')
+          .select('id, rating, note, flavor_tags, serving_style, volume_ml, '
+              'beer_name, beer_style, brewery_name, is_alcohol_free, '
+              'venue_id, venue_name, photo_url, created_at')
           .eq('profile_id', me.id)
           .order('created_at', ascending: true);
       return rows.cast<Map<String, dynamic>>();

@@ -8,6 +8,7 @@ import '../../core/format.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
 import '../../widgets/rating_stars.dart';
+import 'story_sheet.dart';
 
 /// Detailseite eines Biers: Infos, Bewertung, Einchecken, Wunschliste,
 /// eigener Verlauf.
@@ -185,6 +186,12 @@ class _BeerDetailBody extends ConsumerWidget {
                 const Chip(label: Text('👥 Community')),
             ],
           ),
+          // Die Geschichte steht vor den Beschreibungen: Sie ist der
+          // Grund, warum man auf der Seite bleibt.
+          if (beer.story != null) ...[
+            const SizedBox(height: 16),
+            StorySection(story: beer.story, title: 'Die Geschichte dahinter'),
+          ],
           if (beer.description != null) ...[
             const SizedBox(height: 16),
             Text('Laut Brauerei', style: theme.textTheme.titleSmall),

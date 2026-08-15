@@ -24,6 +24,30 @@ String remaining(DateTime until) {
   return '${diff.inMinutes} min';
 }
 
+/// Dauer als Auswahl-Beschriftung, z. B. „30 min", „1 Stunde", „5 Stunden".
+String formatDuration(Duration d) {
+  if (d.inMinutes < 60) return '${d.inMinutes} min';
+  final hours = d.inHours;
+  final rest = d.inMinutes % 60;
+  final base = hours == 1 ? '1 Stunde' : '$hours Stunden';
+  return rest == 0 ? base : '$base $rest min';
+}
+
+/// Zur Auswahl stehende Füllmengen in Millilitern.
+const volumeChoicesMl = <int>[200, 250, 330, 400, 500, 1000];
+
+/// Füllmenge als Beschriftung, z. B. „0,33 l" oder „1 l".
+String formatVolume(int ml) {
+  if (ml % 1000 == 0) return '${ml ~/ 1000} l';
+  final litres = (ml / 1000).toStringAsFixed(2);
+  // Deutsche Schreibweise, ohne nachlaufende Null: 0,33 l bzw. 0,5 l.
+  return '${litres.replaceAll('.', ',').replaceFirst(RegExp(r'0$'), '')} l';
+}
+
+/// Litermenge für Statistiken, z. B. „12,4 l".
+String formatLitres(double litres) =>
+    '${litres.toStringAsFixed(1).replaceAll('.', ',')} l';
+
 /// UUID-Erkennung: nutzererstellte Datensätze tragen UUIDs, redaktionelle
 /// Community-Daten sprechende IDs (z. B. `at-stiegl`). Entscheidet u. a.,
 /// ob ein Datensatz in-app bearbeitbar ist.

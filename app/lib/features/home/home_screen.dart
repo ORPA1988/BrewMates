@@ -110,7 +110,9 @@ class HomeScreen extends ConsumerWidget {
             final diary =
                 ref.watch(myDiaryProvider).valueOrNull ?? const <CheckinDetails>[];
             final signedIn = ref.watch(onlineUserProvider).valueOrNull != null;
-            final bierlauneBis = profile?.thirstyUntil;
+            // Eigene Bierlaune kommt seit 0024 über my_thirsty_until()
+            // statt aus der Profilzeile (Spaltenrecht entzogen).
+            final bierlauneBis = ref.watch(myThirstyUntilProvider).valueOrNull;
             final bierlaune =
                 bierlauneBis != null && bierlauneBis.isAfter(DateTime.now());
             if (diary.isEmpty && !signedIn) return const <Widget>[];

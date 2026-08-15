@@ -23,6 +23,71 @@ class CheckinCard extends ConsumerWidget {
         ServingStyle.growler => 'Growler',
       };
 
+  /// Menü für eigene Check-ins. Fremde Karten bekommen es nie.
+  Widget _ownerMenu(BuildContext context, WidgetRef ref) => PopupMenuButton<
+          String>(
+      icon: const Icon(Icons.more_horiz, size: 20),
+      tooltip: 'Optionen',
+      padding: EdgeInsets.zero,
+      onSelected: (value) {
+        if (value == 'delete') _confirmDelete(context, ref);
+      },
+      itemBuilder: (_) => const [
+        PopupMenuItem(
+          value: 'delete',
+          child: ListTile(
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(Icons.delete_outline),
+            title: Text('Check-in löschen'),
+          ),
+        ),
+      ],
+    );
+
+  /// Löschen mit Rückfrage und „Rückgängig".
+  ///
+  /// Die Rückfrage nennt das Bier, damit im Feed nicht der falsche
+  /// Check-in erwischt wird.
+  Future<void> _confirmDelete(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Check-in löschen?'),
+        content: Text(
+          '„${details.beer.name}" vom '
+          '${formatDate(details.checkin.createdAt)} wird entfernt. '
+          'Verdiente Abzeichen bleiben dir erhalten.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Abbrechen'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Löschen'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    final removed =
+        await ref.read(actionsProvider).deleteCheckin(details.checkin.id);
+    if (removed == null) return;
+    messenger.showSnackBar(
+      SnackBar(
+        content: const Text('Check-in gelöscht'),
+        action: SnackBarAction(
+          label: 'Rückgängig',
+          onPressed: () => ref.read(actionsProvider).restoreCheckin(removed),
+        ),
+      ),
+    );
+  }
+
   Future<void> _openComments(BuildContext context,
       {String? serverId}) async {
     await showModalBottomSheet<void>(
@@ -93,16 +158,20 @@ class CheckinCard extends ConsumerWidget {
                     style: theme.textTheme.bodySmall
                         ?.copyWith(color: scheme.onSurfaceVariant),
                   ),
+                  if (author.isMe) _ownerMenu(context, ref),
                 ],
               )
             else
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  timeAgo(checkin.createdAt),
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: scheme.onSurfaceVariant),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    timeAgo(checkin.createdAt),
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(color: scheme.onSurfaceVariant),
+                  ),
+                  if (author.isMe) _ownerMenu(context, ref),
+                ],
               ),
             const SizedBox(height: 8),
 

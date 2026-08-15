@@ -1,0 +1,30 @@
+-- 0025: Spaltenrecht auf profiles.thirsty_until entziehen.
+--
+-- ============================================================================
+-- ACHTUNG — DIESE MIGRATION IST NICHT ZUSAMMEN MIT 0024 AUSZUROLLEN.
+--
+-- Voraussetzung: Es greifen keine Clients mehr auf den Server zu, die
+-- `thirsty_until` direkt mitselektieren. Das sind alle App-Stände vor
+-- 0.10.0-beta. Erst ab 0.10 liest die App die Bierlaune über
+-- my_thirsty_until() und thirsty_friends().
+--
+-- Vor dem Einspielen prüfen, ob noch alte Clients unterwegs sind — z. B.
+-- über die Verteilung in der Play Console oder die API-Logs. Im Zweifel
+-- warten: Die Spalte ist seit 0018 lesbar, ein paar Wochen länger ändern
+-- daran nichts. Zu früh eingespielt bricht dagegen bei jedem alten Client
+-- das Laden des GESAMTEN Profils — PostgREST verweigert die ganze
+-- Abfrage, nicht nur die eine Spalte. Der Nutzer sieht dann weder
+-- Freundesliste noch eigenes Profil.
+-- ============================================================================
+--
+-- Warum überhaupt Spaltenrechte und nicht RLS: thirsty_until hängt an
+-- profiles, und ein Profil muss für Freunde sichtbar bleiben — die Zeile
+-- zu verbergen scheidet also aus. RLS wirkt zeilenweise, eine einzelne
+-- Spalte je Betrachter auszublenden kann sie nicht. Das Spaltenrecht
+-- kann es, und die beiden Funktionen aus 0024 liefern den abgestuften
+-- Zugang: my_thirsty_until() die eigene, thirsty_friends() die der
+-- Freunde ab Kreis „Freund".
+--
+-- Wiederholbar: revoke auf ein bereits entzogenes Recht ist ein No-op.
+
+revoke select (thirsty_until) on public.profiles from anon, authenticated;

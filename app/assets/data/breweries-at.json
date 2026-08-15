@@ -19,7 +19,8 @@
       "profit_eur": null,
       "energy_notes": "Umfangreiches Nachhaltigkeitsprogramm mit Kreislaufwirtschafts-Initiativen, eigenem Biergut Wildshut, Reststoffverwertung (u. a. Biertreber) und eigener Energieerzeugung; mehrfach für Umweltmanagement ausgezeichnet.",
       "notes": "Meistgekaufte Biermarke Österreichs und größte Privatbrauerei des Landes mit Ausstoß von ca. 1 Mio. hl (Mitarbeiter- und Ausstoßzahlen ca.-Werte). Hauptbraustätte in Salzburg-Maxglan, dazu das Biergut Wildshut als 'erstes Biergut Österreichs' mit eigenem Urgetreide-Anbau. Detaillierte Bilanzzahlen werden nicht regelmäßig veröffentlicht.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Gegründet im Jahr 1492 — dem Jahr, in dem Kolumbus in See stach. Den Namen verdankt die Brauerei einer Stiege am Almkanal, an der das erste Sudhaus stand. Heute ist Stiegl die größte Privatbrauerei Österreichs und noch immer in Familienbesitz; auf dem eigenen Biergut Wildshut baut sie ihr Getreide selbst an."
     },
     {
       "id": "at-ottakringer",
@@ -38,7 +39,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Letzte große Brauerei mit Braustätte im Wiener Stadtgebiet und starke Wiener Traditionsmarke ('16er Blech'). Ausstoß ca. 600.000 hl (Größenordnung, ohne Gewähr). Teil der Ottakringer Getränke AG, zu der auch Vöslauer Mineralwasser gehört; Konzernzahlen werden veröffentlicht, brauereispezifische Umsatz-/Gewinnzahlen sind hier nicht gesichert. Bekannt auch als Veranstaltungsort (Braukultur-Wochen, Wiener Wiesn-Nähe).",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "1837 gegründet und heute die letzte große Brauerei innerhalb Wiens. Für Wiener heißt die Dose nur „16er Blech\" — nach dem 16. Bezirk, in dem die Brauerei seit fast zwei Jahrhunderten steht."
     },
     {
       "id": "at-goesser",
@@ -152,7 +154,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Eine der ältesten Brauereien Österreichs (Brautradition seit 1270) und eine der größten unabhängigen Privatbrauereien Kärntens. Braut mit eigenem Quellwasser und breitem Sortiment (u. a. Privat Pils, Morchl). Mittelgroße Privatbrauerei; Bilanzdaten nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "In Hirt wird seit 1270 gebraut — die Brauerei zählt damit zu den ältesten Österreichs, die noch am selben Ort arbeiten. Sie ist bis heute privat geführt und schöpft ihr Wasser aus eigenen Quellen am Fuß der Kärntner Nockberge."
     },
     {
       "id": "at-murauer",
@@ -171,7 +174,8 @@
       "profit_eur": null,
       "energy_notes": "Setzt auf regionale, weitgehend erneuerbare Energieversorgung (u. a. Biomasse/Wasserkraft aus der energieautarken Region Murau) und vermarktet sich als besonders klimafreundliche Brauerei.",
       "notes": "Traditionsbrauerei in der Obersteiermark, seit 1910 als Genossenschaft organisiert — eine Besonderheit in der österreichischen Braulandschaft. Stark in der Steiermark und in Kärnten verankert, bekannt für regionale Rohstoffe. Bilanzdaten nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "In Murau wird seit 1495 gebraut. Die Brauerei gehört bis heute der Region — Getreide und Wasser stammen aus der Steiermark, und das Unternehmen ist einer der wichtigsten Arbeitgeber im oberen Murtal."
     },
     {
       "id": "at-trumer",
@@ -190,7 +194,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Pils-Spezialist: Die Brauerei konzentriert sich seit den 1980er-Jahren konsequent auf Pils und braut mit offener Gärung — das Trumer Pils gilt als österreichischer Klassiker des Stils. Betreibt zudem eine Schwesterbrauerei in Berkeley, Kalifornien. Bilanzdaten nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Die Trumer Privatbrauerei in Obertrum konzentriert sich auf ein einziges Bier: ein schlankes, stark gehopftes Pils. Die Familie Sigl führt das Haus seit dem 19. Jahrhundert und gab das Rezept sogar nach Kalifornien weiter, wo eine Schwesterbrauerei nach denselben Vorgaben braut."
     },
     {
       "id": "at-augustiner-salzburg",
@@ -209,7 +214,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Das Bräustübl Mülln ist mit mehreren tausend Plätzen der größte Biergarten bzw. das größte Bräustübl Österreichs. Das ungespundete Märzen wird traditionell aus Holzfässern in Steinkrüge gezapft; Speisen kommen von eigenständigen Schmankerl-Ständen. Klosterbrauerei mit Tradition seit 1621, seit dem 19. Jahrhundert unter dem Stift Michaelbeuern. Bilanzdaten nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "1621 von Augustiner-Eremiten in Mülln gegründet, heute vom Benediktinerstift Michaelbeuern geführt. Das Besondere ist das Wirtshaus: Man kauft eine Marke, spült seinen Steinkrug selbst am Brunnen und lässt ihn direkt aus dem Holzfass füllen. Die Jause bringt man mit oder kauft sie an den Ständen im Haus."
     },
     {
       "id": "at-egger",
@@ -380,7 +386,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Weitra gilt mit dem Braurecht von 1321 als älteste Braustadt Österreichs. Das heutige Brauhaus bzw. die 'Bierwerkstatt Weitra' wird als kleine Spezialitäten-Braustätte im Verbund der Privatbrauerei Zwettl betrieben (u. a. Weitra Bräu Hadmar, eines der ersten Bio-Biere Österreichs). Das Gründungsjahr 1321 bezieht sich auf das städtische Braurecht, nicht auf den heutigen Betrieb. Bilanzdaten nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Weitra im Waldviertel trägt seit 1321 das Braurecht und nennt sich Österreichs älteste Braustadt. Im Mittelalter durfte fast jedes Bürgerhaus brauen; geblieben ist das Brauhaus, das die Tradition bis heute fortführt."
     },
     {
       "id": "at-zwettler",
@@ -399,7 +406,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Größte Brauerei des Waldviertels und eine der größeren unabhängigen Privatbrauereien Österreichs (u. a. Zwettler Original, Export Lager). Setzt auf regionale Rohstoffe wie Waldviertler Braugerste und betreibt zusätzlich die Bierwerkstatt Weitra. Genaue Ausstoß- und Bilanzzahlen nicht gesichert öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Seit 1708 in Zwettl, seit 1709 in der Hand der Familie Schwarz — eine der wenigen österreichischen Brauereien, die über drei Jahrhunderte in derselben Familie geblieben sind."
     },
     {
       "id": "at-freistaedter",
@@ -418,7 +426,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Europaweit einzigartige Eigentümerform: Die Braucommune gehört den Besitzern der Häuser innerhalb der Altstadtmauern von Freistadt, die Anteile sind untrennbar mit den Liegenschaften verbunden. Das gemeinsame Brauhaus besteht seit 1777. Regionale Mühlviertler Marke (Freistädter Bier) mit treuer Stammkundschaft. Bilanzdaten nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Die Braucommune Freistadt gehört nicht einer Familie und keinem Konzern, sondern den Häusern der Altstadt: Wer eines der Bürgerhäuser mit Braurecht besitzt, ist Miteigentümer der Brauerei. Diese Konstruktion aus dem 18. Jahrhundert hat alle Übernahmewellen überlebt und macht Freistadt zu einem Unikum in Europa."
     },
     {
       "id": "at-engelszell",
@@ -437,7 +446,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Einzige Trappistenbrauerei Österreichs und eine von nur rund einem Dutzend weltweit; die Biere (u. a. Gregorius, Benno, Nivard) trugen das Label 'Authentic Trappist Product'. Die Brauerei wurde 2012 im Stift Engelszell an der Donau gegründet, das Kloster selbst besteht seit 1293. Die Zukunft von Stift und Brauerei war zuletzt wegen der sehr kleinen Ordensgemeinschaft im Umbruch (Stand unsicher). Kleinstbrauerei; Bilanzdaten nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Das Stift Engelszell an der Donau ist die einzige Trappistenbrauerei Österreichs und eine der wenigen weltweit, die das Siegel „Authentic Trappist Product\" tragen darf. Gebraut wird erst seit 2012 — ein junges Bier aus einem Kloster, das bis ins 13. Jahrhundert zurückreicht."
     },
     {
       "id": "at-bevog",
@@ -570,7 +580,8 @@
       "profit_eur": null,
       "energy_notes": "Setzt auf Rohstoffe aus der Region Mühlviertel, u. a. Bio-Roggen aus eigener Landwirtschaft.",
       "notes": "Die einzige von einem Kloster geführte Brauerei Österreichs, im oberen Mühlviertel nahe der bayerisch-tschechischen Grenze; bekannt für Spezialitäten wie Roggenbier und Doppelbock.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Die Stiftsbrauerei Schlägl wird seit 1580 von Prämonstratenser-Chorherren betrieben und ist damit eine der wenigen Klosterbrauereien Österreichs, die nie verpachtet wurden. Gebraut wird mit Mühlviertler Braugerste aus der Umgebung."
     },
     {
       "id": "at-raschhofer",
@@ -608,7 +619,8 @@
       "profit_eur": null,
       "energy_notes": "Kleinbrauerei mit Fokus auf regionale Rohstoffe und traditionelle Verfahren (u. a. offene Gärung beim Granitbock).",
       "notes": "Urkundlich seit 1229 – gilt als älteste Brauerei Österreichs. Der Granitbock reift in ausgehöhlten Granittrögen und machte das Haus weit über das Mühlviertel hinaus bekannt.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Die Brauerei Hofstetten führt ihre Geschichte auf das Jahr 1229 zurück und gilt damit als älteste Brauerei Österreichs. Geführt wird sie seit Generationen von der Familie Krammer im Mühlviertel."
     },
     {
       "id": "at-starkenberger",
@@ -646,7 +658,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Schlossbrauerei im Almtal-Vorland; international berühmt für den Samichlaus, der lange als stärkstes Lagerbier der Welt galt, und das hopfenbetonte Hopfenkönig-Pils.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Schloss Eggenberg wurde im 17. Jahrhundert zur Brauerei — die Sudpfannen stehen bis heute in den historischen Gebäuden. Bekannt wurde das Haus mit dem Samichlaus, das nur einmal im Jahr gebraut und danach zehn Monate gelagert wird; es galt lange als stärkstes Lagerbier der Welt."
     }
   ]
 }

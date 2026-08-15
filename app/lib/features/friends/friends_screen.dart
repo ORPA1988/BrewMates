@@ -19,6 +19,9 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
   List<RemoteProfile> _results = const [];
   bool _searching = false;
 
+  /// Aktiver Kreis-Filter (null = alle).
+  FriendTier? _tierFilter;
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -161,6 +164,130 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
         content: Text(err ?? 'Danke, wir schauen uns das an. 🕵️')));
   }
 
+  /// „Wer sieht was" — die Kreise sind wertlos, wenn niemand weiß, was
+  /// sie bewirken.
+  Future<void> _showVisibilityTable() async {
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        final t = Theme.of(sheetContext);
+        Widget row(String what, bool bekannter) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Row(
+                children: [
+                  Expanded(child: Text(what, style: t.textTheme.bodyMedium)),
+                  SizedBox(
+                      width: 40,
+                      child: Text(bekannter ? '✅' : '—',
+                          textAlign: TextAlign.center)),
+                  const SizedBox(
+                      width: 40,
+                      child: Text('✅', textAlign: TextAlign.center)),
+                  const SizedBox(
+                      width: 40,
+                      child: Text('✅', textAlign: TextAlign.center)),
+                ],
+              ),
+            );
+
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Wer sieht was von dir',
+                    style: t.textTheme.titleMedium),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    const Expanded(child: SizedBox()),
+                    SizedBox(
+                        width: 40,
+                        child: Text('👋', textAlign: TextAlign.center,
+                            style: t.textTheme.titleMedium)),
+                    SizedBox(
+                        width: 40,
+                        child: Text('🍺', textAlign: TextAlign.center,
+                            style: t.textTheme.titleMedium)),
+                    SizedBox(
+                        width: 40,
+                        child: Text('🍻', textAlign: TextAlign.center,
+                            style: t.textTheme.titleMedium)),
+                  ],
+                ),
+                const Divider(),
+                row('Deine Check-ins im Feed', true),
+                row('Dein Profil und deine Abzeichen', true),
+                row('Deine Beacons auf der Karte', false),
+                row('Wo du gerade bist', false),
+                row('Deine Bierlaune', false),
+                const Divider(),
+                const SizedBox(height: 8),
+                Text(
+                  'Bekannte (👋) sehen nicht, dass du unterwegs bist — du '
+                  'zählst für sie nur in der Zahl „weitere BrewMates '
+                  'aktiv". Deine Einteilung bleibt privat: Niemand erfährt, '
+                  'in welchem Kreis er steht.',
+                  style: t.textTheme.bodySmall
+                      ?.copyWith(color: t.colorScheme.onSurfaceVariant),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// Kreis eines Freundes ändern.
+  ///
+  /// Die Einteilung ist einseitig und privat: Sie steuert nur, was der
+  /// andere von MIR sieht, und er erfährt nie, wie ich ihn einsortiert
+  /// habe. Alles andere wäre eine Kränkungsmaschine.
+  Future<void> _pickTier(RemoteProfile friend) async {
+    final chosen = await showModalBottomSheet<FriendTier>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text(friend.displayName,
+                  style: Theme.of(sheetContext).textTheme.titleMedium),
+              subtitle: const Text(
+                  'Was sieht diese Person von dir? Deine Wahl bleibt '
+                  'privat.'),
+            ),
+            for (final t in FriendTier.values)
+              ListTile(
+                leading: Text(t.emoji, style: const TextStyle(fontSize: 22)),
+                title: Text(t.label),
+                subtitle: Text(t.description),
+                trailing: friend.tier == t ? const Icon(Icons.check) : null,
+                onTap: () => Navigator.pop(sheetContext, t),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (chosen == null || chosen == friend.tier) return;
+    final online = await ref.read(onlineServiceProvider.future);
+    if (online == null) return;
+    await online.setFriendTier(friend.id, chosen);
+    if (!mounted) return;
+    ref.invalidate(onlineFriendsProvider);
+    // Sichtbarkeit ändert sich sofort – abhängige Ansichten mitziehen.
+    ref.invalidate(thirstyFriendsProvider);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('${friend.displayName}: ${chosen.label}'),
+    ));
+  }
+
   /// Überlauf-Menü mit Melden/Blockieren – an Freunden wie Suchtreffern.
   Widget _moderationMenu(RemoteProfile profile) {
     return PopupMenuButton<String>(
@@ -224,6 +351,16 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
       appBar: AppBar(
         title: const Text('Freunde'),
         actions: [
+          IconButton(
+            tooltip: 'Mein Code',
+            icon: const Icon(Icons.qr_code_2),
+            onPressed: () => context.push('/friends/code'),
+          ),
+          IconButton(
+            tooltip: 'Code scannen',
+            icon: const Icon(Icons.qr_code_scanner),
+            onPressed: () => context.push('/friends/scan'),
+          ),
           IconButton(
             tooltip: 'Crews (Gruppen)',
             icon: const Icon(Icons.groups_outlined),
@@ -298,7 +435,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
               controller: _searchController,
               autocorrect: false,
               decoration: InputDecoration(
-                labelText: 'Nutzername suchen (min. 3 Zeichen)',
+                labelText: 'Name oder Nutzername (min. 3 Zeichen)',
                 prefixIcon: const Icon(Icons.search),
                 border: const OutlineInputBorder(),
                 suffixIcon: _searching
@@ -338,7 +475,19 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
             // ------------------------------------------------------------------
             // Deine Freunde
             // ------------------------------------------------------------------
-            Text('Deine Freunde', style: theme.textTheme.titleMedium),
+            Row(
+              children: [
+                Expanded(
+                  child: Text('Deine Freunde',
+                      style: theme.textTheme.titleMedium),
+                ),
+                TextButton.icon(
+                  onPressed: _showVisibilityTable,
+                  icon: const Icon(Icons.visibility_outlined, size: 18),
+                  label: const Text('Wer sieht was'),
+                ),
+              ],
+            ),
             const SizedBox(height: 4),
             if (friends == null)
               const Padding(
@@ -356,8 +505,28 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
                       ?.copyWith(color: scheme.onSurfaceVariant),
                 ),
               )
-            else
-              for (final friend in friends)
+            else ...[
+              // Filter nach Kreis — erst ab einer Handvoll Freunde
+              // sinnvoll, vorher nur Lärm.
+              if (friends.length > 4)
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    ChoiceChip(
+                      label: const Text('Alle'),
+                      selected: _tierFilter == null,
+                      onSelected: (_) => setState(() => _tierFilter = null),
+                    ),
+                    for (final t in FriendTier.values)
+                      ChoiceChip(
+                        label: Text('${t.emoji} ${t.label}'),
+                        selected: _tierFilter == t,
+                        onSelected: (_) => setState(() => _tierFilter = t),
+                      ),
+                  ],
+                ),
+              for (final friend in friends
+                  .where((f) => _tierFilter == null || f.tier == _tierFilter))
                 ListTile(
                   leading: CircleAvatar(
                     child: Text(friend.avatarEmoji,
@@ -365,8 +534,20 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
                   ),
                   title: Text(friend.displayName),
                   subtitle: Text('@${friend.username}'),
-                  trailing: _moderationMenu(friend),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Der Kreis steht offen da — aber nur für einen
+                      // selbst; der andere erfährt ihn nie.
+                      TextButton(
+                        onPressed: () => _pickTier(friend),
+                        child: Text('${friend.tier.emoji} ${friend.tier.label}'),
+                      ),
+                      _moderationMenu(friend),
+                    ],
+                  ),
                 ),
+            ],
 
             // ------------------------------------------------------------------
             // Blockierte Nutzer (nur sichtbar, wenn es welche gibt)

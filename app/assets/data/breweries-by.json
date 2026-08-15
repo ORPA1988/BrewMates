@@ -19,7 +19,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Älteste noch bestehende Brauerei Münchens (Bayern), Brautradition seit 1328 im Augustinerkloster. Kultstatus in München: Edelstoff und das Helle vom Holzfass, traditionsbewusst ohne klassische Werbung. Das Unternehmen ist für seine Verschwiegenheit bekannt — Ausstoß-, Umsatz- und Mitarbeiterzahlen werden nicht veröffentlicht.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Münchens älteste Brauerei, 1328 aus einem Augustinerkloster hervorgegangen. Augustiner gehört bis heute keiner Konzerngruppe, wirbt praktisch nicht und liefert einen Teil seines Bieres noch immer im Holzfass aus — in München gilt genau das als Qualitätsmerkmal."
     },
     {
       "id": "de-by-paulaner",
@@ -38,7 +39,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "1634 von den Paulaner-Mönchen auf dem Nockherberg gegründet; die Starkbierprobe am Nockherberg mit dem Salvator ist ein bayerisches Politik- und Medienereignis. Eine der großen Münchner Wiesn-Brauereien mit starkem Export, besonders der Weißbiere. 2016 zog die Produktion vom Nockherberg in eine neue Braustätte nach München-Langwied (Bayern). Konzernkennzahlen der Paulaner Gruppe sind hier nicht gesichert, daher null.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Die Paulanermönche im Münchner Lehel brauten ihren Doppelbock ursprünglich für die Fastenzeit: flüssiges Brot, das satt macht, wenn nicht gegessen werden darf. Daraus wurde der Salvator — und die Endung „-ator\" zum Kennzeichen fast jedes Doppelbocks in Deutschland."
     },
     {
       "id": "de-by-hacker-pschorr",
@@ -95,7 +97,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "1589 von Herzog Wilhelm V. als herzogliches Brauhaus gegründet, heute Staatsbrauerei des Freistaats Bayern. Das Hofbräuhaus am Platzl ist eines der bekanntesten Wirtshäuser der Welt und Touristenmagnet; gebraut wird seit 1988 in München-Riem. 'HB' und das Hofbräu-Festzelt auf der Wiesn sind weltweit bekannte Aushängeschilder Bayerns. Detaillierte Kennzahlen werden hier nicht gesichert wiedergegeben.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "1589 ließ Herzog Wilhelm V. ein eigenes Brauhaus errichten, weil ihm das Bier für den Hof zu teuer aus Niedersachsen kam. Aus dem herzoglichen Betrieb wurde das Staatliche Hofbräuhaus — und aus dem Ausschank am Platzl der wohl bekannteste Wirtshausname der Welt."
     },
     {
       "id": "de-by-spaten",
@@ -114,7 +117,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Münchner Traditionsbrauerei (Bayern) seit 1397; unter Gabriel Sedlmayr wurde Spaten im 19. Jahrhundert zum Pionier der modernen Brautechnik und des untergärigen Brauens. Der Spaten-Anstich im Schottenhamel-Zelt eröffnet traditionell das Oktoberfest ('O'zapft is!'), zudem gehört das Weißbier Franziskaner zum Haus. Standortspezifische Kennzahlen werden im Konzern nicht gesondert ausgewiesen.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Unter Gabriel Sedlmayr wurde Spaten im 19. Jahrhundert zum Labor der modernen Brautechnik: Hier wurden Kältemaschine und untergärige Verfahren erprobt, die das Lagerbier weltweit prägten. 1872 schenkte Spaten auf dem Oktoberfest ein bernsteinfarbenes Märzen aus — der Ursprung des Festbier-Stils."
     },
     {
       "id": "de-by-erdinger",
@@ -133,7 +137,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Größte Weißbierbrauerei der Welt mit Sitz in Erding (Oberbayern, Bayern); Ausstoß ca. 1,7 Mio. hl und rund 550 Beschäftigte (ca.-Werte laut Unternehmensangaben, ohne Gewähr). Konsequente Spezialisierung auf Weißbier mit Flaschengärung, dazu starkes Export- und Sportsponsoring-Profil (u. a. Erdinger Alkoholfrei im Wintersport). Umsatz- und Gewinnzahlen werden nicht regelmäßig veröffentlicht.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Erdinger ist die größte Weißbierbrauerei der Welt und trotzdem bis heute in Privatbesitz. Das Haus setzt konsequent auf einen einzigen Bierstil — und hat mit dem alkoholfreien Weißbier einen zweiten Markt erschlossen, lange bevor alkoholfrei in Mode kam."
     },
     {
       "id": "de-by-ayinger",
@@ -171,7 +176,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Klosterbrauerei am 'Heiligen Berg' Bayerns oberhalb des Ammersees, Brautradition seit 1455; die Erträge tragen die sozialen und seelsorgerischen Aufgaben der Benediktiner von Sankt Bonifaz. Der Andechser Doppelbock Dunkel und der Bräustüberl-Biergarten mit Blick ins Fünfseenland sind weit über Bayern hinaus bekannt. Ausstoß in der Größenordnung von ca. 100.000 hl (ca.-Wert, ohne Gewähr); Bilanzdaten nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Die Klosterbrauerei Andechs liegt auf dem „Heiligen Berg\" über dem Ammersee, wo seit dem 15. Jahrhundert gebraut wird. Die Benediktiner verbinden bis heute Wallfahrt und Bierausschank — wer hinaufgeht, kommt selten nur wegen der Aussicht."
     },
     {
       "id": "de-by-weihenstephan",
@@ -190,7 +196,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Gilt als älteste noch bestehende Brauerei der Welt: Braurecht des Klosters Weihenstephan von 1040, heute Staatsbrauerei des Freistaats Bayern auf dem Weihenstephaner Berg in Freising. Enge Nachbarschaft zur TU München mit ihrer weltbekannten Brauwissenschaft in Weihenstephan prägt den Standort. Die Weißbiere (u. a. Hefeweissbier, Vitus) sind international vielfach ausgezeichnet. Detaillierte Kennzahlen sind hier nicht gesichert.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Die Mönche des Klosters Weihenstephan erhielten 1040 das Schankrecht — auf diese Urkunde stützt sich der Anspruch, die älteste noch arbeitende Brauerei der Welt zu sein. Heute ist sie eine Bayerische Staatsbrauerei und liegt Wand an Wand mit der Brauerei-Fakultät der TU München: Wer weltweit Brauwesen studiert, kennt diesen Hügel."
     },
     {
       "id": "de-by-schneider-weisse",
@@ -209,7 +216,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Weißbier-Spezialist aus Niederbayern (Bayern): Georg Schneider I. erwarb 1872 als erster Bürgerlicher das Weißbier-Braurecht von den Wittelsbachern. Seit der Zerstörung der Münchner Braustätte im Krieg wird ausschließlich in Kelheim gebraut — am Standort wird seit 1607 durchgehend Weißbier hergestellt. Das Tap 6 'Aventinus' (seit 1907) gilt als ältester Weizendoppelbock Bayerns. Kennzahlen werden nicht veröffentlicht.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Weißbier war in Bayern jahrhundertelang ein Vorrecht des Königshauses. 1872 erwarb Georg Schneider das Recht, es als Bürgerlicher zu brauen — genau in dem Moment, als die Krone das Geschäft für erledigt hielt. Die Familie braut bis heute in sechster Generation."
     },
     {
       "id": "de-by-tegernseer",
@@ -228,7 +236,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Braut im ehemaligen Benediktinerkloster Tegernsee direkt am See (Oberbayern, Bayern); die klösterliche Brautradition reicht ins Mittelalter zurück, das Brauhaus wird auf 1675 datiert und kam nach der Säkularisation an das bayerische Herrscherhaus. Das Tegernseer Hell ist Kult weit über das Tegernseer Tal hinaus und war zeitweise so gefragt, dass die Auslieferung kontingentiert wurde. Das Bräustüberl im Schloss ist ein bekanntes Wirtshaus. Kennzahlen nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Das Herzogliche Brauhaus Tegernsee geht auf ein Benediktinerkloster zurück und gehört seit der Säkularisation dem Haus Wittelsbach. Das Bräustüberl im ehemaligen Klostergebäude ist eines der bekanntesten Wirtshäuser Oberbayerns — mit Blick auf den See und einer Warteschlange, die dazugehört."
     },
     {
       "id": "de-by-giesinger",
@@ -266,7 +275,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Augsburger Traditionsbrauerei (Schwaben, Bayern) mit Wurzeln beim 'Goldenen Ross' von 1386, seit 1911 unter dem Namen Riegele gegenüber dem Hauptbahnhof ansässig. Verbindet klassisches bayerisches Sortiment mit einer vielbeachteten Craft-Linie (Riegele BierManufaktur, u. a. Ator-Starkbiere und IPAs) und wurde mehrfach als Brauerei des Jahres ausgezeichnet. Braumeister Sebastian Priller-Riegele ist amtierender Biersommelier-Weltmeister-Prominenz der Szene. Kennzahlen nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Brauhaus Riegele in Augsburg führt seine Geschichte auf 1386 zurück und wird seit dem 19. Jahrhundert von der Familie Riegele geführt. Das Haus pflegt eine eigene Hefebank — ein Aufwand, den sonst vor allem Forschungsinstitute betreiben."
     },
     {
       "id": "de-by-maisel",
@@ -304,7 +314,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Größter Braustandort Oberfrankens (Bayern) und börsennotierte AG; zur Gruppe gehören u. a. EKU (mit dem Starkbier EKU 28), Mönchshof, Kapuziner Weißbier und ostdeutsche Marken wie Sternquell. Kulmbach gilt als 'heimliche Hauptstadt des Bieres' mit der jährlichen Kulmbacher Bierwoche. Ausstoß der Gruppe ca. 3 Mio. hl und Umsatz ca. 235 Mio. Euro (gerundete Größenordnungen aus veröffentlichten Geschäftsberichten, ohne Gewähr).",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Kulmbach war einst die Stadt mit der höchsten Brauereidichte Deutschlands. Bekannt wurde die Kulmbacher Brauerei mit dem Eisbock: Beim Gefrieren wird Wasser als Eis entfernt, wodurch das Bier an Stärke gewinnt — der Legende nach ein Missgeschick, das jemand aus Sparsamkeit trotzdem getrunken hat."
     },
     {
       "id": "de-by-mahrs",
@@ -342,7 +353,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Die Rauchbier-Ikone schlechthin: Das 'Aecht Schlenkerla Rauchbier' aus über Buchenholz gedarrtem Malz ist das bekannteste Rauchbier der Welt und Aushängeschild der Bamberger Bierkultur (Oberfranken, Bayern). Das historische Brauereiausschank-Wirtshaus in der Dominikanerstraße ist seit 1405 belegt, gebraut wird von der Familie Trum mit eigener Mälzerei. Kleine Traditionsbrauerei; Kennzahlen nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "In Bamberg wird das Malz für das Schlenkerla noch über offenem Buchenholzfeuer gedarrt — daher der Rauchgeschmack, der beim ersten Schluck überrascht und beim dritten selbstverständlich wirkt. Der Name geht auf einen früheren Wirt zurück, der „schlenkernd\" ging. Ausgeschenkt wird direkt aus dem Holzfass."
     },
     {
       "id": "de-by-tucher",
@@ -380,7 +392,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Schlossbrauerei im neugotischen Schloss Kaltenberg westlich von München (Oberbayern, Bayern), geführt von Prinz Luitpold von Bayern, einem Urenkel des letzten bayerischen Königs. Bekannt für König Ludwig Dunkel und König Ludwig Weissbier sowie das Kaltenberger Ritterturnier, eines der größten Mittelalterspektakel Europas, auf dem Schlossgelände. Das Gründungsjahr 1870 bezieht sich auf die Brauerei am Schloss; die Markenrechte 'König Ludwig' werden international lizenziert. Kennzahlen nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Auf Schloss Kaltenberg braut mit Luitpold Prinz von Bayern ein Nachfahre des Hauses Wittelsbach — jener Familie, die 1516 das Reinheitsgebot erließ. Bekannt ist Kaltenberg auch für sein Ritterturnier, das jeden Sommer Zehntausende in den Schlosspark zieht."
     },
     {
       "id": "de-by-unertl",
@@ -456,7 +469,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Gilt als älteste Klosterbrauerei der Welt (seit 1050), malerisch am Donaudurchbruch gelegen; das Barock Dunkel wurde mehrfach international ausgezeichnet.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Das Kloster Weltenburg liegt in einer Schleife der Donau, eingerahmt von den Felsen des Donaudurchbruchs. Die Mönche brauen dort seit 1050 — die Brauerei gilt als älteste Klosterbrauerei der Welt. Viele Gäste kommen mit dem Schiff, weil es der schönste Weg ist."
     },
     {
       "id": "de-by-oettinger",
@@ -475,7 +489,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Eine der ausstoßstärksten Brauereigruppen Deutschlands; verzichtet bewusst auf klassische Werbung und Gastronomie und verkauft fast ausschließlich über den Handel zum Niedrigpreis (Ausstoß über die Standorte hinweg, ca.-Wert).",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Oettinger ist über Jahre eine der meistverkauften Biermarken Deutschlands gewesen — ohne Fernsehwerbung, ohne Sponsoring und mit eigener Auslieferung an den Handel. Der niedrige Preis ist kein Zufall, sondern das Geschäftsmodell."
     },
     {
       "id": "de-by-gutmann",
@@ -551,7 +566,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Wirbt als älteste Familienbrauerei der Welt in ununterbrochener Familienhand (seit 1447); braut am Fuß des Grünten im Oberallgäu.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "Die Familie Zötler braut in Rettenberg seit 1447 — nach eigener Zählung in der 21. Generation, was der Brauerei den Ruf einbringt, der älteste Familienbetrieb seiner Art in Deutschland zu sein."
     },
     {
       "id": "de-by-arcobraeu",
@@ -627,7 +643,8 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Einer der Pioniere der deutschen Craft-Beer-Szene aus dem Münchner Norden; braut hopfenbetonte Ales abseits des Reinheitsgebot-Marketings klassischer Münchner Häuser.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "story": "2011 in München gegründet, als „Craft Beer\" in Deutschland noch erklärungsbedürftig war. CREW Republic setzte von Anfang an auf kräftig gehopfte Stile und trug damit dazu bei, dass IPA auch im Land des Reinheitsgebots einen Platz bekam."
     }
   ]
 }

@@ -8,6 +8,7 @@ import '../../core/external_links.dart';
 import '../../core/format.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
+import 'story_sheet.dart';
 
 /// Brauerei-Detailseite: Standort, Eigentümer, Kennzahlen und alle Biere
 /// der Brauerei aus der Community-Datenbank.
@@ -126,6 +127,11 @@ class _BreweryDetails extends ConsumerWidget {
           icon: const Icon(Icons.map_outlined, size: 18),
           label: const Text('In Google Maps öffnen'),
         ),
+        if (brewery.story != null) ...[
+          const SizedBox(height: 12),
+          StorySection(
+              story: brewery.story, title: 'Die Geschichte der Brauerei'),
+        ],
         if (brewery.notes != null) ...[
           const SizedBox(height: 12),
           Text('Über die Brauerei', style: theme.textTheme.titleMedium),

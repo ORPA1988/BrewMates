@@ -6,7 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../data/db/database.dart';
+import '../../core/format.dart' show volumeChoicesMl, formatVolume;
 import '../../data/providers.dart';
+import '../../domain/statistics.dart' show estimatedVolumeMl;
 import '../../widgets/badge_celebration.dart';
 import '../../widgets/rating_stars.dart';
 import '../../widgets/venue_picker.dart';
@@ -28,6 +30,11 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
   double _rating = 3.5;
   final Set<String> _tags = {};
   ServingStyle? _serving;
+
+  /// Füllmenge in ml. Wird vom Gebinde vorbelegt, bis der Mensch selbst
+  /// wählt — danach bleibt seine Wahl stehen.
+  int? _volumeMl;
+  bool _volumeTouched = false;
   final _venueController = TextEditingController();
   final _noteController = TextEditingController();
   bool _venuePrefilled = false;
@@ -97,6 +104,7 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
             venueId: venue.isEmpty ? null : _venueId,
             flavorTags: _tags.toList(),
             servingStyle: _serving,
+            volumeMl: _volumeMl,
             photoUrl: photoUrl,
           );
       if (!mounted) return;
@@ -250,8 +258,31 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
                   value: ServingStyle.growler, label: Text('Growler')),
             ],
             selected: {if (_serving != null) _serving!},
-            onSelectionChanged: (selection) => setState(
-                () => _serving = selection.isEmpty ? null : selection.first),
+            onSelectionChanged: (selection) => setState(() {
+              _serving = selection.isEmpty ? null : selection.first;
+              // Gebinde vorbelegen die Menge, solange nichts eigenes
+              // gewählt wurde — Growler sind größer als alles andere.
+              if (!_volumeTouched && _serving != null) {
+                _volumeMl = estimatedVolumeMl[_serving];
+              }
+            }),
+          ),
+          const SizedBox(height: 16),
+          Text('Wie viel? (optional)', style: theme.textTheme.titleSmall),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: [
+              for (final ml in volumeChoicesMl)
+                ChoiceChip(
+                  label: Text(formatVolume(ml)),
+                  selected: _volumeMl == ml,
+                  onSelected: (selected) => setState(() {
+                    _volumeTouched = true;
+                    _volumeMl = selected ? ml : null;
+                  }),
+                ),
+            ],
           ),
           const SizedBox(height: 16),
           TextField(

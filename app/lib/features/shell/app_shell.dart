@@ -26,6 +26,42 @@ class AppShell extends ConsumerWidget {
     (icon: Icons.person_outline, selected: Icons.person, label: 'Profil'),
   ];
 
+  /// Laufende Session verlängern — gerechnet ab jetzt, nicht ab dem
+  /// bisherigen Ende. Die gewählte Dauer wird als Vorgabe für den
+  /// nächsten Beacon gemerkt.
+  Future<void> _extendSession(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final chosen = await showModalBottomSheet<Duration>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text('Beacon verlängern',
+                  style: Theme.of(sheetContext).textTheme.titleMedium),
+              subtitle: const Text('Ab jetzt gerechnet'),
+            ),
+            for (final d in sessionDurationChoices)
+              ListTile(
+                leading: const Icon(Icons.timer_outlined),
+                title: Text('noch ${formatDuration(d)}'),
+                onTap: () => Navigator.pop(sheetContext, d),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (chosen == null) return;
+    ref.read(preferredSessionDurationProvider.notifier).state = chosen;
+    final until = await ref.read(actionsProvider).extendMySession(chosen);
+    if (until == null) return;
+    messenger.showSnackBar(
+      SnackBar(content: Text('Beacon läuft noch ${remaining(until)} 🍻')),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isWide = MediaQuery.sizeOf(context).width >= 800;
@@ -35,6 +71,8 @@ class AppShell extends ConsumerWidget {
     ref.watch(checkinAutoSyncProvider);
     // Ebenso den Gasthaus-Cache (gemeinsame Venue-DB aus Supabase)…
     ref.watch(venueSyncProvider);
+    // …und die Warteschlange gelöschter Check-ins.
+    ref.watch(checkinDeleteSyncProvider);
     // …und den Cloud-Restore (Check-ins/Erfolge/Wunschliste nach
     // Neuinstallation oder Gerätewechsel zurückholen).
     ref.watch(cloudRestoreProvider);
@@ -56,10 +94,19 @@ class AppShell extends ConsumerWidget {
                 ),
                 subtitle:
                     Text('Endet in ${remaining(mySession.expiresAt)}'),
-                trailing: TextButton(
-                  onPressed: () =>
-                      ref.read(actionsProvider).endMySession(),
-                  child: const Text('Beenden'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextButton(
+                      onPressed: () => _extendSession(context, ref),
+                      child: const Text('Verlängern'),
+                    ),
+                    TextButton(
+                      onPressed: () =>
+                          ref.read(actionsProvider).endMySession(),
+                      child: const Text('Beenden'),
+                    ),
+                  ],
                 ),
                 onTap: () => context.push('/session/${mySession.id}'),
               ),

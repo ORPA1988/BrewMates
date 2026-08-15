@@ -7,7 +7,8 @@ import 'package:http/http.dart' as http;
 import 'db/database.dart';
 
 /// Synchronisiert die redaktionelle Community-Datenbank (Biere & Brauereien
-/// aus Österreich und Bayern) in die lokale DB.
+/// aus dem DACH-Raum: Österreich, Bayern, Restdeutschland, Schweiz) in die
+/// lokale DB.
 ///
 /// Quellen, in dieser Reihenfolge:
 /// 1. Gebündelte Assets (`assets/data/*.json`) – funktioniert offline,
@@ -29,8 +30,18 @@ class CommunitySync {
 
   /// Regionen-Dateipaare (Brauereien, Biere) – Reihenfolge: Brauereien
   /// zuerst, damit die Fremdschlüssel der Biere immer auflösbar sind.
-  static const breweryFiles = ['breweries-at.json', 'breweries-by.json'];
-  static const beerFiles = ['beers-at.json', 'beers-by.json'];
+  static const breweryFiles = [
+    'breweries-at.json',
+    'breweries-by.json',
+    'breweries-de.json',
+    'breweries-ch.json',
+  ];
+  static const beerFiles = [
+    'beers-at.json',
+    'beers-by.json',
+    'beers-de.json',
+    'beers-ch.json',
+  ];
 
   static const beersAsset = 'assets/data/beers-at.json';
   static const breweriesAsset = 'assets/data/breweries-at.json';
@@ -140,6 +151,7 @@ class CommunitySync {
           annualOutputHl: Value((b['annual_output_hl'] as num?)?.toInt()),
           revenueEur: Value((b['revenue_eur'] as num?)?.toInt()),
           notes: Value(b['notes'] as String?),
+          story: Value(b['story'] as String?),
           dataStatus: Value(b['data_status'] as String?),
         ),
     ];
@@ -165,6 +177,7 @@ class CommunitySync {
               ((b['barcodes'] as List?)?.cast<String>() ?? const [])
                   .join(',')),
           imageUrl: Value(b['image_url'] as String?),
+          story: Value(b['story'] as String?),
         ),
     ];
   }

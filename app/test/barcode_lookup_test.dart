@@ -89,6 +89,33 @@ void main() {
     expect(seenRequest?.headers['User-Agent'], BarcodeLookup.userAgent);
   });
 
+  test('Generischer OFF-Name („Bier") wird nicht als Biername übernommen',
+      () async {
+    final lookup = BarcodeLookup(db, client: MockClient((_) async =>
+        http.Response(
+          '{"status":1,"product":{"code":"90031977",'
+          '"product_name":"Bier","brands":"Zipfer"}}',
+          200,
+          headers: {'content-type': 'application/json; charset=utf-8'},
+        )));
+
+    final off = await lookup.lookup('90031977') as OffProductFound;
+    expect(off.name, isNull,
+        reason: 'sonst entstehen Community-Einträge namens „Bier"');
+    expect(off.brand, 'Zipfer', reason: 'die Marke bleibt nützlich');
+  });
+
+  test('isGenericProductName trennt Gattungswort und echten Namen', () {
+    for (final generic in ['Bier', 'bier', ' BEER ', 'Bière', 'Vollbier']) {
+      expect(BarcodeLookup.isGenericProductName(generic), isTrue,
+          reason: '„$generic" ist kein Biername');
+    }
+    for (final real in ['Zipfer Märzen', 'Bier Radler', 'Lagerbier Hell']) {
+      expect(BarcodeLookup.isGenericProductName(real), isFalse,
+          reason: '„$real" ist ein verwendbarer Name');
+    }
+  });
+
   test('OFF „not found" → BarcodeUnknown', () async {
     final lookup = BarcodeLookup(db, client: MockClient((_) async =>
         http.Response('{"status":0,"status_verbose":"product not found"}',

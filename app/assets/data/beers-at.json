@@ -954,7 +954,8 @@
       "image_url": "https://images.openfoodfacts.org/images/products/060/878/250/2288/front_fr.6.400.jpg",
       "description_manufacturer": "Nur einmal im Jahr am 6. Dezember eingebraut und zehn Monate gereift: ein extrem starkes, likörartiges Lagerbier mit Noten von Dörrobst, Karamell und Portwein.",
       "description_community": "Legendäres Sammler- und Digestif-Bier, das lange als stärkstes Lagerbier der Welt galt; nichts für nebenbei, aber ein Erlebnis.",
-      "community_rating": 4.0
+      "community_rating": 4.0,
+      "story": "Samichlaus wird nur ein einziges Mal im Jahr gebraut — am 6. Dezember, dem Nikolaustag — und lagert danach zehn Monate, bevor er abgefüllt wird. Über Jahre galt er als stärkstes Lagerbier der Welt."
     }
   ]
 }

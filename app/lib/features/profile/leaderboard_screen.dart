@@ -35,39 +35,45 @@ class LeaderboardScreen extends ConsumerWidget {
               ),
             );
           }
-          return ListView(
+          return ListView.builder(
             padding: const EdgeInsets.all(16),
-            children: [
-              Text(
-                'Punkte: 1 je Check-in · 5 je angelegtem Bier/Gasthaus · '
-                '2 je gepflegter Änderung',
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: scheme.onSurfaceVariant),
-              ),
-              const SizedBox(height: 8),
-              for (final (index, entry) in entries.indexed)
-                Card(
-                  color: entry.username == myUsername
-                      ? scheme.primaryContainer
-                      : null,
-                  child: ListTile(
-                    leading: Text(
-                      switch (index) {
-                        0 => '🥇',
-                        1 => '🥈',
-                        2 => '🥉',
-                        _ => '${index + 1}.',
-                      },
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                    title: Text(
-                        '${entry.avatarEmoji} @${entry.username}'
-                        '${entry.username == myUsername ? ' (du)' : ''}'),
-                    trailing: Text('${entry.points} P.',
-                        style: theme.textTheme.titleMedium),
+            // Kopfzeile + Einträge.
+            itemCount: entries.length + 1,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    'Punkte: 1 je Check-in · 5 je angelegtem Bier/Gasthaus · '
+                    '2 je gepflegter Änderung',
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(color: scheme.onSurfaceVariant),
                   ),
+                );
+              }
+              final rank = index - 1;
+              final entry = entries[rank];
+              return Card(
+                color: entry.username == myUsername
+                    ? scheme.primaryContainer
+                    : null,
+                child: ListTile(
+                  leading: Text(
+                    switch (rank) {
+                      0 => '🥇',
+                      1 => '🥈',
+                      2 => '🥉',
+                      _ => '${rank + 1}.',
+                    },
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  title: Text('${entry.avatarEmoji} @${entry.username}'
+                      '${entry.username == myUsername ? ' (du)' : ''}'),
+                  trailing: Text('${entry.points} P.',
+                      style: theme.textTheme.titleMedium),
                 ),
-            ],
+              );
+            },
           );
         },
       ),

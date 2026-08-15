@@ -18,6 +18,7 @@ import '../domain/badges.dart';
 import '../domain/challenges.dart';
 import '../features/scan/barcode_lookup.dart';
 import '../widgets/badge_celebration.dart';
+import 'checkin_delete_queue.dart';
 import 'community_sync.dart';
 import 'db/database.dart';
 import 'location_service.dart';
@@ -124,7 +125,9 @@ final remoteFeedProvider = FutureProvider<List<RemoteCheckin>>((ref) async {
   ref.watch(clockProvider);
   final online = await ref.watch(onlineServiceProvider.future);
   if (online == null || online.currentUser == null) return const [];
-  return online.friendCheckins();
+  // Gleiches Fenster wie der lokale Teil – „mehr laden" holt auch
+  // serverseitig nach, statt bei den ersten 50 stehenzubleiben.
+  return online.friendCheckins(limit: ref.watch(feedLimitProvider));
 });
 
 final onlineFriendsProvider =
@@ -243,25 +246,92 @@ final friendsProvider = StreamProvider<List<Profile>>(
 // Feed, Toasts, Kommentare
 // ============================================================================
 
+/// Grenzen der Beacon-Laufzeit. Kürzer als eine halbe Stunde ergibt keine
+/// Einladung, länger als zwölf Stunden ist fast immer ein vergessener
+/// Beacon — und ein Beacon, der aus Versehen stehen bleibt, ist ein
+/// Datenschutzproblem, kein Komfortmerkmal. Beide Grenzen werden
+/// serverseitig nochmals geprüft (Migration 0021).
+const minSessionDuration = Duration(minutes: 30);
+const maxSessionDuration = Duration(hours: 12);
+
+/// Hält eine Laufzeit in den erlaubten Grenzen. Rein und testbar.
+Duration clampSessionDuration(Duration d) {
+  if (d < minSessionDuration) return minSessionDuration;
+  if (d > maxSessionDuration) return maxSessionDuration;
+  return d;
+}
+
+/// Zur Auswahl stehende Laufzeiten.
+const sessionDurationChoices = <Duration>[
+  Duration(minutes: 30),
+  Duration(hours: 1),
+  Duration(hours: 2),
+  Duration(hours: 3),
+  Duration(hours: 5),
+  Duration(hours: 8),
+  Duration(hours: 12),
+];
+
+/// Zuletzt gewählte Laufzeit — Vorgabe für den nächsten Beacon,
+/// insbesondere für den Ein-Tap-Beacon, der nicht fragen soll.
+/// Ohne eigene Wahl bleibt es bei drei Stunden wie bisher.
+final preferredSessionDurationProvider =
+    StateProvider<Duration>((ref) => const Duration(hours: 3));
+
+/// Seitengröße für Feed und Tagebuch. Beide laden zunächst eine Seite und
+/// erweitern das Fenster, sobald der Mensch ans Ende scrollt — ohne
+/// Obergrenze würde jeder Check-in eines ganzen Bierlebens auf einmal
+/// gelesen und gebaut.
+const feedPageSize = 30;
+
+/// Aktuelles Fenster des Feeds (wächst um [feedPageSize] je „mehr laden").
+final feedLimitProvider = StateProvider<int>((ref) {
+  // Neue Anmeldung = neuer Feed: Fenster zurücksetzen.
+  ref.watch(onlineUserProvider);
+  return feedPageSize;
+});
+
+/// Aktuelles Fenster des Tagebuchs.
+final diaryLimitProvider = StateProvider<int>((ref) => feedPageSize);
+
 /// Feed: abgemeldet = lokale Daten inkl. Demo-Freunde; angemeldet = eigene
 /// lokale Check-ins + die echter Freunde (Demo-Inhalte verschwinden).
 final feedProvider = StreamProvider<List<CheckinDetails>>((ref) {
   final db = ref.watch(databaseProvider);
-  if (!ref.watch(isSignedInProvider)) return db.watchFeed();
+  final limit = ref.watch(feedLimitProvider);
+  if (!ref.watch(isSignedInProvider)) return db.watchFeed(limit: limit);
   final remote = ref.watch(remoteFeedProvider).valueOrNull ?? const [];
-  return db.watchFeed().map((locals) {
+  return db.watchFeed(limit: limit).map((locals) {
     final merged = [
       ...locals.where((c) => c.author.isMe),
       ...remote.map(remoteCheckinToDetails),
     ]..sort((a, b) => b.checkin.createdAt.compareTo(a.checkin.createdAt));
-    return merged;
+    // Eigene und fremde Einträge kommen aus zwei Quellen mit je eigenem
+    // Fenster – nach dem Mischen auf die Seitengröße stutzen, sonst
+    // springt die Länge unvorhersehbar.
+    return merged.length > limit ? merged.sublist(0, limit) : merged;
   });
 });
+
+/// Suchbegriff des Tagebuchs. Liegt im Provider statt im Bildschirm,
+/// damit die Suche in die Abfrage wandern kann.
+final diarySearchProvider = StateProvider<String>((ref) => '');
 
 final myDiaryProvider = StreamProvider<List<CheckinDetails>>((ref) {
   final me = ref.watch(meProvider).valueOrNull;
   if (me == null) return const Stream.empty();
-  return ref.watch(databaseProvider).watchFeed(onlyProfileId: me.id);
+  return ref.watch(databaseProvider).watchFeed(
+        onlyProfileId: me.id,
+        limit: ref.watch(diaryLimitProvider),
+        search: ref.watch(diarySearchProvider),
+      );
+});
+
+/// Gesamtzahl eigener Check-ins — für „alles geladen?" und Statistiken.
+final myCheckinCountProvider = StreamProvider<int>((ref) {
+  final me = ref.watch(meProvider).valueOrNull;
+  if (me == null) return Stream.value(0);
+  return ref.watch(databaseProvider).watchCheckinCount(me.id);
 });
 
 /// Lokale Check-ins, die noch nicht im Online-Konto liegen – z. B. weil sie
@@ -271,9 +341,14 @@ final pendingCheckinUploadProvider =
   if (!ref.watch(isSignedInProvider)) return null;
   final online = await ref.watch(onlineServiceProvider.future);
   if (online == null) return null;
-  final diary = await ref.watch(myDiaryProvider.future);
+  final me = ref.watch(meProvider).valueOrNull;
+  if (me == null) return null;
+  // Bewusst der ungekürzte Bestand, NICHT das Tagebuch-Fenster: Sonst
+  // bliebe genau der alte, offline entstandene Check-in unentdeckt, für
+  // den es den Assistenten gibt.
+  final mine = await ref.watch(databaseProvider).myCheckinsDetailed(me.id);
   final candidates = [
-    for (final d in diary)
+    for (final d in mine)
       if (OnlineService.isUploadable(d)) d,
   ];
   if (candidates.isEmpty) return const [];
@@ -314,6 +389,25 @@ final venueSyncProvider = FutureProvider<int>((ref) async {
 
 final venuesWithLocationProvider = StreamProvider<List<Venue>>(
     (ref) => ref.watch(databaseProvider).watchVenuesWithLocation());
+
+// ============================================================================
+// Gelöschte Check-ins nachtragen (eigene Warteschlange, siehe Funktion 19)
+// ============================================================================
+
+/// Überträgt lokal gelöschte Check-ins an den Server – im selben Takt wie
+/// der Gasthaus-Abgleich, aber unabhängig davon. Die AppShell hält den
+/// Provider am Leben. Rückgabe: übertragene Löschungen.
+final checkinDeleteSyncProvider = FutureProvider<int>((ref) async {
+  ref.watch(_syncTickProvider);
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null || online.currentUser == null) return 0;
+  return replayCheckinDeleteQueue(
+    ref.read(databaseProvider),
+    deleteRemote: online.deleteCheckinRemote,
+    deletePhoto: online.deleteCheckinPhoto,
+  );
+});
 
 /// Alle Gasthäuser aus dem Cache (Gasthausliste; Sortierung macht die UI).
 final allVenuesProvider = StreamProvider<List<Venue>>(
@@ -508,8 +602,20 @@ final thirstyFriendsProvider =
   ref.watch(_syncTickProvider);
   final online = await ref.watch(onlineServiceProvider.future);
   if (online == null || online.currentUser == null) return const [];
-  final all = await online.friends();
-  return [for (final f in all) if (f.hasBierlaune) f];
+  // Seit 0024 filtert der Server nach Freundeskreis: Bekannte sehen die
+  // Bierlaune nicht. Vorher wurde die ganze Freundesliste geholt und in
+  // der App gefiltert — die Angabe lag damit auf jedem Gerät, das
+  // danach fragte.
+  return online.thirstyFriends();
+});
+
+/// Eigene Bierlaune (kommt seit 0024 über eine Funktion, weil das
+/// Spaltenrecht auf `thirsty_until` entzogen ist).
+final myThirstyUntilProvider = FutureProvider<DateTime?>((ref) async {
+  ref.watch(_syncTickProvider);
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  return online?.myThirstyUntil();
 });
 
 /// Merker, für welches Konto der Cloud-Restore diese App-Sitzung schon
@@ -769,6 +875,7 @@ class BrewActions {
     String? venueId,
     List<String> flavorTags = const [],
     ServingStyle? servingStyle,
+    int? volumeMl,
     String? photoUrl,
   }) async {
     final me = await _me();
@@ -786,6 +893,7 @@ class BrewActions {
           note: Value((note ?? '').trim().isEmpty ? null : note!.trim()),
           flavorTags: Value(flavorTags.join(',')),
           servingStyle: Value(servingStyle),
+          volumeMl: Value(volumeMl),
           photoUrl: Value(photoUrl),
           createdAt: now,
         ));
@@ -823,6 +931,38 @@ class BrewActions {
     ];
   }
 
+  /// Eigenen Check-in löschen: lokal sofort (auch offline), der Server
+  /// erfährt es beim nächsten Abgleich.
+  ///
+  /// Gibt die gelöschte Zeile zurück, damit „Rückgängig" sie
+  /// wiederherstellen kann — oder null, wenn es den Check-in nicht gibt
+  /// oder er jemand anderem gehört.
+  ///
+  /// Bereits verdiente Abzeichen und abgeschlossene Challenges bleiben
+  /// bestehen: Erreichtes rückwirkend abzuerkennen wäre die schlechtere
+  /// Überraschung und lüde zum Missbrauch als Rückabwicklung ein.
+  Future<Checkin?> deleteCheckin(String checkinId) async {
+    final me = await _me();
+    final row = await _db.findCheckin(checkinId);
+    if (row == null || row.profileId != me.id) return null;
+    await _db.deleteCheckinLocal(
+      row.id,
+      photoUrl: row.photoUrl,
+      now: DateTime.now(),
+    );
+    return row;
+  }
+
+  /// Nimmt ein Löschen zurück.
+  ///
+  /// Lief der Abgleich in der Zwischenzeit bereits (Sekundenfenster), ist
+  /// die Serverzeile weg — der Check-in lebt dann lokal weiter und wird
+  /// vom Upload-Assistenten wieder hochgeladen.
+  Future<void> restoreCheckin(Checkin row) async {
+    await _db.cancelCheckinDelete(row.id);
+    await _db.restoreCheckinRow(row);
+  }
+
   /// Session starten („der eine Tap"). Gibt neu verdiente Abzeichen zurück.
   /// [venueName] darf fehlen (Beacon „unterwegs" mit reiner GPS-Position);
   /// [crewId] gehört zu `visibility == crew` (nur die Crew sieht den Beacon).
@@ -853,7 +993,7 @@ class BrewActions {
           visibility: visibility,
           status: SessionStatus.active,
           startedAt: now,
-          expiresAt: now.add(autoEnd),
+          expiresAt: now.add(clampSessionDuration(autoEnd)),
           latitude: Value(latitude),
           longitude: Value(longitude),
         ));
@@ -881,6 +1021,28 @@ class BrewActions {
       final online = await _online();
       if (online != null) unawaited(online.endSession(current.id));
     }
+  }
+
+  /// Laufende eigene Session verlängern.
+  ///
+  /// Gerechnet wird ab **jetzt**, nicht ab dem bisherigen Ende: „noch zwei
+  /// Stunden" ist das, was jemand meint, der um 22 Uhr im Wirtshaus sitzt
+  /// und verlängert. Die Obergrenze [maxSessionDuration] gilt wie beim
+  /// Start und wird serverseitig nochmals geprüft.
+  ///
+  /// Rückgabe: das neue Ende, oder null wenn keine Session läuft.
+  Future<DateTime?> extendMySession(Duration by) async {
+    final me = await _me();
+    final now = DateTime.now();
+    final current = await _db.getMyActiveSession(me.id, now);
+    if (current == null) return null;
+    final until = now.add(clampSessionDuration(by));
+    await _db.setSessionExpiry(current.id, until);
+    final online = await _online();
+    if (online != null) {
+      unawaited(online.updateSessionExpiry(current.id, until));
+    }
+    return until;
   }
 
   /// „Bin dabei!" auf die Session eines Freundes (lokal oder online).
@@ -920,6 +1082,7 @@ class BrewActions {
     await online.setBierlaune(
         on ? DateTime.now().add(const Duration(hours: 4)) : null);
     _ref.invalidate(myRemoteProfileProvider);
+    _ref.invalidate(myThirstyUntilProvider);
     _ref.invalidate(thirstyFriendsProvider);
   }
 
