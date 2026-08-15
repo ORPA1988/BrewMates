@@ -107,8 +107,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/checkin',
-        builder: (_, state) =>
-            CheckinScreen(preselectedBeerId: state.uri.queryParameters['beer']),
+        builder: (_, state) => CheckinScreen(
+          preselectedBeerId: state.uri.queryParameters['beer'],
+          // Nach einem Scan bekannt: Der Barcode sagt die Gebindegröße.
+          preselectedVolumeMl:
+              int.tryParse(state.uri.queryParameters['ml'] ?? ''),
+        ),
       ),
       GoRoute(
         path: '/beer/:id',

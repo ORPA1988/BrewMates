@@ -23,6 +23,30 @@ Region gut als die Welt schlecht.
 - Fehlt etwas: „Korrektur vorschlagen" öffnet ein vorbefülltes
   GitHub-Issue; neue Biere legt man direkt in der App an
 
+## Anlegen ohne Pflichtfelder (2026-08-15)
+
+Bis dahin verlangte das Formular fünf Angaben: Name, Stil, Brauerei, Land,
+Stadt. Wer ein unbekanntes Bier scannte, musste erst ein Formular ausfüllen,
+bevor er einchecken konnte — obwohl er nur trinken und festhalten wollte.
+
+**Nichts ist mehr Pflicht.** Fehlt alles, entsteht ein Eintrag aus EAN und
+„Unbekanntes Bier". Das ist ehrlicher als eine erratene Angabe und
+jederzeit nachtragbar: Community-Bearbeitung gibt es seit Migration 0013
+ab Vertrauensstufe 2, serverseitig über RLS erzwungen und im `edit_log`
+protokolliert.
+
+Die Beschriftungen heißen jetzt **Marke** und **Sorte/Typ** statt Name und
+Stil. Die Datenfelder bleiben `name` und `style` — eine Umbenennung im
+Bestand wäre ein Datenumbau ohne Nutzen für den Menschen davor.
+
+**Die Lupe neben „Marke"** durchsucht den vorhandenen Bestand. Sie ist für
+den häufigsten Fall da: Das Bier ist längst erfasst und hat nur diese eine
+EAN noch nicht. Auswählen hängt den Code dort an — ein Duplikat wäre der
+teuerste Fehler, den man hier machen kann.
+
+**Die Gebindegröße** gehört zum Barcode, nicht zum Bier (siehe Funktion
+03). Vorbelegt ist ein halber Liter.
+
 ## Technische Umsetzung
 
 - **Daten:** `app/assets/data/` — acht Dateien

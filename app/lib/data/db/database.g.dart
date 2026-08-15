@@ -2564,6 +2564,199 @@ class VenuesCompanion extends UpdateCompanion<Venue> {
   }
 }
 
+class $BarcodeVolumesTable extends BarcodeVolumes
+    with TableInfo<$BarcodeVolumesTable, BarcodeVolume> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BarcodeVolumesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _eanMeta = const VerificationMeta('ean');
+  @override
+  late final GeneratedColumn<String> ean = GeneratedColumn<String>(
+      'ean', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _volumeMlMeta =
+      const VerificationMeta('volumeMl');
+  @override
+  late final GeneratedColumn<int> volumeMl = GeneratedColumn<int>(
+      'volume_ml', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [ean, volumeMl];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'barcode_volumes';
+  @override
+  VerificationContext validateIntegrity(Insertable<BarcodeVolume> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('ean')) {
+      context.handle(
+          _eanMeta, ean.isAcceptableOrUnknown(data['ean']!, _eanMeta));
+    } else if (isInserting) {
+      context.missing(_eanMeta);
+    }
+    if (data.containsKey('volume_ml')) {
+      context.handle(_volumeMlMeta,
+          volumeMl.isAcceptableOrUnknown(data['volume_ml']!, _volumeMlMeta));
+    } else if (isInserting) {
+      context.missing(_volumeMlMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {ean};
+  @override
+  BarcodeVolume map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BarcodeVolume(
+      ean: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}ean'])!,
+      volumeMl: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}volume_ml'])!,
+    );
+  }
+
+  @override
+  $BarcodeVolumesTable createAlias(String alias) {
+    return $BarcodeVolumesTable(attachedDatabase, alias);
+  }
+}
+
+class BarcodeVolume extends DataClass implements Insertable<BarcodeVolume> {
+  final String ean;
+
+  /// Füllmenge in Millilitern (500 = halber Liter).
+  final int volumeMl;
+  const BarcodeVolume({required this.ean, required this.volumeMl});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['ean'] = Variable<String>(ean);
+    map['volume_ml'] = Variable<int>(volumeMl);
+    return map;
+  }
+
+  BarcodeVolumesCompanion toCompanion(bool nullToAbsent) {
+    return BarcodeVolumesCompanion(
+      ean: Value(ean),
+      volumeMl: Value(volumeMl),
+    );
+  }
+
+  factory BarcodeVolume.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BarcodeVolume(
+      ean: serializer.fromJson<String>(json['ean']),
+      volumeMl: serializer.fromJson<int>(json['volumeMl']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'ean': serializer.toJson<String>(ean),
+      'volumeMl': serializer.toJson<int>(volumeMl),
+    };
+  }
+
+  BarcodeVolume copyWith({String? ean, int? volumeMl}) => BarcodeVolume(
+        ean: ean ?? this.ean,
+        volumeMl: volumeMl ?? this.volumeMl,
+      );
+  BarcodeVolume copyWithCompanion(BarcodeVolumesCompanion data) {
+    return BarcodeVolume(
+      ean: data.ean.present ? data.ean.value : this.ean,
+      volumeMl: data.volumeMl.present ? data.volumeMl.value : this.volumeMl,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BarcodeVolume(')
+          ..write('ean: $ean, ')
+          ..write('volumeMl: $volumeMl')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(ean, volumeMl);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BarcodeVolume &&
+          other.ean == this.ean &&
+          other.volumeMl == this.volumeMl);
+}
+
+class BarcodeVolumesCompanion extends UpdateCompanion<BarcodeVolume> {
+  final Value<String> ean;
+  final Value<int> volumeMl;
+  final Value<int> rowid;
+  const BarcodeVolumesCompanion({
+    this.ean = const Value.absent(),
+    this.volumeMl = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BarcodeVolumesCompanion.insert({
+    required String ean,
+    required int volumeMl,
+    this.rowid = const Value.absent(),
+  })  : ean = Value(ean),
+        volumeMl = Value(volumeMl);
+  static Insertable<BarcodeVolume> custom({
+    Expression<String>? ean,
+    Expression<int>? volumeMl,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (ean != null) 'ean': ean,
+      if (volumeMl != null) 'volume_ml': volumeMl,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BarcodeVolumesCompanion copyWith(
+      {Value<String>? ean, Value<int>? volumeMl, Value<int>? rowid}) {
+    return BarcodeVolumesCompanion(
+      ean: ean ?? this.ean,
+      volumeMl: volumeMl ?? this.volumeMl,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (ean.present) {
+      map['ean'] = Variable<String>(ean.value);
+    }
+    if (volumeMl.present) {
+      map['volume_ml'] = Variable<int>(volumeMl.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BarcodeVolumesCompanion(')
+          ..write('ean: $ean, ')
+          ..write('volumeMl: $volumeMl, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $SessionsTable extends Sessions with TableInfo<$SessionsTable, Session> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -6025,6 +6218,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $BreweriesTable breweries = $BreweriesTable(this);
   late final $BeersTable beers = $BeersTable(this);
   late final $VenuesTable venues = $VenuesTable(this);
+  late final $BarcodeVolumesTable barcodeVolumes = $BarcodeVolumesTable(this);
   late final $SessionsTable sessions = $SessionsTable(this);
   late final $SessionParticipantsTable sessionParticipants =
       $SessionParticipantsTable(this);
@@ -6046,6 +6240,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         breweries,
         beers,
         venues,
+        barcodeVolumes,
         sessions,
         sessionParticipants,
         checkins,
@@ -8058,6 +8253,135 @@ typedef $$VenuesTableProcessedTableManager = ProcessedTableManager<
     $$VenuesTableUpdateCompanionBuilder,
     (Venue, BaseReferences<_$AppDatabase, $VenuesTable, Venue>),
     Venue,
+    PrefetchHooks Function()>;
+typedef $$BarcodeVolumesTableCreateCompanionBuilder = BarcodeVolumesCompanion
+    Function({
+  required String ean,
+  required int volumeMl,
+  Value<int> rowid,
+});
+typedef $$BarcodeVolumesTableUpdateCompanionBuilder = BarcodeVolumesCompanion
+    Function({
+  Value<String> ean,
+  Value<int> volumeMl,
+  Value<int> rowid,
+});
+
+class $$BarcodeVolumesTableFilterComposer
+    extends Composer<_$AppDatabase, $BarcodeVolumesTable> {
+  $$BarcodeVolumesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get ean => $composableBuilder(
+      column: $table.ean, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get volumeMl => $composableBuilder(
+      column: $table.volumeMl, builder: (column) => ColumnFilters(column));
+}
+
+class $$BarcodeVolumesTableOrderingComposer
+    extends Composer<_$AppDatabase, $BarcodeVolumesTable> {
+  $$BarcodeVolumesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get ean => $composableBuilder(
+      column: $table.ean, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get volumeMl => $composableBuilder(
+      column: $table.volumeMl, builder: (column) => ColumnOrderings(column));
+}
+
+class $$BarcodeVolumesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BarcodeVolumesTable> {
+  $$BarcodeVolumesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get ean =>
+      $composableBuilder(column: $table.ean, builder: (column) => column);
+
+  GeneratedColumn<int> get volumeMl =>
+      $composableBuilder(column: $table.volumeMl, builder: (column) => column);
+}
+
+class $$BarcodeVolumesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $BarcodeVolumesTable,
+    BarcodeVolume,
+    $$BarcodeVolumesTableFilterComposer,
+    $$BarcodeVolumesTableOrderingComposer,
+    $$BarcodeVolumesTableAnnotationComposer,
+    $$BarcodeVolumesTableCreateCompanionBuilder,
+    $$BarcodeVolumesTableUpdateCompanionBuilder,
+    (
+      BarcodeVolume,
+      BaseReferences<_$AppDatabase, $BarcodeVolumesTable, BarcodeVolume>
+    ),
+    BarcodeVolume,
+    PrefetchHooks Function()> {
+  $$BarcodeVolumesTableTableManager(
+      _$AppDatabase db, $BarcodeVolumesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BarcodeVolumesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BarcodeVolumesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BarcodeVolumesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> ean = const Value.absent(),
+            Value<int> volumeMl = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              BarcodeVolumesCompanion(
+            ean: ean,
+            volumeMl: volumeMl,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String ean,
+            required int volumeMl,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              BarcodeVolumesCompanion.insert(
+            ean: ean,
+            volumeMl: volumeMl,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$BarcodeVolumesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $BarcodeVolumesTable,
+    BarcodeVolume,
+    $$BarcodeVolumesTableFilterComposer,
+    $$BarcodeVolumesTableOrderingComposer,
+    $$BarcodeVolumesTableAnnotationComposer,
+    $$BarcodeVolumesTableCreateCompanionBuilder,
+    $$BarcodeVolumesTableUpdateCompanionBuilder,
+    (
+      BarcodeVolume,
+      BaseReferences<_$AppDatabase, $BarcodeVolumesTable, BarcodeVolume>
+    ),
+    BarcodeVolume,
     PrefetchHooks Function()>;
 typedef $$SessionsTableCreateCompanionBuilder = SessionsCompanion Function({
   required String id,
@@ -11184,6 +11508,8 @@ class $AppDatabaseManager {
       $$BeersTableTableManager(_db, _db.beers);
   $$VenuesTableTableManager get venues =>
       $$VenuesTableTableManager(_db, _db.venues);
+  $$BarcodeVolumesTableTableManager get barcodeVolumes =>
+      $$BarcodeVolumesTableTableManager(_db, _db.barcodeVolumes);
   $$SessionsTableTableManager get sessions =>
       $$SessionsTableTableManager(_db, _db.sessions);
   $$SessionParticipantsTableTableManager get sessionParticipants =>

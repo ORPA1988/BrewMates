@@ -86,7 +86,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       if (!mounted) return;
       switch (result) {
         case LocalBeerFound(:final beer):
-          await _showFoundSheet(beer);
+          await _showFoundSheet(beer, ean: ean);
         case CommunityBeerFound(:final ean, :final beer):
           // Von einem anderen Nutzer eingetragen → lokal übernehmen,
           // dann wie ein lokaler Treffer bestätigen.
@@ -105,7 +105,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
               .read(databaseProvider)
               .findBeerByBarcode(ean);
           if (!mounted) return;
-          if (imported != null) await _showFoundSheet(imported);
+          if (imported != null) await _showFoundSheet(imported, ean: ean);
         case OffProductFound(:final ean, :final name, :final brand):
           context.pushReplacement(Uri(
             path: '/beers/add',
@@ -128,7 +128,13 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
   /// Treffer-Bestätigung: zeigt das erkannte Bier (mit Etikett-Foto,
   /// falls vorhanden), bevor es weitergeht — so sieht man sofort, ob der
   /// Scan das richtige Produkt erwischt hat. „Weiter scannen" bleibt hier.
-  Future<void> _showFoundSheet(BeerWithBrewery found) async {
+  Future<void> _showFoundSheet(BeerWithBrewery found, {String? ean}) async {
+    // Die Gebindegröße hängt am Barcode, nicht am Bier: Dieselbe Marke in
+    // 0,33 und 0,5 hat zwei EANs, und genau darin unterscheiden sie sich.
+    // Ist sie bekannt, steht sie im Check-in schon drin.
+    final volumeMl =
+        ean == null ? null : await ref.read(databaseProvider).barcodeVolume(ean);
+    if (!mounted) return;
     final beer = found.beer;
     final theme = Theme.of(context);
 
@@ -218,7 +224,8 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
               FilledButton.icon(
                 onPressed: () {
                   Navigator.of(sheetContext).pop();
-                  context.pushReplacement('/checkin?beer=${beer.id}');
+                  context.pushReplacement('/checkin?beer=${beer.id}'
+                      '${volumeMl != null ? '&ml=$volumeMl' : ''}');
                 },
                 icon: const Text('✅'),
                 label: const Text('Einchecken'),

@@ -161,10 +161,22 @@ def build_icon():
 
 
 def build_foreground():
-    """1024x1024 adaptive-icon foreground: mug only, ~60 % of the canvas."""
+    """1024x1024 adaptive-icon foreground: mug only, filling the safe zone.
+
+    Android crops an adaptive icon to an unknown shape; guaranteed visible
+    is the centre 66 % of the canvas. The mug drawing does not fill its own
+    box (about 72 % of it), so the box has to be *larger* than the safe
+    zone for the artwork to reach it.
+
+    Before 2026-08-15 the box was 0.60, which put the visible mug at 43 %
+    of the canvas -- and `ic_launcher.xml` then shrank it by a further
+    16 %, down to 29 %. The safe zone was applied twice, and the icon
+    looked lost inside its circle compared to the web app, which shows the
+    full square artwork. The inset is gone; the size lives here alone.
+    """
     S = FINAL * SS
     img = Image.new("RGBA", (S, S), (0, 0, 0, 0))
-    mug_size = int(S * 0.60)  # safe zone for Android adaptive icons
+    mug_size = int(S * 0.86)  # -> artwork lands at ~62 % of the canvas
     mug = draw_mug(mug_size)
     ox = (S - mug_size) // 2
     oy = (S - mug_size) // 2
