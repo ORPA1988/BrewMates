@@ -132,8 +132,19 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
     // Die Gebindegröße hängt am Barcode, nicht am Bier: Dieselbe Marke in
     // 0,33 und 0,5 hat zwei EANs, und genau darin unterscheiden sie sich.
     // Ist sie bekannt, steht sie im Check-in schon drin.
-    final volumeMl =
+    var volumeMl =
         ean == null ? null : await ref.read(databaseProvider).barcodeVolume(ean);
+    if (volumeMl == null && ean != null) {
+      // Lokal unbekannt — vielleicht hat jemand anderes die Größe schon
+      // eingetragen (0028). Einmal nachfragen und merken, damit derselbe
+      // Code beim nächsten Mal auch offline stimmt.
+      final online = await ref.read(onlineServiceProvider.future);
+      final remote = await online?.beerBarcode(ean);
+      if (remote?.volumeMl != null) {
+        volumeMl = remote!.volumeMl;
+        await ref.read(databaseProvider).setBarcodeVolume(ean, volumeMl!);
+      }
+    }
     if (!mounted) return;
     final beer = found.beer;
     final theme = Theme.of(context);

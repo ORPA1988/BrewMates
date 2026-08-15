@@ -29,12 +29,20 @@ Daraus folgt der ganze Rest dieser Funktion:
 - **Ein Bier hat mehrere Barcodes** — deshalb ist `beers.barcodes` eine
   Liste und keine Spalte mit einem Wert.
 - **Der Barcode kennt die Größe**, das Bier nicht. Beim Scannen steht sie
-  im Check-in deshalb schon drin (`barcode_volumes`, Drift v14).
+  im Check-in deshalb schon drin — lokal in `barcode_volumes` (Drift v14),
+  geteilt über `beer_barcodes` (Migration 0028).
 - **Eine unbekannte EAN heißt selten „neues Bier"**, meistens „bekanntes
   Bier ohne diesen Code". Deshalb die Lupe beim Anlegen (siehe Funktion
   04): Sie hängt den Code an den vorhandenen Eintrag, statt ein Duplikat
   zu erzeugen. Zwei Einträge für dasselbe Bier würden Bewertungen,
   Abzeichen und Statistik auseinanderreißen.
+
+**Der Server konnte das lange nicht.** `beers.barcode` aus Migration 0010
+ist eine einzelne Spalte mit UNIQUE — der zweite Code desselben Biers
+hatte schlicht keinen Platz, während die App lokal längst eine Liste
+führte. Migration 0028 bringt `beer_barcodes`: eine Zeile je Code, mit
+Bier und Größe. Die alte Spalte bleibt, damit Clients vor 0.10.2 weiter
+funktionieren — die Lehre aus 0024/0026.
 
 Einschränkung fürs Protokoll: EANs werden nach Jahrzehnten gelegentlich
 neu vergeben, und Aktionsware trägt manchmal fremde Codes. Die EAN ist ein
