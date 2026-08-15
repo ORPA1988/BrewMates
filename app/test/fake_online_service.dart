@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:brewmates/data/db/database.dart' as local;
@@ -49,6 +50,49 @@ class FakeOnlineService extends OnlineService {
         aud: 'authenticated',
         createdAt: DateTime(2026).toIso8601String(),
       );
+
+  /// Was der „Server" an nutzererstellten Bieren zur Namenssuche liefert.
+  List<RemoteBeer> serverBiere = const [];
+
+  @override
+  Future<List<RemoteBeer>> searchCommunityBeers(String query) async {
+    aufrufe.add('searchCommunityBeers:$query');
+    if (schlaegtFehl) return const [];
+    final begriff = query.trim().toLowerCase();
+    if (begriff.length < 2) return const [];
+    return [
+      for (final b in serverBiere)
+        if (b.name.toLowerCase().contains(begriff)) b,
+    ];
+  }
+
+  @override
+  Future<bool> upsertBeerBarcode(String ean, String beerId,
+      {int? volumeMl}) async {
+    aufrufe.add('upsertBeerBarcode:$ean:$beerId');
+    return !schlaegtFehl;
+  }
+
+  /// Muss aufgezeichnet werden, damit Tests belegen koennen, dass ein
+  /// Bier **nicht** ein zweites Mal eingereicht wurde. Ohne diese
+  /// Ueberschreibung liefe die Pruefung ins Leere und leuchtete immer
+  /// gruen — das Fehlermuster, das dieses Projekt schon dreimal hatte.
+  @override
+  Future<String?> submitCommunityBeer({
+    required String name,
+    required String style,
+    required String breweryName,
+    String? country,
+    String? city,
+    double? abv,
+    bool isAlcoholFree = false,
+    String? description,
+    String? barcode,
+    Uint8List? photoBytes,
+  }) async {
+    aufrufe.add('submitCommunityBeer:$name');
+    return schlaegtFehl ? 'Fehlgeschlagen' : null;
+  }
 
   late final _sessions = _FakeSessionsApi(this);
   late final _friends = _FakeFriendsApi(this);

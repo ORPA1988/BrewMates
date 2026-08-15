@@ -44,6 +44,10 @@ den häufigsten Fall da: Das Bier ist längst erfasst und hat nur diese eine
 EAN noch nicht. Auswählen hängt den Code dort an — ein Duplikat wäre der
 teuerste Fehler, den man hier machen kann.
 
+Seit 0.10.3 muss man die Lupe dafür nicht mehr finden: Passende Biere
+erscheinen beim Tippen von selbst unter der Zeile — siehe
+[Live-Vorschläge](28-live-vorschlaege.md).
+
 **Die Gebindegröße** gehört zum Barcode, nicht zum Bier (siehe Funktion
 03). Vorbelegt ist ein halber Liter.
 

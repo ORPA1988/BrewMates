@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -7,8 +8,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/format.dart' show volumeChoicesMl, formatVolume;
+import '../../data/db/database.dart';
+import '../../data/online/online_service.dart' show RemoteBeer;
 import '../../data/providers.dart';
 import '../../widgets/beer_picker.dart';
+import '../../widgets/suggest_list.dart';
 
 /// Häufigste Stile als Schnellauswahl.
 const List<String> _kStyleSuggestions = [
@@ -57,6 +61,18 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
   final _descriptionController = TextEditingController();
   bool _isAlcoholFree = false;
   bool _saving = false;
+
+  /// Was gerade im Marke-Feld steht — Grundlage der Live-Vorschläge.
+  String _markeSuche = '';
+
+  /// Nutzererstellte Biere anderer, vom Server nachgeladen.
+  ///
+  /// Die lokale Datenbank kennt die gebündelten Biere sofort; was ein
+  /// anderer gestern angelegt hat, steht nur auf dem Server. Deshalb
+  /// erst lokal (ohne Wartezeit), dann dieser Nachschlag.
+  List<RemoteBeer> _serverTreffer = const [];
+  Timer? _entprellung;
+
   Uint8List? _photoBytes;
 
   @override
@@ -72,6 +88,7 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
 
   @override
   void dispose() {
+    _entprellung?.cancel();
     _nameController.dispose();
     _styleController.dispose();
     _breweryController.dispose();
@@ -153,6 +170,111 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
     }
   }
 
+  /// Reaktion auf jeden Tastendruck im Marke-Feld.
+  ///
+  /// Der lokale Teil der Vorschläge kommt ohne Zutun: Er hängt an
+  /// [_markeSuche] und aktualisiert sich mit dem Neuzeichnen. Nur die
+  /// Server-Nachladung wird entprellt — sonst schickte jeder Buchstabe
+  /// eine Abfrage los, und die Antworten kämen in beliebiger Reihenfolge
+  /// zurück.
+  void _markeGetippt(String wert) {
+    setState(() {
+      _markeSuche = wert;
+      // Alte Server-Treffer gehören zu einem alten Wort. Sie stehen zu
+      // lassen wäre schlimmer als eine kurz leere Liste: Sie sähen aus
+      // wie Treffer für das, was gerade dasteht.
+      _serverTreffer = const [];
+    });
+    _entprellung?.cancel();
+    _entprellung = Timer(const Duration(milliseconds: 300), () async {
+      final gesucht = wert.trim();
+      if (gesucht.length < 2) return;
+      final online = await ref.read(onlineServiceProvider.future);
+      final treffer = await online?.searchCommunityBeers(gesucht) ?? const [];
+      // Zwischenzeitlich weitergetippt? Dann gehört diese Antwort nicht
+      // mehr zur Frage.
+      if (!mounted || _nameController.text != wert) return;
+      setState(() => _serverTreffer = treffer);
+    });
+  }
+
+  /// Ein vom Server vorgeschlagenes Bier übernehmen.
+  ///
+  /// Es liegt noch nicht in der lokalen Datenbank — also erst eintragen
+  /// (denselben Weg, den der Scanner bei einem Community-Treffer geht),
+  /// dann wie ein lokaler Treffer behandeln. Das ist der Punkt der
+  /// ganzen Funktion: kein zweiter Eintrag für dasselbe Bier.
+  Future<void> _uebernehmenVomServer(RemoteBeer treffer) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+    final router = GoRouter.of(context);
+    final ean = widget.initialBarcode;
+    final db = ref.read(databaseProvider);
+
+    final id = await ref.read(actionsProvider).addBeer(
+          name: treffer.name,
+          style: treffer.style,
+          breweryName: treffer.breweryName ?? 'Unbekannte Brauerei',
+          breweryCountry: treffer.breweryCountry ?? '',
+          breweryCity: treffer.breweryCity ?? '',
+          abv: treffer.abv,
+          isAlcoholFree: treffer.isAlcoholFree,
+          description: treffer.description,
+          barcode: ean,
+        );
+    if (ean != null && _volumeMl != null) {
+      await db.setBarcodeVolume(ean, _volumeMl!);
+    }
+    if (!mounted) return;
+    messenger.showSnackBar(SnackBar(
+      content: Text('„${treffer.name}" übernommen 🍺'),
+    ));
+    // Ohne Barcode zum eben uebernommenen Bier weiter — aus demselben
+    // Grund wie oben: Im Formular zu bleiben hiesse, ein „Speichern"
+    // anzubieten, das denselben Eintrag ein zweites Mal anlegt.
+    if (ean == null) {
+      unawaited(router.pushReplacement('/beer/$id'));
+      return;
+    }
+    navigator.pop();
+  }
+
+  /// Die Vorschlagsliste zum aktuellen Stand des Marke-Feldes.
+  ///
+  /// Lokale Treffer zuerst, danach die vom Server — und was lokal schon
+  /// dasteht, wird vom Server nicht doppelt angeboten.
+  List<SuggestEntry> _vorschlaege() {
+    final begriff = _markeSuche.trim();
+    if (begriff.length < 2) return const [];
+
+    final lokal = ref
+            .watch(beersProvider((search: begriff, style: null)))
+            .valueOrNull ??
+        const <BeerWithBrewery>[];
+    final bekannt = {for (final t in lokal) t.beer.name.toLowerCase()};
+
+    return [
+      for (final t in lokal)
+        SuggestEntry(
+          titel: t.beer.name,
+          untertitel: '${t.brewery.name} · ${t.beer.style}',
+          fuehrend: t.beer.isAlcoholFree ? '💧' : '🍺',
+          onTap: () => _uebernehmen(t),
+        ),
+      for (final t in _serverTreffer)
+        if (!bekannt.contains(t.name.toLowerCase()))
+          SuggestEntry(
+            titel: t.name,
+            untertitel: [t.breweryName, t.style]
+                .where((e) => e != null && e.isNotEmpty)
+                .join(' · '),
+            fuehrend: t.isAlcoholFree ? '💧' : '🍺',
+            vomServer: true,
+            onTap: () => _uebernehmenVomServer(t),
+          ),
+    ];
+  }
+
   /// Vorhandenes Bier suchen und den gescannten Barcode dort nachtragen.
   ///
   /// Der haeufigste Grund fuer eine unbekannte EAN ist nicht ein neues
@@ -161,22 +283,33 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
   /// anzulegen waere hier der teuerste Fehler: Zwei Eintraege fuer
   /// dasselbe Bier trennen Bewertungen, Abzeichen und Statistik.
   Future<void> _sucheVorhandenes() async {
-    final messenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
     final gewaehlt = await showBeerPicker(context);
     if (gewaehlt == null || !mounted) return;
+    await _uebernehmen(gewaehlt);
+  }
 
+  /// Ein vorhandenes Bier übernehmen — aus der Lupe oder aus einem
+  /// Live-Vorschlag. Beide Wege enden hier, damit sie sich nicht
+  /// auseinanderentwickeln.
+  Future<void> _uebernehmen(BeerWithBrewery gewaehlt) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+    final router = GoRouter.of(context);
     final ean = widget.initialBarcode;
     if (ean == null) {
-      // Ohne Barcode gibt es nichts nachzutragen — dann fuellen wir nur
-      // die Felder, damit man von dort weiterarbeiten kann.
-      setState(() {
-        _nameController.text = gewaehlt.beer.name;
-        _styleController.text = gewaehlt.beer.style;
-        _breweryController.text = gewaehlt.brewery.name;
-        _countryController.text = gewaehlt.brewery.country;
-        _cityController.text = gewaehlt.brewery.city;
-      });
+      // Ohne Barcode gibt es nichts nachzutragen — also zum vorhandenen
+      // Bier weiter, statt im Anlegen-Formular zu bleiben.
+      //
+      // Vorher wurden hier die Felder gefuellt „damit man weiterarbeiten
+      // kann". Das war eine Falle: Sie standen danach auf einem Bier,
+      // das es exakt so schon gibt, und „Speichern" blieb scharf. Ein
+      // Druck darauf legte es lokal ein zweites Mal an und schickte es
+      // ausserdem als neuen Eintrag an den Server — genau das Duplikat,
+      // das diese Auswahl verhindern soll.
+      messenger.showSnackBar(SnackBar(
+        content: Text('„${gewaehlt.beer.name}" gibt es schon.'),
+      ));
+      unawaited(router.pushReplacement('/beer/${gewaehlt.beer.id}'));
       return;
     }
 
@@ -364,7 +497,12 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
                   onPressed: _sucheVorhandenes,
                 ),
               ),
+              onChanged: _markeGetippt,
             ),
+            // Live-Vorschläge direkt unter der Zeile: Wer „Baumg" tippt,
+            // sieht „Baumgartner Märzen" und „Baumgartner Pils", bevor er
+            // sie zu Ende geschrieben — oder ein Duplikat angelegt — hat.
+            SuggestList(eintraege: _vorschlaege()),
             const SizedBox(height: 16),
             TextFormField(
               controller: _styleController,
