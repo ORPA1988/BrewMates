@@ -197,7 +197,8 @@ final cloudRestoreProvider = FutureProvider<RestoreSummary?>((ref) async {
   final db = ref.read(databaseProvider);
   final summary = await restoreFromCloud(
     db,
-    fetchCheckins: online.checkins.myRemoteCheckins,
+    fetchCheckinIds: online.checkins.myRemoteCheckinIds,
+    fetchCheckinsByIds: online.checkins.checkinsByIds,
     fetchBadges: online.checkins.myRemoteBadges,
     pushBadges: online.checkins.uploadBadges,
     fetchWishlist: online.checkins.myRemoteWishlist,
