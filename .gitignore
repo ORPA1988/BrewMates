@@ -1,0 +1,3 @@
+# Persönliche Claude-Code-Einstellungen (Berechtigungen je Rechner).
+# Die geteilten Regeln stehen in .claude/settings.json und sind versioniert.
+.claude/settings.local.json
