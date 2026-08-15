@@ -23,14 +23,15 @@ Brauerei überhaupt einen gepflegten Eintrag gibt.
 noch nie eingecheckt hat, und es gibt eine Geschichte dazu, erscheint auf
 der Treffer-Bestätigung ein kleiner Hinweis: „📖 Wusstest du…?". Ein Tippen
 öffnet die Geschichte, Wegwischen übergeht sie. Beim zweiten Scan
-desselben Biers erscheint der Hinweis nicht mehr — er lässt sich in der
-Bier-Ansicht jederzeit wieder aufrufen.
+desselben Biers erscheint der Hinweis nicht mehr — nachlesen lässt sich
+die Geschichte jederzeit auf der Bier- bzw. Brauereiseite.
 
 Der Ton ist der eines Menschen, der etwas erzählt: zwei bis fünf Sätze,
 eine gute Anekdote, kein Werbetext und kein Wikipedia-Auszug.
 
-**Bei Brauereien** steht die Geschichte fest im Detailbereich — jede
-Brauerei bekommt Hintergrund, nicht nur die berühmten.
+**Bei Brauereien** steht die Geschichte fest im Detailbereich. Das Ziel
+ist, dass jede Brauerei Hintergrund bekommt, nicht nur die berühmten —
+erreicht ist das noch nicht (Stand: 30 von 125).
 
 **Bearbeiten** dürfen Vertrauensstufe 3 und höher (Bierkenner, Moderator,
 Admin), wie bei den übrigen Community-Daten. Änderungen laufen über das
