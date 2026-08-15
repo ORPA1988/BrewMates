@@ -47,6 +47,24 @@ Versehen stundenlang stehen.
   und `upsertSession` überträgt den Wert längst. Neu ist allein die
   **Grenzprüfung** in Migration 0021.
 
+**Nachtrag 2026-08-15 — Verlängern log, wenn der Server nicht antwortete.**
+`updateSessionExpiry` schluckte jeden Fehler (`catch (_) {}`) und wurde
+per `unawaited` abgeschickt. Lokal war der Beacon sofort verlängert, die
+App meldete „läuft noch 3 h" — für Freunde galt aber weiter das alte
+Ende. Wer glaubt, er sei sichtbar, sitzt dann vergeblich im Wirtshaus.
+
+`extendMySession` gibt jetzt `({DateTime until, bool synced})` zurück und
+das Banner sagt es dazu: „Verlängert … — aber ohne Verbindung. Deine
+Freunde sehen noch das alte Ende."
+
+**Bewusst keine Warteschlange** nach dem Muster `venue_edit_queue`,
+obwohl die Konventionen sie für Schreibpfade vorsehen: Eine Verlängerung
+ist an den Moment gebunden. Stunden später nachgereicht würde sie eine
+längst beendete Session wiederbeleben und den Aufenthaltsort erneut
+sichtbar machen — das Gegenteil dessen, wofür 0021 die Obergrenze zieht.
+Hier ist „sofort melden oder ehrlich scheitern" die richtige Form.
+Abgedeckt von `test/session_extend_test.dart`.
+
 **Korrektur an der ersten Fassung dieses Dokuments:** Dort stand, die
 Laufzeit sei „fest einprogrammiert". Das stimmte nur für den
 Ein-Tap-Beacon — der ausführliche Start-Bildschirm bot 1/3/6 Stunden

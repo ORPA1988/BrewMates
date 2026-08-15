@@ -10,7 +10,7 @@
 /// Rangliste gegen andere und nie mit einer Zielvorgabe.
 library;
 
-import '../data/db/database.dart';
+import '../core/serving_style.dart';
 
 /// Geschätzte Füllmenge je Gebinde, wenn der Check-in keine Angabe hat.
 ///
@@ -24,6 +24,49 @@ const Map<ServingStyle, int> estimatedVolumeMl = {
   ServingStyle.can: 500,
   ServingStyle.growler: 1000,
 };
+
+/// Ein Check-in, reduziert auf das, was die Auswertung braucht.
+///
+/// Der Grund für diesen Typ ist die Schichtregel: `domain/` kennt die
+/// Datenbank nicht. Er hat aber einen zweiten Nutzen — die Auswertung
+/// lässt sich ohne Drift-Objekte testen, und wenn die Summenbildung
+/// eines Tages nach SQL wandert, liefert die Abfrage einfach diese
+/// Felder statt ganzer Zeilen.
+class StatsEntry {
+  const StatsEntry({
+    required this.createdAt,
+    required this.beerId,
+    required this.beerStyle,
+    required this.isAlcoholFree,
+    required this.breweryId,
+    required this.breweryName,
+    required this.breweryCountry,
+    this.venueName,
+    this.volumeMl,
+    this.serving,
+    this.rating,
+  });
+
+  final DateTime createdAt;
+
+  final String beerId;
+  final String beerStyle;
+  final bool isAlcoholFree;
+
+  final String breweryId;
+  final String breweryName;
+  final String breweryCountry;
+
+  /// Name des Gasthauses, wenn der Check-in einem zugeordnet ist.
+  final String? venueName;
+
+  /// Gemessene Menge; `null` heißt „nicht erfasst" und wird geschätzt.
+  final int? volumeMl;
+
+  final ServingStyle? serving;
+
+  final double? rating;
+}
 
 /// Fallback, wenn nicht einmal das Gebinde bekannt ist.
 const int defaultVolumeMl = 500;
@@ -107,11 +150,11 @@ class CheckinStats {
 
 /// Menge eines einzelnen Check-ins — gemessen, sonst nach Gebinde
 /// geschätzt.
-int volumeMlOf(Checkin c) =>
-    c.volumeMl ??
-    (c.servingStyle == null
+int volumeMlOf(StatsEntry e) =>
+    e.volumeMl ??
+    (e.serving == null
         ? defaultVolumeMl
-        : estimatedVolumeMl[c.servingStyle] ?? defaultVolumeMl);
+        : estimatedVolumeMl[e.serving] ?? defaultVolumeMl);
 
 String _servingLabel(ServingStyle? s) => switch (s) {
       ServingStyle.draft => 'vom Fass',
@@ -144,7 +187,7 @@ List<StatSlice> _tally(Iterable<String> values, {int? top}) {
 /// Wertet [all] aus, eingeschränkt auf [range] (gerechnet ab [now]) und
 /// optional auf ein Land bzw. einen Stil.
 CheckinStats computeStats(
-  List<CheckinDetails> all, {
+  List<StatsEntry> all, {
   required DateTime now,
   StatsRange range = StatsRange.all,
   String? country,
@@ -153,9 +196,9 @@ CheckinStats computeStats(
   final from = range.startFrom(now);
   final rows = [
     for (final d in all)
-      if ((from == null || !d.checkin.createdAt.isBefore(from)) &&
-          (country == null || d.brewery.country == country) &&
-          (style == null || d.beer.style == style))
+      if ((from == null || !d.createdAt.isBefore(from)) &&
+          (country == null || d.breweryCountry == country) &&
+          (style == null || d.beerStyle == style))
         d,
   ];
 
@@ -183,21 +226,21 @@ CheckinStats computeStats(
   var ratingCount = 0;
   var alcoholFree = 0;
   for (final d in rows) {
-    totalMl += volumeMlOf(d.checkin);
-    if (d.checkin.volumeMl == null) estimated++;
-    final r = d.checkin.rating;
+    totalMl += volumeMlOf(d);
+    if (d.volumeMl == null) estimated++;
+    final r = d.rating;
     if (r != null) {
       ratingSum += r;
       ratingCount++;
     }
-    if (d.beer.isAlcoholFree) alcoholFree++;
+    if (d.isAlcoholFree) alcoholFree++;
   }
 
   // Monate lückenlos wäre schöner, aber irreführend: Ein Monat ohne
   // Check-in ist kein Nullwert, sondern ein Monat ohne Eintrag.
   final monthCounts = <String, int>{};
   for (final d in rows) {
-    final c = d.checkin.createdAt;
+    final c = d.createdAt;
     final key = '${c.year}-${c.month.toString().padLeft(2, '0')}';
     monthCounts[key] = (monthCounts[key] ?? 0) + 1;
   }
@@ -205,19 +248,18 @@ CheckinStats computeStats(
 
   return CheckinStats(
     checkins: rows.length,
-    distinctBeers: {for (final d in rows) d.beer.id}.length,
-    distinctBreweries: {for (final d in rows) d.brewery.id}.length,
+    distinctBeers: {for (final d in rows) d.beerId}.length,
+    distinctBreweries: {for (final d in rows) d.breweryId}.length,
     distinctVenues: {
       for (final d in rows)
-        if (d.checkin.venueName != null) d.checkin.venueName!,
+        if (d.venueName != null) d.venueName!,
     }.length,
     totalMl: totalMl,
     estimatedCount: estimated,
-    byCountry: _tally([for (final d in rows) d.brewery.country]),
-    byStyle: _tally([for (final d in rows) d.beer.style], top: 10),
-    byServing:
-        _tally([for (final d in rows) _servingLabel(d.checkin.servingStyle)]),
-    byBrewery: _tally([for (final d in rows) d.brewery.name], top: 10),
+    byCountry: _tally([for (final d in rows) d.breweryCountry]),
+    byStyle: _tally([for (final d in rows) d.beerStyle], top: 10),
+    byServing: _tally([for (final d in rows) _servingLabel(d.serving)]),
+    byBrewery: _tally([for (final d in rows) d.breweryName], top: 10),
     byMonth: [
       for (final m in months)
         StatSlice('${m.substring(5)}/${m.substring(0, 4)}', monthCounts[m]!),

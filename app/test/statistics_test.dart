@@ -1,32 +1,19 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:brewmates/core/format.dart';
-import 'package:brewmates/data/db/database.dart';
+import 'package:brewmates/core/serving_style.dart';
 import 'package:brewmates/domain/statistics.dart';
 
 /// Reine Auswertung — ohne Flutter, ohne Datenbank.
+///
+/// Dass dieser Test `data/` nicht mehr importiert, ist kein Zufall,
+/// sondern der Beleg: Die Auswertung hängt an keiner Drift-Zeile mehr,
+/// sondern an [StatsEntry]. Kommt hier je wieder ein Import aus `data/`
+/// dazu, ist die Schichtregel erneut gebrochen.
 void main() {
   final now = DateTime(2026, 8, 15, 20);
 
-  Brewery brewery(String id, String country, [String? name]) => Brewery(
-        id: id,
-        name: name ?? 'Brauerei $id',
-        country: country,
-        city: 'Ort',
-        dataStatus: 'ok',
-      );
-
-  Beer beer(String id, String style, {bool alcoholFree = false}) => Beer(
-        id: id,
-        breweryId: 'b1',
-        name: 'Bier $id',
-        style: style,
-        isAlcoholFree: alcoholFree,
-        isUserSubmitted: false,
-        barcodes: '',
-      );
-
-  CheckinDetails detail({
+  StatsEntry detail({
     required String id,
     required DateTime at,
     String style = 'Märzen',
@@ -38,28 +25,18 @@ void main() {
     String? venueName,
     String breweryName = 'Stiegl',
   }) =>
-      CheckinDetails(
-        checkin: Checkin(
-          id: id,
-          profileId: 'me',
-          beerId: 'beer-$id',
-          flavorTags: '',
-          rating: rating,
-          servingStyle: serving,
-          volumeMl: volumeMl,
-          venueName: venueName,
-          createdAt: at,
-        ),
-        beer: beer('beer-$id', style, alcoholFree: alcoholFree),
-        brewery: brewery('b1', country, breweryName),
-        author: const Profile(
-          id: 'me',
-          username: 'du',
-          displayName: 'Du',
-          avatarEmoji: '🍺',
-          favoriteStyles: '',
-          isMe: true,
-        ),
+      StatsEntry(
+        createdAt: at,
+        beerId: 'beer-$id',
+        beerStyle: style,
+        isAlcoholFree: alcoholFree,
+        breweryId: 'b1',
+        breweryName: breweryName,
+        breweryCountry: country,
+        venueName: venueName,
+        volumeMl: volumeMl,
+        serving: serving,
+        rating: rating,
       );
 
   test('Leere Eingabe ergibt eine leere Auswertung', () {

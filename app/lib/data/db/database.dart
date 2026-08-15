@@ -1,7 +1,14 @@
 import 'package:drift/drift.dart';
 
+import '../../core/serving_style.dart';
 import '../seed.dart';
 import 'connection/connection.dart';
+
+// Weitergereicht, damit die vielen bestehenden Importeure von
+// `database.dart` unverändert bleiben. Das Enum selbst liegt in `core/`,
+// weil auch `domain/` es braucht und dort nichts aus `data/` importieren
+// darf (siehe .claude/architecture.md).
+export '../../core/serving_style.dart';
 
 part 'database.g.dart';
 
@@ -13,7 +20,7 @@ enum SessionVisibility { friends, crew, private }
 
 enum SessionStatus { active, ended }
 
-enum ServingStyle { draft, bottle, can, growler }
+// ServingStyle steht in core/serving_style.dart (oben re-exportiert).
 
 enum ParticipantKind { joined, toast }
 

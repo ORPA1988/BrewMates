@@ -46,7 +46,7 @@ Wirtschaft mehrfach auflisten.
 ## Technische Umsetzung
 
 - **Neu:** `domain/statistics.dart` — reine Auswertung über
-  `List<CheckinDetails>`, ohne Flutter und ohne Datenbank, damit
+  `List<StatsEntry>`, ohne Flutter und ohne Datenbank, damit
   vollständig testbar (`computeStats`, `CheckinStats`)
 - **Neu:** `features/stats/stats_screen.dart` + `stats_providers.dart`
   (eigene Provider-Datei statt Anbau an die Sammelstelle, siehe docs/11)
@@ -57,6 +57,27 @@ Wirtschaft mehrfach auflisten.
 
 Die Ergebnisklasse heißt `CheckinStats`, nicht `BeerStats` — den Namen
 belegt bereits das Join-Modell für Bier-Bewertungen.
+
+**Nachtrag 2026-08-15 — die Auswertung hing an der Datenbank.** Die erste
+Fassung nahm `List<CheckinDetails>` entgegen und importierte dafür
+`data/db/database.dart`. Damit war `domain/statistics.dart` die erste
+Datei, die die Regel „`domain/` importiert nichts aus `data/`" brach —
+eine Regel, welche die Doku bis dahin als lückenlos beschrieb. Behoben
+über zwei Schritte:
+
+- `StatsEntry` in `domain/` ist der Eingabetyp: nur die elf Felder, die
+  die Auswertung wirklich liest. Die Übersetzung aus `CheckinDetails`
+  liegt in `features/stats/stats_providers.dart` — ein Feature darf beide
+  Schichten lesen, `data/` und `domain/` sollen einander nicht anziehen.
+- `ServingStyle` ist nach `core/serving_style.dart` gewandert. Es war
+  immer ein reines Wert-Enum ohne Drift-Bezug; dass es in der
+  Datenbankdatei stand, zwang jeden Nutzer in die `data/`-Schicht.
+  `data/db/database.dart` reicht es weiter, damit kein Aufrufer bricht.
+
+Der Test `test/architecture_test.dart` prüft die Schichtregeln ab jetzt
+bei jedem Lauf. Er fand dabei zwei weitere Verstöße (`domain/badges.dart`,
+`domain/challenges.dart`) — die stehen als Backlog **A-7** an und sind in
+einer Ratsche festgehalten, die nur schrumpfen darf.
 
 **Die fehlende Zutat war die Menge.** `ServingStyle` (Gebinde) gab es
 bereits, aber keine Füllmenge. Neu: `volume_ml` als Ganzzahl, im Check-in

@@ -55,10 +55,15 @@ class AppShell extends ConsumerWidget {
     );
     if (chosen == null) return;
     ref.read(preferredSessionDurationProvider.notifier).state = chosen;
-    final until = await ref.read(actionsProvider).extendMySession(chosen);
-    if (until == null) return;
+    final result = await ref.read(actionsProvider).extendMySession(chosen);
+    if (result == null) return;
     messenger.showSnackBar(
-      SnackBar(content: Text('Beacon läuft noch ${remaining(until)} 🍻')),
+      SnackBar(
+        content: Text(result.synced
+            ? 'Beacon läuft noch ${remaining(result.until)} 🍻'
+            : 'Verlängert bis ${remaining(result.until)} — aber ohne '
+                'Verbindung. Deine Freunde sehen noch das alte Ende.'),
+      ),
     );
   }
 

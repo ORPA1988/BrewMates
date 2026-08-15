@@ -23,7 +23,14 @@ core/*      Konfiguration, Theme, Router, Formatierung, externe Links
   über `core/router.dart`. Deshalb ist jede Funktion einzeln entfernbar.
 - `domain/` importiert nichts aus `data/` oder `features/` — reine Logik,
   direkt testbar (`badges`, `challenges`, `streak`, `statistics`,
-  `account_level`, `opening_hours`).
+  `account_level`, `opening_hours`). Braucht die Logik Daten aus `data/`,
+  bekommt sie einen **eigenen Eingabetyp** in `domain/` (Vorbild
+  `StatsEntry`); ein reines Wert-Enum wandert nach `core/` (Vorbild
+  `ServingStyle`). Die Übersetzung gehört in das Feature, das beides
+  liest — **nicht** in `data/`, sonst hängen die Schichten aneinander.
+  `test/architecture_test.dart` erzwingt das. Zwei Altlasten
+  (`badges`, `challenges`) stehen dort noch als Ausnahme: Backlog A-7.
+  **Die Ausnahmeliste darf nur schrumpfen.**
 - Nur `data/` spricht mit Drift oder Supabase. Kein Bildschirm setzt eine
   Abfrage selbst ab.
 - `data/db/database.g.dart` ist generiert. Nie von Hand ändern —
