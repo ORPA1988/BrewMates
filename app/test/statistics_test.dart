@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:brewmates/core/format.dart';
+import 'package:brewmates/core/checkin_facts.dart';
 import 'package:brewmates/core/serving_style.dart';
 import 'package:brewmates/domain/statistics.dart';
 
@@ -8,12 +9,12 @@ import 'package:brewmates/domain/statistics.dart';
 ///
 /// Dass dieser Test `data/` nicht mehr importiert, ist kein Zufall,
 /// sondern der Beleg: Die Auswertung hängt an keiner Drift-Zeile mehr,
-/// sondern an [StatsEntry]. Kommt hier je wieder ein Import aus `data/`
+/// sondern an [CheckinFacts]. Kommt hier je wieder ein Import aus `data/`
 /// dazu, ist die Schichtregel erneut gebrochen.
 void main() {
   final now = DateTime(2026, 8, 15, 20);
 
-  StatsEntry detail({
+  CheckinFacts detail({
     required String id,
     required DateTime at,
     String style = 'Märzen',
@@ -25,7 +26,7 @@ void main() {
     String? venueName,
     String breweryName = 'Stiegl',
   }) =>
-      StatsEntry(
+      CheckinFacts(
         createdAt: at,
         beerId: 'beer-$id',
         beerStyle: style,

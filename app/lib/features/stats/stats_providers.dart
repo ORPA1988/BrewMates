@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/db/database.dart';
+import '../../data/checkin_facts_mapping.dart';
 import '../../data/providers.dart';
 import '../../domain/statistics.dart';
 
@@ -29,31 +30,11 @@ final _allMyCheckinsProvider = StreamProvider<List<CheckinDetails>>((ref) {
   return ref.watch(databaseProvider).watchFeed(onlyProfileId: me.id);
 });
 
-/// Datenbankzeile → Eingabezeile der Auswertung.
-///
-/// Die Übersetzung liegt hier und nicht in `domain/` oder `data/`: Die
-/// Auswertung darf die Datenbank nicht kennen, und `data/` soll nicht
-/// umgekehrt an `domain/` hängen. Ein Feature darf beide lesen — also ist
-/// der Bildschirm, der die Zahlen anzeigt, die richtige Naht.
-StatsEntry _entryOf(CheckinDetails d) => StatsEntry(
-      createdAt: d.checkin.createdAt,
-      beerId: d.beer.id,
-      beerStyle: d.beer.style,
-      isAlcoholFree: d.beer.isAlcoholFree,
-      breweryId: d.brewery.id,
-      breweryName: d.brewery.name,
-      breweryCountry: d.brewery.country,
-      venueName: d.checkin.venueName,
-      volumeMl: d.checkin.volumeMl,
-      serving: d.checkin.servingStyle,
-      rating: d.checkin.rating,
-    );
-
 /// Die fertige Auswertung nach Zeitraum und Filtern.
 final statsProvider = Provider<CheckinStats>((ref) {
   final all = ref.watch(_allMyCheckinsProvider).valueOrNull ?? const [];
   return computeStats(
-    [for (final d in all) _entryOf(d)],
+    all.facts,
     now: ref.watch(clockProvider).valueOrNull ?? DateTime.now(),
     range: ref.watch(statsRangeProvider),
     country: ref.watch(statsCountryProvider),

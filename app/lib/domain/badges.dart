@@ -1,4 +1,4 @@
-import '../data/db/database.dart';
+import '../core/checkin_facts.dart';
 import 'streak.dart';
 
 /// Abzeichen-Katalog. Grundsatz (docs/01-produktvision.md): belohnt werden
@@ -31,29 +31,13 @@ class BadgeContext {
     this.venuesCreatedWithLocation = 0,
   });
 
-  final List<CheckinDetails> myCheckins;
+  final List<CheckinFacts> myCheckins;
   final int mySessionCount;
   final int toastsGiven;
 
   /// Von mir angelegte Gasthäuser mit Kartenposition (aus dem Venue-Cache;
   /// [onlineUserId] ist die Supabase-UUID – offline bleibt der Zähler 0).
   final int venuesCreatedWithLocation;
-
-  static Future<BadgeContext> load(AppDatabase db, String profileId,
-      {String? onlineUserId}) async {
-    var venuesCreated = 0;
-    if (onlineUserId != null) {
-      final venues = await db.watchVenuesWithLocation().first;
-      venuesCreated =
-          venues.where((v) => v.createdBy == onlineUserId).length;
-    }
-    return BadgeContext(
-      myCheckins: await db.myCheckinsDetailed(profileId),
-      mySessionCount: await db.countMySessions(profileId),
-      toastsGiven: await db.countToastsGiven(profileId),
-      venuesCreatedWithLocation: venuesCreated,
-    );
-  }
 }
 
 final List<BadgeDef> allBadges = [
@@ -79,7 +63,7 @@ final List<BadgeDef> allBadges = [
     description: '5 verschiedene Bierstile probiert',
     emoji: '🧭',
     target: 5,
-    progressOf: (c) => c.myCheckins.map((x) => x.beer.style).toSet().length,
+    progressOf: (c) => c.myCheckins.map((x) => x.beerStyle).toSet().length,
   ),
   // Erreichbare Zwischenstufen (Wettbewerbsanalyse: Level statt
   // Fernziele — und Vielfalt statt Menge).
@@ -89,7 +73,7 @@ final List<BadgeDef> allBadges = [
     description: '10 verschiedene Bierstile probiert',
     emoji: '🧭',
     target: 10,
-    progressOf: (c) => c.myCheckins.map((x) => x.beer.style).toSet().length,
+    progressOf: (c) => c.myCheckins.map((x) => x.beerStyle).toSet().length,
   ),
   BadgeDef(
     slug: 'stil-entdecker-3',
@@ -97,7 +81,7 @@ final List<BadgeDef> allBadges = [
     description: '20 verschiedene Bierstile probiert',
     emoji: '🎓',
     target: 20,
-    progressOf: (c) => c.myCheckins.map((x) => x.beer.style).toSet().length,
+    progressOf: (c) => c.myCheckins.map((x) => x.beerStyle).toSet().length,
   ),
   BadgeDef(
     slug: 'weltenbummler',
@@ -106,7 +90,7 @@ final List<BadgeDef> allBadges = [
     emoji: '🌍',
     target: 5,
     progressOf: (c) =>
-        c.myCheckins.map((x) => x.brewery.country).toSet().length,
+        c.myCheckins.map((x) => x.breweryCountry).toSet().length,
   ),
   BadgeDef(
     slug: 'weltenbummler-2',
@@ -115,7 +99,7 @@ final List<BadgeDef> allBadges = [
     emoji: '🛫',
     target: 10,
     progressOf: (c) =>
-        c.myCheckins.map((x) => x.brewery.country).toSet().length,
+        c.myCheckins.map((x) => x.breweryCountry).toSet().length,
   ),
   BadgeDef(
     slug: 'brauerei-tour',
@@ -123,7 +107,7 @@ final List<BadgeDef> allBadges = [
     description: 'Biere von 10 verschiedenen Brauereien',
     emoji: '🏭',
     target: 10,
-    progressOf: (c) => c.myCheckins.map((x) => x.brewery.id).toSet().length,
+    progressOf: (c) => c.myCheckins.map((x) => x.breweryId).toSet().length,
   ),
   BadgeDef(
     slug: 'local-hero',
@@ -132,7 +116,7 @@ final List<BadgeDef> allBadges = [
     emoji: '📍',
     target: 5,
     progressOf: (c) => c.myCheckins
-        .map((x) => x.checkin.venueName)
+        .map((x) => x.venueName)
         .whereType<String>()
         .toSet()
         .length,
@@ -160,7 +144,7 @@ final List<BadgeDef> allBadges = [
     emoji: '💧',
     target: 5,
     progressOf: (c) =>
-        c.myCheckins.where((x) => x.beer.isAlcoholFree).length,
+        c.myCheckins.where((x) => x.isAlcoholFree).length,
   ),
   BadgeDef(
     slug: 'hopfenkopf',
@@ -169,8 +153,8 @@ final List<BadgeDef> allBadges = [
     emoji: '🌿',
     target: 5,
     progressOf: (c) => c.myCheckins
-        .where((x) => x.beer.style.toUpperCase().contains('IPA'))
-        .map((x) => x.beer.id)
+        .where((x) => x.beerStyle.toUpperCase().contains('IPA'))
+        .map((x) => x.beerId)
         .toSet()
         .length,
   ),
@@ -181,7 +165,7 @@ final List<BadgeDef> allBadges = [
     emoji: '✍️',
     target: 10,
     progressOf: (c) => c.myCheckins
-        .where((x) => (x.checkin.note ?? '').trim().isNotEmpty)
+        .where((x) => (x.note ?? '').trim().isNotEmpty)
         .length,
   ),
   BadgeDef(
@@ -190,7 +174,7 @@ final List<BadgeDef> allBadges = [
     description: '25 verschiedene Biere probiert',
     emoji: '⭐',
     target: 25,
-    progressOf: (c) => c.myCheckins.map((x) => x.beer.id).toSet().length,
+    progressOf: (c) => c.myCheckins.map((x) => x.beerId).toSet().length,
   ),
   BadgeDef(
     slug: 'sammler-2',
@@ -198,7 +182,7 @@ final List<BadgeDef> allBadges = [
     description: '50 verschiedene Biere probiert',
     emoji: '🌟',
     target: 50,
-    progressOf: (c) => c.myCheckins.map((x) => x.beer.id).toSet().length,
+    progressOf: (c) => c.myCheckins.map((x) => x.beerId).toSet().length,
   ),
   BadgeDef(
     slug: 'brauerei-tour-2',
@@ -206,7 +190,7 @@ final List<BadgeDef> allBadges = [
     description: 'Biere von 25 verschiedenen Brauereien',
     emoji: '⛰',
     target: 25,
-    progressOf: (c) => c.myCheckins.map((x) => x.brewery.id).toSet().length,
+    progressOf: (c) => c.myCheckins.map((x) => x.breweryId).toSet().length,
   ),
   BadgeDef(
     slug: 'local-hero-2',
@@ -215,7 +199,7 @@ final List<BadgeDef> allBadges = [
     emoji: '🏆',
     target: 15,
     progressOf: (c) => c.myCheckins
-        .map((x) => x.checkin.venueName)
+        .map((x) => x.venueName)
         .whereType<String>()
         .toSet()
         .length,
@@ -227,7 +211,7 @@ final List<BadgeDef> allBadges = [
     emoji: '🧊',
     target: 15,
     progressOf: (c) =>
-        c.myCheckins.where((x) => x.beer.isAlcoholFree).length,
+        c.myCheckins.where((x) => x.isAlcoholFree).length,
   ),
   BadgeDef(
     slug: 'wochenserie',
@@ -236,7 +220,7 @@ final List<BadgeDef> allBadges = [
     emoji: '🔥',
     target: 4,
     progressOf: (c) => weeklyStreak(
-        c.myCheckins.map((x) => x.checkin.createdAt), DateTime.now()),
+        c.myCheckins.map((x) => x.createdAt), DateTime.now()),
   ),
   BadgeDef(
     slug: 'kartograph-2',
@@ -262,7 +246,7 @@ final List<BadgeDef> allBadges = [
     emoji: '🤝',
     target: 5,
     progressOf: (c) => c.myCheckins
-        .map((x) => x.checkin.venueId)
+        .map((x) => x.venueId)
         .whereType<String>()
         .toSet()
         .length,
@@ -282,47 +266,4 @@ class BadgeProgress {
 
   bool get earned => awardedAt != null;
   double get fraction => (progress / def.target).clamp(0.0, 1.0);
-}
-
-class BadgeEngine {
-  const BadgeEngine(this.db);
-
-  final AppDatabase db;
-
-  /// Wertet alle Abzeichen aus und vergibt neu erreichte.
-  /// Gibt die NEU verdienten Abzeichen zurück (für die Gratulations-UI).
-  Future<List<BadgeDef>> evaluate(String profileId,
-      {String? onlineUserId}) async {
-    final ctx =
-        await BadgeContext.load(db, profileId, onlineUserId: onlineUserId);
-    final earned = await db.earnedBadgeSlugs(profileId);
-    final newlyEarned = <BadgeDef>[];
-    for (final badge in allBadges) {
-      if (earned.contains(badge.slug)) continue;
-      if (badge.progressOf(ctx) >= badge.target) {
-        await db.awardBadge(profileId, badge.slug, DateTime.now());
-        newlyEarned.add(badge);
-      }
-    }
-    return newlyEarned;
-  }
-
-  /// Fortschritt aller Abzeichen für die Galerie-Ansicht.
-  Future<List<BadgeProgress>> progressList(String profileId,
-      {String? onlineUserId}) async {
-    final ctx =
-        await BadgeContext.load(db, profileId, onlineUserId: onlineUserId);
-    final earnedRows = await (db.select(db.userBadges)
-          ..where((t) => t.profileId.equals(profileId)))
-        .get();
-    final earnedBySlug = {for (final b in earnedRows) b.badgeSlug: b.awardedAt};
-    return [
-      for (final badge in allBadges)
-        BadgeProgress(
-          def: badge,
-          progress: badge.progressOf(ctx),
-          awardedAt: earnedBySlug[badge.slug],
-        ),
-    ];
-  }
 }

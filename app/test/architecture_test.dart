@@ -32,18 +32,16 @@ void main() {
       })
       .where((s) => s.isNotEmpty);
 
-  /// Altlasten, die die Regel heute noch brechen — **Backlog A-7**.
+  /// Altlasten, die die Regel noch brechen.
   ///
   /// Diese Liste ist eine Ratsche: Sie darf schrumpfen, nie wachsen. Wer
   /// hier etwas einträgt, statt aufzuräumen, verschiebt das Problem.
-  /// `badges` und `challenges` sind schwerer als es aussieht — sie
-  /// importieren die Datenbank nicht nur, sie fragen sie ab
-  /// (`db.myCheckinsDetailed(...)`). Das Laden gehört nach `data/`, die
-  /// Bewertung bleibt hier.
-  const bekannteAltlasten = {
-    'lib/domain/badges.dart',
-    'lib/domain/challenges.dart',
-  };
+  ///
+  /// **Seit 2026-08-15 leer** (Backlog A-7 erledigt): `badges` und
+  /// `challenges` importierten die Datenbank nicht nur, sie fragten sie ab.
+  /// Das Laden liegt jetzt in `data/badge_engine.dart` bzw.
+  /// `data/challenge_engine.dart`, die Bewertung im Domain.
+  const bekannteAltlasten = <String>{};
 
   test('domain/ importiert nichts aus data/ oder features/', () {
     final verstoesse = <String>[];

@@ -22,14 +22,26 @@ Menge.
 
 ## Technische Umsetzung
 
-- **Dateien:** `domain/challenges.dart`,
-  `features/profile/challenges_screen.dart`,
+- **Dateien:** `domain/challenges.dart` (Regelauswertung, ohne
+  Datenbank), `data/challenge_engine.dart` (Cache-Zeile lesen, Abzeichen
+  vergeben), `features/profile/challenges_screen.dart`,
   `features/admin/challenge_editor_screen.dart`
 - **Server:** `challenges`, `challenge_completions` (0012); RPC
   `complete_challenge` und Sicht `contribution_leaderboard` (0014)
 - **Sicherheit:** Direkte Einfügungen in `challenge_completions` sind
   **gesperrt**. Nur die geprüfte Funktion darf abschließen — sonst könnte
   jeder Client behaupten, fertig zu sein.
+
+**Nachtrag 2026-08-15 (Backlog A-7):** `ChallengeDef.fromCache` nahm eine
+Drift-Zeile entgegen und `ChallengeEngine` hielt die `AppDatabase` — beides
+in `domain/`, wo die Datenbank nichts zu suchen hat. Jetzt nimmt
+`ChallengeDef.fromRule` Einzelwerte, der Zeilen-Adapter steht in
+`data/challenge_engine.dart`. Die Regeln sind dadurch erstmals direkt
+prüfbar (`test/domain_ohne_datenbank_test.dart`): dass `style_specific`
+Groß-/Kleinschreibung ignoriert, dass `venue_checkins` auch Freitext-Orte
+zählt und leere nicht, dass das Zeitfenster am Ende exklusiv ist — und dass
+eine Challenge, die neuer ist als die App, übersprungen statt zum Absturz
+gebracht wird.
 
 Das ist die Stelle, an der die App am deutlichsten zeigt, wie sie mit
 Vertrauen umgeht: Die Oberfläche rechnet den Fortschritt vor, aber

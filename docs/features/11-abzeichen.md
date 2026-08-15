@@ -24,12 +24,24 @@ Entscheidung, die die App von einer Trink-Zähl-App unterscheidet.
 
 ## Technische Umsetzung
 
-- **Dateien:** `domain/badges.dart` (Katalog und Auswertung, ohne Flutter),
-  `features/profile/badges_screen.dart`,
+- **Dateien:** `domain/badges.dart` (Katalog und Auswertung — ohne
+  Flutter **und ohne Datenbank**), `data/badge_engine.dart` (Laden und
+  Vergeben), `features/profile/badges_screen.dart`,
   `widgets/badge_celebration.dart`
-- **Auswertung:** `BadgeContext` lädt einmal alle nötigen Zahlen, jedes
+- **Auswertung:** `BadgeContext` enthält einmal alle nötigen Zahlen, jedes
   Abzeichen rechnet daraus seinen Fortschritt — kein Abzeichen fragt selbst
   die Datenbank
+- **Eingabetyp:** `core/checkin_facts.dart` — dieselben Tatsachen, aus
+  denen auch Statistiken und Challenges rechnen
+
+**Nachtrag 2026-08-15 (Backlog A-7):** `domain/badges.dart` importierte die
+Datenbank und lud über `BadgeContext.load(db, …)` selbst — ein Verstoß
+gegen „`domain/` importiert nichts aus `data/`", gefunden vom neuen
+`test/architecture_test.dart`. Das Laden liegt jetzt in
+`data/badge_engine.dart`, die Bewertung im Domain. Erst dadurch lässt sich
+der Katalog ohne Datenbank prüfen — siehe
+`test/domain_ohne_datenbank_test.dart`, das unter anderem festhält, dass
+kein Länder-Abzeichen mit fünfzig Check-ins **desselben** Biers fällt.
 - **Lokal:** `user_badges` (Drift); **Server:** `user_badges` (0016) für
   die Wiederherstellung
 
