@@ -11,10 +11,12 @@ KI-Unterstützung deutlich weniger).
 
 | # | Punkt | Aufwand | Warum |
 |---|---|---|---|
-| A-1 | **Feature-Branch nach `main` bringen** und Altbranches löschen | S | Am 15.08.2026 lagen 17 Commits (+10.451 Z.) ungemerged neben `main`. Solange das offen ist, weiß niemand, was der Stand ist. |
+| A-1 | **Feature-Branch nach `main` bringen** — liegt als **PR #16** vor (Fast-Forward, geprüft). Nach dem Merge: Altbranches `claude/*` löschen. | S | Am 15.08.2026 lagen 17 Commits (+10.451 Z.) ungemerged neben `main`. Solange das offen ist, weiß niemand, was der Stand ist. **Merge und Migrations-Rollout gehören in dasselbe Zeitfenster** — die App setzt danach 0022 und 0024 voraus. |
 | A-2 | **RLS-Tests** für Standort-, Freundeskreis- und Crew-Sichtbarkeit | M | Die gesamte Privatsphäre hängt an RLS. Getestet ist davon derzeit nichts. Größte Risikolücke. |
 | ~~A-3~~ | ~~**Migrationsstand verifizieren**~~ — erledigt 15.08.2026: live sind exakt `0001–0019`, nichts Live-Only, kein Schema-Drift. `0020–0024` stehen aus. | — | Festgeschrieben in `CLAUDE.md`. **0024 nur zeitgleich mit dem App-Update** — es entzieht `select (thirsty_until)`. |
 | A-4 | **Testabdeckung messen** — `flutter test --coverage` in der CI, Wert im PR sichtbar | S | Ohne Zahl bleibt Abdeckung Gefühlssache. Aktuell ~1.675 Testzeilen gegen ~14.600 Produktivzeilen. |
+| A-5 | **Schichtverstoß beheben**: `domain/statistics.dart` importiert `data/db/database.dart` (`ServingStyle`, `Checkin`). Eigenes DTO in `domain/`, Mapping in `data/` bzw. `features/stats/`. | S | Erste Verletzung von „`domain/` importiert nichts aus `data/`". Bisher galt die Regel lückenlos — genau solche Einzelfälle beenden das. Gefunden 15.08.2026 im Review von Stufe D (PR #16). |
+| A-6 | **Leeres `catch` in `setFriendTier` und `updateSessionExpiry`** (`data/online/online_service.dart`) — Queue nach Muster `venue_edit_queue`, sonst wenigstens Fehlermeldung statt Erfolgsmeldung | S | Die App meldet Erfolg, auch wenn der Server-Aufruf fehlschlug. Bei der Beacon-Verlängerung sehen Freunde weiter das alte Ende, während die eigene App „verlängert" anzeigt. Gefunden 15.08.2026 (PR #16). |
 
 ## B — Danach
 
