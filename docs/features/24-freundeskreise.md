@@ -1,15 +1,15 @@
 # 24 Freundeskreise
 
-> **Status:** 🔴 geplant — Freundschaften sind heute eine flache Menge:
-> entweder alles sehen oder kein Freund sein.
-> **Geplant für:** 0.10.0-beta · **Zuletzt geprüft:** 2026-08-15
+> **Status:** 🟢 fertig — drei Kreise, serverseitig durchgesetzt für
+> Beacon-Position und Bierlaune.
+> **Seit:** 0.10.0-beta · **Zuletzt geprüft:** 2026-08-15
 
 ## Zielsetzung
 
 BrewMates zeigt, wo jemand ist und was er trinkt. Das sind Informationen,
 die man abgestuft teilt: Der Arbeitskollege darf wissen, dass man
-unterwegs ist — der beste Freund darf wissen, wo. Heute gibt es diese
-Abstufung nicht, also gilt für alle dieselbe Nähe, und das drückt die
+unterwegs ist — der beste Freund darf wissen, wo. Bis 0.10 gab es diese
+Abstufung nicht, also galt für alle dieselbe Nähe, und das drückt die
 Zahl der Freundschaften, die man überhaupt eingeht.
 
 Drei Kreise: **Bekannte · Freunde · Best Buddys.**
@@ -24,41 +24,71 @@ zählt.
 - In der Freundesliste hat jeder Eintrag einen Kreis, änderbar über ein
   Menü. Neue Freundschaften starten als **Freunde** — genau das heutige
   Verhalten.
-- Ein Einstellungsbereich „Wer sieht was" zeigt die Stufen als Tabelle:
+- „Wer sieht was" in der Freundesliste zeigt die Stufen als Tabelle:
 
-| | Bekannte | Freunde | Best Buddys |
+| | 👋 Bekannte | 🍺 Freunde | 🍻 Best Buddys |
 |---|---|---|---|
 | Meine Check-ins im Feed | ✅ | ✅ | ✅ |
-| Dass ich unterwegs bin | ✅ | ✅ | ✅ |
-| **Wo** ich bin (Karte) | ❌ | ✅ | ✅ |
+| Mein Profil und meine Abzeichen | ✅ | ✅ | ✅ |
+| Meine Beacons auf der Karte | ❌ | ✅ | ✅ |
+| Wo ich gerade bin | ❌ | ✅ | ✅ |
 | Meine Bierlaune | ❌ | ✅ | ✅ |
-| Gasthaus meiner Session | ❌ | ✅ | ✅ |
 
-Die Aufteilung ist die Vorgabe, nicht das Gesetz: Wer die Karte auch
-Bekannten zeigen will, darf das je Zeile umstellen.
+- Die Freundesliste lässt sich nach Kreis filtern (ab fünf Freunden —
+  vorher wären die Chips nur Lärm).
+- „Wer sieht was" zeigt die Tabelle in der App, damit niemand raten muss,
+  was ein Kreis bewirkt.
 
-- Die Freundesliste lässt sich nach Kreis filtern.
-- Beim Starten einer Session lässt sich die Sichtbarkeit weiterhin
-  einzeln wählen — neu kommt „nur Best Buddys" dazu.
+**Abweichung vom ersten Entwurf:** Dort stand, Bekannte sollten sehen,
+*dass* jemand unterwegs ist, nur nicht *wo*. Das ließ sich nicht ehrlich
+durchsetzen — die Begründung steht unter „Technische Umsetzung". Bekannte
+sehen den Beacon jetzt gar nicht und zählen stattdessen in die aggregierte
+Zahl „weitere BrewMates aktiv", wie Fremde auch.
 
 ## Technische Umsetzung
 
-- **Server:** Migration — `friendships.requester_tier` und
-  `friendships.addressee_tier`, beide `not null default 'freund'`, dazu
-  ein Aufzählungstyp `friend_tier ('bekannter', 'freund', 'buddy')`.
-  Eine Zeile je Paar, zwei Bewertungen: Wer in welcher Spalte steht,
-  ergibt sich aus der Richtung.
-- **Neue Funktion:** `tier_for(owner uuid, viewer uuid)` — welchen Kreis
-  hat *owner* dem *viewer* zugewiesen. Sie ist die Grundlage aller
-  Sichtbarkeitsregeln: **Der Besitzer der Information entscheidet**, nicht
-  der Betrachter.
-- **RLS anzupassen:** `sessions` (Position), `profiles.thirsty_until`
-  (Bierlaune), Karten-Abfragen. Alle heutigen `are_friends(…)`-Aufrufe
-  werden geprüft und dort, wo es um Ort oder Laune geht, durch
-  `tier_for(…) >= 'freund'` ersetzt.
-- **App:** `features/friends/` (Kreis-Menü, Filter), neuer
-  Einstellungsbereich, `data/online/friends_api.dart` (nach dem neuen
-  Modulschnitt eine eigene Datei).
+- **Server (0024):** Aufzählungstyp
+  `friend_tier ('bekannter', 'freund', 'buddy')` — die Reihenfolge trägt
+  die Vergleiche, `>= 'freund'` funktioniert dadurch ohne Umrechnung.
+  Dazu `friendships.requester_tier` und `addressee_tier`, beide
+  `not null default 'freund'`: eine Zeile je Paar, zwei Bewertungen.
+- **`tier_for(owner, viewer)`** — welchen Kreis hat *owner* dem *viewer*
+  zugewiesen. **Der Besitzer der Information entscheidet**, nicht der
+  Betrachter. Sie stützt sich auf `are_friends` und erbt damit dessen
+  Härtung (Blockierung, nur eigene Paare).
+- **`set_friend_tier(other, tier)`** schreibt ausschließlich die eigene
+  Spalte — die Gegenrichtung bleibt unberührt und unsichtbar.
+- **App:** `features/friends/friends_screen.dart` (Kreis-Menü, Filter,
+  „Wer sieht was"), `FriendTier` in `data/online/online_service.dart`.
+
+### Warum Bekannte den Beacon gar nicht sehen
+
+Der Entwurf wollte die Zeile zeigen und nur die Koordinaten ausblenden.
+Das geht mit RLS nicht: Sie wirkt **zeilenweise**, nicht spaltenweise.
+Eine Spalte je Betrachter zu maskieren bräuchte eine eigene Tabelle für
+die Positionen oder einen Funktionsaufruf statt der Tabelle — und der
+Realtime-Strom, über den die Karte lebt, hängt an der Tabelle.
+
+Die Alternative wäre gewesen, die Koordinaten mitzuliefern und die App
+nicht hinschauen zu lassen. Das ist kein Schutz: Die Position stünde
+trotzdem in der Antwort. **Eine Regel, die nur die App befolgt, ist
+keine.** Also verbirgt die Policy die ganze Zeile — weniger Funktion,
+aber echte Durchsetzung.
+
+Der Kartenzähler musste mitziehen: Er zählte „keine Freunde", jetzt zählt
+er alles, was ich nicht als Beacon sehen darf. Sonst wären die Sessions
+der Bekannten aus Karte **und** Zahl verschwunden.
+
+### Bierlaune: Spaltenrechte statt Zeilenregel
+
+`thirsty_until` steht auf `profiles`, und ein Profil muss für Freunde
+sichtbar bleiben — die Zeile zu verbergen scheidet aus. Deshalb hier der
+andere Weg: Das `select`-Recht auf die **Spalte** ist entzogen, gelesen
+wird über `my_thirsty_until()` (eigene) und `thirsty_friends()` (fremde,
+serverseitig auf Kreis „Freund" gefiltert).
+
+Vorher holte die App die ganze Freundesliste und filterte selbst — die
+Bierlaune lag damit auf jedem Gerät, das danach fragte.
 
 **Der Default trägt die Migration.** Weil beide Spalten mit `freund`
 starten, ändert sich für bestehende Freundschaften nichts — die Funktion
@@ -91,19 +121,27 @@ und indexgestützt sein (`friendships` hat bereits Indizes auf beiden
 Richtungen). Bei der Gelegenheit prüfen, ob `are_friends` heute schon
 teuer ist — beide Funktionen teilen dasselbe Zugriffsmuster.
 
+## Umsetzungsstatus
+
+Datenmodell, serverseitige Durchsetzung und Bedienung stehen. Die
+Migration ändert am Tag der Einführung nichts: Beide Spalten starten auf
+`freund`, niemand verliert über Nacht Sichtbarkeit.
+
+Abgesichert durch `test/friend_tier_test.dart` (7 Tests): Reihenfolge
+passend zum Aufzählungstyp, Hin- und Rückweg über die Datenbanknamen,
+Rückfall auf `freund` statt `bekannter` bei Unbekanntem, Vorgabe neuer
+Profile, Bierlaune-Ablauf.
+
+**Noch offen:** „Wer sieht was" ist heute eine Erklärung, keine
+Einstellung — die Aufteilung ist fest. Und die Session-Sichtbarkeit „nur
+Best Buddys" fehlt; heute gibt es weiterhin öffentlich, Freunde, Crew und
+versteckt.
+
 ## Umsetzungsplan
 
-1. **Datenmodell.** Aufzählungstyp, zwei Spalten mit Vorgabe `freund`,
-   `tier_for()` mit gezielter Rechtevergabe (Konvention aus 0008).
-   *Prüfkriterium:* bestehende Freundschaften verhalten sich unverändert.
-2. **Sichtbarkeit serverseitig.** Policies für Position und Bierlaune auf
-   `tier_for` umstellen.
-   *Prüfkriterium:* SQL-Test unter simulierten Rollen — ein „Bekannter"
-   bekommt die Position nicht, auch nicht über die reine API.
-3. **Bedienung.** Kreis-Menü in der Freundesliste, Filter.
-   *Prüfkriterium:* Widget-Test — Umstufen wirkt sofort.
-4. **„Wer sieht was".** Einstellungen je Zeile, gespeichert am Profil.
-5. **Session-Sichtbarkeit** „nur Best Buddys" ergänzen.
+1. **Sichtbarkeit je Zeile einstellbar** machen (wer die Karte auch
+   Bekannten zeigen will, soll das dürfen)
+2. **Session-Sichtbarkeit „nur Best Buddys"** beim Beacon-Start
 
 ## Offene Punkte / Ideen
 

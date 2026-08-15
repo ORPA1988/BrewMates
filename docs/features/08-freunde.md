@@ -1,7 +1,7 @@
 # 08 Freunde
 
-> **Status:** 🟡 teilweise — Anfragen, Suche, Blockieren funktionieren;
-> es fehlt jede Abstufung.
+> **Status:** 🟢 fertig — Anfragen, Suche, QR-Codes, Blockieren und
+> abgestufte Sichtbarkeit.
 > **Seit:** 0.9.2 · **Zuletzt geprüft:** 2026-08-15
 
 ## Zielsetzung
@@ -60,8 +60,9 @@ Die Freundesliste selbst ist durch die menschliche Freundeszahl begrenzt.
 
 ## Umsetzungsstatus
 
-Funktional vollständig, aber **flach**: Jeder Freund sieht alles. Für eine
-App, die Standort und Trinkverhalten zeigt, ist das zu grob.
+Vollständig. Seit 0.10 gibt es die Abstufung in drei
+[Freundeskreise](24-freundeskreise.md) — vorher sah jeder Freund alles,
+was für eine App, die Standort und Trinkverhalten zeigt, zu grob war.
 
 ~~Zweite Lücke: Freundschaften entstehen nur über die Namenssuche.~~ Seit
 0.9.14 gibt es [QR-Codes](22-freunde-per-qr-code.md) — den Weg für den
@@ -70,7 +71,7 @@ Wirtshaustisch, an dem die Namenssuche am schlechtesten funktioniert.
 ## Umsetzungsplan
 
 1. ~~[Freunde per QR-Code](22-freunde-per-qr-code.md)~~ — erledigt (0.9.14)
-2. [Freundeskreise](24-freundeskreise.md) — löst die Abstufung
+2. ~~[Freundeskreise](24-freundeskreise.md) — löst die Abstufung~~ — erledigt (0.10)
 3. Trigram-Index, sobald die Suche spürbar langsamer wird
 
 ## Offene Punkte / Ideen

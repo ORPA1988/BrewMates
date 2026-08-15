@@ -602,8 +602,20 @@ final thirstyFriendsProvider =
   ref.watch(_syncTickProvider);
   final online = await ref.watch(onlineServiceProvider.future);
   if (online == null || online.currentUser == null) return const [];
-  final all = await online.friends();
-  return [for (final f in all) if (f.hasBierlaune) f];
+  // Seit 0024 filtert der Server nach Freundeskreis: Bekannte sehen die
+  // Bierlaune nicht. Vorher wurde die ganze Freundesliste geholt und in
+  // der App gefiltert — die Angabe lag damit auf jedem Gerät, das
+  // danach fragte.
+  return online.thirstyFriends();
+});
+
+/// Eigene Bierlaune (kommt seit 0024 über eine Funktion, weil das
+/// Spaltenrecht auf `thirsty_until` entzogen ist).
+final myThirstyUntilProvider = FutureProvider<DateTime?>((ref) async {
+  ref.watch(_syncTickProvider);
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  return online?.myThirstyUntil();
 });
 
 /// Merker, für welches Konto der Cloud-Restore diese App-Sitzung schon
@@ -1070,6 +1082,7 @@ class BrewActions {
     await online.setBierlaune(
         on ? DateTime.now().add(const Duration(hours: 4)) : null);
     _ref.invalidate(myRemoteProfileProvider);
+    _ref.invalidate(myThirstyUntilProvider);
     _ref.invalidate(thirstyFriendsProvider);
   }
 

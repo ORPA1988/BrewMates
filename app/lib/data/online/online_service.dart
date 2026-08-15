@@ -7,6 +7,49 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/supabase_config.dart';
 import '../db/database.dart' as local;
 
+/// Freundeskreis (0024). Die Reihenfolge trägt die Vergleiche —
+/// `bekannter < freund < buddy`, genau wie im Aufzählungstyp der
+/// Datenbank.
+enum FriendTier { bekannter, freund, buddy }
+
+extension FriendTierLabel on FriendTier {
+  String get label => switch (this) {
+        FriendTier.bekannter => 'Bekannte',
+        FriendTier.freund => 'Freunde',
+        FriendTier.buddy => 'Best Buddys',
+      };
+
+  String get emoji => switch (this) {
+        FriendTier.bekannter => '👋',
+        FriendTier.freund => '🍺',
+        FriendTier.buddy => '🍻',
+      };
+
+  /// Beschreibung für die Auswahl — sagt, was der andere dadurch sieht.
+  String get description => switch (this) {
+        FriendTier.bekannter =>
+          'Sieht deine Check-ins, aber nicht wo du gerade bist.',
+        FriendTier.freund =>
+          'Sieht deine Check-ins, deine Beacons und deine Bierlaune.',
+        FriendTier.buddy =>
+          'Wie Freunde — und du erreichst sie mit „nur Best Buddys".',
+      };
+
+  String get name_ => switch (this) {
+        FriendTier.bekannter => 'bekannter',
+        FriendTier.freund => 'freund',
+        FriendTier.buddy => 'buddy',
+      };
+}
+
+/// Datenbank-Name → Kreis. Unbekanntes fällt auf `freund` zurück, den
+/// Vorgabewert der Migration — niemand verliert versehentlich Sichtbarkeit.
+FriendTier friendTierFromName(String? name) => switch (name) {
+      'bekannter' => FriendTier.bekannter,
+      'buddy' => FriendTier.buddy,
+      _ => FriendTier.freund,
+    };
+
 /// Profil eines echten Nutzers aus Supabase.
 class RemoteProfile {
   const RemoteProfile({
@@ -16,23 +59,36 @@ class RemoteProfile {
     required this.avatarEmoji,
     this.accountNo,
     this.thirstyUntil,
+    this.tier = FriendTier.freund,
   });
 
-  factory RemoteProfile.fromRow(Map<String, dynamic> row) => RemoteProfile(
+  factory RemoteProfile.fromRow(
+    Map<String, dynamic> row, {
+    FriendTier tier = FriendTier.freund,
+  }) =>
+      RemoteProfile(
         id: row['id'] as String,
         username: row['username'] as String,
         displayName: (row['display_name'] as String?) ?? row['username'] as String,
         avatarEmoji: (row['avatar_emoji'] as String?) ?? '🍺',
         accountNo: (row['account_no'] as num?)?.toInt(),
+        // thirsty_until steht seit 0024 nicht mehr in den direkt
+        // gelesenen Spalten (Spaltenrecht entzogen) — es kommt über
+        // thirstyFriends() bzw. myThirstyUntil().
         thirstyUntil: row['thirsty_until'] == null
             ? null
             : DateTime.parse(row['thirsty_until'] as String).toLocal(),
+        tier: tier,
       );
 
   final String id;
   final String username;
   final String displayName;
   final String avatarEmoji;
+
+  /// Mein Kreis für diese Person (einseitig und privat — der andere
+  /// erfährt ihn nie).
+  final FriendTier tier;
 
   /// 🍺 Bierlaune (0018): bis wann Lust auf ein Bier signalisiert wird.
   final DateTime? thirstyUntil;
@@ -167,7 +223,7 @@ class OnlineService {
   final SupabaseClient _client;
 
   static const _profileCols =
-      'id, username, display_name, avatar_emoji, account_no, thirsty_until';
+      'id, username, display_name, avatar_emoji, account_no';
 
   /// Deep-Link, über den OAuth-Anmeldungen in die App zurückkehren.
   static const oauthRedirect = 'de.brewmates.app://login-callback';
@@ -521,6 +577,45 @@ class OnlineService {
     }
   }
 
+  /// Eigene Einstufung eines Freundes setzen. Einseitig und privat —
+  /// der andere erfährt nichts davon.
+  Future<void> setFriendTier(String profileId, FriendTier tier) async {
+    if (currentUser == null) return;
+    try {
+      await _client.rpc('set_friend_tier',
+          params: {'p_other': profileId, 'p_tier': tier.name_});
+    } catch (_) {}
+  }
+
+  /// Eigene Bierlaune. Seit 0024 über eine Funktion statt über die
+  /// Spalte — das Spaltenrecht ist entzogen, damit die Abstufung nicht
+  /// an der App hängt.
+  Future<DateTime?> myThirstyUntil() async {
+    if (currentUser == null) return null;
+    try {
+      final value = await _client.rpc('my_thirsty_until');
+      if (value == null) return null;
+      return DateTime.parse(value as String).toLocal();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Freunde mit aktiver Bierlaune — serverseitig auf Kreis „Freund"
+  /// und höher gefiltert.
+  Future<List<RemoteProfile>> thirstyFriends() async {
+    if (currentUser == null) return const [];
+    try {
+      final rows = await _client.rpc('thirsty_friends');
+      return [
+        for (final r in (rows as List).cast<Map<String, dynamic>>())
+          RemoteProfile.fromRow(r),
+      ];
+    } catch (_) {
+      return const [];
+    }
+  }
+
   Future<String?> sendFriendRequest(String profileId) async {
     try {
       await _client.from('friendships').insert({
@@ -587,15 +682,22 @@ class OnlineService {
     try {
       final rows = await _client
           .from('friendships')
-          .select('requester:profiles!friendships_requester_id_fkey($_profileCols), '
+          .select('requester_id, requester_tier, addressee_tier, '
+              'requester:profiles!friendships_requester_id_fkey($_profileCols), '
               'addressee:profiles!friendships_addressee_id_fkey($_profileCols)')
           .eq('status', 'accepted')
           .or('requester_id.eq.${me.id},addressee_id.eq.${me.id}');
       return [
         for (final r in rows)
-          RemoteProfile.fromRow((r['requester'] as Map<String, dynamic>)['id'] == me.id
-              ? r['addressee'] as Map<String, dynamic>
-              : r['requester'] as Map<String, dynamic>),
+          RemoteProfile.fromRow(
+            (r['requester'] as Map<String, dynamic>)['id'] == me.id
+                ? r['addressee'] as Map<String, dynamic>
+                : r['requester'] as Map<String, dynamic>,
+            // Mein Kreis für den anderen steht in „meiner" Spalte.
+            tier: friendTierFromName(r['requester_id'] == me.id
+                ? r['requester_tier'] as String?
+                : r['addressee_tier'] as String?),
+          ),
       ];
     } catch (_) {
       return const [];
