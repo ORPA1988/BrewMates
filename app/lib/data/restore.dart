@@ -24,7 +24,9 @@ const _noRestore =
 /// still übersprungen und beim nächsten Lauf nachgeholt).
 Future<RestoreSummary> restoreFromCloud(
   AppDatabase db, {
-  required Future<List<Map<String, dynamic>>?> Function() fetchCheckins,
+  required Future<Set<String>?> Function() fetchCheckinIds,
+  required Future<List<Map<String, dynamic>>?> Function(List<String> ids)
+      fetchCheckinsByIds,
   required Future<Map<String, DateTime>?> Function() fetchBadges,
   required Future<bool> Function(Map<String, DateTime> badges) pushBadges,
   required Future<Map<String, DateTime>?> Function() fetchWishlist,
@@ -37,8 +39,29 @@ Future<RestoreSummary> restoreFromCloud(
   if (me == null) return _noRestore;
 
   // ── Check-ins ─────────────────────────────────────────────────────────
+  //
+  // Zwei Schritte statt einem (Backlog B-2): erst fragen, WELCHE Einträge
+  // der Server hat (eine UUID je Zeile), dann nur die Lücke mit allen
+  // Spalten nachladen. Vorher holte jeder Start den kompletten Bestand
+  // samt Notizen und Denorm-Feldern, um dann fast alles wegzuwerfen — der
+  // Aufwand wuchs mit dem Tagebuch, obwohl die Antwort meist „nichts
+  // Neues" lautet.
   var restoredCheckins = 0;
-  final remote = await fetchCheckins();
+  var checkinsComplete = false;
+  final remoteIds = await fetchCheckinIds();
+  List<Map<String, dynamic>>? remote;
+  if (remoteIds != null) {
+    final localIds = {
+      for (final c in await db.select(db.checkins).get()) c.id,
+    };
+    final fehlend = [
+      for (final id in remoteIds)
+        if (!localIds.contains(id)) id,
+    ];
+    // Der Normalfall: nichts zu tun, und der teure Abruf entfällt ganz.
+    remote = fehlend.isEmpty ? const [] : await fetchCheckinsByIds(fehlend);
+    checkinsComplete = remote != null;
+  }
   if (remote != null && remote.isNotEmpty) {
     final localIds = {
       for (final c in await db.select(db.checkins).get()) c.id,
@@ -123,8 +146,11 @@ Future<RestoreSummary> restoreFromCloud(
     checkins: restoredCheckins,
     badges: restoredBadges,
     wishlist: restoredWishlist,
+    // `checkinsComplete` statt `remote != null`: Ist die Lücke leer,
+    // findet gar kein zweiter Abruf statt — das ist ein vollständiger
+    // Lauf, kein übersprungener.
     complete:
-        remote != null && remoteBadges != null && remoteWishlist != null,
+        checkinsComplete && remoteBadges != null && remoteWishlist != null,
   );
 }
 

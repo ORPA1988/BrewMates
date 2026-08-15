@@ -35,6 +35,27 @@ niemals Daten kosten.**
   signiert. Ohne das ersetzt Android die App nicht, sondern verlangt
   Deinstallation — und die löscht die lokale Datenbank.
 
+### Wiederherstellung lädt nur die Lücke (2026-08-15, Backlog B-2)
+
+Der Cloud-Restore holte bei **jedem** Start den kompletten eigenen
+Bestand mit allen Spalten — Notizen, Denorm-Felder, alles — um dann fast
+alles wieder wegzuwerfen, weil es lokal längst lag. Der Aufwand wuchs mit
+dem Tagebuch, obwohl die Antwort fast immer „nichts Neues" lautet.
+
+Jetzt zwei Schritte: erst fragen, **welche** Einträge der Server hat (eine
+UUID je Zeile), das lokal vergleichen, und nur die Lücke mit vollen
+Spalten nachladen. Ist die Lücke leer, findet der teure Abruf gar nicht
+statt.
+
+**Warum kein Zeitstempel-Wasserzeichen**, das noch billiger wäre:
+`created_at` stammt vom Client. Ein Check-in, der offline entstand und
+Tage später hochgeladen wird, liegt zeitlich **vor** dem Wasserzeichen —
+er würde nie wiederhergestellt, und niemand würde es merken. Der
+ID-Abgleich kennt dieses Problem nicht.
+
+Festgehalten in `test/restore_test.dart`: Der zweite Lauf über denselben
+Bestand darf die vollen Spalten nicht mehr anfordern.
+
 ## Modularität
 
 - **Hängt ab von:** Konto (01)

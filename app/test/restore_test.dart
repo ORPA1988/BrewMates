@@ -43,6 +43,10 @@ void main() {
   });
   tearDown(() => db.close());
 
+  /// Zaehlt, wie oft die teure Abfrage (volle Spalten) lief — der Kern
+  /// von Backlog B-2: Bei „nichts Neues" darf sie gar nicht stattfinden.
+  var volleAbrufe = 0;
+
   Future<RestoreSummary> run({
     List<Map<String, dynamic>>? checkins,
     Map<String, DateTime>? badges,
@@ -52,7 +56,18 @@ void main() {
   }) =>
       restoreFromCloud(
         db,
-        fetchCheckins: () async => checkins,
+        fetchCheckinIds: () async => checkins == null
+            ? null
+            : {for (final c in checkins) c['id'] as String},
+        fetchCheckinsByIds: (ids) async {
+          volleAbrufe++;
+          if (checkins == null) return null;
+          final gesucht = ids.toSet();
+          return [
+            for (final c in checkins)
+              if (gesucht.contains(c['id'])) c,
+          ];
+        },
         fetchBadges: () async => badges,
         pushBadges: (rows) async {
           onPushBadges?.call(rows);
@@ -157,5 +172,29 @@ void main() {
     expect(summary.complete, isFalse);
     expect(summary.checkins + summary.badges + summary.wishlist, 0);
     expect(await db.select(db.checkins).get(), isEmpty);
+  });
+
+  test('Ist nichts neu, unterbleibt der teure Abruf ganz', () async {
+    final zeile = _remoteCheckin('22222222-2222-4222-8222-222222222222');
+    final vorher = volleAbrufe; // der Zähler läuft über die Datei
+
+    // Erster Lauf: die Lücke wird geschlossen.
+    final erst = await run(checkins: [zeile], badges: const {}, wishlist: const {});
+    expect(erst.checkins, 1);
+    expect(volleAbrufe - vorher, 1);
+
+    // Zweiter Lauf mit demselben Bestand — der Server hat nichts, was
+    // lokal fehlt. Vorher lud die Wiederherstellung hier trotzdem alle
+    // Zeilen samt Notizen und Denorm-Feldern und warf sie weg; der
+    // Aufwand wuchs mit dem Tagebuch.
+    final zweit = await run(checkins: [zeile], badges: const {}, wishlist: const {});
+    expect(zweit.checkins, 0);
+    expect(volleAbrufe - vorher, 1,
+        reason: 'Der zweite Lauf darf die vollen Spalten gar nicht erst '
+            'anfordern — nur die ID-Liste.');
+    expect(zweit.complete, isTrue,
+        reason: 'Nichts zu tun ist ein vollständiger Lauf, kein '
+            'übersprungener — sonst liefe die Wiederherstellung ewig '
+            'erneut an.');
   });
 }

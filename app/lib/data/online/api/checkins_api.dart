@@ -196,6 +196,45 @@ class CheckinsApi extends OnlineApi {
   // Gerätewechsel. null = offline/abgemeldet (Aufrufer versucht es später).
   // --------------------------------------------------------------------------
 
+  /// Spaltenliste, mit der sich ein Check-in lokal rekonstruieren lässt.
+  static const _restoreCols =
+      'id, rating, note, flavor_tags, serving_style, volume_ml, '
+      'beer_name, beer_style, brewery_name, is_alcohol_free, '
+      'venue_id, venue_name, photo_url, created_at';
+
+  /// Nur die genannten Check-ins holen — die Grundlage der inkrementellen
+  /// Wiederherstellung (Backlog B-2).
+  ///
+  /// Die Wiederherstellung fragt zuerst über [myRemoteCheckinIds] ab, was
+  /// der Server überhaupt hat (eine UUID je Zeile), vergleicht das lokal
+  /// und lädt hier **nur die Lücke** nach. Beim Normalfall „nichts Neues"
+  /// entfällt dieser Aufruf ganz.
+  ///
+  /// Bewusst kein Zeitstempel-Wasserzeichen: `created_at` stammt vom
+  /// Client, und ein Check-in, der offline entstand und Tage später
+  /// hochgeladen wird, liegt zeitlich VOR dem Wasserzeichen. Er würde nie
+  /// wiederhergestellt. Der ID-Abgleich kennt dieses Problem nicht.
+  Future<List<Map<String, dynamic>>?> checkinsByIds(List<String> ids) async {
+    if (currentUser == null) return null;
+    if (ids.isEmpty) return const [];
+    final alle = <Map<String, dynamic>>[];
+    try {
+      // In Blöcken, sonst sprengt die Liste die URL-Länge.
+      for (var i = 0; i < ids.length; i += 50) {
+        final block = ids.sublist(i, i + 50 > ids.length ? ids.length : i + 50);
+        final rows = await client
+            .from('checkins')
+            .select(_restoreCols)
+            .inFilter('id', block)
+            .order('created_at', ascending: true);
+        alle.addAll(rows.cast<Map<String, dynamic>>());
+      }
+      return alle;
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Alle eigenen Check-ins mit vollen Spalten (Denorm-Daten reichen, um
   /// sie lokal zu rekonstruieren).
   Future<List<Map<String, dynamic>>?> myRemoteCheckins() async {
@@ -204,9 +243,7 @@ class CheckinsApi extends OnlineApi {
     try {
       final rows = await client
           .from('checkins')
-          .select('id, rating, note, flavor_tags, serving_style, volume_ml, '
-              'beer_name, beer_style, brewery_name, is_alcohol_free, '
-              'venue_id, venue_name, photo_url, created_at')
+          .select(_restoreCols)
           .eq('profile_id', me.id)
           .order('created_at', ascending: true);
       return rows.cast<Map<String, dynamic>>();
