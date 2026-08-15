@@ -1484,6 +1484,7 @@ class OnlineService {
           if (t.trim().isNotEmpty) t.trim(),
       ],
       'serving_style': c.servingStyle?.name,
+      'volume_ml': c.volumeMl,
       'photo_url': c.photoUrl,
       'venue_name': c.venueName,
       'visibility': 'friends',
@@ -1540,9 +1541,9 @@ class OnlineService {
     try {
       final rows = await _client
           .from('checkins')
-          .select('id, rating, note, flavor_tags, serving_style, beer_name, '
-              'beer_style, brewery_name, is_alcohol_free, venue_id, '
-              'venue_name, photo_url, created_at')
+          .select('id, rating, note, flavor_tags, serving_style, volume_ml, '
+              'beer_name, beer_style, brewery_name, is_alcohol_free, '
+              'venue_id, venue_name, photo_url, created_at')
           .eq('profile_id', me.id)
           .order('created_at', ascending: true);
       return rows.cast<Map<String, dynamic>>();

@@ -15,7 +15,16 @@ class FeedScreen extends ConsumerWidget {
     final feedAsync = ref.watch(feedProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Feed')),
+      appBar: AppBar(
+        title: const Text('Feed'),
+        actions: [
+          IconButton(
+            tooltip: 'Statistik',
+            icon: const Icon(Icons.bar_chart),
+            onPressed: () => context.push('/profile/stats'),
+          ),
+        ],
+      ),
       body: feedAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Fehler beim Laden: $e')),

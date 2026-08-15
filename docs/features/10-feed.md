@@ -1,7 +1,7 @@
 # 10 Feed
 
-> **Status:** 🟡 teilweise — Strom, Löschen und Seitenladen stehen;
-> es fehlen noch die Statistiken.
+> **Status:** 🟢 fertig — Strom, Löschen, Seitenladen und Einstieg in die
+> Statistik.
 > **Seit:** 0.2.0, Toasts/Kommentare online seit 0.9.9 ·
 > **Zuletzt geprüft:** 2026-08-15
 
@@ -61,14 +61,14 @@ den es ihn gibt.
 
 ## Umsetzungsstatus
 
-Kern, Löschen und Seitenladen stehen. Es fehlen die Statistiken.
+Vollständig.
 
 ## Umsetzungsplan
 
 1. ~~[Einträge löschen](19-feed-eintraege-loeschen.md)~~ — erledigt
 2. ~~`ListView.builder` + seitenweises Nachladen~~ — erledigt
 3. ~~Index per Migration~~ — erledigt (0020)
-4. [Statistiken](20-feed-statistiken.md) als eigener Bereich
+4. ~~[Statistiken](20-feed-statistiken.md) als eigener Bereich~~ — erledigt (0.9.15)
 
 ## Offene Punkte / Ideen
 

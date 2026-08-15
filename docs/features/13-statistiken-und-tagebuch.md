@@ -1,7 +1,7 @@
 # 13 Statistiken & Tagebuch
 
-> **Status:** 🟡 teilweise — Tagebuch mit Suche und Seitenladen steht,
-> die Auswertung beschränkt sich auf vier Zähler.
+> **Status:** 🟢 fertig — Tagebuch mit Suche und Seitenladen, Auswertung
+> in [Funktion 20](20-feed-statistiken.md).
 > **Seit:** 0.2.0, Wochen-Serie seit 0.9.12 · **Zuletzt geprüft:** 2026-08-15
 
 ## Zielsetzung
@@ -55,13 +55,13 @@ Zählabfrage, damit sie den echten Bestand nennt und nicht die Fenstergröße.
 
 ## Umsetzungsstatus
 
-Das Tagebuch ist vollständig. Die Statistik ist es nicht: Vier Zähler,
-wo alle Daten für echte Auswertungen längst vorliegen — Land, Stil,
-Gebinde, Zeitpunkt, Gasthaus.
+Vollständig. Die Profilzähler bleiben als Schnellblick; die eigentliche
+Auswertung lebt seit 0.9.15 in [Funktion 20](20-feed-statistiken.md).
 
 ## Umsetzungsplan
 
-1. [Statistiken](20-feed-statistiken.md) mit Filtern und Aufteilungen
+1. ~~[Statistiken](20-feed-statistiken.md) mit Filtern und Aufteilungen~~
+   — erledigt (0.9.15)
 2. ~~Tagebuch auf faules Bauen und seitenweises Laden umstellen~~ —
    erledigt (0.9.14)
 3. Filter im Tagebuch (Zeitraum, Stil, Bewertung)

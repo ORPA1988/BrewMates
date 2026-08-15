@@ -1,7 +1,8 @@
 # 20 Feed-Statistiken
 
-> **Status:** 🔴 geplant — heute gibt es nur die vier Zähler im Profil.
-> **Geplant für:** 0.9.15-beta · **Zuletzt geprüft:** 2026-08-15
+> **Status:** 🟢 fertig — eigener Bereich mit Mengen, Aufteilungen,
+> Zeitraum und Filtern.
+> **Seit:** 0.9.15-beta · **Zuletzt geprüft:** 2026-08-15
 
 ## Zielsetzung
 
@@ -40,10 +41,16 @@ Auswertung darüber wäre falsch statt unvollständig.
 
 - **Neu:** `domain/statistics.dart` — reine Auswertung über
   `List<CheckinDetails>`, ohne Flutter und ohne Datenbank, damit
-  vollständig testbar
+  vollständig testbar (`computeStats`, `CheckinStats`)
 - **Neu:** `features/stats/stats_screen.dart` + `stats_providers.dart`
+  (eigene Provider-Datei statt Anbau an die Sammelstelle, siehe docs/11)
 - **Geändert:** `features/checkin/checkin_screen.dart` (Mengenauswahl),
-  Drift v11, Migration für `checkins.volume_ml`
+  `core/format.dart` (`formatVolume`, `formatLitres`), Drift v11,
+  Migration 0022 für `checkins.volume_ml`, Upload- und
+  Wiederherstellungspfad
+
+Die Ergebnisklasse heißt `CheckinStats`, nicht `BeerStats` — den Namen
+belegt bereits das Join-Modell für Bier-Bewertungen.
 
 **Die fehlende Zutat ist die Menge.** `ServingStyle` (Gebinde) gibt es
 bereits, aber keine Füllmenge. Neu: `volume_ml` als Ganzzahl, im Check-in
@@ -76,21 +83,24 @@ Summenbildung in SQL (Drift kann `groupBy`). Der Schnitt ist vorbereitet,
 weil `domain/statistics.dart` nur eine Liste bekommt: Die Quelle lässt sich
 später austauschen, ohne die Darstellung anzufassen.
 
+## Umsetzungsstatus
+
+Vollständig. Erreichbar über das Balkensymbol im Feed und die Kachel
+„Statistik" im Profil.
+
+Die Menge wird beim Check-in über Auswahlchips gesetzt (0,2 · 0,25 ·
+0,33 · 0,4 · 0,5 · 1 l), vorbelegt nach Gebinde, bis der Mensch selbst
+wählt. Sie wandert mit dem Check-in in die Cloud und kehrt bei der
+Wiederherstellung zurück — sonst wäre sie beim Gerätewechsel weg.
+
+Abgesichert durch `test/statistics_test.dart` (15 Tests): Summen,
+Schätzung fehlender Mengen, Zeiträume, Filter einzeln und kombiniert,
+Sortierung samt Gleichstand, Zählung verschiedener Biere/Brauereien/Orte,
+Durchschnitt nur über Bewertetes, Monatsverlauf, Formatierung.
+
 ## Umsetzungsplan
 
-1. **Menge erfassen.** Drift v11 + Migration `checkins.volume_ml`,
-   Schnellauswahl im Check-in-Formular, Vorbelegung nach Gebinde.
-   *Prüfkriterium:* Check-in speichert die Menge, alte Einträge bleiben
-   gültig.
-2. **Auswertung.** `domain/statistics.dart`: Summen, Aufteilungen,
-   Zeitraumfilter.
-   *Prüfkriterium:* Unit-Tests mit erfundenen Check-ins, inklusive
-   Schätzwerten für fehlende Mengen und leerer Liste.
-3. **Darstellung.** Statistik-Bildschirm mit Balken, Zeitraumwahl,
-   Filtern.
-   *Prüfkriterium:* Widget-Test — Filter verändert die Zahlen; leerer
-   Zustand erklärt sich selbst.
-4. **Einstiege** aus Feed und Profil, Kennzeichnung geschätzter Mengen.
+Erledigt.
 
 ## Offene Punkte / Ideen
 

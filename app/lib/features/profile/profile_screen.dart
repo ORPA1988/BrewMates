@@ -406,6 +406,13 @@ class ProfileScreen extends ConsumerWidget {
             onTap: () => context.push('/profile/diary'),
           ),
           ListTile(
+            leading: const Text('📊', style: TextStyle(fontSize: 24)),
+            title: const Text('Statistik'),
+            subtitle: const Text('Menge, Länder, Stile, Verlauf'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/profile/stats'),
+          ),
+          ListTile(
             leading: const Text('⭐', style: TextStyle(fontSize: 24)),
             title: const Text('Wunschliste'),
             trailing: Row(

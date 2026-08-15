@@ -3404,6 +3404,12 @@ class $CheckinsTable extends Checkins with TableInfo<$CheckinsTable, Checkin> {
   late final GeneratedColumn<String> photoUrl = GeneratedColumn<String>(
       'photo_url', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _volumeMlMeta =
+      const VerificationMeta('volumeMl');
+  @override
+  late final GeneratedColumn<int> volumeMl = GeneratedColumn<int>(
+      'volume_ml', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -3423,6 +3429,7 @@ class $CheckinsTable extends Checkins with TableInfo<$CheckinsTable, Checkin> {
         flavorTags,
         servingStyle,
         photoUrl,
+        volumeMl,
         createdAt
       ];
   @override
@@ -3483,6 +3490,10 @@ class $CheckinsTable extends Checkins with TableInfo<$CheckinsTable, Checkin> {
       context.handle(_photoUrlMeta,
           photoUrl.isAcceptableOrUnknown(data['photo_url']!, _photoUrlMeta));
     }
+    if (data.containsKey('volume_ml')) {
+      context.handle(_volumeMlMeta,
+          volumeMl.isAcceptableOrUnknown(data['volume_ml']!, _volumeMlMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -3521,6 +3532,8 @@ class $CheckinsTable extends Checkins with TableInfo<$CheckinsTable, Checkin> {
               DriftSqlType.string, data['${effectivePrefix}serving_style'])),
       photoUrl: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}photo_url']),
+      volumeMl: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}volume_ml']),
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
     );
@@ -3555,6 +3568,12 @@ class Checkin extends DataClass implements Insertable<Checkin> {
 
   /// Foto des Check-ins (öffentliche URL im beer-photos-Bucket).
   final String? photoUrl;
+
+  /// Füllmenge in Millilitern. Ohne sie gibt es keine Literangabe — und
+  /// genau danach fragt man als erstes, wenn man ein Jahr zurückblickt.
+  /// Alte Check-ins haben keine; die Auswertung schätzt dort nach Gebinde
+  /// und weist das aus.
+  final int? volumeMl;
   final DateTime createdAt;
   const Checkin(
       {required this.id,
@@ -3568,6 +3587,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
       required this.flavorTags,
       this.servingStyle,
       this.photoUrl,
+      this.volumeMl,
       required this.createdAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -3598,6 +3618,9 @@ class Checkin extends DataClass implements Insertable<Checkin> {
     if (!nullToAbsent || photoUrl != null) {
       map['photo_url'] = Variable<String>(photoUrl);
     }
+    if (!nullToAbsent || volumeMl != null) {
+      map['volume_ml'] = Variable<int>(volumeMl);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -3626,6 +3649,9 @@ class Checkin extends DataClass implements Insertable<Checkin> {
       photoUrl: photoUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(photoUrl),
+      volumeMl: volumeMl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(volumeMl),
       createdAt: Value(createdAt),
     );
   }
@@ -3646,6 +3672,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
       servingStyle: $CheckinsTable.$converterservingStylen
           .fromJson(serializer.fromJson<String?>(json['servingStyle'])),
       photoUrl: serializer.fromJson<String?>(json['photoUrl']),
+      volumeMl: serializer.fromJson<int?>(json['volumeMl']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -3665,6 +3692,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
       'servingStyle': serializer.toJson<String?>(
           $CheckinsTable.$converterservingStylen.toJson(servingStyle)),
       'photoUrl': serializer.toJson<String?>(photoUrl),
+      'volumeMl': serializer.toJson<int?>(volumeMl),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -3681,6 +3709,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
           String? flavorTags,
           Value<ServingStyle?> servingStyle = const Value.absent(),
           Value<String?> photoUrl = const Value.absent(),
+          Value<int?> volumeMl = const Value.absent(),
           DateTime? createdAt}) =>
       Checkin(
         id: id ?? this.id,
@@ -3695,6 +3724,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
         servingStyle:
             servingStyle.present ? servingStyle.value : this.servingStyle,
         photoUrl: photoUrl.present ? photoUrl.value : this.photoUrl,
+        volumeMl: volumeMl.present ? volumeMl.value : this.volumeMl,
         createdAt: createdAt ?? this.createdAt,
       );
   Checkin copyWithCompanion(CheckinsCompanion data) {
@@ -3713,6 +3743,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
           ? data.servingStyle.value
           : this.servingStyle,
       photoUrl: data.photoUrl.present ? data.photoUrl.value : this.photoUrl,
+      volumeMl: data.volumeMl.present ? data.volumeMl.value : this.volumeMl,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -3731,14 +3762,27 @@ class Checkin extends DataClass implements Insertable<Checkin> {
           ..write('flavorTags: $flavorTags, ')
           ..write('servingStyle: $servingStyle, ')
           ..write('photoUrl: $photoUrl, ')
+          ..write('volumeMl: $volumeMl, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, profileId, beerId, sessionId, venueId,
-      venueName, rating, note, flavorTags, servingStyle, photoUrl, createdAt);
+  int get hashCode => Object.hash(
+      id,
+      profileId,
+      beerId,
+      sessionId,
+      venueId,
+      venueName,
+      rating,
+      note,
+      flavorTags,
+      servingStyle,
+      photoUrl,
+      volumeMl,
+      createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3754,6 +3798,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
           other.flavorTags == this.flavorTags &&
           other.servingStyle == this.servingStyle &&
           other.photoUrl == this.photoUrl &&
+          other.volumeMl == this.volumeMl &&
           other.createdAt == this.createdAt);
 }
 
@@ -3769,6 +3814,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
   final Value<String> flavorTags;
   final Value<ServingStyle?> servingStyle;
   final Value<String?> photoUrl;
+  final Value<int?> volumeMl;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const CheckinsCompanion({
@@ -3783,6 +3829,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
     this.flavorTags = const Value.absent(),
     this.servingStyle = const Value.absent(),
     this.photoUrl = const Value.absent(),
+    this.volumeMl = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -3798,6 +3845,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
     this.flavorTags = const Value.absent(),
     this.servingStyle = const Value.absent(),
     this.photoUrl = const Value.absent(),
+    this.volumeMl = const Value.absent(),
     required DateTime createdAt,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
@@ -3816,6 +3864,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
     Expression<String>? flavorTags,
     Expression<String>? servingStyle,
     Expression<String>? photoUrl,
+    Expression<int>? volumeMl,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
@@ -3831,6 +3880,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
       if (flavorTags != null) 'flavor_tags': flavorTags,
       if (servingStyle != null) 'serving_style': servingStyle,
       if (photoUrl != null) 'photo_url': photoUrl,
+      if (volumeMl != null) 'volume_ml': volumeMl,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -3848,6 +3898,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
       Value<String>? flavorTags,
       Value<ServingStyle?>? servingStyle,
       Value<String?>? photoUrl,
+      Value<int?>? volumeMl,
       Value<DateTime>? createdAt,
       Value<int>? rowid}) {
     return CheckinsCompanion(
@@ -3862,6 +3913,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
       flavorTags: flavorTags ?? this.flavorTags,
       servingStyle: servingStyle ?? this.servingStyle,
       photoUrl: photoUrl ?? this.photoUrl,
+      volumeMl: volumeMl ?? this.volumeMl,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
@@ -3904,6 +3956,9 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
     if (photoUrl.present) {
       map['photo_url'] = Variable<String>(photoUrl.value);
     }
+    if (volumeMl.present) {
+      map['volume_ml'] = Variable<int>(volumeMl.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -3927,6 +3982,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
           ..write('flavorTags: $flavorTags, ')
           ..write('servingStyle: $servingStyle, ')
           ..write('photoUrl: $photoUrl, ')
+          ..write('volumeMl: $volumeMl, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -8635,6 +8691,7 @@ typedef $$CheckinsTableCreateCompanionBuilder = CheckinsCompanion Function({
   Value<String> flavorTags,
   Value<ServingStyle?> servingStyle,
   Value<String?> photoUrl,
+  Value<int?> volumeMl,
   required DateTime createdAt,
   Value<int> rowid,
 });
@@ -8650,6 +8707,7 @@ typedef $$CheckinsTableUpdateCompanionBuilder = CheckinsCompanion Function({
   Value<String> flavorTags,
   Value<ServingStyle?> servingStyle,
   Value<String?> photoUrl,
+  Value<int?> volumeMl,
   Value<DateTime> createdAt,
   Value<int> rowid,
 });
@@ -8749,6 +8807,9 @@ class $$CheckinsTableFilterComposer
 
   ColumnFilters<String> get photoUrl => $composableBuilder(
       column: $table.photoUrl, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get volumeMl => $composableBuilder(
+      column: $table.volumeMl, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -8873,6 +8934,9 @@ class $$CheckinsTableOrderingComposer
   ColumnOrderings<String> get photoUrl => $composableBuilder(
       column: $table.photoUrl, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get volumeMl => $composableBuilder(
+      column: $table.volumeMl, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
@@ -8953,6 +9017,9 @@ class $$CheckinsTableAnnotationComposer
 
   GeneratedColumn<String> get photoUrl =>
       $composableBuilder(column: $table.photoUrl, builder: (column) => column);
+
+  GeneratedColumn<int> get volumeMl =>
+      $composableBuilder(column: $table.volumeMl, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -9075,6 +9142,7 @@ class $$CheckinsTableTableManager extends RootTableManager<
             Value<String> flavorTags = const Value.absent(),
             Value<ServingStyle?> servingStyle = const Value.absent(),
             Value<String?> photoUrl = const Value.absent(),
+            Value<int?> volumeMl = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -9090,6 +9158,7 @@ class $$CheckinsTableTableManager extends RootTableManager<
             flavorTags: flavorTags,
             servingStyle: servingStyle,
             photoUrl: photoUrl,
+            volumeMl: volumeMl,
             createdAt: createdAt,
             rowid: rowid,
           ),
@@ -9105,6 +9174,7 @@ class $$CheckinsTableTableManager extends RootTableManager<
             Value<String> flavorTags = const Value.absent(),
             Value<ServingStyle?> servingStyle = const Value.absent(),
             Value<String?> photoUrl = const Value.absent(),
+            Value<int?> volumeMl = const Value.absent(),
             required DateTime createdAt,
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -9120,6 +9190,7 @@ class $$CheckinsTableTableManager extends RootTableManager<
             flavorTags: flavorTags,
             servingStyle: servingStyle,
             photoUrl: photoUrl,
+            volumeMl: volumeMl,
             createdAt: createdAt,
             rowid: rowid,
           ),

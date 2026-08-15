@@ -28,6 +28,7 @@ import '../features/profile/badges_screen.dart';
 import '../features/profile/challenges_screen.dart';
 import '../features/profile/leaderboard_screen.dart';
 import '../features/profile/diary_screen.dart';
+import '../features/stats/stats_screen.dart';
 import '../features/profile/profile_screen.dart';
 import '../features/profile/wishlist_screen.dart';
 import '../features/scan/scan_screen.dart';
@@ -206,6 +207,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile/wishlist',
         builder: (_, __) => const WishlistScreen(),
+      ),
+      GoRoute(
+        path: '/profile/stats',
+        builder: (_, __) => const StatsScreen(),
       ),
     ],
   );

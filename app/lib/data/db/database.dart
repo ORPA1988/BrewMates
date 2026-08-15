@@ -153,6 +153,12 @@ class Checkins extends Table {
 
   /// Foto des Check-ins (öffentliche URL im beer-photos-Bucket).
   TextColumn get photoUrl => text().nullable()();
+
+  /// Füllmenge in Millilitern. Ohne sie gibt es keine Literangabe — und
+  /// genau danach fragt man als erstes, wenn man ein Jahr zurückblickt.
+  /// Alte Check-ins haben keine; die Auswertung schätzt dort nach Gebinde
+  /// und weist das aus.
+  IntColumn get volumeMl => integer().nullable()();
   DateTimeColumn get createdAt => dateTime()();
 
   @override
@@ -333,7 +339,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(openInMemory());
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -447,6 +453,10 @@ class AppDatabase extends _$AppDatabase {
           if (from < 10) {
             // v10: Offline-Warteschlange für gelöschte eigene Check-ins.
             await m.createTable(checkinDeleteQueue);
+          }
+          if (from < 11) {
+            // v11: Füllmenge je Check-in (Grundlage der Literauswertung).
+            await m.addColumn(checkins, checkins.volumeMl);
           }
         },
       );

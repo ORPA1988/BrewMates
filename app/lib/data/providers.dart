@@ -863,6 +863,7 @@ class BrewActions {
     String? venueId,
     List<String> flavorTags = const [],
     ServingStyle? servingStyle,
+    int? volumeMl,
     String? photoUrl,
   }) async {
     final me = await _me();
@@ -880,6 +881,7 @@ class BrewActions {
           note: Value((note ?? '').trim().isEmpty ? null : note!.trim()),
           flavorTags: Value(flavorTags.join(',')),
           servingStyle: Value(servingStyle),
+          volumeMl: Value(volumeMl),
           photoUrl: Value(photoUrl),
           createdAt: now,
         ));
