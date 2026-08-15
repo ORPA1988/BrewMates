@@ -44,7 +44,7 @@ void main() {
       ];
   });
 
-  Widget _umgebung(Widget kind) => ProviderScope(
+  Widget umgebung(Widget kind) => ProviderScope(
         overrides: [
           databaseProvider.overrideWithValue(db),
           onlineServiceProvider.overrideWith((ref) async => online),
@@ -67,7 +67,7 @@ void main() {
 
   testWidgets('Die Anfrage steht beim Start auf der Startseite',
       (tester) async {
-    await tester.pumpWidget(_umgebung(const HomeScreen()));
+    await tester.pumpWidget(umgebung(const HomeScreen()));
     await tester.pumpAndSettle();
 
     expect(find.byType(FriendRequestCard), findsOneWidget);
@@ -79,7 +79,7 @@ void main() {
   });
 
   testWidgets('Annehmen meldet es dem Server', (tester) async {
-    await tester.pumpWidget(_umgebung(const HomeScreen()));
+    await tester.pumpWidget(umgebung(const HomeScreen()));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Annehmen'));
@@ -92,7 +92,7 @@ void main() {
   testWidgets('Scheitert es, bleibt die Anfrage offen und die App sagt es',
       (tester) async {
     online.schlaegtFehl = true;
-    await tester.pumpWidget(_umgebung(const HomeScreen()));
+    await tester.pumpWidget(umgebung(const HomeScreen()));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Annehmen'));
@@ -106,7 +106,7 @@ void main() {
 
   testWidgets('„Später" räumt nur die Startseite, nicht die Anfrage',
       (tester) async {
-    await tester.pumpWidget(_umgebung(const HomeScreen()));
+    await tester.pumpWidget(umgebung(const HomeScreen()));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Später'));
@@ -122,7 +122,7 @@ void main() {
   });
 
   testWidgets('Im Freunde-Bildschirm bleibt sie sichtbar', (tester) async {
-    await tester.pumpWidget(_umgebung(const FriendsScreen()));
+    await tester.pumpWidget(umgebung(const FriendsScreen()));
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Clara'), findsWidgets,
