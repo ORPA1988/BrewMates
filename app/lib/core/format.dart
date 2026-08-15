@@ -24,6 +24,15 @@ String remaining(DateTime until) {
   return '${diff.inMinutes} min';
 }
 
+/// Dauer als Auswahl-Beschriftung, z. B. „30 min", „1 Stunde", „5 Stunden".
+String formatDuration(Duration d) {
+  if (d.inMinutes < 60) return '${d.inMinutes} min';
+  final hours = d.inHours;
+  final rest = d.inMinutes % 60;
+  final base = hours == 1 ? '1 Stunde' : '$hours Stunden';
+  return rest == 0 ? base : '$base $rest min';
+}
+
 /// UUID-Erkennung: nutzererstellte Datensätze tragen UUIDs, redaktionelle
 /// Community-Daten sprechende IDs (z. B. `at-stiegl`). Entscheidet u. a.,
 /// ob ein Datensatz in-app bearbeitbar ist.

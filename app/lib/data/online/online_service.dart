@@ -823,6 +823,16 @@ class OnlineService {
     } catch (_) {}
   }
 
+  /// Neues Ende einer laufenden Session übertragen (Verlängern).
+  /// Die Grenzen prüft zusätzlich die `check`-Bedingung aus 0021.
+  Future<void> updateSessionExpiry(String sessionId, DateTime until) async {
+    try {
+      await _client.from('sessions').update({
+        'expires_at': until.toUtc().toIso8601String(),
+      }).eq('id', sessionId);
+    } catch (_) {}
+  }
+
   Future<void> endSession(String sessionId) async {
     try {
       await _client.from('sessions').update({

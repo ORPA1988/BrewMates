@@ -1,9 +1,8 @@
 # 23 Beacon-Laufzeit
 
-> **Status:** 🔴 geplant — die Datenbank kennt die Laufzeit bereits
-> (`sessions.expires_at`, Vorgabe 3 Stunden), die App lässt sie nicht
-> wählen.
-> **Geplant für:** 0.9.14-beta · **Zuletzt geprüft:** 2026-08-15
+> **Status:** 🟢 fertig — Laufzeit wählbar, verlängerbar, serverseitig
+> begrenzt.
+> **Seit:** 0.9.14-beta · **Zuletzt geprüft:** 2026-08-15
 
 ## Zielsetzung
 
@@ -19,29 +18,50 @@ Versehen stundenlang stehen.
 
 ## Funktion (Nutzersicht)
 
-- Beim Starten einer Session eine Auswahl: **1 h · 2 h · 3 h · 5 h · bis
-  Mitternacht**. Vorbelegt bleiben 3 Stunden — der heutige Wert, damit sich
-  für niemanden etwas ändert, der nicht hinschaut.
-- Die Session-Karte zeigt die verbleibende Zeit („noch 1 h 20").
-- **Verlängern** mit einem Tipp, solange die Session läuft.
+- Beim Starten einer Session eine Auswahl:
+  **30 min · 1 · 2 · 3 · 5 · 8 · 12 Stunden**. Vorbelegt ist die zuletzt
+  gewählte Dauer, beim ersten Mal drei Stunden — der bisherige Wert, damit
+  sich für niemanden etwas ändert, der nicht hinschaut.
+- Der **Ein-Tap-Beacon fragt nichts** und nimmt ebenfalls die zuletzt
+  gewählte Dauer. Er soll ein Tipp bleiben; eine Rückfrage würde genau das
+  zerstören, wofür es ihn gibt.
+- Session-Karte und Banner zeigen die verbleibende Zeit („noch 1 h 20").
+- **Verlängern** über das Banner, solange die Session läuft — gerechnet
+  **ab jetzt**, nicht ab dem bisherigen Ende. „Noch zwei Stunden" ist das,
+  was jemand um 22 Uhr im Wirtshaus meint.
 - Vorzeitig beenden geht wie bisher jederzeit.
 - Läuft die Zeit ab, endet die Session automatisch und verschwindet von der
   Karte — daran ändert sich nichts, nur der Zeitpunkt ist jetzt gewählt.
 
 ## Technische Umsetzung
 
-- **Geändert:** `features/session/start_session_screen.dart` (Auswahl),
-  `widgets/session_card.dart` (Restzeit, Verlängern),
-  `data/online/online_service.dart` (`upsertSession` überträgt
-  `expires_at`), `data/providers.dart`
-- **Server:** keine Migration nötig — `sessions.expires_at` existiert seit
-  0001 samt `end_expired_sessions()`, das per Cron abgelaufene Sessions
-  schließt. Es fehlt nur, dass der Wert vom Gerät gesetzt wird.
-- **Grenzen:** mindestens 30 Minuten, höchstens 12 Stunden — serverseitig
-  als `check`-Bedingung, damit die Regel nicht nur in der App steht.
+- **Geändert:** `features/session/start_session_screen.dart` (erweiterte
+  Auswahl), `features/session/beacon_screen.dart` (gemerkte Vorgabe),
+  `features/shell/app_shell.dart` (Verlängern im Banner),
+  `data/providers.dart` (`extendMySession`, `clampSessionDuration`,
+  `preferredSessionDurationProvider`), `core/format.dart`
+  (`formatDuration`), `data/db/database.dart` (`setSessionExpiry`),
+  `data/online/online_service.dart` (`updateSessionExpiry`)
+- **Server:** `sessions.expires_at` existiert seit 0001 samt
+  `end_expired_sessions()`, das per Cron abgelaufene Sessions schließt —
+  und `upsertSession` überträgt den Wert längst. Neu ist allein die
+  **Grenzprüfung** in Migration 0021.
+
+**Korrektur an der ersten Fassung dieses Dokuments:** Dort stand, die
+Laufzeit sei „fest einprogrammiert". Das stimmte nur für den
+Ein-Tap-Beacon — der ausführliche Start-Bildschirm bot 1/3/6 Stunden
+bereits an, und die Restzeit stand ebenfalls schon auf der Karte. Wirklich
+gefehlt haben das Verlängern, die gemerkte Vorgabe und die Grenzen.
+
+**Grenzen:** 30 Minuten bis 12 Stunden je Vorgang, geprüft in der App
+(`clampSessionDuration`) **und** serverseitig. Die
+`check`-Bedingung erlaubt bis zu 24 Stunden ab Start, weil wiederholtes
+Verlängern ab jetzt rechnet — sie begrenzt damit die Gesamtlebensdauer
+eines Beacons auf einen Tag. `not valid` gesetzt, damit historische
+Sessions die Migration nicht scheitern lassen.
 
 **Restzeit-Anzeige** ohne Timer je Karte: Der bestehende `clockProvider`
-tickt bereits im Minutentakt für die Karte; die Anzeige hängt sich daran.
+tickt bereits im Minutentakt; die Anzeige hängt sich daran.
 
 ## Modularität
 
@@ -59,18 +79,19 @@ Alle.
 Unkritisch, im Gegenteil: Kürzere Laufzeiten bedeuten weniger gleichzeitig
 aktive Sessions in Kartenabfragen.
 
+## Umsetzungsstatus
+
+Vollständig. Abgesichert durch `test/session_duration_test.dart`
+(8 Tests): Grenzen nach oben und unten, Auswahl innerhalb der Grenzen,
+Beschriftung der Dauern.
+
 ## Umsetzungsplan
 
-1. **Auswahl beim Start** + Übertragung von `expires_at`, serverseitige
-   Grenzprüfung (30 min bis 12 h).
-   *Prüfkriterium:* Session mit 1 h endet nach einer Stunde automatisch;
-   ein Wert außerhalb der Grenzen wird abgelehnt.
-2. **Restzeit auf der Karte** über `clockProvider`.
-   *Prüfkriterium:* Widget-Test mit fester Uhrzeit.
-3. **Verlängern,** wieder gegen dieselbe Obergrenze geprüft.
+Erledigt.
 
 ## Offene Punkte / Ideen
 
 - Hinweis kurz vor Ablauf („dein Beacon endet in 10 Minuten — verlängern?")
   — sinnvoll erst mit Push-Nachrichten
-- Merken der zuletzt gewählten Dauer als neue Vorbelegung
+- Die gemerkte Vorgabe lebt derzeit nur im Speicher; über einen Neustart
+  hinweg zu merken wäre der nächste kleine Schritt

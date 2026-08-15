@@ -43,6 +43,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [17](17-app-update.md) | App-Update | 🟢 | Prüfung gegen GitHub-Releases |
 | [18](18-plattformen.md) | Plattformen | 🟡 | Android + Web live, Windows baubar |
 | [19](19-feed-eintraege-loeschen.md) | Feed-Einträge löschen | 🟢 | Eigene Check-ins entfernen, offlinefähig, Rückgängig |
+| [23](23-beacon-laufzeit.md) | Beacon-Laufzeit | 🟢 | 30 min – 12 h, verlängerbar, serverseitig begrenzt |
 
 ## Geplante Funktionen
 
@@ -51,7 +52,6 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [20](20-feed-statistiken.md) | Feed-Statistiken | 🔴 | Menge, Land, Art, Gebinde, Zeitraum |
 | [21](21-hintergrundgeschichten.md) | Hintergrundgeschichten | 🔴 | Geschichten zu Bier & Brauerei, Info beim Scan |
 | [22](22-freunde-per-qr-code.md) | Freunde per QR-Code | 🔴 | Anzeigen und scannen statt tippen |
-| [23](23-beacon-laufzeit.md) | Beacon-Laufzeit | 🔴 | Gültigkeitsdauer selbst wählen |
 | [24](24-freundeskreise.md) | Freundeskreise | 🔴 | Bekannte / Freunde / Best Buddys mit Sichtbarkeit |
 | [25](25-brauerei-besitz.md) | Brauerei-Besitz | 🔴 | Verifizierte Inhaber pflegen ihre Daten |
 | [26](26-bier-angebote.md) | Bier-Angebote | 🔴 | Sehr späte Ausbaustufe |

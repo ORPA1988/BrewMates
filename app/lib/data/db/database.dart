@@ -702,6 +702,12 @@ class AppDatabase extends _$AppDatabase {
             ..limit(1))
           .getSingleOrNull();
 
+  /// Neues Ende einer laufenden Session (Verlängern).
+  Future<void> setSessionExpiry(String id, DateTime until) async {
+    await (update(sessions)..where((t) => t.id.equals(id)))
+        .write(SessionsCompanion(expiresAt: Value(until)));
+  }
+
   Future<void> endSession(String id, DateTime now) async {
     await (update(sessions)..where((t) => t.id.equals(id))).write(
       SessionsCompanion(

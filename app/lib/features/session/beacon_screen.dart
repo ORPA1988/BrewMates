@@ -40,7 +40,9 @@ class _BeaconScreenState extends ConsumerState<BeaconScreen> {
         final earned = await ref.read(actionsProvider).startSession(
               message: 'Alle willkommen! 🍻',
               visibility: SessionVisibility.friends,
-              autoEnd: const Duration(hours: 3),
+              // Der Ein-Tap-Beacon fragt bewusst nichts — er nimmt die
+              // zuletzt gewählte Laufzeit (sonst drei Stunden).
+              autoEnd: ref.read(preferredSessionDurationProvider),
               latitude: latitude,
               longitude: longitude,
             );

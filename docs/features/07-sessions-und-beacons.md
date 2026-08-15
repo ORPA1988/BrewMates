@@ -1,7 +1,7 @@
 # 07 Sessions & Beacons
 
-> **Status:** 🟡 teilweise — funktioniert vollständig, aber die Laufzeit
-> ist fest einprogrammiert.
+> **Status:** 🟡 teilweise — funktioniert vollständig; es fehlen
+> Benachrichtigungen, damit Beacons auch ungeöffnete Apps erreichen.
 > **Seit:** 0.2.0 · **Zuletzt geprüft:** 2026-08-15
 
 ## Zielsetzung
@@ -55,16 +55,16 @@ aktiver Sessions zusätzlich.
 
 Funktional vollständig. Zwei Einschränkungen:
 
-- **Laufzeit fest** bei 3 Stunden — der Wert steht in der Datenbank, die
-  App lässt ihn nicht wählen
+- ~~**Laufzeit fest** bei 3 Stunden~~ — seit 0.9.14 wählbar, verlängerbar
+  und serverseitig begrenzt ([Funktion 23](23-beacon-laufzeit.md))
 - **Keine Benachrichtigung:** Wer die App nicht öffnet, erfährt vom Beacon
   eines Freundes nichts. Das ist die größte Lücke der Funktion und hängt
   an Push-Nachrichten (Firebase), die noch nicht eingerichtet sind.
 
 ## Umsetzungsplan
 
-1. [Laufzeit wählbar](23-beacon-laufzeit.md) inklusive Restanzeige und
-   Verlängern
+1. ~~[Laufzeit wählbar](23-beacon-laufzeit.md) inklusive Restanzeige und
+   Verlängern~~ — erledigt (0.9.14)
 2. Push-Nachrichten beim Start einer Freundes-Session — mit strengen
    Regeln gegen Belästigung: nur beim Start, höchstens alle 15 Minuten je
    Empfänger, abschaltbar

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../core/format.dart' show formatDuration;
 import '../../data/db/database.dart';
 import '../../data/location_service.dart';
 import '../../data/providers.dart';
@@ -28,7 +29,8 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
 
   /// Gewählte Crew für `visibility == crew`.
   String? _crewId;
-  Duration _autoEnd = const Duration(hours: 3);
+  /// Vorbelegt mit der zuletzt gewählten Laufzeit (sonst drei Stunden).
+  late Duration _autoEnd = ref.read(preferredSessionDurationProvider);
   bool _shareLocation = true;
   String? _venueError;
   bool _submitting = false;
@@ -278,15 +280,18 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
               const SizedBox(width: 12),
               DropdownButton<Duration>(
                 value: _autoEnd,
-                items: const [
-                  DropdownMenuItem(
-                      value: Duration(hours: 1), child: Text('1 h')),
-                  DropdownMenuItem(
-                      value: Duration(hours: 3), child: Text('3 h')),
-                  DropdownMenuItem(
-                      value: Duration(hours: 6), child: Text('6 h')),
+                items: [
+                  for (final d in sessionDurationChoices)
+                    DropdownMenuItem(
+                        value: d, child: Text(formatDuration(d))),
                 ],
-                onChanged: (v) => setState(() => _autoEnd = v!),
+                onChanged: (v) {
+                  if (v == null) return;
+                  setState(() => _autoEnd = v);
+                  // Als Vorgabe merken — auch für den Ein-Tap-Beacon.
+                  ref.read(preferredSessionDurationProvider.notifier).state =
+                      v;
+                },
               ),
             ],
           ),

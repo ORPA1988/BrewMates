@@ -246,6 +246,38 @@ final friendsProvider = StreamProvider<List<Profile>>(
 // Feed, Toasts, Kommentare
 // ============================================================================
 
+/// Grenzen der Beacon-Laufzeit. Kürzer als eine halbe Stunde ergibt keine
+/// Einladung, länger als zwölf Stunden ist fast immer ein vergessener
+/// Beacon — und ein Beacon, der aus Versehen stehen bleibt, ist ein
+/// Datenschutzproblem, kein Komfortmerkmal. Beide Grenzen werden
+/// serverseitig nochmals geprüft (Migration 0021).
+const minSessionDuration = Duration(minutes: 30);
+const maxSessionDuration = Duration(hours: 12);
+
+/// Hält eine Laufzeit in den erlaubten Grenzen. Rein und testbar.
+Duration clampSessionDuration(Duration d) {
+  if (d < minSessionDuration) return minSessionDuration;
+  if (d > maxSessionDuration) return maxSessionDuration;
+  return d;
+}
+
+/// Zur Auswahl stehende Laufzeiten.
+const sessionDurationChoices = <Duration>[
+  Duration(minutes: 30),
+  Duration(hours: 1),
+  Duration(hours: 2),
+  Duration(hours: 3),
+  Duration(hours: 5),
+  Duration(hours: 8),
+  Duration(hours: 12),
+];
+
+/// Zuletzt gewählte Laufzeit — Vorgabe für den nächsten Beacon,
+/// insbesondere für den Ein-Tap-Beacon, der nicht fragen soll.
+/// Ohne eigene Wahl bleibt es bei drei Stunden wie bisher.
+final preferredSessionDurationProvider =
+    StateProvider<Duration>((ref) => const Duration(hours: 3));
+
 /// Seitengröße für Feed und Tagebuch. Beide laden zunächst eine Seite und
 /// erweitern das Fenster, sobald der Mensch ans Ende scrollt — ohne
 /// Obergrenze würde jeder Check-in eines ganzen Bierlebens auf einmal
@@ -947,7 +979,7 @@ class BrewActions {
           visibility: visibility,
           status: SessionStatus.active,
           startedAt: now,
-          expiresAt: now.add(autoEnd),
+          expiresAt: now.add(clampSessionDuration(autoEnd)),
           latitude: Value(latitude),
           longitude: Value(longitude),
         ));
@@ -975,6 +1007,28 @@ class BrewActions {
       final online = await _online();
       if (online != null) unawaited(online.endSession(current.id));
     }
+  }
+
+  /// Laufende eigene Session verlängern.
+  ///
+  /// Gerechnet wird ab **jetzt**, nicht ab dem bisherigen Ende: „noch zwei
+  /// Stunden" ist das, was jemand meint, der um 22 Uhr im Wirtshaus sitzt
+  /// und verlängert. Die Obergrenze [maxSessionDuration] gilt wie beim
+  /// Start und wird serverseitig nochmals geprüft.
+  ///
+  /// Rückgabe: das neue Ende, oder null wenn keine Session läuft.
+  Future<DateTime?> extendMySession(Duration by) async {
+    final me = await _me();
+    final now = DateTime.now();
+    final current = await _db.getMyActiveSession(me.id, now);
+    if (current == null) return null;
+    final until = now.add(clampSessionDuration(by));
+    await _db.setSessionExpiry(current.id, until);
+    final online = await _online();
+    if (online != null) {
+      unawaited(online.updateSessionExpiry(current.id, until));
+    }
+    return until;
   }
 
   /// „Bin dabei!" auf die Session eines Freundes (lokal oder online).
