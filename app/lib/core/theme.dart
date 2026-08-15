@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 /// „Abend in der Bar": warme Bernstein/Kupfer-Palette,
@@ -31,12 +32,26 @@ class BrewTheme {
         // auch ohne Zugriff auf fonts.gstatic.com lesbar; Emojis/Symbole
         // kommen aus den gebündelten Noto-Fallbacks statt vom Google-CDN.
         fontFamily: 'Roboto',
-        // NotoColorEmoji wird auf Web zur Laufzeit geladen
-        // (core/emoji_font.dart); wo er fehlt, wird der Eintrag einfach
-        // übersprungen und die monochromen Bundles greifen.
+        // Emoji-Fallback ist plattformabhängig — und das ist keine
+        // Feinheit, sondern der Unterschied zwischen einem farbigen 🍺
+        // und einem schwarz-weißen Umriss.
+        //
+        // **Web** hat keine eigene Emoji-Schrift, auf die man sich
+        // verlassen könnte. `NotoColorEmoji` wird dort zur Laufzeit
+        // nachgeladen (core/emoji_font.dart); bis dahin und im
+        // Fehlerfall trägt das gebündelte monochrome `NotoEmoji`.
+        //
+        // **Android und iOS bringen farbige Emojis mit.** Die Kette wird
+        // aber VOR der Systemschrift durchsucht — stand das monochrome
+        // Bundle hier unbedingt drin, gewann es gegen die farbige
+        // Systemschrift, und die App zeigte blasse Umrisse, wo die
+        // Web-App bunte Symbole hatte. Genau so war es bis 2026-08-15.
+        //
+        // `NotoSansSymbols2` bleibt überall: Es enthält keine Emojis,
+        // sondern Zeichen wie ● und ○, für die es sonst keinen Ersatz
+        // gibt.
         fontFamilyFallback: const [
-          'NotoColorEmoji',
-          'NotoEmoji',
+          if (kIsWeb) ...['NotoColorEmoji', 'NotoEmoji'],
           'NotoSansSymbols2',
         ],
         cardTheme: const CardTheme(
