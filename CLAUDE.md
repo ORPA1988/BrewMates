@@ -7,7 +7,7 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
 
 - **Branch**: PRs #2–#4 sind in `main` gemerged; neue Arbeit startet auf
   frischen Branches von `main`.
-  Version `0.10.0-beta+18` (Beta 0.x bis
+  Version `0.10.1-beta+19` (Beta 0.x bis
   zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch; die
   frühen Alpha-Releases wurden von 1.1/1.2 auf 0.1.0/0.2.0 umbenannt).
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
@@ -126,8 +126,9 @@ mit 403 (Branch-Scope-Token). Der Lauf baut APK+AAB und veröffentlicht sie.
   mit 0.10 erledigt (Seitenladen, faule Listen, Feed-Index, Löschen);
   offen bleiben Trigram-Index für die Freundessuche und ein
   Delta-Restore.
-- **Drift-Stand v12**: v10 Warteschlange gelöschter Check-ins, v11
-  `checkins.volumeMl`, v12 `story` bei Bier und Brauerei. Schreibende
+- **Drift-Stand v13**: v10 Warteschlange gelöschter Check-ins, v11
+  `checkins.volumeMl`, v12 `story` bei Bier und Brauerei, v13
+  `checkins.dirty` (Korrekturen, Funktion 27). Schreibende
   Aktionen, die offline funktionieren sollen, folgen dem Muster
   `venue_queue.dart` / `checkin_delete_queue.dart` (FIFO, idempotent,
   Verbindungsfehler bricht ab, fachlicher Fehler verwirft).

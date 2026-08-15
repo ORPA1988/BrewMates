@@ -218,6 +218,49 @@ class BrewActions {
     return row;
   }
 
+  /// Einen eigenen Check-in korrigieren (Funktion 27).
+  ///
+  /// Wirkt sofort lokal; die Übertragung übernimmt der reguläre Abgleich
+  /// über das `dirty`-Flag. Rückgabe: ob es der eigene Check-in war —
+  /// fremde lehnt schon der Server ab, aber die App soll gar nicht erst
+  /// so tun.
+  ///
+  /// Das Bier bleibt unverändert. Ein anderes Bier wäre ein anderer
+  /// Check-in, keine Korrektur.
+  Future<bool> editCheckin(
+    String checkinId, {
+    double? rating,
+    String? note,
+    bool clearNote = false,
+    List<String>? flavorTags,
+    ServingStyle? servingStyle,
+    bool clearServingStyle = false,
+    int? volumeMl,
+    bool clearVolume = false,
+    String? venueName,
+    String? venueId,
+    bool clearVenue = false,
+  }) async {
+    final me = await _me();
+    final row = await _db.findCheckin(checkinId);
+    if (row == null || row.profileId != me.id) return false;
+    await _db.updateCheckinLocal(
+      checkinId,
+      rating: rating,
+      note: note,
+      clearNote: clearNote,
+      flavorTags: flavorTags?.join(','),
+      servingStyle: servingStyle,
+      clearServingStyle: clearServingStyle,
+      volumeMl: volumeMl,
+      clearVolume: clearVolume,
+      venueName: venueName,
+      venueId: venueId,
+      clearVenue: clearVenue,
+    );
+    return true;
+  }
+
   /// Nimmt ein Löschen zurück.
   ///
   /// Lief der Abgleich in der Zwischenzeit bereits (Sekundenfenster), ist

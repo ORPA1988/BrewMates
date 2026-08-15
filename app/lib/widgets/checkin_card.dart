@@ -7,6 +7,7 @@ import '../data/db/database.dart';
 import '../data/providers.dart';
 import 'badge_celebration.dart';
 import 'rating_stars.dart';
+import 'checkin_edit_sheet.dart';
 
 /// Die zentrale Feed-Karte: ein Check-in mit Bier, Bewertung, Notiz,
 /// Geschmacks-Tags sowie Toast- und Kommentar-Aktionen.
@@ -31,8 +32,18 @@ class CheckinCard extends ConsumerWidget {
       padding: EdgeInsets.zero,
       onSelected: (value) {
         if (value == 'delete') _confirmDelete(context, ref);
+        if (value == 'edit') showCheckinEditSheet(context, details);
       },
       itemBuilder: (_) => const [
+        PopupMenuItem(
+          value: 'edit',
+          child: ListTile(
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(Icons.edit_outlined),
+            title: Text('Check-in bearbeiten'),
+          ),
+        ),
         PopupMenuItem(
           value: 'delete',
           child: ListTile(

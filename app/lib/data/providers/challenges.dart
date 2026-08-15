@@ -97,7 +97,15 @@ final checkinAutoSyncProvider = FutureProvider<int>((ref) async {
       await ref.watch(pendingCheckinUploadProvider.future) ?? const [];
   if (pending.isEmpty) return 0;
   final uploaded = await online.checkins.uploadLocalCheckins(pending) ?? 0;
-  if (uploaded > 0) ref.invalidate(pendingCheckinUploadProvider);
+  if (uploaded > 0) {
+    // Angekommen heißt: wieder deckungsgleich mit dem Server. Bliebe das
+    // Flag stehen, lüde der Abgleich dieselben Zeilen bis in alle Ewigkeit
+    // erneut hoch.
+    await ref
+        .read(databaseProvider)
+        .markCheckinsClean([for (final d in pending) d.checkin.id]);
+    ref.invalidate(pendingCheckinUploadProvider);
+  }
   return uploaded;
 });
 

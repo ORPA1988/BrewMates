@@ -39,6 +39,7 @@ CheckinDetails _details({required String checkinId, double? rating}) {
     checkin: Checkin(
       id: checkinId,
       profileId: 'me',
+      dirty: false,
       beerId: beer.id,
       sessionId: null,
       venueName: 'Bierlokal',
