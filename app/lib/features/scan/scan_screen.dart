@@ -8,7 +8,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
 import '../../widgets/rating_stars.dart';
-import '../beers/story_sheet.dart';
+import '../../widgets/story_sheet.dart';
 import 'barcode_lookup.dart';
 
 /// Hero-Funktion „🍺 Bier scannen": Kamera-Scan auf Android/iOS und im

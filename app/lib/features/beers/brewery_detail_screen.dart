@@ -8,7 +8,7 @@ import '../../core/external_links.dart';
 import '../../core/format.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
-import 'story_sheet.dart';
+import '../../widgets/story_sheet.dart';
 
 /// Brauerei-Detailseite: Standort, Eigentümer, Kennzahlen und alle Biere
 /// der Brauerei aus der Community-Datenbank.

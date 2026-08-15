@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 
 /// Anzeige einer Hintergrundgeschichte.
 ///
+/// Liegt in `widgets/`, weil Bier-Detail UND Scanner sie zeigen. Vorher
+/// importierte `features/scan/` sie aus `features/beers/` — ein
+/// Cross-Feature-Import, den der Architektur-Test übersah, weil er
+/// relativ geschrieben war.
+///
 /// Bewusst schlicht: Die Geschichte selbst soll wirken, nicht ihre
 /// Verpackung.
 class StorySection extends StatelessWidget {
