@@ -102,3 +102,18 @@ final leaderboardProvider = FutureProvider<
   if (online == null) return const [];
   return online.contributionLeaderboard();
 });
+
+/// Muss der Nutzer aktualisieren, bevor die App weiterläuft?
+///
+/// Der Riegel aus Migration 0029. Er greift nur bei einer klaren Antwort
+/// des Servers — offline, abgemeldet oder ohne gesetzten Wert läuft die
+/// App normal weiter (siehe `core/min_version.dart`).
+final updatePflichtProvider = FutureProvider<bool>((ref) async {
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) return false;
+  final min = await online.minSupportedVersion();
+  return istUpdatePflicht(
+    appVersion: AppConfig.appVersion,
+    minVersion: min,
+  );
+});

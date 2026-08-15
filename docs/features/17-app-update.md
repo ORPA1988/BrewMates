@@ -33,6 +33,44 @@ steckt: Ohne festen Schlüssel verweigert Android die Installation über
 die bestehende App — und der Umweg über Deinstallation kostet die lokalen
 Daten.
 
+## „Update erforderlich" — der Riegel (0029, 2026-08-15)
+
+Der bisherige Hinweis ist freundlich: Er meldet eine neue Fassung, zwingt
+aber zu nichts. Das hatte eine unsichtbare Folge — **jede Migration musste
+ewig rücksichtsvoll bleiben.** Wer eine Spalte entzieht, bricht ältere
+Clients, und der Nutzer sieht bloß eine leere Freundesliste, ohne zu
+ahnen, dass seine App zu alt ist. Deshalb liegt 0026 auf Halde und
+`beers.barcode` bleibt in 0028 stehen, obwohl sie ersetzt ist.
+
+Jetzt nennt der Server in `app_config.min_supported_version` die kleinste
+noch unterstützte Fassung. Ist die App älter, erscheint statt der
+Oberfläche ein Bildschirm, der **den Grund nennt** und zum Download führt.
+Danach darf eine Migration entziehen: Die betroffene Fassung startet
+ohnehin nicht mehr durch.
+
+### Die eine Regel, die zählt
+
+**Ein Netzproblem darf niemals aussperren.** BrewMates funktioniert ohne
+Konto und ohne Verbindung vollständig — wer im Funkloch sitzt, muss
+einchecken können. Gesperrt wird ausschließlich bei einer klaren,
+lesbaren Antwort des Servers. Steht sie aus, scheitert sie, ist der Wert
+leer oder unlesbar: Die App läuft normal weiter.
+
+Drei der vier Tests in `test/update_required_test.dart` prüfen genau
+diese Richtung — dass **nicht** gesperrt wird. Ein Riegel, der zu oft
+greift, ist schlimmer als gar keiner.
+
+### Grenze, die man kennen muss
+
+Der Riegel wirkt **nur für Fassungen, die ihn mitbringen**. Bereits
+ausgelieferte 0.9.x-Stände kennen ihn nicht und laufen weiter in den
+unerklärlichen Fehler; eine ausgelieferte App tut, was sie beim Bauen
+gelernt hat. `min_supported_version` steht deshalb auf `0.1.0` — der
+Riegel ist da, aber zu. Angehoben wird er, sobald 0.10.2 verbreitet ist.
+
+Ab dann ist ein Bruch eine Zeile Konfiguration statt einer
+Migrationsstrategie.
+
 ## Modularität
 
 - **Hängt ab von:** nichts

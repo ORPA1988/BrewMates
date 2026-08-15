@@ -525,6 +525,27 @@ class OnlineService {
   /// Neues Bier direkt in die Community-DB eintragen (unverifiziert; die
   /// Brauerei wird per Name wiederverwendet oder mit angelegt, das Foto
   /// landet im öffentlichen beer-photos-Bucket).
+  /// Kleinste noch unterstützte App-Version (Migration 0029).
+  ///
+  /// `null` heißt „nicht erreichbar oder nicht gesetzt" — und führt
+  /// bewusst **nie** zur Sperre. Ein Netzproblem darf niemanden aus einer
+  /// App aussperren, die ohne Netz vollständig funktioniert.
+  ///
+  /// Absichtlich ohne Anmeldung lesbar: Sonst umginge man den Riegel
+  /// durch Abmelden.
+  Future<String?> minSupportedVersion() async {
+    try {
+      final row = await _client
+          .from('app_config')
+          .select('value')
+          .eq('key', 'min_supported_version')
+          .maybeSingle();
+      return row?['value'] as String?;
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Barcode samt Gebindegröße für alle hinterlegen (Migration 0028).
   ///
   /// Eine EAN bezeichnet die Handelseinheit, nicht das Getränk — deshalb

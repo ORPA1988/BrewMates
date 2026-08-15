@@ -12,6 +12,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' show User;
 
 import '../core/app_update.dart';
 import '../core/config.dart';
+import '../core/min_version.dart';
 import '../core/format.dart' show isUuid;
 import '../domain/account_level.dart';
 import '../domain/badges.dart';
