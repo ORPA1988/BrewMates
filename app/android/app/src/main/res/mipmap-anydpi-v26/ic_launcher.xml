@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Kein <inset> um den Vordergrund!
+
+  Hier stand bis 2026-08-15 ein zusaetzlicher Inset von 16 Prozent. Er
+  sollte die Schutzzone der adaptiven Icons einhalten - die aber haelt
+  bereits das Icon-Skript ein (tools/generate_icon.py zeichnet den Krug
+  auf die inneren ~62 Prozent). Die Schutzzone wurde also zweimal
+  angewendet: Das Motiv landete bei 29 Prozent der sichtbaren Flaeche
+  statt bei den erlaubten ~66 und wirkte im Vergleich zur Web-App, die
+  das volle Quadrat zeigt, verloren.
+
+  Die Groesse gehoert an genau eine Stelle, und das ist das Skript.
+-->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
   <background android:drawable="@color/ic_launcher_background"/>
-  <foreground>
-      <inset
-          android:drawable="@drawable/ic_launcher_foreground"
-          android:inset="16%" />
-  </foreground>
+  <foreground android:drawable="@drawable/ic_launcher_foreground"/>
 </adaptive-icon>

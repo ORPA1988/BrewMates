@@ -18,6 +18,28 @@ ein Name mehrdeutig ist — und er erspart das Tippen im Halbdunkel.
 4. Der neue Eintrag landet sofort in der gemeinsamen Datenbank und steht
    allen zur Verfügung
 
+## Was eine EAN eigentlich sagt
+
+Eine EAN/GTIN identifiziert **nicht das Bier, sondern die
+Handelseinheit**: Produkt plus Verpackung plus Größe. Dieselbe Marke in
+0,33-Flasche, 0,5-Dose und als Sixpack tragt drei verschiedene Nummern.
+
+Daraus folgt der ganze Rest dieser Funktion:
+
+- **Ein Bier hat mehrere Barcodes** — deshalb ist `beers.barcodes` eine
+  Liste und keine Spalte mit einem Wert.
+- **Der Barcode kennt die Größe**, das Bier nicht. Beim Scannen steht sie
+  im Check-in deshalb schon drin (`barcode_volumes`, Drift v14).
+- **Eine unbekannte EAN heißt selten „neues Bier"**, meistens „bekanntes
+  Bier ohne diesen Code". Deshalb die Lupe beim Anlegen (siehe Funktion
+  04): Sie hängt den Code an den vorhandenen Eintrag, statt ein Duplikat
+  zu erzeugen. Zwei Einträge für dasselbe Bier würden Bewertungen,
+  Abzeichen und Statistik auseinanderreißen.
+
+Einschränkung fürs Protokoll: EANs werden nach Jahrzehnten gelegentlich
+neu vergeben, und Aktionsware trägt manchmal fremde Codes. Die EAN ist ein
+sehr guter Schlüssel — **kein Beweis**.
+
 ## Technische Umsetzung
 
 - **Dateien:** `features/scan/scan_screen.dart` (Bedienung),

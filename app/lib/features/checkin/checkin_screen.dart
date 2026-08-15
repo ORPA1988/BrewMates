@@ -15,9 +15,19 @@ import '../../widgets/venue_picker.dart';
 
 /// Bier einchecken: Auswahl → Bewertung → Geschmack/Serving/Ort/Notiz.
 class CheckinScreen extends ConsumerStatefulWidget {
-  const CheckinScreen({super.key, this.preselectedBeerId});
+  const CheckinScreen({
+    super.key,
+    this.preselectedBeerId,
+    this.preselectedVolumeMl,
+  });
 
   final String? preselectedBeerId;
+
+  /// Aus dem Barcode erkannte Gebindegröße.
+  ///
+  /// Eine EAN bezeichnet die Handelseinheit — wer eine 0,33er scannt, soll
+  /// nicht 0,5 antippen müssen. Übersteuerbar bleibt sie natürlich.
+  final int? preselectedVolumeMl;
 
   @override
   ConsumerState<CheckinScreen> createState() => _CheckinScreenState();
@@ -33,8 +43,11 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
 
   /// Füllmenge in ml. Wird vom Gebinde vorbelegt, bis der Mensch selbst
   /// wählt — danach bleibt seine Wahl stehen.
-  int? _volumeMl;
-  bool _volumeTouched = false;
+  late int? _volumeMl = widget.preselectedVolumeMl;
+
+  /// Eine vom Barcode erkannte Menge gilt bereits als gesetzt — sonst
+  /// überschriebe die Gebinde-Auswahl sie sofort wieder.
+  late bool _volumeTouched = widget.preselectedVolumeMl != null;
   final _venueController = TextEditingController();
   final _noteController = TextEditingController();
   bool _venuePrefilled = false;

@@ -100,6 +100,30 @@ class Beers extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Gebindegröße je Barcode.
+///
+/// Eine EAN bezeichnet **nicht das Bier, sondern die Handelseinheit**:
+/// 0,33-Flasche, 0,5-Dose und Sixpack tragen je eigene Nummern. Genau
+/// darin unterscheiden sich die mehreren Barcodes eines Biers — also
+/// gehört die Größe an den Code und nicht ans Bier.
+///
+/// Bewusst eine eigene, schlanke Tabelle statt einer weiteren Spalte in
+/// [Beers]: `beers.barcodes` wird vom Community-Abgleich **wholesale
+/// überschrieben**. Eine Größe, die dort mitgeschrieben würde, wäre beim
+/// nächsten Abgleich weg. Hier steht sie daneben und überlebt.
+///
+/// Unbekannte Codes fehlen einfach — dann schätzt die Auswertung wie
+/// bisher nach Gebinde.
+class BarcodeVolumes extends Table {
+  TextColumn get ean => text()();
+
+  /// Füllmenge in Millilitern (500 = halber Liter).
+  IntColumn get volumeMl => integer()();
+
+  @override
+  Set<Column> get primaryKey => {ean};
+}
+
 /// Gemeinsame Gasthaus-Datenbank (online-first, Supabase = Wahrheit;
 /// diese Tabelle ist der lokale Cache für Karte, Picker und Offline-Anzeige).
 class Venues extends Table {
@@ -346,6 +370,7 @@ class ProfileStats {
   Breweries,
   Beers,
   Venues,
+  BarcodeVolumes,
   Sessions,
   SessionParticipants,
   Checkins,
@@ -365,7 +390,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(openInMemory());
 
   @override
-  int get schemaVersion => 13;
+  int get schemaVersion => 14;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -488,6 +513,10 @@ class AppDatabase extends _$AppDatabase {
             // v12: Hintergrundgeschichten zu Bier und Brauerei.
             await m.addColumn(beers, beers.story);
             await m.addColumn(breweries, breweries.story);
+          }
+          if (from < 14) {
+            // v14: Gebindegröße je Barcode (Funktion 28).
+            await m.createTable(barcodeVolumes);
           }
           if (from < 13) {
             // v13: Korrekturen an Check-ins (Funktion 27). Bestehende
@@ -890,6 +919,55 @@ class AppDatabase extends _$AppDatabase {
       }
     }
     return null;
+  }
+
+  /// Einen gescannten Barcode an ein **vorhandenes** Bier hängen.
+  ///
+  /// Der Fall dahinter: Ein Bier steht längst in der Datenbank, hat aber
+  /// noch keine EAN — etwa weil es aus der gebündelten Community-Liste
+  /// stammt, die nur für einen Teil der Einträge Barcodes kennt. Wer es
+  /// scannt, soll es **vervollständigen** statt ein Duplikat anzulegen.
+  ///
+  /// Ein Bier hat mehrere Barcodes, weil eine EAN nicht das Bier
+  /// bezeichnet, sondern die Handelseinheit: 0,33-Flasche, 0,5-Dose und
+  /// Sixpack tragen je eigene Nummern.
+  ///
+  /// Rückgabe: ob etwas geändert wurde. `false` heißt, die EAN hing dort
+  /// bereits — kein Fehler, nur nichts zu tun.
+  Future<bool> addBarcodeToBeer(String beerId, String ean) async {
+    final beer = await (select(beers)..where((t) => t.id.equals(beerId)))
+        .getSingleOrNull();
+    if (beer == null) return false;
+    final vorhanden = beer.barcodes
+        .split(',')
+        .map((c) => c.trim())
+        .where((c) => c.isNotEmpty)
+        .toList();
+    if (vorhanden.contains(ean)) return false;
+    await (update(beers)..where((t) => t.id.equals(beerId))).write(
+      BeersCompanion(barcodes: Value([...vorhanden, ean].join(','))),
+    );
+    return true;
+  }
+
+  /// Gebindegröße zu einem Barcode merken.
+  ///
+  /// Idempotent: Derselbe Code darf mehrfach gemeldet werden, die letzte
+  /// Angabe gewinnt. Eine Korrektur soll wirken, ohne dass jemand vorher
+  /// löschen muss.
+  Future<void> setBarcodeVolume(String ean, int volumeMl) =>
+      into(barcodeVolumes).insertOnConflictUpdate(
+          BarcodeVolumesCompanion.insert(ean: ean, volumeMl: volumeMl));
+
+  /// Bekannte Gebindegröße zu einem Barcode (null = unbekannt).
+  ///
+  /// Damit weiß der Check-in nach dem Scannen, ob eine 0,33er oder eine
+  /// 0,5er in der Hand ist — der eigentliche Unterschied zwischen zwei
+  /// Barcodes desselben Biers.
+  Future<int?> barcodeVolume(String ean) async {
+    final row = await (select(barcodeVolumes)..where((t) => t.ean.equals(ean)))
+        .getSingleOrNull();
+    return row?.volumeMl;
   }
 
   Stream<Brewery?> watchBrewery(String id) =>
