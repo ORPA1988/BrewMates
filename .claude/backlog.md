@@ -24,7 +24,7 @@ KI-Unterstützung deutlich weniger).
 
 | # | Punkt | Aufwand | Warum |
 |---|---|---|---|
-| B-1 | **Trigram-Index** (`pg_trgm` + GIN) für die Freundessuche über `display_name` | S | `ilike '%x%'` kann keinen normalen Index nutzen. Ab ~5.000 Profilen spürbar. Bekannt aus dem Audit. |
+| ~~B-1~~ | ~~**Trigram-Index**~~ — erledigt 15.08.2026: Migration 0027, `pg_trgm` im Schema `extensions`, GIN auf `username` und `display_name`. Live eingespielt. | — | `supabase/tests/suche_index.test.sql` prüft, dass der Planer die Indizes **wählt** — ein Index, den niemand nutzt, ist nur Schreiblast. |
 | B-2 | **Cloud-Wiederherstellung inkrementell** statt „immer alles" | M | Beim Gerätewechsel wächst die Wiederherstellung sonst linear mit dem Bestand. |
 | B-3 | **`online_service.dart` (1.573 Z.) entflechten** in `online/friends.dart`, `online/sessions.dart`, `online/checkins.dart`, `online/venues.dart` | M | Jede Änderung lädt heute die ganze Datei in den Kontext — direkter Token- und Fehlerkostentreiber. |
 | B-4 | **`providers.dart` (939 Z.) je Feature aufteilen** | M | Gleicher Grund. Provider gehören neben ihr Feature. |

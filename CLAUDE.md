@@ -13,7 +13,7 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0024` sind LIVE** — `0020–0024` am 2026-08-15 eingespielt und
+  **`0001–0025` und `0027` sind LIVE** — `0020–0024` am 2026-08-15 eingespielt und
   gegengeprüft (Spalten, Constraints, Enum, Index, vier neue Funktionen,
   Policy; `friendships` unverändert alle auf `freund`, also keine
   Sichtbarkeitsänderung am Rollout-Tag). Kein Schema-Drift.
@@ -47,7 +47,8 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   checkins_created_idx, 0021 sessions_duration_bounds 29 min–24 h, 0022
   checkins.volume_ml, 0023 story auf beers/breweries, 0024 Freundeskreise
   `friend_tier` + tier_for/set_friend_tier/my_thirsty_until/
-  thirsty_friends + neue sessions_select-Policy).
+  thirsty_friends + neue sessions_select-Policy, 0025 Tabellenrechte,
+  0027 pg_trgm-Indizes für die Freundessuche).
   Google-Login und
   E-Mail-Anmeldung (ohne Bestätigungspflicht) sind eingerichtet und
   funktionieren. Seit 0008 gilt: EXECUTE auf Funktionen wird von PUBLIC
