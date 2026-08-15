@@ -18,6 +18,8 @@ import '../domain/badges.dart';
 import '../domain/challenges.dart';
 import '../features/scan/barcode_lookup.dart';
 import '../widgets/badge_celebration.dart';
+import 'badge_engine.dart';
+import 'challenge_engine.dart';
 import 'checkin_delete_queue.dart';
 import 'community_sync.dart';
 import 'db/database.dart';

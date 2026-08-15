@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../data/db/database.dart';
+import '../core/checkin_facts.dart';
 
 /// Challenges: von Admins in Supabase angelegte Herausforderungen mit
 /// Zeitfenster und Belohnungs-Badge. Der Fortschritt wird – wie bei den
@@ -27,7 +27,7 @@ class ChallengeDef {
   final int target;
 
   /// Fortschritt über die bereits aufs Zeitfenster gefilterten Check-ins.
-  final int Function(List<CheckinDetails> windowed) progressOf;
+  final int Function(List<CheckinFacts> windowed) progressOf;
 
   /// Slug des Belohnungs-Badges in der lokalen UserBadges-Tabelle.
   String get badgeSlug => 'challenge-${id.substring(0, 8)}';
@@ -35,13 +35,25 @@ class ChallengeDef {
   bool isActiveAt(DateTime now) =>
       !now.isBefore(startsAt) && now.isBefore(endsAt);
 
-  /// Baut die Definition aus einer Cache-Zeile. Unbekannte Regeltypen
-  /// (neuere Challenge als die App) → null, die Challenge wird ohne
-  /// Fortschritt angezeigt bzw. übersprungen – niemals ein Crash.
-  static ChallengeDef? fromCache(ChallengeCacheData row) {
+  /// Baut die Definition aus den Rohwerten einer Challenge. Unbekannte
+  /// Regeltypen (neuere Challenge als die App) → null, die Challenge wird
+  /// ohne Fortschritt angezeigt bzw. übersprungen – niemals ein Crash.
+  ///
+  /// Nimmt bewusst Einzelwerte statt einer Drift-Zeile: Diese Datei kennt
+  /// die Datenbank nicht. Den Adapter für die Cache-Zeile stellt
+  /// `data/challenge_engine.dart`.
+  static ChallengeDef? fromRule({
+    required String id,
+    required String title,
+    required String description,
+    required String emoji,
+    required DateTime startsAt,
+    required DateTime endsAt,
+    required String ruleJson,
+  }) {
     final Map<String, dynamic> rule;
     try {
-      rule = json.decode(row.ruleJson) as Map<String, dynamic>;
+      rule = json.decode(ruleJson) as Map<String, dynamic>;
     } catch (_) {
       return null;
     }
@@ -49,12 +61,12 @@ class ChallengeDef {
     final progressOf = _ruleProgress(rule);
     if (threshold == null || threshold < 1 || progressOf == null) return null;
     return ChallengeDef(
-      id: row.id,
-      title: row.title,
-      description: row.description,
-      emoji: row.emoji,
-      startsAt: row.startsAt,
-      endsAt: row.endsAt,
+      id: id,
+      title: title,
+      description: description,
+      emoji: emoji,
+      startsAt: startsAt,
+      endsAt: endsAt,
       target: threshold,
       progressOf: progressOf,
     );
@@ -62,30 +74,30 @@ class ChallengeDef {
 
   /// Unterstützte Regeltypen (Start-Set). Auswertung immer über die auf
   /// das Zeitfenster gefilterten eigenen Check-ins.
-  static int Function(List<CheckinDetails>)? _ruleProgress(
+  static int Function(List<CheckinFacts>)? _ruleProgress(
       Map<String, dynamic> rule) {
     switch (rule['type'] as String?) {
       case 'checkins_count':
         return (list) => list.length;
       case 'distinct_beers':
-        return (list) => list.map((c) => c.beer.id).toSet().length;
+        return (list) => list.map((c) => c.beerId).toSet().length;
       case 'distinct_styles':
-        return (list) => list.map((c) => c.beer.style).toSet().length;
+        return (list) => list.map((c) => c.beerStyle).toSet().length;
       case 'distinct_breweries':
-        return (list) => list.map((c) => c.brewery.id).toSet().length;
+        return (list) => list.map((c) => c.breweryId).toSet().length;
       case 'alcohol_free':
-        return (list) => list.where((c) => c.beer.isAlcoholFree).length;
+        return (list) => list.where((c) => c.isAlcoholFree).length;
       case 'style_specific':
         final style = (rule['style'] as String? ?? '').toLowerCase();
         if (style.isEmpty) return null;
         return (list) => list
-            .where((c) => c.beer.style.toLowerCase().contains(style))
-            .map((c) => c.beer.id)
+            .where((c) => c.beerStyle.toLowerCase().contains(style))
+            .map((c) => c.beerId)
             .toSet()
             .length;
       case 'venue_checkins':
         return (list) => list
-            .map((c) => c.checkin.venueId ?? c.checkin.venueName)
+            .map((c) => c.venueId ?? c.venueName)
             .whereType<String>()
             .where((v) => v.trim().isNotEmpty)
             .toSet()
@@ -96,14 +108,14 @@ class ChallengeDef {
   }
 
   /// Check-ins auf das Zeitfenster filtern.
-  List<CheckinDetails> window(List<CheckinDetails> all) => [
+  List<CheckinFacts> window(List<CheckinFacts> all) => [
         for (final c in all)
-          if (!c.checkin.createdAt.isBefore(startsAt) &&
-              c.checkin.createdAt.isBefore(endsAt))
+          if (!c.createdAt.isBefore(startsAt) &&
+              c.createdAt.isBefore(endsAt))
             c,
       ];
 
-  int progressFor(List<CheckinDetails> allMyCheckins) =>
+  int progressFor(List<CheckinFacts> allMyCheckins) =>
       progressOf(window(allMyCheckins));
 }
 
@@ -120,55 +132,4 @@ class ChallengeProgress {
   final bool completed;
 
   double get fraction => (progress / def.target).clamp(0.0, 1.0);
-}
-
-/// Wertet Challenges aus und vergibt Belohnungs-Badges – analog BadgeEngine.
-class ChallengeEngine {
-  const ChallengeEngine(this.db);
-
-  final AppDatabase db;
-
-  /// Prüft alle gecachten Challenges gegen die eigenen Check-ins und
-  /// vergibt neu abgeschlossene als lokale Badges (insertOrIgnore).
-  /// Rückgabe: die NEU abgeschlossenen Challenges (für die Feier-UI).
-  Future<List<ChallengeDef>> evaluate(String profileId,
-      {DateTime? now}) async {
-    final moment = now ?? DateTime.now();
-    final cached = await db.allCachedChallenges();
-    if (cached.isEmpty) return const [];
-    final myCheckins = await db.myCheckinsDetailed(profileId);
-    final earned = await db.earnedBadgeSlugs(profileId);
-    final newlyCompleted = <ChallengeDef>[];
-    for (final row in cached) {
-      final def = ChallengeDef.fromCache(row);
-      if (def == null || earned.contains(def.badgeSlug)) continue;
-      // Abschluss zählt auch kurz nach Challenge-Ende (Check-ins im
-      // Fenster bleiben gültig) – nur der Fortschritt ist fensterbasiert.
-      if (moment.isBefore(def.startsAt)) continue;
-      if (def.progressFor(myCheckins) >= def.target) {
-        await db.awardBadge(profileId, def.badgeSlug, moment);
-        newlyCompleted.add(def);
-      }
-    }
-    return newlyCompleted;
-  }
-
-  /// Fortschritt aller AKTIVEN Challenges für die Anzeige.
-  Future<List<ChallengeProgress>> progressList(String profileId,
-      {DateTime? now}) async {
-    final moment = now ?? DateTime.now();
-    final cached = await db.allCachedChallenges();
-    final myCheckins = await db.myCheckinsDetailed(profileId);
-    final earned = await db.earnedBadgeSlugs(profileId);
-    return [
-      for (final row in cached)
-        if (ChallengeDef.fromCache(row) case final def?)
-          if (def.isActiveAt(moment) || earned.contains(def.badgeSlug))
-            ChallengeProgress(
-              def: def,
-              progress: def.progressFor(myCheckins),
-              completed: earned.contains(def.badgeSlug),
-            ),
-    ];
-  }
 }

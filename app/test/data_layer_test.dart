@@ -2,8 +2,8 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:brewmates/data/community_sync.dart';
+import 'package:brewmates/data/badge_engine.dart';
 import 'package:brewmates/data/db/database.dart';
-import 'package:brewmates/domain/badges.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

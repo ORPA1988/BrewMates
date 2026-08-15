@@ -10,6 +10,7 @@
 /// Rangliste gegen andere und nie mit einer Zielvorgabe.
 library;
 
+import '../core/checkin_facts.dart';
 import '../core/serving_style.dart';
 
 /// Geschätzte Füllmenge je Gebinde, wenn der Check-in keine Angabe hat.
@@ -24,49 +25,6 @@ const Map<ServingStyle, int> estimatedVolumeMl = {
   ServingStyle.can: 500,
   ServingStyle.growler: 1000,
 };
-
-/// Ein Check-in, reduziert auf das, was die Auswertung braucht.
-///
-/// Der Grund für diesen Typ ist die Schichtregel: `domain/` kennt die
-/// Datenbank nicht. Er hat aber einen zweiten Nutzen — die Auswertung
-/// lässt sich ohne Drift-Objekte testen, und wenn die Summenbildung
-/// eines Tages nach SQL wandert, liefert die Abfrage einfach diese
-/// Felder statt ganzer Zeilen.
-class StatsEntry {
-  const StatsEntry({
-    required this.createdAt,
-    required this.beerId,
-    required this.beerStyle,
-    required this.isAlcoholFree,
-    required this.breweryId,
-    required this.breweryName,
-    required this.breweryCountry,
-    this.venueName,
-    this.volumeMl,
-    this.serving,
-    this.rating,
-  });
-
-  final DateTime createdAt;
-
-  final String beerId;
-  final String beerStyle;
-  final bool isAlcoholFree;
-
-  final String breweryId;
-  final String breweryName;
-  final String breweryCountry;
-
-  /// Name des Gasthauses, wenn der Check-in einem zugeordnet ist.
-  final String? venueName;
-
-  /// Gemessene Menge; `null` heißt „nicht erfasst" und wird geschätzt.
-  final int? volumeMl;
-
-  final ServingStyle? serving;
-
-  final double? rating;
-}
 
 /// Fallback, wenn nicht einmal das Gebinde bekannt ist.
 const int defaultVolumeMl = 500;
@@ -150,7 +108,7 @@ class CheckinStats {
 
 /// Menge eines einzelnen Check-ins — gemessen, sonst nach Gebinde
 /// geschätzt.
-int volumeMlOf(StatsEntry e) =>
+int volumeMlOf(CheckinFacts e) =>
     e.volumeMl ??
     (e.serving == null
         ? defaultVolumeMl
@@ -187,7 +145,7 @@ List<StatSlice> _tally(Iterable<String> values, {int? top}) {
 /// Wertet [all] aus, eingeschränkt auf [range] (gerechnet ab [now]) und
 /// optional auf ein Land bzw. einen Stil.
 CheckinStats computeStats(
-  List<StatsEntry> all, {
+  List<CheckinFacts> all, {
   required DateTime now,
   StatsRange range = StatsRange.all,
   String? country,

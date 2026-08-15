@@ -28,9 +28,13 @@ core/*      Konfiguration, Theme, Router, Formatierung, externe Links
   `StatsEntry`); ein reines Wert-Enum wandert nach `core/` (Vorbild
   `ServingStyle`). Die Übersetzung gehört in das Feature, das beides
   liest — **nicht** in `data/`, sonst hängen die Schichten aneinander.
-  `test/architecture_test.dart` erzwingt das. Zwei Altlasten
-  (`badges`, `challenges`) stehen dort noch als Ausnahme: Backlog A-7.
-  **Die Ausnahmeliste darf nur schrumpfen.**
+  `test/architecture_test.dart` erzwingt das, und die Ausnahmeliste dort
+  ist **seit 15.08.2026 leer**. Sie darf nur schrumpfen.
+- `core/` trägt neben Konfiguration, Theme, Router und Formatierung auch
+  die **geteilten Wertetypen**, die `domain/` und `data/` beide brauchen
+  (`serving_style.dart`, `checkin_facts.dart`). Sie enthalten keine Logik
+  und keine Abfragen — nur Form. Das ist der Weg, der die beiden Schichten
+  verbindet, ohne sie aneinanderzuhängen.
 - Nur `data/` spricht mit Drift oder Supabase. Kein Bildschirm setzt eine
   Abfrage selbst ab.
 - `data/db/database.g.dart` ist generiert. Nie von Hand ändern —
