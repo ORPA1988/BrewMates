@@ -91,9 +91,20 @@ der Bekannten aus Karte **und** Zahl verschwunden.
 
 `thirsty_until` steht auf `profiles`, und ein Profil muss für Freunde
 sichtbar bleiben — die Zeile zu verbergen scheidet aus. Deshalb hier der
-andere Weg: Das `select`-Recht auf die **Spalte** ist entzogen, gelesen
+andere Weg: Das `select`-Recht auf die **Spalte** wird entzogen, gelesen
 wird über `my_thirsty_until()` (eigene) und `thirsty_friends()` (fremde,
 serverseitig auf Kreis „Freund" gefiltert).
+
+**In zwei Schritten.** Die Funktionen legt 0024 an, den Entzug des
+Spaltenrechts vollzieht erst **0025** — und zwar nicht gleichzeitig.
+Jeder Client vor 0.10 selektiert `thirsty_until` direkt mit; für den
+verweigert PostgREST nach dem Entzug die **gesamte** Profilabfrage, nicht
+nur die eine Spalte. Der Nutzer sähe weder Freundesliste noch eigenes
+Profil. Da sich Android-Geräte nicht im Takt eines Migrationslaufs
+aktualisieren, gäbe es bei einem einzigen Schritt kein Zeitfenster, in
+dem beide Stände funktionieren. 0025 wartet deshalb, bis die alten
+Clients verschwunden sind. Bis dahin ist die Spalte so lesbar wie seit
+0018 — keine Verschlechterung, nur eine aufgeschobene Härtung.
 
 Vorher holte die App die ganze Freundesliste und filterte selbst — die
 Bierlaune lag damit auf jedem Gerät, das danach fragte.

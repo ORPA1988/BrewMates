@@ -183,12 +183,22 @@ grant execute on function public.count_other_active_sessions(
 --
 -- thirsty_until ist eine Spalte auf profiles, und ein Profil muss für
 -- Freunde sichtbar bleiben — die Zeile zu verbergen scheidet also aus.
--- Deshalb hier der Weg über Spaltenrechte: Die Spalte ist für niemanden
--- mehr direkt lesbar, gelesen wird über zwei Funktionen, die die
--- Abstufung anwenden.
+-- Deshalb der Weg über Spaltenrechte: gelesen wird über zwei Funktionen,
+-- die die Abstufung anwenden.
+--
+-- Der eigentliche Entzug des Spaltenrechts steht NICHT hier, sondern in
+-- 0025. Grund: Er bricht jeden Client, der `thirsty_until` noch direkt
+-- mitselektiert — und das tun alle installierten 0.9.x-Apps. Ein
+-- Android-Gerät aktualisiert sich nicht in dem Moment, in dem wir die
+-- Migration einspielen; zwischen Rollout und Verbreitung des Updates
+-- liegen Tage. Stünde der Entzug hier, gäbe es kein Zeitfenster, in dem
+-- beides zugleich funktioniert.
+--
+-- Also zweistufig: Diese Migration legt die Funktionen an (ab jetzt
+-- nutzbar), 0025 entzieht das Spaltenrecht, sobald die alten Clients
+-- verschwunden sind. Bis dahin ist die Spalte so lesbar wie seit 0018 —
+-- keine Verschlechterung, nur eine aufgeschobene Härtung.
 -- ============================================================================
-
-revoke select (thirsty_until) on public.profiles from anon, authenticated;
 
 -- Eigene Bierlaune (das Setzen läuft weiter über die update-Policy).
 create or replace function public.my_thirsty_until()

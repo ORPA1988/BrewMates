@@ -72,9 +72,11 @@ class RemoteProfile {
         displayName: (row['display_name'] as String?) ?? row['username'] as String,
         avatarEmoji: (row['avatar_emoji'] as String?) ?? '🍺',
         accountNo: (row['account_no'] as num?)?.toInt(),
-        // thirsty_until steht seit 0024 nicht mehr in den direkt
-        // gelesenen Spalten (Spaltenrecht entzogen) — es kommt über
-        // thirstyFriends() bzw. myThirstyUntil().
+        // thirsty_until wird nicht mehr direkt mitselektiert — es kommt
+        // über thirstyFriends() bzw. myThirstyUntil(). Das Spaltenrecht
+        // entzieht 0025, sobald keine Clients vor 0.10 mehr zugreifen;
+        // bis dahin liefert der Server die Spalte noch, wir fragen sie
+        // hier nur nicht mehr an. Der Null-Zweig deckt beide Stände ab.
         thirstyUntil: row['thirsty_until'] == null
             ? null
             : DateTime.parse(row['thirsty_until'] as String).toLocal(),

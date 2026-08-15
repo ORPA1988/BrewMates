@@ -13,15 +13,19 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  ⚠️ **`0020–0024` liegen im Repo, sind aber NOCH NICHT eingespielt.**
-  Die App aus 0.10 setzt sie voraus: ohne 0022 scheitert der Check-in-
-  Upload an `volume_ml`, ohne 0024 die Freundesliste an `requester_tier`.
-  Vor dem nächsten Release einspielen. **0024 zusätzlich erst zeitgleich
-  mit dem App-Update ausrollen**: Es entzieht `select (thirsty_until)` auf
-  `profiles`, und ältere Clients lesen die Spalte noch direkt — sie
-  bekämen beim Profilladen einen Berechtigungsfehler.
+  **`0020–0024` sind einzuspielen, bevor 0.10 ausgeliefert wird** — ohne
+  0022 scheitert der Check-in-Upload an `volume_ml`, ohne 0024 die
+  Freundesliste an `requester_tier`. `0020–0024` sind zu älteren Clients
+  abwärtskompatibel und können jederzeit laufen.
+  ⚠️ **`0025` ist die Ausnahme und wartet.** Es entzieht
+  `select (thirsty_until)` auf `profiles`; jeder Client vor 0.10
+  selektiert die Spalte direkt mit und bekäme danach die **gesamte**
+  Profilabfrage verweigert — keine Freundesliste, kein eigenes Profil.
+  Erst einspielen, wenn keine Clients vor 0.10 mehr zugreifen (Play
+  Console / API-Logs). Im Zweifel warten: Die Spalte ist seit 0018 lesbar,
+  0025 ist eine aufgeschobene Härtung, kein Rückschritt.
   Stand **verifiziert am 2026-08-15** über `list_migrations`: live sind
-  exakt `0001–0019`, nichts Live-Only, und keine Struktur aus `0020–0024`
+  exakt `0001–0019`, nichts Live-Only, und keine Struktur aus `0020–0025`
   ist von Hand vorab eingespielt (kein Schema-Drift).
   Migrationen `0001–0019` sind LIVE (0011 Gasthäuser, 0012
   Challenges, 0013 Vertrauensstufen + edit_log, 0014 complete_challenge-RPC
