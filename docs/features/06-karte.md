@@ -34,6 +34,25 @@ Datenbank gar nicht erst. Das Wording dafür steht zentral in
 - **Standort:** `geolocator`, Berechtigung wird erklärt, bevor sie
   angefragt wird
 
+### Farbe statt Filter (2026-08-15)
+
+Die Karte hatte einen Filter „Jetzt geöffnet" und einen Knopf zur
+Gasthausliste. Beides ist weg.
+
+**Der Filter nahm Information weg.** Geschlossene Häuser verschwanden, und
+auf der Karte blieb ein Loch, dem man nicht ansah, ob dort nichts ist oder
+nur gerade zu. Dabei ist ein geschlossenes Gasthaus nützlich: Der Preis
+steht trotzdem da, und morgen ist wieder auf.
+
+Jetzt trägt die **Farbe** die Aussage: blau geöffnet, rot geschlossen,
+neutral wo keine Zeiten hinterlegt sind. Die dritte Farbe ist kein
+Schönheitsfehler — eine rote Markierung an einem Haus, dessen Zeiten
+schlicht fehlen, wäre eine Behauptung, die wir nicht belegen können.
+
+**Die Gasthausliste** ist in „Entdecken" aufgegangen (siehe Funktion 05).
+Sie hinter einem Knopf auf der Karte zu verstecken hieß: Man musste
+wissen, dass es sie gibt.
+
 ## Modularität
 
 - **Hängt ab von:** Sessions (07), Freunde (08), Gasthäuser (05),

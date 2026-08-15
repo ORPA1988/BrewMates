@@ -11,9 +11,9 @@ import '../features/beers/add_beer_screen.dart';
 import '../features/beers/beer_edit_screen.dart';
 import '../features/beers/brewery_edit_screen.dart';
 import '../features/venues/venue_edit_screen.dart';
+import '../features/discover/discover_screen.dart';
 import '../features/venues/venues_list_screen.dart';
 import '../features/beers/beer_detail_screen.dart';
-import '../features/beers/beers_screen.dart';
 import '../features/beers/brewery_detail_screen.dart';
 import '../features/checkin/checkin_screen.dart';
 import '../features/crews/crew_detail_screen.dart';
@@ -78,7 +78,12 @@ final routerProvider = Provider<GoRouter>((ref) {
             GoRoute(path: '/map', builder: (_, __) => const MapScreen()),
           ]),
           StatefulShellBranch(routes: [
-            GoRoute(path: '/beers', builder: (_, __) => const BeersScreen()),
+            // Entdecken: seit 2026-08-15 Biere, Brauereien UND
+            // Gasthaeuser an einer Stelle. Die Gasthausliste war vorher
+            // ein eigener Bildschirm hinter einem Knopf auf der Karte —
+            // man musste wissen, dass es sie gibt.
+            GoRoute(
+                path: '/beers', builder: (_, __) => const DiscoverScreen()),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(

@@ -40,6 +40,21 @@ Einträge kommen von Nutzern, nicht aus dem Repository.
 offline funktionieren sollen — es ist erprobt und die Wiedergabe ist
 idempotent.
 
+### Aufgegangen in „Entdecken" (2026-08-15)
+
+Die eigene Gasthausliste gibt es nicht mehr. Sie war nur über einen Knopf
+auf der Karte erreichbar — wer ihn nicht fand, fand die Liste nicht.
+
+„Entdecken" führt jetzt **Biere, Brauereien und Gasthäuser** an einer
+Stelle zusammen: eine Suchzeile, drei Bereiche, und bei Orten die
+Sortierung **nach Entfernung**. Die Filter der alten Liste (Kategorie,
+„jetzt geöffnet") sind mitgekommen.
+
+Der Standort wird still im Hintergrund geholt und ist ein Zusatz, keine
+Bedingung: Ohne Freigabe sortiert die Liste alphabetisch weiter und sagt
+das auch. Orte ohne Koordinaten rutschen ans Ende, statt zu verschwinden —
+eine Brauerei ohne Position ist trotzdem eine Brauerei.
+
 ## Modularität
 
 - **Hängt ab von:** Konto (01), Vertrauensstufen (15)

@@ -10,6 +10,7 @@ import '../../widgets/checkin_card.dart';
 import '../../widgets/session_card.dart';
 import '../../widgets/update_dialog.dart';
 import '../../widgets/beacon_messages.dart';
+import '../../widgets/friend_request_card.dart';
 
 /// Startbildschirm: die zwei Hero-Aktionen der App —
 /// „🍺 Bier scannen" und „🍻 Zusammenkommen!" — plus ein kompakter
@@ -37,6 +38,34 @@ class HomeScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
+          // ------------------------------------------------------------------
+          // Offene Freundschaftsanfragen
+          //
+          // Sie standen bisher nur im Freunde-Bildschirm — wer nicht
+          // hinsah, liess jemanden wochenlang warten. Eine Anfrage ist
+          // die einzige Stelle, an der ein anderer Mensch auf eine
+          // Antwort wartet; sie gehoert dorthin, wo man ohnehin hinschaut.
+          //
+          // „Spaeter" blendet sie nur fuer diese Sitzung aus. Im
+          // Freunde-Bildschirm bleibt sie sichtbar und aenderbar.
+          // ------------------------------------------------------------------
+          ...() {
+            final anfragen =
+                ref.watch(friendRequestsProvider).valueOrNull ?? const [];
+            final spaeter = ref.watch(anfrageSpaeterProvider);
+            final offen = [
+              for (final a in anfragen)
+                if (!spaeter.contains(a.friendshipId)) a,
+            ];
+            if (offen.isEmpty) return const <Widget>[];
+            return [
+              for (final a in offen)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  child: FriendRequestCard(request: a, zeigeSpaeter: true),
+                ),
+            ];
+          }(),
           // ------------------------------------------------------------------
           // Update-Hinweis (automatischer Check gegen GitHub-Releases)
           // ------------------------------------------------------------------
