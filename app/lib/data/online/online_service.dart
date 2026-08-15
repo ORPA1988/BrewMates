@@ -581,12 +581,20 @@ class OnlineService {
 
   /// Eigene Einstufung eines Freundes setzen. Einseitig und privat —
   /// der andere erfährt nichts davon.
-  Future<void> setFriendTier(String profileId, FriendTier tier) async {
-    if (currentUser == null) return;
+  ///
+  /// Gibt zurück, ob der Server die Änderung angenommen hat. Der Kreis
+  /// steuert, wer den eigenen Beacon sieht — eine Erfolgsmeldung nach
+  /// einem fehlgeschlagenen Aufruf würde also über die eigene
+  /// Sichtbarkeit täuschen. Genau dort darf die App nicht schummeln.
+  Future<bool> setFriendTier(String profileId, FriendTier tier) async {
+    if (currentUser == null) return false;
     try {
       await _client.rpc('set_friend_tier',
           params: {'p_other': profileId, 'p_tier': tier.name_});
-    } catch (_) {}
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   /// Eigene Bierlaune. Seit 0024 über eine Funktion statt über die
@@ -949,12 +957,23 @@ class OnlineService {
 
   /// Neues Ende einer laufenden Session übertragen (Verlängern).
   /// Die Grenzen prüft zusätzlich die `check`-Bedingung aus 0021.
-  Future<void> updateSessionExpiry(String sessionId, DateTime until) async {
+  /// Neues Ende einer laufenden Session melden.
+  ///
+  /// Gibt zurück, ob es angekommen ist. Bewusst **keine** Warteschlange
+  /// nach dem Muster `venue_edit_queue`: Eine Verlängerung ist an den
+  /// Moment gebunden. Später nachgereicht würde sie eine längst beendete
+  /// Session wiederbeleben und den Aufenthaltsort erneut sichtbar machen
+  /// — das Gegenteil dessen, was die Laufzeitgrenze aus 0021 soll. Also
+  /// sofort melden oder ehrlich scheitern.
+  Future<bool> updateSessionExpiry(String sessionId, DateTime until) async {
     try {
       await _client.from('sessions').update({
         'expires_at': until.toUtc().toIso8601String(),
       }).eq('id', sessionId);
-    } catch (_) {}
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<void> endSession(String sessionId) async {

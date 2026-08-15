@@ -278,8 +278,18 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
     if (chosen == null || chosen == friend.tier) return;
     final online = await ref.read(onlineServiceProvider.future);
     if (online == null) return;
-    await online.setFriendTier(friend.id, chosen);
+    final ok = await online.setFriendTier(friend.id, chosen);
     if (!mounted) return;
+    if (!ok) {
+      // Kein Invalidieren: Die Liste zeigt weiter den Stand des Servers,
+      // und der hat sich nicht geändert. Ein neu gezeichneter Kreis, den
+      // niemand kennt, wäre schlimmer als gar keiner.
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Kreis konnte nicht gespeichert werden — '
+            'keine Verbindung? Bitte später nochmal.'),
+      ));
+      return;
+    }
     ref.invalidate(onlineFriendsProvider);
     // Sichtbarkeit ändert sich sofort – abhängige Ansichten mitziehen.
     ref.invalidate(thirstyFriendsProvider);

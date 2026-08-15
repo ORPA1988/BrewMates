@@ -60,6 +60,12 @@ Zahl „weitere BrewMates aktiv", wie Fremde auch.
   Spalte — die Gegenrichtung bleibt unberührt und unsichtbar.
 - **App:** `features/friends/friends_screen.dart` (Kreis-Menü, Filter,
   „Wer sieht was"), `FriendTier` in `data/online/online_service.dart`.
+  `setFriendTier` gibt seit 2026-08-15 zurück, ob der Server die
+  Änderung angenommen hat. Vorher verschluckte ein leeres `catch` den
+  Fehler und die App meldete trotzdem Erfolg — bei einer Einstellung,
+  die steuert, **wer den eigenen Aufenthaltsort sieht**, ist das die
+  gefährlichste Sorte Lüge. Scheitert der Aufruf, bleibt die Liste
+  jetzt auf dem Stand des Servers stehen und sagt es.
 - **`count_other_active_sessions`** ist seit 0024 als **wortwörtliche
   Negation** der Policy `sessions_select` geschrieben, nicht als eigene
   Bedingungsliste. Grund: Sichtbar und gezählt müssen zusammen genau alle

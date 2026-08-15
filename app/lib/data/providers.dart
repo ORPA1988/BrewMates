@@ -1030,8 +1030,14 @@ class BrewActions {
   /// und verlängert. Die Obergrenze [maxSessionDuration] gilt wie beim
   /// Start und wird serverseitig nochmals geprüft.
   ///
-  /// Rückgabe: das neue Ende, oder null wenn keine Session läuft.
-  Future<DateTime?> extendMySession(Duration by) async {
+  /// Rückgabe: das neue Ende und ob der Server es übernommen hat, oder
+  /// null wenn keine Session läuft.
+  ///
+  /// [synced] wird nicht verschwiegen: Lokal ist der Beacon sofort
+  /// verlängert, aber gesehen wird er von Freunden über den Server. Ohne
+  /// Verbindung zeigt deren Karte weiter das alte Ende — wer glaubt, er
+  /// sei noch sichtbar, sitzt sonst vergeblich im Wirtshaus.
+  Future<({DateTime until, bool synced})?> extendMySession(Duration by) async {
     final me = await _me();
     final now = DateTime.now();
     final current = await _db.getMyActiveSession(me.id, now);
@@ -1039,10 +1045,13 @@ class BrewActions {
     final until = now.add(clampSessionDuration(by));
     await _db.setSessionExpiry(current.id, until);
     final online = await _online();
-    if (online != null) {
-      unawaited(online.updateSessionExpiry(current.id, until));
+    // Lokale Sessions (noch nicht hochgeladen) haben keinen Server-Zwilling;
+    // für sie ist „nicht abgeglichen" der Normalfall, kein Fehler.
+    if (online == null || !isRemoteId(current.id)) {
+      return (until: until, synced: true);
     }
-    return until;
+    final synced = await online.updateSessionExpiry(current.id, until);
+    return (until: until, synced: synced);
   }
 
   /// „Bin dabei!" auf die Session eines Freundes (lokal oder online).
