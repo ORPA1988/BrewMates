@@ -130,6 +130,15 @@ create policy sessions_select on sessions for select using (
 -- Der Zähler muss mitziehen: Er zählte bisher „keine Freunde". Jetzt zählt
 -- er alles, was ich nicht als Beacon sehen darf — sonst verschwänden die
 -- Sessions der Bekannten sowohl von der Karte als auch aus der Zahl.
+--
+-- Der Crew-Ausschluss korrigiert einen Fehler, den schon die bisherige
+-- Fassung hatte: Sie zählte „nicht befreundet", die Policy zeigt eine
+-- Session aber auch dann, wenn sie auf 'crew' steht und ich Mitglied bin.
+-- Ein Crew-Kollege, mit dem ich nicht befreundet bin, erschien deshalb
+-- gleichzeitig als Punkt auf der Karte UND in „weitere BrewMates aktiv" —
+-- also doppelt. Der Zähler darf nur enthalten, was die Policy verbirgt;
+-- die beiden Bedingungen müssen zusammen genau die Sessions abdecken,
+-- sonst zählt oder verschweigt die Karte.
 create or replace function public.count_other_active_sessions(
   min_lat double precision,
   min_lng double precision,
@@ -149,7 +158,9 @@ language sql stable security definer set search_path = public as $$
     and s.longitude between min_lng and max_lng
     and s.host_id <> auth.uid()
     and coalesce(public.tier_for(s.host_id, auth.uid()), 'bekannter')
-        < 'freund';
+        < 'freund'
+    and not (s.visibility = 'crew'
+             and public.is_crew_member(s.crew_id, auth.uid()));
 $$;
 
 revoke execute on function public.count_other_active_sessions(

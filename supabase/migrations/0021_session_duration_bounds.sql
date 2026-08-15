@@ -22,10 +22,22 @@
 -- nachträglich zu bewerten brächte nichts und könnte die Migration an
 -- historischen Daten scheitern lassen.
 
-alter table public.sessions
-  add constraint sessions_duration_bounds
-  check (
-    expires_at > started_at + interval '29 minutes'
-    and expires_at <= started_at + interval '24 hours'
-  )
-  not valid;
+-- Der do-Block statt eines nackten `add constraint`: Postgres kennt für
+-- Constraints kein `if not exists`. Ohne die Prüfung bricht ein zweiter
+-- Lauf mit duplicate_object ab — und ein Rollout, der sich nicht
+-- wiederholen lässt, muss nach jedem Abbruch von Hand aufgeräumt werden.
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'sessions_duration_bounds'
+  ) then
+    alter table public.sessions
+      add constraint sessions_duration_bounds
+      check (
+        expires_at > started_at + interval '29 minutes'
+        and expires_at <= started_at + interval '24 hours'
+      )
+      not valid;
+  end if;
+end $$;

@@ -16,7 +16,17 @@
 alter table public.checkins
   add column if not exists volume_ml integer;
 
-alter table public.checkins
-  add constraint checkins_volume_ml_sane
-  check (volume_ml is null or (volume_ml > 0 and volume_ml <= 20000))
-  not valid;
+-- do-Block, weil `add constraint` kein `if not exists` kennt und ein
+-- zweiter Lauf sonst mit duplicate_object abbricht.
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'checkins_volume_ml_sane'
+  ) then
+    alter table public.checkins
+      add constraint checkins_volume_ml_sane
+      check (volume_ml is null or (volume_ml > 0 and volume_ml <= 20000))
+      not valid;
+  end if;
+end $$;

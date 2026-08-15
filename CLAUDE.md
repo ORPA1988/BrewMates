@@ -16,7 +16,13 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   ⚠️ **`0020–0024` liegen im Repo, sind aber NOCH NICHT eingespielt.**
   Die App aus 0.10 setzt sie voraus: ohne 0022 scheitert der Check-in-
   Upload an `volume_ml`, ohne 0024 die Freundesliste an `requester_tier`.
-  Vor dem nächsten Release einspielen.
+  Vor dem nächsten Release einspielen. **0024 zusätzlich erst zeitgleich
+  mit dem App-Update ausrollen**: Es entzieht `select (thirsty_until)` auf
+  `profiles`, und ältere Clients lesen die Spalte noch direkt — sie
+  bekämen beim Profilladen einen Berechtigungsfehler.
+  Stand **verifiziert am 2026-08-15** über `list_migrations`: live sind
+  exakt `0001–0019`, nichts Live-Only, und keine Struktur aus `0020–0024`
+  ist von Hand vorab eingespielt (kein Schema-Drift).
   Migrationen `0001–0019` sind LIVE (0011 Gasthäuser, 0012
   Challenges, 0013 Vertrauensstufen + edit_log, 0014 complete_challenge-RPC
   + contribution_leaderboard, 0015 venues.opening_hours_json, 0016
@@ -30,11 +36,21 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   entzogen und pro Funktion gezielt gewährt — neue Funktionen brauchen in
   ihrer Migration ein explizites `grant execute … to authenticated`
   (bzw. die jeweils passende Rolle).
-- **Security-Advisor-Baseline** (bekannt, bewusst offen): PostGIS im
-  public-Schema inkl. `st_estimatedextent`/`spatial_ref_sys`,
-  Leaked-Password-Protection deaktiviert, authenticated-Grants auf
-  RLS-Helfern (`are_friends`, `is_admin`, `is_crew_member`,
-  `count_other_active_sessions`) sind Absicht.
+- **Security-Advisor-Baseline** (bekannt, bewusst offen; zuletzt geprüft
+  2026-08-15, keine echten Neubefunde): PostGIS im public-Schema inkl.
+  `st_estimatedextent`/`spatial_ref_sys`, Leaked-Password-Protection
+  deaktiviert. Dazu meldet der Linter (0028/0029) **jede** SECURITY-
+  DEFINER-Funktion, die `authenticated` aufrufen darf — das sind
+  sämtliche RPCs der App (`account_level`, `are_friends`,
+  `beer_rating_stats`, `complete_challenge`, `contribution_leaderboard`,
+  `count_other_active_sessions`, `delete_my_account`,
+  `flag_beer_by_barcode`, `has_blocked`, `is_admin`, `is_blocked`,
+  `is_crew_member`, `my_account_level_info`) und ist Absicht: Sie sind
+  der Zugriffsweg, nicht das Leck. Geprüft wurde, dass sie ihre Argumente
+  selbst einschränken — `are_friends`/`has_blocked` beantworten nur Paare,
+  an denen der Aufrufer beteiligt ist, `account_level` nur das eigene
+  Konto oder das eines Admins. **Neu hinzukommende Funktionen sind an
+  diesem Maßstab zu prüfen, nicht pauschal der Baseline zuzuschlagen.**
 
 ## Toolchain (Cloud-Session, frische Container)
 

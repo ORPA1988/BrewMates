@@ -60,6 +60,12 @@ Zahl „weitere BrewMates aktiv", wie Fremde auch.
   Spalte — die Gegenrichtung bleibt unberührt und unsichtbar.
 - **App:** `features/friends/friends_screen.dart` (Kreis-Menü, Filter,
   „Wer sieht was"), `FriendTier` in `data/online/online_service.dart`.
+- **`count_other_active_sessions`** zieht mit: Der Zähler enthält genau
+  das, was die Policy verbirgt. Dazu gehört seit 0024 auch der
+  Crew-Ausschluss — eine Crew-Session sehe ich als Mitglied unabhängig
+  vom Kreis, sie darf also nicht zusätzlich in die Zahl. Bis dahin
+  erschien ein nicht befreundeter Crew-Kollege doppelt: als Punkt auf
+  der Karte **und** in „weitere BrewMates aktiv".
 
 ### Warum Bekannte den Beacon gar nicht sehen
 

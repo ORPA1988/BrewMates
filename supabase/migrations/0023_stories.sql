@@ -27,12 +27,26 @@ alter table public.beers
 alter table public.breweries
   add column if not exists story text;
 
-alter table public.beers
-  add constraint beers_story_length
-  check (story is null or char_length(story) <= 1200)
-  not valid;
+-- do-Block, weil `add constraint` kein `if not exists` kennt und ein
+-- zweiter Lauf sonst mit duplicate_object abbricht.
 
-alter table public.breweries
-  add constraint breweries_story_length
-  check (story is null or char_length(story) <= 1200)
-  not valid;
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'beers_story_length'
+  ) then
+    alter table public.beers
+      add constraint beers_story_length
+      check (story is null or char_length(story) <= 1200)
+      not valid;
+  end if;
+
+  if not exists (
+    select 1 from pg_constraint where conname = 'breweries_story_length'
+  ) then
+    alter table public.breweries
+      add constraint breweries_story_length
+      check (story is null or char_length(story) <= 1200)
+      not valid;
+  end if;
+end $$;
