@@ -52,6 +52,23 @@ Eine nachgereichte *Verlängerung* würde dagegen eine beendete Session
 wiederbeleben — siehe `docs/features/23`. Dieselbe Frage, entgegengesetzte
 Antwort, weil die Richtung des Schadens entgegengesetzt ist.
 
+**Zwei Fallen beim Bau dieser Routine**, beide von Tests gefunden:
+
+1. Die Ausnahme für den eigenen laufenden Beacon prüfte zunächst
+   `isRemoteId(id)`. Das Präfix `remote-` tragen aber nur **fremde**
+   Sessions — die Ausnahme griff nie und die Routine hätte den eigenen
+   Beacon abgeräumt.
+2. Danach las sie die eigene Session über `myActiveSessionProvider`. Der
+   liefert `null`, solange `meProvider` noch lädt — beim App-Start also
+   genau dann, wenn die Routine zum ersten Mal läuft. „Noch nicht
+   geladen" war von „es läuft nichts" nicht zu unterscheiden, mit
+   demselben Ergebnis. Sie fragt die Datenbank jetzt direkt.
+
+Beides ist in `test/session_server_calls_test.dart` festgehalten, das
+über `FakeOnlineService` erstmals den Zweig **mit** angemeldetem Konto
+prüft. Dass es den vorher nicht gab, ist der Grund, warum diese Klasse
+von Fehlern zweimal unbemerkt blieb.
+
 ## Modularität
 
 - **Hängt ab von:** Konto (01), Freunde (08), Gasthäuser (05, optional),

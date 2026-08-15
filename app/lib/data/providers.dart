@@ -593,10 +593,19 @@ final sessionReconcileProvider = FutureProvider<int>((ref) async {
   ref.watch(_syncTickProvider);
   final online = await ref.watch(onlineServiceProvider.future);
   if (online == null || online.currentUser == null) return 0;
-  final mine = await ref.watch(myActiveSessionProvider.future);
+  // Bewusst direkt aus der Datenbank statt über `myActiveSessionProvider`:
+  // Der liefert `null`, solange `meProvider` noch lädt — beim App-Start
+  // also genau dann, wenn diese Routine zum ersten Mal läuft. Ein `null`
+  // aus „noch nicht geladen" ist hier nicht von „es läuft nichts" zu
+  // unterscheiden, und die Verwechslung würde den laufenden eigenen
+  // Beacon abräumen.
+  //
   // Die eigene lokale ID IST die Server-ID (`upsertSession` überträgt sie
-  // unverändert). Kein `isRemoteId`-Filter — der träfe nie zu und würde
-  // den gerade laufenden eigenen Beacon mit abräumen.
+  // unverändert), deshalb taugt sie unmittelbar als Ausnahme.
+  final me = await ref.watch(meProvider.future);
+  final mine = await ref
+      .watch(databaseProvider)
+      .getMyActiveSession(me.id, DateTime.now());
   return online.endStaleSessions(keepSessionId: mine?.id);
 });
 
