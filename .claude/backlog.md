@@ -12,7 +12,7 @@ KI-Unterstützung deutlich weniger).
 | # | Punkt | Aufwand | Warum |
 |---|---|---|---|
 | ~~A-1~~ | ~~**Feature-Branch nach `main` bringen**~~ — erledigt 15.08.2026: PR #16 gemerged (Stufe D, 0.10.0-beta+18), PR #14 als Dublette geschlossen, Migrationen `0020–0024` live, CI und Pages grün. | — | Die 17 Commits sind drin. `0025` steht bewusst aus (siehe `CLAUDE.md`). |
-| A-2 | **RLS-Tests** für Standort-, Freundeskreis- und Crew-Sichtbarkeit | M | Die gesamte Privatsphäre hängt an RLS. Getestet ist davon derzeit nichts. Größte Risikolücke. |
+| ~~A-2~~ | ~~**RLS-Tests**~~ — erledigt 15.08.2026: `supabase/tests/rls_sichtbarkeit.test.sql`, 14 pgTAP-Tests gegen die Policies (Beacon je Kreis, Crew, Zähler-Invariante, Bierlaune, `tier_for`). Läuft in der CI (`supabase start` + `supabase test db`). | — | Der erste From-scratch-Aufbau hat zwei Fehler aufgedeckt, die niemand durch Lesen fand: fehlende Tabellenrechte (→ 0025) und ein wirkungsloser Spaltenentzug (→ 0026). |
 | ~~A-3~~ | ~~**Migrationsstand verifizieren**~~ — erledigt 15.08.2026: live sind exakt `0001–0019`, nichts Live-Only, kein Schema-Drift. `0020–0024` stehen aus. | — | Festgeschrieben in `CLAUDE.md`. **0024 nur zeitgleich mit dem App-Update** — es entzieht `select (thirsty_until)`. |
 | A-4 | **Testabdeckung messen** — `flutter test --coverage` in der CI, Wert im PR sichtbar | S | Ohne Zahl bleibt Abdeckung Gefühlssache. Aktuell ~1.675 Testzeilen gegen ~14.600 Produktivzeilen. |
 | ~~A-5~~ | ~~**Schichtverstoß `domain/statistics.dart`**~~ — erledigt 15.08.2026: `StatsEntry` als Eingabetyp in `domain/`, `ServingStyle` nach `core/`, Abbildung in `features/stats/`. | — | `test/architecture_test.dart` prüft die Regel ab jetzt bei jedem Lauf. |

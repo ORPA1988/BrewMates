@@ -102,15 +102,29 @@ wird über `my_thirsty_until()` (eigene) und `thirsty_friends()` (fremde,
 serverseitig auf Kreis „Freund" gefiltert).
 
 **In zwei Schritten.** Die Funktionen legt 0024 an, den Entzug des
-Spaltenrechts vollzieht erst **0025** — und zwar nicht gleichzeitig.
+Spaltenrechts vollzieht erst **0026** — und zwar nicht gleichzeitig.
 Jeder Client vor 0.10 selektiert `thirsty_until` direkt mit; für den
 verweigert PostgREST nach dem Entzug die **gesamte** Profilabfrage, nicht
 nur die eine Spalte. Der Nutzer sähe weder Freundesliste noch eigenes
 Profil. Da sich Android-Geräte nicht im Takt eines Migrationslaufs
 aktualisieren, gäbe es bei einem einzigen Schritt kein Zeitfenster, in
-dem beide Stände funktionieren. 0025 wartet deshalb, bis die alten
+dem beide Stände funktionieren. 0026 wartet deshalb, bis die alten
 Clients verschwunden sind. Bis dahin ist die Spalte so lesbar wie seit
 0018 — keine Verschlechterung, nur eine aufgeschobene Härtung.
+
+**Und der Entzug war zuerst falsch geschrieben.** `revoke select
+(thirsty_until) on profiles` ist wirkungslos, solange ein Recht auf
+Tabellenebene besteht — und das besteht (0025). Postgres nimmt den Befehl
+an, meldet „REVOKE" und lässt die Spalte lesbar. Die Härtung hätte also
+lautlos nichts getan: in der Migration dokumentiert, in der Doku
+beschrieben, in Wahrheit wirkungslos. Das ist schlimmer als eine, die
+scheitert — ein Fehlschlag fällt auf.
+
+Richtig ist der umgekehrte Weg: das Tabellenrecht ganz entziehen und alle
+Spalten **außer** dieser einen einzeln wieder gewähren. Gefunden hat das
+der RLS-Test in `supabase/tests/rls_sichtbarkeit.test.sql`, nicht das
+Lesen. Preis dafür: Jede neue Spalte auf `profiles` braucht ab 0026 ihr
+eigenes `grant select (…)`.
 
 Vorher holte die App die ganze Freundesliste und filterte selbst — die
 Bierlaune lag damit auf jedem Gerät, das danach fragte.
