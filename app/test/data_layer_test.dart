@@ -176,7 +176,7 @@ void main() {
   test('Gebündelte Österreich-Datenbank wird importiert', () async {
     final imported = await CommunitySync(db).importBundledData();
     expect(imported, greaterThan(50),
-        reason: '57 Biere + 26 Brauereien aus den Assets');
+        reason: 'Biere + Brauereien aus allen DACH-Assets');
 
     final stiegl = await db.watchBrewery('at-stiegl').first;
     expect(stiegl, isNotNull);
@@ -185,6 +185,43 @@ void main() {
 
     final goldbraeu = await db.watchBeersOfBrewery('at-stiegl').first;
     expect(goldbraeu, isNotEmpty);
+  });
+
+  test('Gebündelte Deutschland-Datenbank (ohne Bayern) wird importiert',
+      () async {
+    await CommunitySync(db).importBundledData();
+
+    final krombacher = await db.watchBrewery('de-krombacher').first;
+    expect(krombacher, isNotNull);
+    expect(krombacher!.country, 'Deutschland');
+    expect(krombacher.latitude, isNotNull);
+
+    final biere = await db.watchBeersOfBrewery('de-krombacher').first;
+    expect(biere, isNotEmpty,
+        reason: 'beers-de.json muss Krombacher-Biere enthalten');
+  });
+
+  test('Gebündelte Schweiz-Datenbank wird importiert', () async {
+    await CommunitySync(db).importBundledData();
+
+    final locher = await db.watchBrewery('ch-locher').first;
+    expect(locher, isNotNull);
+    expect(locher!.country, 'Schweiz');
+    expect(locher.latitude, isNotNull);
+
+    final biere = await db.watchBeersOfBrewery('ch-locher').first;
+    expect(biere, isNotEmpty,
+        reason: 'beers-ch.json muss Appenzeller-Biere enthalten');
+  });
+
+  test('Jede Brauerei aller DACH-Dateien hat eine Kartenposition', () async {
+    await CommunitySync(db).importBundledData();
+    final alle = await db.watchBreweriesSearch('').first;
+    final ohnePosition =
+        alle.where((b) => b.latitude == null || b.longitude == null).toList();
+    expect(ohnePosition, isEmpty,
+        reason: 'ohne Koordinaten fehlt die Brauerei auf der Karte: '
+            '${ohnePosition.map((b) => b.id).toList()}');
   });
 
   test('parseBeers übernimmt Barcodes aus der Community-DB', () async {
