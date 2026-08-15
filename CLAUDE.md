@@ -13,27 +13,31 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0020–0024` sind einzuspielen, bevor 0.10 ausgeliefert wird** — ohne
-  0022 scheitert der Check-in-Upload an `volume_ml`, ohne 0024 die
-  Freundesliste an `requester_tier`. `0020–0024` sind zu älteren Clients
-  abwärtskompatibel und können jederzeit laufen.
-  ⚠️ **`0025` ist die Ausnahme und wartet.** Es entzieht
+  **`0001–0024` sind LIVE** — `0020–0024` am 2026-08-15 eingespielt und
+  gegengeprüft (Spalten, Constraints, Enum, Index, vier neue Funktionen,
+  Policy; `friendships` unverändert alle auf `freund`, also keine
+  Sichtbarkeitsänderung am Rollout-Tag). Kein Schema-Drift.
+  ⚠️ **`0025` ist bewusst NICHT eingespielt und wartet.** Es entzieht
   `select (thirsty_until)` auf `profiles`; jeder Client vor 0.10
   selektiert die Spalte direkt mit und bekäme danach die **gesamte**
   Profilabfrage verweigert — keine Freundesliste, kein eigenes Profil.
   Erst einspielen, wenn keine Clients vor 0.10 mehr zugreifen (Play
   Console / API-Logs). Im Zweifel warten: Die Spalte ist seit 0018 lesbar,
   0025 ist eine aufgeschobene Härtung, kein Rückschritt.
-  Stand **verifiziert am 2026-08-15** über `list_migrations`: live sind
-  exakt `0001–0019`, nichts Live-Only, und keine Struktur aus `0020–0025`
-  ist von Hand vorab eingespielt (kein Schema-Drift).
-  Migrationen `0001–0019` sind LIVE (0011 Gasthäuser, 0012
+  **Lehre aus 0024:** Eine Migration, die ein Recht entzieht, gehört nie
+  in dieselbe Datei wie die Ersatzschnittstelle — sonst gibt es kein
+  Zeitfenster, in dem alter und neuer Client zugleich funktionieren.
+  Frühere Migrationen (0011 Gasthäuser, 0012
   Challenges, 0013 Vertrauensstufen + edit_log, 0014 complete_challenge-RPC
   + contribution_leaderboard, 0015 venues.opening_hours_json, 0016
   user_badges/wishlist_items für den Cloud-Sync, 0017
   delete_my_account-RPC, 0018 profiles.thirsty_until „Bierlaune", 0019
   sprechende Nutzernamen aus full_name/E-Mail statt mate_<hex>; die
-  Freundessuche matcht seit 0.9.13 auch display_name).
+  Freundessuche matcht seit 0.9.13 auch display_name; 0020
+  checkins_created_idx, 0021 sessions_duration_bounds 29 min–24 h, 0022
+  checkins.volume_ml, 0023 story auf beers/breweries, 0024 Freundeskreise
+  `friend_tier` + tier_for/set_friend_tier/my_thirsty_until/
+  thirsty_friends + neue sessions_select-Policy).
   Google-Login und
   E-Mail-Anmeldung (ohne Bestätigungspflicht) sind eingerichtet und
   funktionieren. Seit 0008 gilt: EXECUTE auf Funktionen wird von PUBLIC
@@ -41,7 +45,12 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   ihrer Migration ein explizites `grant execute … to authenticated`
   (bzw. die jeweils passende Rolle).
 - **Security-Advisor-Baseline** (bekannt, bewusst offen; zuletzt geprüft
-  2026-08-15, keine echten Neubefunde): PostGIS im public-Schema inkl.
+  2026-08-15 nach dem Rollout von 0020–0024, keine echten Neubefunde —
+  die vier neuen RPCs schränken ihre Argumente selbst ein: `tier_for`
+  erbt die Härtung von `are_friends`, `set_friend_tier` schreibt nur
+  Zeilen mit eigener Beteiligung, `my_thirsty_until` nur das eigene
+  Konto, `thirsty_friends` filtert serverseitig auf Kreis „Freund"):
+  PostGIS im public-Schema inkl.
   `st_estimatedextent`/`spatial_ref_sys`, Leaked-Password-Protection
   deaktiviert. Dazu meldet der Linter (0028/0029) **jede** SECURITY-
   DEFINER-Funktion, die `authenticated` aufrufen darf — das sind
