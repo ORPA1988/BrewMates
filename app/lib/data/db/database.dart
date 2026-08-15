@@ -51,6 +51,9 @@ class Breweries extends Table {
   IntColumn get annualOutputHl => integer().nullable()();
   IntColumn get revenueEur => integer().nullable()();
   TextColumn get notes => text().nullable()();
+
+  /// Hintergrundgeschichte der Brauerei (siehe [Beers.story]).
+  TextColumn get story => text().nullable()();
   TextColumn get dataStatus => text().nullable()();
 
   @override
@@ -80,6 +83,11 @@ class Beers extends Table {
 
   /// Etikett-/Produktfoto als URL (Open Food Facts, CC-BY-SA – nur verlinkt).
   TextColumn get imageUrl => text().nullable()();
+
+  /// Hintergrundgeschichte: zwei bis fünf Sätze, wie ein Mensch sie
+  /// erzählen würde. Kein Werbetext, kein Wikipedia-Auszug — und lieber
+  /// leer als erfunden.
+  TextColumn get story => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -339,7 +347,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(openInMemory());
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -457,6 +465,11 @@ class AppDatabase extends _$AppDatabase {
           if (from < 11) {
             // v11: Füllmenge je Check-in (Grundlage der Literauswertung).
             await m.addColumn(checkins, checkins.volumeMl);
+          }
+          if (from < 12) {
+            // v12: Hintergrundgeschichten zu Bier und Brauerei.
+            await m.addColumn(beers, beers.story);
+            await m.addColumn(breweries, breweries.story);
           }
         },
       );
@@ -965,6 +978,18 @@ class AppDatabase extends _$AppDatabase {
   // --------------------------------------------------------------------------
   // Check-ins löschen (lokal sofort, Server beim nächsten Sync)
   // --------------------------------------------------------------------------
+
+  /// Hat der Mensch dieses Bier schon einmal eingecheckt?
+  ///
+  /// Damit erkennt der Scanner das „erste Mal", ohne dafür eine eigene
+  /// Tabelle gesehener Geschichten zu brauchen.
+  Future<bool> hasCheckinForBeer(String profileId, String beerId) async {
+    final row = await (select(checkins)
+          ..where((t) => t.profileId.equals(profileId) & t.beerId.equals(beerId))
+          ..limit(1))
+        .getSingleOrNull();
+    return row != null;
+  }
 
   Future<Checkin?> findCheckin(String id) =>
       (select(checkins)..where((t) => t.id.equals(id))).getSingleOrNull();

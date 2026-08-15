@@ -480,6 +480,11 @@ class $BreweriesTable extends Breweries
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
       'notes', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _storyMeta = const VerificationMeta('story');
+  @override
+  late final GeneratedColumn<String> story = GeneratedColumn<String>(
+      'story', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _dataStatusMeta =
       const VerificationMeta('dataStatus');
   @override
@@ -502,6 +507,7 @@ class $BreweriesTable extends Breweries
         annualOutputHl,
         revenueEur,
         notes,
+        story,
         dataStatus
       ];
   @override
@@ -581,6 +587,10 @@ class $BreweriesTable extends Breweries
       context.handle(
           _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
     }
+    if (data.containsKey('story')) {
+      context.handle(
+          _storyMeta, story.isAcceptableOrUnknown(data['story']!, _storyMeta));
+    }
     if (data.containsKey('data_status')) {
       context.handle(
           _dataStatusMeta,
@@ -624,6 +634,8 @@ class $BreweriesTable extends Breweries
           .read(DriftSqlType.int, data['${effectivePrefix}revenue_eur']),
       notes: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}notes']),
+      story: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}story']),
       dataStatus: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}data_status']),
     );
@@ -650,6 +662,9 @@ class Brewery extends DataClass implements Insertable<Brewery> {
   final int? annualOutputHl;
   final int? revenueEur;
   final String? notes;
+
+  /// Hintergrundgeschichte der Brauerei (siehe [Beers.story]).
+  final String? story;
   final String? dataStatus;
   const Brewery(
       {required this.id,
@@ -666,6 +681,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       this.annualOutputHl,
       this.revenueEur,
       this.notes,
+      this.story,
       this.dataStatus});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -703,6 +719,9 @@ class Brewery extends DataClass implements Insertable<Brewery> {
     }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || story != null) {
+      map['story'] = Variable<String>(story);
     }
     if (!nullToAbsent || dataStatus != null) {
       map['data_status'] = Variable<String>(dataStatus);
@@ -745,6 +764,8 @@ class Brewery extends DataClass implements Insertable<Brewery> {
           : Value(revenueEur),
       notes:
           notes == null && nullToAbsent ? const Value.absent() : Value(notes),
+      story:
+          story == null && nullToAbsent ? const Value.absent() : Value(story),
       dataStatus: dataStatus == null && nullToAbsent
           ? const Value.absent()
           : Value(dataStatus),
@@ -769,6 +790,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       annualOutputHl: serializer.fromJson<int?>(json['annualOutputHl']),
       revenueEur: serializer.fromJson<int?>(json['revenueEur']),
       notes: serializer.fromJson<String?>(json['notes']),
+      story: serializer.fromJson<String?>(json['story']),
       dataStatus: serializer.fromJson<String?>(json['dataStatus']),
     );
   }
@@ -790,6 +812,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       'annualOutputHl': serializer.toJson<int?>(annualOutputHl),
       'revenueEur': serializer.toJson<int?>(revenueEur),
       'notes': serializer.toJson<String?>(notes),
+      'story': serializer.toJson<String?>(story),
       'dataStatus': serializer.toJson<String?>(dataStatus),
     };
   }
@@ -809,6 +832,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
           Value<int?> annualOutputHl = const Value.absent(),
           Value<int?> revenueEur = const Value.absent(),
           Value<String?> notes = const Value.absent(),
+          Value<String?> story = const Value.absent(),
           Value<String?> dataStatus = const Value.absent()}) =>
       Brewery(
         id: id ?? this.id,
@@ -826,6 +850,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
             annualOutputHl.present ? annualOutputHl.value : this.annualOutputHl,
         revenueEur: revenueEur.present ? revenueEur.value : this.revenueEur,
         notes: notes.present ? notes.value : this.notes,
+        story: story.present ? story.value : this.story,
         dataStatus: dataStatus.present ? dataStatus.value : this.dataStatus,
       );
   Brewery copyWithCompanion(BreweriesCompanion data) {
@@ -847,6 +872,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       revenueEur:
           data.revenueEur.present ? data.revenueEur.value : this.revenueEur,
       notes: data.notes.present ? data.notes.value : this.notes,
+      story: data.story.present ? data.story.value : this.story,
       dataStatus:
           data.dataStatus.present ? data.dataStatus.value : this.dataStatus,
     );
@@ -869,6 +895,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
           ..write('annualOutputHl: $annualOutputHl, ')
           ..write('revenueEur: $revenueEur, ')
           ..write('notes: $notes, ')
+          ..write('story: $story, ')
           ..write('dataStatus: $dataStatus')
           ..write(')'))
         .toString();
@@ -890,6 +917,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       annualOutputHl,
       revenueEur,
       notes,
+      story,
       dataStatus);
   @override
   bool operator ==(Object other) =>
@@ -909,6 +937,7 @@ class Brewery extends DataClass implements Insertable<Brewery> {
           other.annualOutputHl == this.annualOutputHl &&
           other.revenueEur == this.revenueEur &&
           other.notes == this.notes &&
+          other.story == this.story &&
           other.dataStatus == this.dataStatus);
 }
 
@@ -927,6 +956,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
   final Value<int?> annualOutputHl;
   final Value<int?> revenueEur;
   final Value<String?> notes;
+  final Value<String?> story;
   final Value<String?> dataStatus;
   final Value<int> rowid;
   const BreweriesCompanion({
@@ -944,6 +974,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
     this.annualOutputHl = const Value.absent(),
     this.revenueEur = const Value.absent(),
     this.notes = const Value.absent(),
+    this.story = const Value.absent(),
     this.dataStatus = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -962,6 +993,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
     this.annualOutputHl = const Value.absent(),
     this.revenueEur = const Value.absent(),
     this.notes = const Value.absent(),
+    this.story = const Value.absent(),
     this.dataStatus = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
@@ -983,6 +1015,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
     Expression<int>? annualOutputHl,
     Expression<int>? revenueEur,
     Expression<String>? notes,
+    Expression<String>? story,
     Expression<String>? dataStatus,
     Expression<int>? rowid,
   }) {
@@ -1001,6 +1034,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
       if (annualOutputHl != null) 'annual_output_hl': annualOutputHl,
       if (revenueEur != null) 'revenue_eur': revenueEur,
       if (notes != null) 'notes': notes,
+      if (story != null) 'story': story,
       if (dataStatus != null) 'data_status': dataStatus,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1021,6 +1055,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
       Value<int?>? annualOutputHl,
       Value<int?>? revenueEur,
       Value<String?>? notes,
+      Value<String?>? story,
       Value<String?>? dataStatus,
       Value<int>? rowid}) {
     return BreweriesCompanion(
@@ -1038,6 +1073,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
       annualOutputHl: annualOutputHl ?? this.annualOutputHl,
       revenueEur: revenueEur ?? this.revenueEur,
       notes: notes ?? this.notes,
+      story: story ?? this.story,
       dataStatus: dataStatus ?? this.dataStatus,
       rowid: rowid ?? this.rowid,
     );
@@ -1088,6 +1124,9 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
+    if (story.present) {
+      map['story'] = Variable<String>(story.value);
+    }
     if (dataStatus.present) {
       map['data_status'] = Variable<String>(dataStatus.value);
     }
@@ -1114,6 +1153,7 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
           ..write('annualOutputHl: $annualOutputHl, ')
           ..write('revenueEur: $revenueEur, ')
           ..write('notes: $notes, ')
+          ..write('story: $story, ')
           ..write('dataStatus: $dataStatus, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -1212,6 +1252,11 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
   late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
       'image_url', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _storyMeta = const VerificationMeta('story');
+  @override
+  late final GeneratedColumn<String> story = GeneratedColumn<String>(
+      'story', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1226,7 +1271,8 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
         descriptionCommunity,
         communityRating,
         barcodes,
-        imageUrl
+        imageUrl,
+        story
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1307,6 +1353,10 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
       context.handle(_imageUrlMeta,
           imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta));
     }
+    if (data.containsKey('story')) {
+      context.handle(
+          _storyMeta, story.isAcceptableOrUnknown(data['story']!, _storyMeta));
+    }
     return context;
   }
 
@@ -1342,6 +1392,8 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
           .read(DriftSqlType.string, data['${effectivePrefix}barcodes'])!,
       imageUrl: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}image_url']),
+      story: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}story']),
     );
   }
 
@@ -1373,6 +1425,11 @@ class Beer extends DataClass implements Insertable<Beer> {
 
   /// Etikett-/Produktfoto als URL (Open Food Facts, CC-BY-SA – nur verlinkt).
   final String? imageUrl;
+
+  /// Hintergrundgeschichte: zwei bis fünf Sätze, wie ein Mensch sie
+  /// erzählen würde. Kein Werbetext, kein Wikipedia-Auszug — und lieber
+  /// leer als erfunden.
+  final String? story;
   const Beer(
       {required this.id,
       required this.breweryId,
@@ -1386,7 +1443,8 @@ class Beer extends DataClass implements Insertable<Beer> {
       this.descriptionCommunity,
       this.communityRating,
       required this.barcodes,
-      this.imageUrl});
+      this.imageUrl,
+      this.story});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1415,6 +1473,9 @@ class Beer extends DataClass implements Insertable<Beer> {
     if (!nullToAbsent || imageUrl != null) {
       map['image_url'] = Variable<String>(imageUrl);
     }
+    if (!nullToAbsent || story != null) {
+      map['story'] = Variable<String>(story);
+    }
     return map;
   }
 
@@ -1441,6 +1502,8 @@ class Beer extends DataClass implements Insertable<Beer> {
       imageUrl: imageUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(imageUrl),
+      story:
+          story == null && nullToAbsent ? const Value.absent() : Value(story),
     );
   }
 
@@ -1462,6 +1525,7 @@ class Beer extends DataClass implements Insertable<Beer> {
       communityRating: serializer.fromJson<double?>(json['communityRating']),
       barcodes: serializer.fromJson<String>(json['barcodes']),
       imageUrl: serializer.fromJson<String?>(json['imageUrl']),
+      story: serializer.fromJson<String?>(json['story']),
     );
   }
   @override
@@ -1481,6 +1545,7 @@ class Beer extends DataClass implements Insertable<Beer> {
       'communityRating': serializer.toJson<double?>(communityRating),
       'barcodes': serializer.toJson<String>(barcodes),
       'imageUrl': serializer.toJson<String?>(imageUrl),
+      'story': serializer.toJson<String?>(story),
     };
   }
 
@@ -1497,7 +1562,8 @@ class Beer extends DataClass implements Insertable<Beer> {
           Value<String?> descriptionCommunity = const Value.absent(),
           Value<double?> communityRating = const Value.absent(),
           String? barcodes,
-          Value<String?> imageUrl = const Value.absent()}) =>
+          Value<String?> imageUrl = const Value.absent(),
+          Value<String?> story = const Value.absent()}) =>
       Beer(
         id: id ?? this.id,
         breweryId: breweryId ?? this.breweryId,
@@ -1516,6 +1582,7 @@ class Beer extends DataClass implements Insertable<Beer> {
             : this.communityRating,
         barcodes: barcodes ?? this.barcodes,
         imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
+        story: story.present ? story.value : this.story,
       );
   Beer copyWithCompanion(BeersCompanion data) {
     return Beer(
@@ -1541,6 +1608,7 @@ class Beer extends DataClass implements Insertable<Beer> {
           : this.communityRating,
       barcodes: data.barcodes.present ? data.barcodes.value : this.barcodes,
       imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
+      story: data.story.present ? data.story.value : this.story,
     );
   }
 
@@ -1559,7 +1627,8 @@ class Beer extends DataClass implements Insertable<Beer> {
           ..write('descriptionCommunity: $descriptionCommunity, ')
           ..write('communityRating: $communityRating, ')
           ..write('barcodes: $barcodes, ')
-          ..write('imageUrl: $imageUrl')
+          ..write('imageUrl: $imageUrl, ')
+          ..write('story: $story')
           ..write(')'))
         .toString();
   }
@@ -1578,7 +1647,8 @@ class Beer extends DataClass implements Insertable<Beer> {
       descriptionCommunity,
       communityRating,
       barcodes,
-      imageUrl);
+      imageUrl,
+      story);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1595,7 +1665,8 @@ class Beer extends DataClass implements Insertable<Beer> {
           other.descriptionCommunity == this.descriptionCommunity &&
           other.communityRating == this.communityRating &&
           other.barcodes == this.barcodes &&
-          other.imageUrl == this.imageUrl);
+          other.imageUrl == this.imageUrl &&
+          other.story == this.story);
 }
 
 class BeersCompanion extends UpdateCompanion<Beer> {
@@ -1612,6 +1683,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
   final Value<double?> communityRating;
   final Value<String> barcodes;
   final Value<String?> imageUrl;
+  final Value<String?> story;
   final Value<int> rowid;
   const BeersCompanion({
     this.id = const Value.absent(),
@@ -1627,6 +1699,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     this.communityRating = const Value.absent(),
     this.barcodes = const Value.absent(),
     this.imageUrl = const Value.absent(),
+    this.story = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   BeersCompanion.insert({
@@ -1643,6 +1716,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     this.communityRating = const Value.absent(),
     this.barcodes = const Value.absent(),
     this.imageUrl = const Value.absent(),
+    this.story = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         breweryId = Value(breweryId),
@@ -1662,6 +1736,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     Expression<double>? communityRating,
     Expression<String>? barcodes,
     Expression<String>? imageUrl,
+    Expression<String>? story,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1679,6 +1754,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       if (communityRating != null) 'community_rating': communityRating,
       if (barcodes != null) 'barcodes': barcodes,
       if (imageUrl != null) 'image_url': imageUrl,
+      if (story != null) 'story': story,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1697,6 +1773,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       Value<double?>? communityRating,
       Value<String>? barcodes,
       Value<String?>? imageUrl,
+      Value<String?>? story,
       Value<int>? rowid}) {
     return BeersCompanion(
       id: id ?? this.id,
@@ -1712,6 +1789,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       communityRating: communityRating ?? this.communityRating,
       barcodes: barcodes ?? this.barcodes,
       imageUrl: imageUrl ?? this.imageUrl,
+      story: story ?? this.story,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1759,6 +1837,9 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     if (imageUrl.present) {
       map['image_url'] = Variable<String>(imageUrl.value);
     }
+    if (story.present) {
+      map['story'] = Variable<String>(story.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1781,6 +1862,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
           ..write('communityRating: $communityRating, ')
           ..write('barcodes: $barcodes, ')
           ..write('imageUrl: $imageUrl, ')
+          ..write('story: $story, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6671,6 +6753,7 @@ typedef $$BreweriesTableCreateCompanionBuilder = BreweriesCompanion Function({
   Value<int?> annualOutputHl,
   Value<int?> revenueEur,
   Value<String?> notes,
+  Value<String?> story,
   Value<String?> dataStatus,
   Value<int> rowid,
 });
@@ -6689,6 +6772,7 @@ typedef $$BreweriesTableUpdateCompanionBuilder = BreweriesCompanion Function({
   Value<int?> annualOutputHl,
   Value<int?> revenueEur,
   Value<String?> notes,
+  Value<String?> story,
   Value<String?> dataStatus,
   Value<int> rowid,
 });
@@ -6763,6 +6847,9 @@ class $$BreweriesTableFilterComposer
 
   ColumnFilters<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get story => $composableBuilder(
+      column: $table.story, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get dataStatus => $composableBuilder(
       column: $table.dataStatus, builder: (column) => ColumnFilters(column));
@@ -6841,6 +6928,9 @@ class $$BreweriesTableOrderingComposer
   ColumnOrderings<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get story => $composableBuilder(
+      column: $table.story, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get dataStatus => $composableBuilder(
       column: $table.dataStatus, builder: (column) => ColumnOrderings(column));
 }
@@ -6895,6 +6985,9 @@ class $$BreweriesTableAnnotationComposer
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get story =>
+      $composableBuilder(column: $table.story, builder: (column) => column);
 
   GeneratedColumn<String> get dataStatus => $composableBuilder(
       column: $table.dataStatus, builder: (column) => column);
@@ -6958,6 +7051,7 @@ class $$BreweriesTableTableManager extends RootTableManager<
             Value<int?> annualOutputHl = const Value.absent(),
             Value<int?> revenueEur = const Value.absent(),
             Value<String?> notes = const Value.absent(),
+            Value<String?> story = const Value.absent(),
             Value<String?> dataStatus = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -6976,6 +7070,7 @@ class $$BreweriesTableTableManager extends RootTableManager<
             annualOutputHl: annualOutputHl,
             revenueEur: revenueEur,
             notes: notes,
+            story: story,
             dataStatus: dataStatus,
             rowid: rowid,
           ),
@@ -6994,6 +7089,7 @@ class $$BreweriesTableTableManager extends RootTableManager<
             Value<int?> annualOutputHl = const Value.absent(),
             Value<int?> revenueEur = const Value.absent(),
             Value<String?> notes = const Value.absent(),
+            Value<String?> story = const Value.absent(),
             Value<String?> dataStatus = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -7012,6 +7108,7 @@ class $$BreweriesTableTableManager extends RootTableManager<
             annualOutputHl: annualOutputHl,
             revenueEur: revenueEur,
             notes: notes,
+            story: story,
             dataStatus: dataStatus,
             rowid: rowid,
           ),
@@ -7072,6 +7169,7 @@ typedef $$BeersTableCreateCompanionBuilder = BeersCompanion Function({
   Value<double?> communityRating,
   Value<String> barcodes,
   Value<String?> imageUrl,
+  Value<String?> story,
   Value<int> rowid,
 });
 typedef $$BeersTableUpdateCompanionBuilder = BeersCompanion Function({
@@ -7088,6 +7186,7 @@ typedef $$BeersTableUpdateCompanionBuilder = BeersCompanion Function({
   Value<double?> communityRating,
   Value<String> barcodes,
   Value<String?> imageUrl,
+  Value<String?> story,
   Value<int> rowid,
 });
 
@@ -7183,6 +7282,9 @@ class $$BeersTableFilterComposer extends Composer<_$AppDatabase, $BeersTable> {
 
   ColumnFilters<String> get imageUrl => $composableBuilder(
       column: $table.imageUrl, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get story => $composableBuilder(
+      column: $table.story, builder: (column) => ColumnFilters(column));
 
   $$BreweriesTableFilterComposer get breweryId {
     final $$BreweriesTableFilterComposer composer = $composerBuilder(
@@ -7296,6 +7398,9 @@ class $$BeersTableOrderingComposer
   ColumnOrderings<String> get imageUrl => $composableBuilder(
       column: $table.imageUrl, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get story => $composableBuilder(
+      column: $table.story, builder: (column) => ColumnOrderings(column));
+
   $$BreweriesTableOrderingComposer get breweryId {
     final $$BreweriesTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -7361,6 +7466,9 @@ class $$BeersTableAnnotationComposer
 
   GeneratedColumn<String> get imageUrl =>
       $composableBuilder(column: $table.imageUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get story =>
+      $composableBuilder(column: $table.story, builder: (column) => column);
 
   $$BreweriesTableAnnotationComposer get breweryId {
     final $$BreweriesTableAnnotationComposer composer = $composerBuilder(
@@ -7462,6 +7570,7 @@ class $$BeersTableTableManager extends RootTableManager<
             Value<double?> communityRating = const Value.absent(),
             Value<String> barcodes = const Value.absent(),
             Value<String?> imageUrl = const Value.absent(),
+            Value<String?> story = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               BeersCompanion(
@@ -7478,6 +7587,7 @@ class $$BeersTableTableManager extends RootTableManager<
             communityRating: communityRating,
             barcodes: barcodes,
             imageUrl: imageUrl,
+            story: story,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -7494,6 +7604,7 @@ class $$BeersTableTableManager extends RootTableManager<
             Value<double?> communityRating = const Value.absent(),
             Value<String> barcodes = const Value.absent(),
             Value<String?> imageUrl = const Value.absent(),
+            Value<String?> story = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               BeersCompanion.insert(
@@ -7510,6 +7621,7 @@ class $$BeersTableTableManager extends RootTableManager<
             communityRating: communityRating,
             barcodes: barcodes,
             imageUrl: imageUrl,
+            story: story,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

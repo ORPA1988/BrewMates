@@ -8,6 +8,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
 import '../../widgets/rating_stars.dart';
+import '../beers/story_sheet.dart';
 import 'barcode_lookup.dart';
 
 /// Hero-Funktion „🍺 Bier scannen": Kamera-Scan auf Android/iOS und im
@@ -130,6 +131,21 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
   Future<void> _showFoundSheet(BeerWithBrewery found) async {
     final beer = found.beer;
     final theme = Theme.of(context);
+
+    // „Wusstest du…?" nur beim ersten Mal: Ein Bier gilt als bekannt,
+    // sobald ein eigener Check-in darauf existiert — dafür braucht es
+    // keine eigene Tabelle gesehener Geschichten.
+    // Hat das Bier keine eigene Geschichte, springt die der Brauerei ein;
+    // das ist der häufigere und oft interessantere Fall.
+    final story = beer.story ?? found.brewery.story;
+    var showStoryHint = false;
+    if (story != null && story.trim().isNotEmpty) {
+      final me = await ref.read(databaseProvider).getMe();
+      showStoryHint = !await ref
+          .read(databaseProvider)
+          .hasCheckinForBeer(me.id, beer.id);
+    }
+    if (!mounted) return;
     await showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -186,6 +202,18 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
                   ),
                 ],
               ),
+              if (showStoryHint) ...[
+                const SizedBox(height: 12),
+                ActionChip(
+                  avatar: const Text('📖'),
+                  label: const Text('Wusstest du …?'),
+                  onPressed: () => showStorySheet(
+                    sheetContext,
+                    title: beer.story != null ? beer.name : found.brewery.name,
+                    story: story!,
+                  ),
+                ),
+              ],
               const SizedBox(height: 16),
               FilledButton.icon(
                 onPressed: () {

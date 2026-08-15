@@ -11,3 +11,26 @@ Die Felder `image_url` sowie ein Teil der `barcodes`-Einträge (in allen Bier-Da
 - **Bilder:** Wir speichern keine Bilddateien, sondern verlinken lediglich auf die bei Open Food Facts gehosteten Produktfotos (`images.openfoodfacts.org`). Die Fotos wurden von Open-Food-Facts-Beitragenden hochgeladen und stehen unter der Lizenz [CC-BY-SA](https://creativecommons.org/licenses/by-sa/3.0/deed.de); Urheber sind die jeweiligen Fotografinnen und Fotografen (abrufbar über die Produktseite zum jeweiligen Barcode, z. B. `https://world.openfoodfacts.org/product/<EAN>`).
 - **Produktdaten** (z. B. per Abgleich ergänzte EAN-Barcodes) stehen unter der [Open Database License (ODbL)](https://opendatacommons.org/licenses/odbl/1-0/).
 - Bilder wurden nur übernommen, wenn das Open-Food-Facts-Produkt eindeutig dem Bier in unserer Liste zugeordnet werden konnte (bei bereits verifizierten Barcodes direkt über die EAN, sonst über eindeutige Produktnamen-Treffer). Da die Daten gemeinschaftlich gepflegt werden, können sich Bild-URLs ändern oder einzelne Zuordnungen fehlerhaft sein — Hinweise bitte per GitHub-Issue.
+
+## Hintergrundgeschichten (`story`)
+
+Das Feld `story` enthält eine kurze Hintergrundgeschichte zur Brauerei
+bzw. zum Bier — zwei bis fünf Sätze, redaktionell in eigenen Worten
+formuliert. Übernommen werden nur Angaben, die allgemein bekannt und gut
+belegt sind (Gründungsjahre, Eigentumsverhältnisse, historische
+Besonderheiten); unsichere Superlative sind als Anspruch gekennzeichnet
+(„gilt als", „nach eigener Zählung") und nicht als Tatsache.
+
+Es sind **keine wörtlichen Übernahmen** von Brauerei-Webseiten,
+Wikipedia-Artikeln oder anderen Texten. Zahlen und Jahreszahlen dürfen
+aus öffentlichen Quellen stammen, die Formulierungen sind unsere.
+
+Es gilt dieselbe Regel wie für den übrigen Bestand, hier aber besonders
+streng: **lieber kein Eintrag als ein erfundener.** Eine plausibel
+klingende, aber falsche Brauereigeschichte ist schlimmer als eine leere
+Fläche — sie wird geglaubt und weitererzählt. Brauereien ohne gesicherte
+Geschichte haben deshalb kein `story`-Feld; die Anzeige lässt den
+Abschnitt dann weg.
+
+Stand: 30 Brauereien (Österreich und Bayern) und 1 Bier haben eine
+Geschichte. Korrekturen und Ergänzungen bitte per GitHub-Issue.

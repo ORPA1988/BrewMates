@@ -1,9 +1,8 @@
 # 21 Hintergrundgeschichten
 
-> **Status:** 🔴 geplant — die Datenfelder für kurze Notizen existieren
-> (`breweries.notes`, `beers.description_*`), Geschichten und ihre Anzeige
-> nicht.
-> **Geplant für:** 0.9.16-beta · **Zuletzt geprüft:** 2026-08-15
+> **Status:** 🟡 teilweise — Feld, Anzeige und Erst-Scan-Hinweis stehen;
+> 30 von 125 Brauereien haben bislang eine Geschichte.
+> **Seit:** 0.9.16-beta · **Zuletzt geprüft:** 2026-08-15
 
 ## Zielsetzung
 
@@ -39,13 +38,26 @@ bestehende Änderungsprotokoll.
 
 ## Technische Umsetzung
 
-- **Daten:** neues Feld `story` (Text) bei Bier und Brauerei — in den acht
-  JSON-Dateien, in Supabase (Migration) und in Drift (v12)
+- **Daten:** neues Feld `story` (Text) bei Bier und Brauerei — in den
+  JSON-Dateien, in Supabase (Migration 0023) und in Drift (v12)
 - **Geändert:** `data/community_sync.dart` (Feld mitlesen),
   `features/beers/beer_detail_screen.dart`,
   `features/beers/brewery_detail_screen.dart`,
   `features/scan/scan_screen.dart` (Hinweis auf der Bestätigung)
-- **Neu:** `features/beers/story_sheet.dart` — die Anzeige
+- **Neu:** `features/beers/story_sheet.dart` — `StorySection` für die
+  Detailseiten, `showStorySheet` für den Hinweis beim Scan
+
+**Serverseitig war nichts an den Rechten zu tun:** Die bestehenden
+`update`-Policies auf `beers` und `breweries` gelten für die ganze Zeile
+und decken die neue Spalte mit ab — Vertrauensstufe 3 darf sie also
+bearbeiten, und jede Änderung landet wie gehabt im `edit_log`. Migration
+0023 setzt zusätzlich eine Längengrenze von 1200 Zeichen: Sie hält die
+Geschichten bei „Anekdote" statt „Aufsatz".
+
+**Rückfall auf die Brauerei:** Hat ein Bier keine eigene Geschichte,
+zeigt der Scanner die der Brauerei. Das ist der häufigere und oft
+interessantere Fall — Brauereigeschichten skalieren besser als
+Biergeschichten.
 
 **„Schon gesehen?"** braucht keine neue Tabelle: Ein Bier gilt als bekannt,
 sobald ein eigener Check-in darauf existiert. Der Hinweis erscheint also
@@ -53,15 +65,20 @@ genau beim ersten Mal, und das ohne zusätzlichen Zustand — der aufwendigere
 Weg (eine Tabelle gesehener Geschichten) wäre nur nötig, wenn man auch
 ohne Check-in markieren wollte.
 
-**Herkunft und Sorgfalt.** Die Geschichten recherchiere ich; jede kommt mit
-Quelle in die Pflegedoku, und es gilt dieselbe Regel wie bei den übrigen
-Daten: **lieber kein Eintrag als ein erfundener.** Eine plausibel
-klingende, aber falsche Brauereigeschichte ist schlimmer als eine leere
-Fläche — sie wird geglaubt und weitererzählt. Unbelegtes bleibt weg.
+**Herkunft und Sorgfalt.** Es gilt dieselbe Regel wie bei den übrigen
+Daten, hier aber besonders streng: **lieber kein Eintrag als ein
+erfundener.** Eine plausibel klingende, aber falsche Brauereigeschichte
+ist schlimmer als eine leere Fläche — sie wird geglaubt und
+weitererzählt. Aufgenommen ist deshalb nur, was allgemein bekannt und gut
+belegt ist; unsichere Superlative stehen als Anspruch da („gilt als",
+„nach eigener Zählung") und nicht als Tatsache. Brauereien ohne
+gesicherte Geschichte bekommen kein Feld, und die Anzeige lässt den
+Abschnitt dann weg.
 
 Rechtlich: eigene Formulierungen, keine übernommenen Texte von
-Brauerei-Webseiten. Zahlen und Jahreszahlen dürfen aus öffentlichen
-Quellen stammen, die Sätze müssen unsere sein.
+Brauerei-Webseiten oder aus Wikipedia. Zahlen und Jahreszahlen dürfen aus
+öffentlichen Quellen stammen, die Sätze sind unsere. Festgehalten in
+`app/assets/data/DATENHERKUNFT.md`.
 
 ## Modularität
 
@@ -83,22 +100,28 @@ rund 160 KB zusätzlich. Vertretbar. Ab etwa dem Dreifachen sollten die
 Geschichten aus den gebündelten Dateien heraus und bei Bedarf nachgeladen
 werden; dann trägt der Bundle nur noch, was ohne Netz nötig ist.
 
+## Umsetzungsstatus
+
+Technik vollständig, Inhalte begonnen:
+
+- Feld, Migration, Import, Anzeige und Erst-Scan-Hinweis stehen
+- Bearbeiten ab Stufe 3 funktioniert ohne eigenes Zutun (bestehende
+  Policies)
+- **30 Brauereien** haben eine Geschichte (Österreich 13, Bayern 17),
+  dazu ein Bier (Samichlaus)
+
+Abgesichert durch `test/story_test.dart` (5 Tests): Import, Längengrenze,
+kein leerer Text statt null, „erstes Mal" am fehlenden eigenen Check-in,
+fremder Check-in macht ein Bier nicht bekannt.
+
 ## Umsetzungsplan
 
-1. **Feld überall ergänzen.** Migration (Supabase), Drift v12,
-   `community_sync` liest `story`, JSON-Schema in der Pflegedoku
-   nachziehen.
-   *Prüfkriterium:* Import-Test — Geschichte landet in der lokalen DB.
-2. **Anzeige.** `story_sheet.dart`, eingebunden in Bier- und
-   Brauerei-Detail.
-   *Prüfkriterium:* Widget-Test — ohne Geschichte erscheint kein leerer
-   Bereich.
-3. **Hinweis beim ersten Scan.** Bedingung: Geschichte vorhanden **und**
-   kein eigener Check-in auf dieses Bier.
-   *Prüfkriterium:* Test — beim zweiten Scan erscheint nichts.
-4. **Bearbeiten ab Stufe 3,** über das bestehende Änderungsprotokoll.
-5. **Inhalte recherchieren** — zuerst die 40 bekanntesten Brauereien, dann
-   fortlaufend im Rahmen der Datenpflege bei jedem Entwicklungslauf.
+1. **Restliche Brauereien** — Deutschland (40) und Schweiz (18) haben noch
+   keine Geschichte; dazu die 21 übrigen aus Österreich und Bayern.
+   Fortlaufend bei jedem Entwicklungslauf, im selben Zug wie die
+   Datenpflege.
+2. **Biergeschichten** für die Klassiker, wo es mehr zu erzählen gibt als
+   über die Brauerei.
 
 ## Offene Punkte / Ideen
 

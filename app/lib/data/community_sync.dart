@@ -151,6 +151,7 @@ class CommunitySync {
           annualOutputHl: Value((b['annual_output_hl'] as num?)?.toInt()),
           revenueEur: Value((b['revenue_eur'] as num?)?.toInt()),
           notes: Value(b['notes'] as String?),
+          story: Value(b['story'] as String?),
           dataStatus: Value(b['data_status'] as String?),
         ),
     ];
@@ -176,6 +177,7 @@ class CommunitySync {
               ((b['barcodes'] as List?)?.cast<String>() ?? const [])
                   .join(',')),
           imageUrl: Value(b['image_url'] as String?),
+          story: Value(b['story'] as String?),
         ),
     ];
   }
