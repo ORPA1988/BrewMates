@@ -67,4 +67,40 @@ class FakeOnlineService extends OnlineService {
     aktiveSessionIds.add(session.id);
     return true;
   }
+
+  // ---------------------------------------------------------------------
+  // Freunde — für den Widget-Test des Freundes-Bildschirms.
+  // ---------------------------------------------------------------------
+
+  List<RemoteProfile> freunde = const [];
+  List<FriendRequest> anfragen = const [];
+  List<RemoteProfile> blockierte = const [];
+
+  @override
+  Future<List<RemoteProfile>> friends() async => freunde;
+
+  @override
+  Future<List<FriendRequest>> incomingRequests() async => anfragen;
+
+  @override
+  Future<List<RemoteProfile>> blockedProfiles() async => blockierte;
+
+  @override
+  Future<bool> setFriendTier(String profileId, FriendTier tier) async {
+    aufrufe.add('setFriendTier:$profileId:${tier.name}');
+    return !schlaegtFehl;
+  }
+
+  @override
+  Future<bool> respondRequest(String friendshipId,
+      {required bool accept}) async {
+    aufrufe.add('respondRequest:$friendshipId:$accept');
+    return !schlaegtFehl;
+  }
+
+  @override
+  Future<bool> unblockProfile(String profileId) async {
+    aufrufe.add('unblockProfile:$profileId');
+    return !schlaegtFehl;
+  }
 }
