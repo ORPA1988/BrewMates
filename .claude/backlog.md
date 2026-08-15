@@ -13,7 +13,7 @@ KI-Unterstützung deutlich weniger).
 |---|---|---|---|
 | A-1 | **Feature-Branch nach `main` bringen** und Altbranches löschen | S | Am 15.08.2026 lagen 17 Commits (+10.451 Z.) ungemerged neben `main`. Solange das offen ist, weiß niemand, was der Stand ist. |
 | A-2 | **RLS-Tests** für Standort-, Freundeskreis- und Crew-Sichtbarkeit | M | Die gesamte Privatsphäre hängt an RLS. Getestet ist davon derzeit nichts. Größte Risikolücke. |
-| A-3 | **Migrationsstand verifizieren** (0019–0024 live vs. nur im Repo) und den Ist-Stand in `CLAUDE.md` festschreiben | S | Ein Repo-Stand, der nicht dem Server entspricht, produziert Fehler, die niemand reproduzieren kann. |
+| ~~A-3~~ | ~~**Migrationsstand verifizieren**~~ — erledigt 15.08.2026: live sind exakt `0001–0019`, nichts Live-Only, kein Schema-Drift. `0020–0024` stehen aus. | — | Festgeschrieben in `CLAUDE.md`. **0024 nur zeitgleich mit dem App-Update** — es entzieht `select (thirsty_until)`. |
 | A-4 | **Testabdeckung messen** — `flutter test --coverage` in der CI, Wert im PR sichtbar | S | Ohne Zahl bleibt Abdeckung Gefühlssache. Aktuell ~1.675 Testzeilen gegen ~14.600 Produktivzeilen. |
 
 ## B — Danach
