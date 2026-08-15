@@ -428,7 +428,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       final pending =
           await ref.read(pendingCheckinUploadProvider.future) ?? const [];
       if (pending.isEmpty) return;
-      final uploaded = await online.uploadLocalCheckins(pending);
+      final uploaded = await online.checkins.uploadLocalCheckins(pending);
       if (!mounted) return;
       ref.invalidate(pendingCheckinUploadProvider);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

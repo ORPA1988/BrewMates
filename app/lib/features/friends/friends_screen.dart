@@ -39,7 +39,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
       return;
     }
     setState(() => _searching = true);
-    final results = await online.searchProfiles(query);
+    final results = await online.friends.searchProfiles(query);
     if (!mounted) return;
     // Nur übernehmen, wenn die Eingabe inzwischen nicht geändert wurde.
     if (_searchController.text.trim() == query.trim()) {
@@ -53,7 +53,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
   Future<void> _sendRequest(RemoteProfile profile) async {
     final online = await ref.read(onlineServiceProvider.future);
     if (online == null) return;
-    final err = await online.sendFriendRequest(profile.id);
+    final err = await online.friends.sendFriendRequest(profile.id);
     if (!mounted) return;
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(err ?? 'Anfrage gesendet 🍻')));
@@ -62,7 +62,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
   Future<void> _respond(FriendRequest request, {required bool accept}) async {
     final online = await ref.read(onlineServiceProvider.future);
     if (online == null) return;
-    final ok = await online.respondRequest(request.friendshipId, accept: accept);
+    final ok = await online.friends.respondRequest(request.friendshipId, accept: accept);
     if (!mounted) return;
     if (!ok) {
       // Nicht invalidieren: Der Serverstand hat sich nicht geändert. Eine
@@ -118,7 +118,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
     if (confirmed != true) return;
     final online = await ref.read(onlineServiceProvider.future);
     if (online == null || !mounted) return;
-    final err = await online.blockProfile(profile.id);
+    final err = await online.friends.blockProfile(profile.id);
     if (!mounted) return;
     await _refresh();
     if (!mounted) return;
@@ -129,7 +129,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
   Future<void> _unblock(RemoteProfile profile) async {
     final online = await ref.read(onlineServiceProvider.future);
     if (online == null) return;
-    final ok = await online.unblockProfile(profile.id);
+    final ok = await online.friends.unblockProfile(profile.id);
     if (!mounted) return;
     if (!ok) {
       // Blockieren ist eine Sicherheitsentscheidung. Wer glaubt, entsperrt
@@ -178,7 +178,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
     if (reason == null) return;
     final online = await ref.read(onlineServiceProvider.future);
     if (online == null || !mounted) return;
-    final err = await online.reportProfile(profile.id, reason);
+    final err = await online.friends.reportProfile(profile.id, reason);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(err ?? 'Danke, wir schauen uns das an. 🕵️')));
@@ -298,7 +298,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
     if (chosen == null || chosen == friend.tier) return;
     final online = await ref.read(onlineServiceProvider.future);
     if (online == null) return;
-    final ok = await online.setFriendTier(friend.id, chosen);
+    final ok = await online.friends.setFriendTier(friend.id, chosen);
     if (!mounted) return;
     if (!ok) {
       // Kein Invalidieren: Die Liste zeigt weiter den Stand des Servers,

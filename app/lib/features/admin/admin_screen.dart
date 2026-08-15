@@ -64,7 +64,7 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
       return;
     }
     setState(() => _searching = true);
-    final results = await online.searchProfiles(query);
+    final results = await online.friends.searchProfiles(query);
     if (!mounted) return;
     // Nur übernehmen, wenn die Eingabe inzwischen nicht geändert wurde.
     if (_searchController.text.trim() == query.trim()) {

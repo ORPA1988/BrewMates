@@ -118,7 +118,7 @@ final remoteSessionsProvider =
     yield const [];
     return;
   }
-  yield* online.friendSessionsStream();
+  yield* online.sessions.friendSessionsStream();
 });
 
 /// Check-ins echter Freunde (Abruf beim Start + alle 30 s über die Clock).
@@ -129,7 +129,7 @@ final remoteFeedProvider = FutureProvider<List<RemoteCheckin>>((ref) async {
   if (online == null || online.currentUser == null) return const [];
   // Gleiches Fenster wie der lokale Teil – „mehr laden" holt auch
   // serverseitig nach, statt bei den ersten 50 stehenzubleiben.
-  return online.friendCheckins(limit: ref.watch(feedLimitProvider));
+  return online.checkins.friendCheckins(limit: ref.watch(feedLimitProvider));
 });
 
 final onlineFriendsProvider =
@@ -137,7 +137,7 @@ final onlineFriendsProvider =
   ref.watch(onlineUserProvider);
   final online = await ref.watch(onlineServiceProvider.future);
   if (online == null) return const [];
-  return online.friends();
+  return online.friends.friends();
 });
 
 /// Eigene Blockliste (Migration 0009); leer, solange niemand blockiert ist.
@@ -146,7 +146,7 @@ final blockedProfilesProvider =
   ref.watch(onlineUserProvider);
   final online = await ref.watch(onlineServiceProvider.future);
   if (online == null) return const [];
-  return online.blockedProfiles();
+  return online.friends.blockedProfiles();
 });
 
 /// Sichtbarer Kartenausschnitt (von der Karte gesetzt, entprellt).
@@ -169,7 +169,7 @@ final otherActiveCountProvider = FutureProvider<int>((ref) async {
   if (bounds == null || online == null || online.currentUser == null) {
     return 0;
   }
-  return online.countOtherActiveSessions(
+  return online.sessions.countOtherActiveSessions(
     minLat: bounds.minLat,
     minLng: bounds.minLng,
     maxLat: bounds.maxLat,
@@ -201,7 +201,7 @@ final friendRequestsProvider =
   ref.watch(clockProvider);
   final online = await ref.watch(onlineServiceProvider.future);
   if (online == null) return const [];
-  return online.incomingRequests();
+  return online.friends.incomingRequests();
 });
 
 // ============================================================================
@@ -351,10 +351,10 @@ final pendingCheckinUploadProvider =
   final mine = await ref.watch(databaseProvider).myCheckinsDetailed(me.id);
   final candidates = [
     for (final d in mine)
-      if (OnlineService.isUploadable(d)) d,
+      if (CheckinsApi.isUploadable(d)) d,
   ];
   if (candidates.isEmpty) return const [];
-  final remoteIds = await online.myRemoteCheckinIds();
+  final remoteIds = await online.checkins.myRemoteCheckinIds();
   if (remoteIds == null) return null;
   return [
     for (final d in candidates)
@@ -406,8 +406,8 @@ final checkinDeleteSyncProvider = FutureProvider<int>((ref) async {
   if (online == null || online.currentUser == null) return 0;
   return replayCheckinDeleteQueue(
     ref.read(databaseProvider),
-    deleteRemote: online.deleteCheckinRemote,
-    deletePhoto: online.deleteCheckinPhoto,
+    deleteRemote: online.checkins.deleteCheckinRemote,
+    deletePhoto: online.checkins.deleteCheckinPhoto,
   );
 });
 
@@ -575,7 +575,7 @@ final checkinAutoSyncProvider = FutureProvider<int>((ref) async {
   final pending =
       await ref.watch(pendingCheckinUploadProvider.future) ?? const [];
   if (pending.isEmpty) return 0;
-  final uploaded = await online.uploadLocalCheckins(pending) ?? 0;
+  final uploaded = await online.checkins.uploadLocalCheckins(pending) ?? 0;
   if (uploaded > 0) ref.invalidate(pendingCheckinUploadProvider);
   return uploaded;
 });
@@ -606,7 +606,7 @@ final sessionReconcileProvider = FutureProvider<int>((ref) async {
   final mine = await ref
       .watch(databaseProvider)
       .getMyActiveSession(me.id, DateTime.now());
-  return online.endStaleSessions(keepSessionId: mine?.id);
+  return online.sessions.endStaleSessions(keepSessionId: mine?.id);
 });
 
 /// 👥 Eigene Crews (Beitritt per Einladungscode = Crew-UUID).
@@ -637,7 +637,7 @@ final thirstyFriendsProvider =
   // Bierlaune nicht. Vorher wurde die ganze Freundesliste geholt und in
   // der App gefiltert — die Angabe lag damit auf jedem Gerät, das
   // danach fragte.
-  return online.thirstyFriends();
+  return online.friends.thirstyFriends();
 });
 
 /// Eigene Bierlaune (kommt seit 0024 über eine Funktion, weil das
@@ -646,7 +646,7 @@ final myThirstyUntilProvider = FutureProvider<DateTime?>((ref) async {
   ref.watch(_syncTickProvider);
   ref.watch(onlineUserProvider);
   final online = await ref.watch(onlineServiceProvider.future);
-  return online?.myThirstyUntil();
+  return online?.friends.myThirstyUntil();
 });
 
 /// Merker, für welches Konto der Cloud-Restore diese App-Sitzung schon
@@ -668,11 +668,11 @@ final cloudRestoreProvider = FutureProvider<RestoreSummary?>((ref) async {
   final db = ref.read(databaseProvider);
   final summary = await restoreFromCloud(
     db,
-    fetchCheckins: online.myRemoteCheckins,
-    fetchBadges: online.myRemoteBadges,
-    pushBadges: online.uploadBadges,
-    fetchWishlist: online.myRemoteWishlist,
-    pushWishlistItem: (key) => online.setWishlistRemote(key, add: true),
+    fetchCheckins: online.checkins.myRemoteCheckins,
+    fetchBadges: online.checkins.myRemoteBadges,
+    pushBadges: online.checkins.uploadBadges,
+    fetchWishlist: online.checkins.myRemoteWishlist,
+    pushWishlistItem: (key) => online.checkins.setWishlistRemote(key, add: true),
   );
   if (summary.complete) {
     ref.read(_restoredUidProvider.notifier).state = user.id;
@@ -724,7 +724,7 @@ final feedReactionsProvider = FutureProvider<
     for (final d in feed)
       if (serverCheckinId(d.checkin.id) case final id?) id,
   ];
-  return online.reactionsFor(ids);
+  return online.checkins.reactionsFor(ids);
 });
 
 /// Kommentare eines Server-Check-ins (für das Kommentar-Sheet).
@@ -733,7 +733,7 @@ final remoteCommentsProvider = FutureProvider.autoDispose.family<
     String>((ref, checkinId) async {
   final online = await ref.watch(onlineServiceProvider.future);
   if (online == null) return null;
-  return online.commentsRemote(checkinId);
+  return online.checkins.commentsRemote(checkinId);
 });
 
 // ============================================================================
@@ -889,7 +889,7 @@ class BrewActions {
     // fehl, holt der Restore-Abgleich sie beim nächsten Lauf nach.
     if (earned.isNotEmpty && online != null) {
       final now = DateTime.now().toUtc();
-      await online.uploadBadges({for (final b in earned) b.slug: now});
+      await online.checkins.uploadBadges({for (final b in earned) b.slug: now});
     }
     return earned;
   }
@@ -934,7 +934,7 @@ class BrewActions {
       final mine = await _db.myCheckinsDetailed(me.id);
       for (final details in mine) {
         if (details.checkin.id == checkinId) {
-          unawaited(online.insertCheckin(details));
+          unawaited(online.checkins.insertCheckin(details));
           break;
         }
       }
@@ -945,7 +945,7 @@ class BrewActions {
     if (badges.isNotEmpty && online != null) {
       final stamp = DateTime.now().toUtc();
       unawaited(
-          online.uploadBadges({for (final b in badges) b.slug: stamp}));
+          online.checkins.uploadBadges({for (final b in badges) b.slug: stamp}));
     }
     // Challenges prüfen: Abschluss lokal als Badge festhalten und
     // best-effort online melden (idempotent; offline holt der nächste
@@ -1035,7 +1035,7 @@ class BrewActions {
       if (online != null) {
         final row = await _db.getMyActiveSession(me.id, now);
         if (row != null) {
-          unawaited(online.upsertSession(row, crewId: crewId));
+          unawaited(online.sessions.upsertSession(row, crewId: crewId));
         }
       }
     }
@@ -1060,7 +1060,7 @@ class BrewActions {
     await _db.endSession(current.id, now);
     final online = await _online();
     if (online == null) return true;
-    return online.endSession(current.id);
+    return online.sessions.endSession(current.id);
   }
 
   /// Laufende eigene Session verlängern.
@@ -1093,7 +1093,7 @@ class BrewActions {
     // unterblieb vollständig — das Verlängern kam nie an, meldete aber
     // Erfolg. Siehe `session_id_test.dart`.
     if (online == null) return (until: until, synced: true);
-    final synced = await online.updateSessionExpiry(current.id, until);
+    final synced = await online.sessions.updateSessionExpiry(current.id, until);
     return (until: until, synced: synced);
   }
 
@@ -1104,7 +1104,7 @@ class BrewActions {
       final online = await _online();
       if (online != null) {
         unawaited(
-            online.joinSession(stripRemote(sessionId), joined: true));
+            online.sessions.joinSession(stripRemote(sessionId), joined: true));
       }
     } else {
       await _db.joinSession(sessionId, me.id, ParticipantKind.joined);
@@ -1120,7 +1120,7 @@ class BrewActions {
       final online = await _online();
       if (online != null) {
         unawaited(
-            online.joinSession(stripRemote(sessionId), joined: false));
+            online.sessions.joinSession(stripRemote(sessionId), joined: false));
       }
     } else {
       await _db.joinSession(sessionId, me.id, ParticipantKind.toast);
@@ -1134,7 +1134,7 @@ class BrewActions {
   Future<bool> setBierlaune({required bool on}) async {
     final online = await _online();
     if (online == null) return false;
-    final ok = await online.setBierlaune(
+    final ok = await online.friends.setBierlaune(
         on ? DateTime.now().add(const Duration(hours: 4)) : null);
     _ref.invalidate(myRemoteProfileProvider);
     _ref.invalidate(myThirstyUntilProvider);
@@ -1175,7 +1175,7 @@ class BrewActions {
   }) async {
     final online = await _online();
     if (online != null) {
-      await online.setToastRemote(serverId, on: on);
+      await online.checkins.setToastRemote(serverId, on: on);
       _ref.invalidate(feedReactionsProvider);
     }
     final me = await _me();
@@ -1199,7 +1199,7 @@ class BrewActions {
   Future<String?> addServerComment(String serverId, String body) async {
     final online = await _online();
     if (online == null) return 'Keine Verbindung.';
-    final error = await online.addCommentRemote(serverId, body);
+    final error = await online.checkins.addCommentRemote(serverId, body);
     if (error == null) {
       _ref.invalidate(feedReactionsProvider);
       _ref.invalidate(remoteCommentsProvider(serverId));
@@ -1214,7 +1214,7 @@ class BrewActions {
     final online = await _online();
     if (online != null) {
       final onList = await _db.isWishlisted(me.id, beerId);
-      await online.setWishlistRemote(beerId, add: onList);
+      await online.checkins.setWishlistRemote(beerId, add: onList);
     }
   }
 
