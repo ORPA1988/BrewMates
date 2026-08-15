@@ -25,7 +25,7 @@ jobs:
       # Die Zahl steht in der Job-Zusammenfassung, damit sie im PR sichtbar
       # ist, ohne Logs zu öffnen. `--min` ist eine Ratsche: Sie darf steigen,
       # nie sinken. Wer sie senkt, muss das im Diff begründen.
-      - run: dart ../tools/coverage_report.dart --min 31
+      - run: dart ../tools/coverage_report.dart --min 32
       # Die acht JSON-Dateien sind der Inhalt der App und werden
       # redaktionell gepflegt — künftig auch von Menschen, die den Code
       # nicht kennen. Ein doppelter Barcode schickt den Scanner auf das
