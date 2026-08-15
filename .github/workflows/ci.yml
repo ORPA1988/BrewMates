@@ -25,7 +25,7 @@ jobs:
       # Die Zahl steht in der Job-Zusammenfassung, damit sie im PR sichtbar
       # ist, ohne Logs zu öffnen. `--min` ist eine Ratsche: Sie darf steigen,
       # nie sinken. Wer sie senkt, muss das im Diff begründen.
-      - run: dart ../tools/coverage_report.dart --min 29
+      - run: dart ../tools/coverage_report.dart --min 31
       # Fängt dart:io-Regressionen: die App muss auch fürs Web bauen
       # (GitHub-Pages-Deployment, siehe pages.yml).
       - run: flutter build web --release

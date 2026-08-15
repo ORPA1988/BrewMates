@@ -28,7 +28,7 @@ KI-Unterstützung deutlich weniger).
 | B-2 | **Cloud-Wiederherstellung inkrementell** statt „immer alles" | M | Beim Gerätewechsel wächst die Wiederherstellung sonst linear mit dem Bestand. |
 | B-3 | **`online_service.dart` (1.573 Z.) entflechten** in `online/friends.dart`, `online/sessions.dart`, `online/checkins.dart`, `online/venues.dart` | M | Jede Änderung lädt heute die ganze Datei in den Kontext — direkter Token- und Fehlerkostentreiber. |
 | B-4 | **`providers.dart` (939 Z.) je Feature aufteilen** | M | Gleicher Grund. Provider gehören neben ihr Feature. |
-| B-5 | **Widget-Tests für die Kernbildschirme** (Home, Scan, Karte) | M | Die drei Bildschirme, über die alles läuft, sind ungetestet. |
+| B-5 | **Widget-Tests für die Kernbildschirme** — *teilweise erledigt 15.08.2026*: `friends_screen` (0,4 % → getestet, inkl. der Fehlerpfade aus A-8) und `activeUsersLabel`. **Offen: Scan und Karte** — `mobile_scanner` und `flutter_map` brauchen eine Umgebung, die der Widget-Test nicht bietet; dafür wäre ein Integrationstest nötig. | S | Abdeckung dadurch 29,9 % → 31,6 %. `friends_screen` kam vor Home/Scan, weil dort die Einstellung sitzt, die steuert, wer den eigenen Aufenthaltsort sieht. |
 | B-6 | **Check-ins bearbeiten** (nicht nur löschen) | M | Deckt laut Audit vermutlich die Hälfte der Löschwünsche ab. |
 
 ## C — Später / beobachten
