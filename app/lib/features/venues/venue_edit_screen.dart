@@ -14,6 +14,7 @@ import '../../data/providers.dart';
 import '../../data/venue_queue.dart';
 import '../../data/venue_sync.dart';
 import '../../widgets/badge_celebration.dart';
+import '../../widgets/suggest_list.dart';
 
 /// Gasthaus anlegen bzw. bearbeiten. Online-first: gespeichert wird direkt
 /// in der gemeinsamen Supabase-DB (RLS entscheidet, was erlaubt ist);
@@ -367,27 +368,27 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
                   : null,
               onChanged: (_) => setState(() {}),
             ),
-            if (similar.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Card(
-                color: theme.colorScheme.secondaryContainer,
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Gibt es das schon?',
-                          style: theme.textTheme.titleSmall),
-                      for (final v in similar.take(3))
-                        Text(
-                            '• ${v.name}'
-                            '${v.city == null ? '' : ' (${v.city})'}',
-                            style: theme.textTheme.bodySmall),
-                    ],
+            // Anklickbar, nicht nur lesbar: Die Liste sagte bisher „gibt
+            // es schon" und ließ den Menschen das vorhandene Gasthaus
+            // trotzdem selbst suchen. Wer gerade dabei ist, einen Eintrag
+            // anzulegen, tut das dann meistens einfach fertig — das
+            // Duplikat wurde also angekündigt statt verhindert. Ein Tipp
+            // führt jetzt direkt ins Bearbeiten des vorhandenen Hauses.
+            SuggestList(
+              eintraege: [
+                for (final v in similar)
+                  SuggestEntry(
+                    titel: v.name,
+                    untertitel: [v.city, v.address]
+                        .where((e) => e != null && e.isNotEmpty)
+                        .join(' · '),
+                    fuehrend: venueCategoryEmoji(v.category),
+                    onTap: () => context.pushReplacement('/venue/${v.id}/edit'),
                   ),
-                ),
-              ),
-            ],
+              ],
+              titel: 'Gibt es das schon? Tippen zum Ergänzen.',
+              maximal: 3,
+            ),
             const SizedBox(height: 16),
             Wrap(
               spacing: 8,

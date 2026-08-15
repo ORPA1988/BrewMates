@@ -24,6 +24,11 @@ Einträge kommen von Nutzern, nicht aus dem Repository.
 - **Offline nutzbar:** Anlegen und Bearbeiten wirken sofort, der Abgleich
   läuft später
 
+Beim Anlegen erscheinen ähnliche vorhandene Häuser unter der Namenszeile
+und sind **anklickbar** — siehe [Live-Vorschläge](28-live-vorschlaege.md).
+Vorher standen sie als toter Text dort und kündigten das Duplikat an,
+statt es zu verhindern.
+
 ## Technische Umsetzung
 
 - **Dateien:** `features/venues/venues_list_screen.dart`,

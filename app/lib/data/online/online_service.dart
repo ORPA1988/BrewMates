@@ -493,6 +493,54 @@ class OnlineService {
   // und „Kein Bier"-Meldungen.
   // --------------------------------------------------------------------------
 
+  /// Biere anderer Nutzer nach Namen suchen — für die Live-Vorschläge.
+  ///
+  /// Die lokale Datenbank kennt die gebündelten Biere und die eigenen.
+  /// Was ein anderer Nutzer gerade erst angelegt hat, steht nur hier.
+  /// Deshalb die Reihenfolge in der Oberfläche: erst lokal (sofort), dann
+  /// dieser Nachschlag.
+  ///
+  /// Leere Liste bei Fehler oder ohne Anmeldung — Vorschläge sind ein
+  /// Zusatz, kein Bestandteil des Eintragens. Wer offline ein Bier anlegt,
+  /// soll davon nichts merken.
+  Future<List<RemoteBeer>> searchCommunityBeers(String query) async {
+    final begriff = query.trim();
+    if (currentUser == null || begriff.length < 2) return const [];
+    // % und _ sind LIKE-Platzhalter, Komma und Klammern gehören zur
+    // PostgREST-Filtersyntax. Beides würde die Suche weiter machen, als
+    // der Mensch sie gemeint hat.
+    final sicher = begriff.replaceAll(RegExp('[%_,()\\\\]'), '');
+    if (sicher.length < 2) return const [];
+    try {
+      final rows = await _client
+          .from('beers')
+          .select('name, style, abv, is_alcohol_free, description, '
+              'label_url, barcode, brewery:breweries(name, country, city)')
+          .ilike('name', '%$sicher%')
+          .limit(10);
+      return [
+        for (final row in rows)
+          RemoteBeer(
+            name: row['name'] as String,
+            style: (row['style'] as String?) ?? 'Bier',
+            breweryName:
+                (row['brewery'] as Map<String, dynamic>?)?['name'] as String?,
+            breweryCountry: (row['brewery'] as Map<String, dynamic>?)?['country']
+                as String?,
+            breweryCity:
+                (row['brewery'] as Map<String, dynamic>?)?['city'] as String?,
+            abv: (row['abv'] as num?)?.toDouble(),
+            isAlcoholFree: (row['is_alcohol_free'] as bool?) ?? false,
+            description: row['description'] as String?,
+            labelUrl: row['label_url'] as String?,
+            barcode: row['barcode'] as String?,
+          ),
+      ];
+    } catch (_) {
+      return const [];
+    }
+  }
+
   /// Bier per Barcode in der Community-DB suchen (nur angemeldet, RLS).
   Future<RemoteBeer?> communityBeerByBarcode(String ean) async {
     if (currentUser == null) return null;
