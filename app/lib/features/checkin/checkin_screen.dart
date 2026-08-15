@@ -92,7 +92,7 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
         final online = await ref.read(onlineServiceProvider.future);
         photoUrl = online == null
             ? null
-            : await online.uploadCheckinPhoto(_photoBytes!);
+            : await online.checkins.uploadCheckinPhoto(_photoBytes!);
         photoFailed = photoUrl == null;
       }
       final venue = _venueController.text.trim();

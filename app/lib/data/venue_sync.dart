@@ -23,7 +23,7 @@ class VenueSync {
     if (online.currentUser != null) {
       await replayVenueQueue(
         db,
-        create: (payload) => online.createVenue(
+        create: (payload) => online.venues.createVenue(
           name: (payload['name'] as String?) ?? '',
           category: (payload['category'] as String?) ?? 'gasthaus',
           address: payload['address'] as String?,
@@ -35,11 +35,11 @@ class VenueSync {
           priceHalfL: (payload['price_half_l'] as num?)?.toDouble(),
           priceThirdL: (payload['price_third_l'] as num?)?.toDouble(),
         ),
-        update: (id, patch) => online.updateVenue(id, patch),
+        update: (id, patch) => online.venues.updateVenue(id, patch),
       );
     }
     final since = await db.latestVenueUpdate();
-    final rows = await online.fetchVenues(since: since);
+    final rows = await online.venues.fetchVenues(since: since);
     if (rows == null || rows.isEmpty) return 0;
     await db.upsertVenues([for (final r in rows) companionFromRow(r)]);
     return rows.length;

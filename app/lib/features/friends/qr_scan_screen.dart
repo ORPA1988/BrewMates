@@ -69,7 +69,7 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
       return;
     }
 
-    final profile = await online.profileById(profileId);
+    final profile = await online.friends.profileById(profileId);
     if (!mounted) return;
     setState(() {
       _busy = false;
@@ -85,7 +85,7 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
     if (profile == null || _busy) return;
     setState(() => _busy = true);
     final online = await ref.read(onlineServiceProvider.future);
-    final error = await online?.sendFriendRequest(profile.id);
+    final error = await online?.friends.sendFriendRequest(profile.id);
     if (!mounted) return;
     setState(() {
       _busy = false;

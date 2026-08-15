@@ -284,7 +284,7 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
       final payload = _buildPayload();
       String? error;
       if (_isNew) {
-        final (_, err) = await online.createVenue(
+        final (_, err) = await online.venues.createVenue(
           name: (payload['name'] as String?) ?? '',
           category: _category,
           address: payload['address'] as String?,
@@ -297,7 +297,7 @@ class _VenueEditScreenState extends ConsumerState<VenueEditScreen> {
         );
         error = err;
       } else {
-        error = await online.updateVenue(widget.venueId!, payload);
+        error = await online.venues.updateVenue(widget.venueId!, payload);
       }
       if (!mounted) return;
       if (error != null && isConnectionError(error)) {

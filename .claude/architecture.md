@@ -61,7 +61,13 @@ Serveraufruf.
 
 ## Bekannte Ballungen (bei Änderungen beachten)
 
-- `data/online/online_service.dart` (~1.570 Z.) — sämtliche Supabase-Aufrufe
+- ~~`data/online/online_service.dart`~~ — am 15.08.2026 aufgeteilt:
+  `online/models.dart` (Antwort-Typen) und `online/api/` mit `friends`,
+  `sessions`, `checkins`, `venues`. Der Kern hält nur noch Anmeldung,
+  Rollen, Crews, Biere und Challenges (819 Z.). Zugriff über Unterobjekte:
+  `online.sessions.end(...)`. **Bereiche sind Klassen, keine Extensions** —
+  Extension-Methoden sind statisch gebunden und ließen sich im Test nicht
+  überschreiben.
 - `data/providers.dart` (~940 Z.) — sämtliche Riverpod-Provider
 
 Beide wachsen mit jedem Feature. **Neue Funktionen bekommen eine eigene

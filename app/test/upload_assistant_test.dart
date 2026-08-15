@@ -64,7 +64,7 @@ CheckinDetails _details({required String checkinId, double? rating}) {
 
 void main() {
   test('uploadRow bildet einen lokalen Check-in denormalisiert ab', () {
-    final row = OnlineService.uploadRow(
+    final row = CheckinsApi.uploadRow(
       _details(
           checkinId: '4fa4b620-9f1c-4e2b-8f63-1c2d3e4f5a6b', rating: 4.25),
       'profil-uuid',
@@ -86,11 +86,11 @@ void main() {
 
   test('Demo-/Seed-Check-ins ohne UUID werden nicht übertragen', () {
     final demo = _details(checkinId: 'demo-checkin-1');
-    expect(OnlineService.isUploadable(demo), isFalse);
-    expect(OnlineService.uploadRow(demo, 'profil-uuid'), isNull);
+    expect(CheckinsApi.isUploadable(demo), isFalse);
+    expect(CheckinsApi.uploadRow(demo, 'profil-uuid'), isNull);
 
     final echt =
         _details(checkinId: '4fa4b620-9f1c-4e2b-8f63-1c2d3e4f5a6b');
-    expect(OnlineService.isUploadable(echt), isTrue);
+    expect(CheckinsApi.isUploadable(echt), isTrue);
   });
 }
