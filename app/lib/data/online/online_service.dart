@@ -515,7 +515,7 @@ class OnlineService {
       final rows = await _client
           .from('beers')
           .select('name, style, abv, is_alcohol_free, description, '
-              'label_url, barcode, brewery:breweries(name, country, city)')
+              'label_url, brewery:breweries(name, country, city)')
           .ilike('name', '%$sicher%')
           .limit(10);
       return [
@@ -533,7 +533,6 @@ class OnlineService {
             isAlcoholFree: (row['is_alcohol_free'] as bool?) ?? false,
             description: row['description'] as String?,
             labelUrl: row['label_url'] as String?,
-            barcode: row['barcode'] as String?,
           ),
       ];
     } catch (_) {
@@ -545,12 +544,24 @@ class OnlineService {
   Future<RemoteBeer?> communityBeerByBarcode(String ean) async {
     if (currentUser == null) return null;
     try {
-      final row = await _client
-          .from('beers')
-          .select('name, style, abv, is_alcohol_free, description, '
-              'label_url, barcode, brewery:breweries(name, country, city)')
-          .eq('barcode', ean)
+      // Zuerst in `beer_barcodes` (0028): Dort stehen **alle** Codes eines
+      // Bieres. `beers.barcode` haelt nur einen einzigen — die Spalte ist
+      // `unique`, und genau daran scheiterte bisher jeder nachgetragene
+      // Code. Er wurde gespeichert und beim Suchen nie gelesen.
+      final zuordnung = await _client
+          .from('beer_barcodes')
+          .select('beer_id')
+          .eq('ean', ean)
           .maybeSingle();
+
+      final abfrage = _client.from('beers').select(
+          'name, style, abv, is_alcohol_free, description, '
+          'label_url, barcode, brewery:breweries(name, country, city)');
+      // Der Zweig ueber die Altspalte ist Uebergang: Ausgelieferte Clients
+      // legen neue Biere weiterhin nur dort an. Er faellt mit der Spalte.
+      final row = zuordnung == null
+          ? await abfrage.eq('barcode', ean).maybeSingle()
+          : await abfrage.eq('id', zuordnung['beer_id'] as String).maybeSingle();
       if (row == null) return null;
       final brewery = row['brewery'] as Map<String, dynamic>?;
       return RemoteBeer(
@@ -694,7 +705,7 @@ class OnlineService {
         photoUrl = _client.storage.from('beer-photos').getPublicUrl(path);
       }
 
-      await _client.from('beers').insert({
+      final neu = await _client.from('beers').insert({
         'brewery_id': breweryId,
         'name': name.trim(),
         'style': style.trim(),
@@ -707,7 +718,19 @@ class OnlineService {
         'label_url': photoUrl,
         'barcode': barcode,
         'created_by': me.id,
-      });
+      }).select('id').single();
+
+      // Denselben Code auch in `beer_barcodes` hinterlegen, sonst findet
+      // ihn die Suche oben nicht — sie sieht dort zuerst nach. Die
+      // Altspalte bleibt vorerst befuellt, damit ausgelieferte Clients
+      // das Bier weiterhin finden.
+      if (barcode != null && barcode.isNotEmpty) {
+        await _client.from('beer_barcodes').upsert({
+          'ean': barcode,
+          'beer_id': neu['id'],
+          'created_by': me.id,
+        }, onConflict: 'ean');
+      }
       return null;
     } on StorageException {
       return 'Foto-Upload fehlgeschlagen – Bier bitte nochmal speichern.';
@@ -780,7 +803,19 @@ class OnlineService {
       String barcode, Map<String, dynamic> patch) async {
     if (currentUser == null) return 'Nicht angemeldet.';
     try {
-      await _client.from('beers').update(patch).eq('barcode', barcode);
+      // Dasselbe Problem wie beim Suchen: Ueber `beers.barcode` trifft
+      // ein nachgetragener Code keine Zeile, und ein Update auf null
+      // Zeilen wirft nichts — die App haette „gespeichert" gemeldet und
+      // nichts geaendert.
+      final zuordnung = await _client
+          .from('beer_barcodes')
+          .select('beer_id')
+          .eq('ean', barcode)
+          .maybeSingle();
+      final ziel = _client.from('beers').update(patch);
+      await (zuordnung == null
+          ? ziel.eq('barcode', barcode)
+          : ziel.eq('id', zuordnung['beer_id'] as String));
       return null;
     } on PostgrestException catch (e) {
       if (e.code == '42501') {

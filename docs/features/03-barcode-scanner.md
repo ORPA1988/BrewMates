@@ -44,6 +44,25 @@ führte. Migration 0028 bringt `beer_barcodes`: eine Zeile je Code, mit
 Bier und Größe. Die alte Spalte bleibt, damit Clients vor 0.10.2 weiter
 funktionieren — die Lehre aus 0024/0026.
 
+**Und lag dann ein halbes Jahr wirkungslos da.** 0028 legte die Tabelle
+an, aber die Lesestelle wurde nie umgestellt: Gesucht wurde weiter über
+`beers.barcode`, `beer_barcodes` nur befragt, um die *Gebindegröße*
+nachzuschlagen — und zwar erst, nachdem das Bier schon gefunden war.
+Jeder nachgetragene Code wurde also gespeichert und beim Suchen
+ignoriert. Wer „diesen Code zu einem vorhandenen Bier ergänzen" wählte,
+bekam eine Bestätigung, und der nächste Mensch, der genau diese Dose
+scannte, fand nichts.
+
+Migration 0030 (2026-08-16) räumt das: Der Bestand aus der Altspalte ist
+nach `beer_barcodes` übernommen, Suchen, Bearbeiten und Melden sehen
+zuerst dort nach. Die Altspalte wird weiterhin **mitgeschrieben**, damit
+die ausgelieferte 0.10.2 das Bier findet; sie fällt in einem eigenen,
+späteren Schritt — nie in derselben Migration wie ihr Ersatz.
+
+Das Muster ist inzwischen das dritte seiner Art in diesem Projekt: eine
+Sache, die aussieht, als wirke sie, und nichts tut. Ein Test allein
+hätte es nicht gefunden — die Schreibseite funktionierte ja.
+
 Einschränkung fürs Protokoll: EANs werden nach Jahrzehnten gelegentlich
 neu vergeben, und Aktionsware trägt manchmal fremde Codes. Die EAN ist ein
 sehr guter Schlüssel — **kein Beweis**.

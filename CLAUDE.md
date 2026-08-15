@@ -13,7 +13,7 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0029` sind LIVE, lückenlos** — `0020–0024` am 2026-08-15 eingespielt und
+  **`0001–0030` sind LIVE, lückenlos** — `0020–0024` am 2026-08-15 eingespielt und
   gegengeprüft (Spalten, Constraints, Enum, Index, vier neue Funktionen,
   Policy; `friendships` unverändert alle auf `freund`, also keine
   Sichtbarkeitsänderung am Rollout-Tag). Kein Schema-Drift.
@@ -69,7 +69,11 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   thirsty_friends + neue sessions_select-Policy, 0025 Tabellenrechte,
   0027 pg_trgm-Indizes für die Freundessuche, 0028 beer_barcodes:
   mehrere EANs je Bier mit Gebindegröße, 0029 app_config mit
-  `min_supported_version` — Riegel „Update erforderlich").
+  `min_supported_version` — Riegel „Update erforderlich"; 0030
+  Barcode-Suche über `beer_barcodes` statt `beers.barcode`, inkl.
+  Backfill — 0028 hatte die Tabelle angelegt, aber die Lesestelle nie
+  umgestellt, sodass nachgetragene Codes gespeichert und beim Suchen
+  ignoriert wurden).
   Google-Login und
   E-Mail-Anmeldung (ohne Bestätigungspflicht) sind eingerichtet und
   funktionieren. Seit 0008 gilt: EXECUTE auf Funktionen wird von PUBLIC
