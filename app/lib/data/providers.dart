@@ -594,8 +594,10 @@ final sessionReconcileProvider = FutureProvider<int>((ref) async {
   final online = await ref.watch(onlineServiceProvider.future);
   if (online == null || online.currentUser == null) return 0;
   final mine = await ref.watch(myActiveSessionProvider.future);
-  return online.endStaleSessions(
-      keepSessionId: mine != null && isRemoteId(mine.id) ? mine.id : null);
+  // Die eigene lokale ID IST die Server-ID (`upsertSession` überträgt sie
+  // unverändert). Kein `isRemoteId`-Filter — der träfe nie zu und würde
+  // den gerade laufenden eigenen Beacon mit abräumen.
+  return online.endStaleSessions(keepSessionId: mine?.id);
 });
 
 /// 👥 Eigene Crews (Beitritt per Einladungscode = Crew-UUID).
@@ -1048,7 +1050,7 @@ class BrewActions {
     if (current == null) return null;
     await _db.endSession(current.id, now);
     final online = await _online();
-    if (online == null || !isRemoteId(current.id)) return true;
+    if (online == null) return true;
     return online.endSession(current.id);
   }
 
@@ -1074,11 +1076,14 @@ class BrewActions {
     final until = now.add(clampSessionDuration(by));
     await _db.setSessionExpiry(current.id, until);
     final online = await _online();
-    // Lokale Sessions (noch nicht hochgeladen) haben keinen Server-Zwilling;
-    // für sie ist „nicht abgeglichen" der Normalfall, kein Fehler.
-    if (online == null || !isRemoteId(current.id)) {
-      return (until: until, synced: true);
-    }
+    // Ohne Konto gibt es keinen Server-Zwilling — das ist kein Fehlschlag.
+    //
+    // Hier stand einmal zusätzlich `!isRemoteId(current.id)`. Das war
+    // falsch: `remote-` tragen nur FREMDE Sessions, die eigene ID ist eine
+    // blanke UUID. Die Bedingung griff also immer und der Serveraufruf
+    // unterblieb vollständig — das Verlängern kam nie an, meldete aber
+    // Erfolg. Siehe `session_id_test.dart`.
+    if (online == null) return (until: until, synced: true);
     final synced = await online.updateSessionExpiry(current.id, until);
     return (until: until, synced: synced);
   }
