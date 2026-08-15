@@ -171,6 +171,31 @@ void main() {
         befunde.add('$datei/$id: `story` zu lang oder kein Text');
       }
 
+      // Gebindegröße je Barcode: Sie MUSS zu einem Code dieses Biers
+      // gehören. Eine Größe an einer fremden oder erfundenen EAN wäre
+      // schlimmer als keine — sie füllt den Check-in mit einer falschen
+      // Menge, und niemand rechnet damit nach.
+      final vols = b['barcode_volumes'];
+      if (vols != null) {
+        if (vols is! Map) {
+          befunde.add('$datei/$id: `barcode_volumes` ist keine Zuordnung');
+        } else {
+          final eigene = ((b['barcodes'] as List?) ?? const [])
+              .whereType<String>()
+              .toSet();
+          vols.forEach((ean, ml) {
+            if (!eigene.contains(ean)) {
+              befunde.add('$datei/$id: Größe für `$ean`, aber dieser '
+                  'Barcode gehört nicht zu diesem Bier');
+            }
+            if (ml is! int || ml <= 0 || ml > 20000) {
+              befunde.add('$datei/$id: Größe `$ml` für `$ean` ist '
+                  'unplausibel');
+            }
+          });
+        }
+      }
+
       final codes = b['barcodes'];
       if (codes != null) {
         if (codes is! List) {
