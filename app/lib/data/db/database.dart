@@ -88,8 +88,23 @@ class Beers extends Table {
   /// Kommagetrennte EAN-Barcodes (8 oder 13 Ziffern), z. B. "90034107".
   TextColumn get barcodes => text().withDefault(const Constant(''))();
 
-  /// Etikett-/Produktfoto als URL (Open Food Facts, CC-BY-SA – nur verlinkt).
+  /// Etikett-/Produktfoto als URL — nur verlinkt, nie gespeichert.
+  ///
+  /// Zwei Herkünfte: Open Food Facts (CC-BY-SA) und seit 2026-08-15 auch
+  /// Produktfotos von den Brauerei-Webseiten selbst.
   TextColumn get imageUrl => text().nullable()();
+
+  /// Seite, von der das Bild stammt.
+  ///
+  /// Pflicht, sobald das Bild NICHT von Open Food Facts kommt: Ein fremdes
+  /// Produktfoto ohne Herkunftsangabe zu zeigen, ist der Unterschied
+  /// zwischen Zitieren und Nehmen. Die App weist die Quelle beim Bier aus.
+  TextColumn get imageSource => text().nullable()();
+
+  /// Nutzungshinweis der Brauerei, falls einer ausgewiesen ist
+  /// (z. B. „© Frastanzer nennen"). Wo keiner steht, bleibt das Feld leer
+  /// — dann gilt die Angabe in [imageSource].
+  TextColumn get imageLicense => text().nullable()();
 
   /// Hintergrundgeschichte: zwei bis fünf Sätze, wie ein Mensch sie
   /// erzählen würde. Kein Werbetext, kein Wikipedia-Auszug — und lieber
@@ -390,7 +405,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(openInMemory());
 
   @override
-  int get schemaVersion => 14;
+  int get schemaVersion => 15;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -513,6 +528,11 @@ class AppDatabase extends _$AppDatabase {
             // v12: Hintergrundgeschichten zu Bier und Brauerei.
             await m.addColumn(beers, beers.story);
             await m.addColumn(breweries, breweries.story);
+          }
+          if (from < 15) {
+            // v15: Herkunft der Produktbilder (Funktion 04).
+            await m.addColumn(beers, beers.imageSource);
+            await m.addColumn(beers, beers.imageLicense);
           }
           if (from < 14) {
             // v14: Gebindegröße je Barcode (Funktion 28).

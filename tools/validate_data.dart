@@ -15,12 +15,13 @@ import 'dart:io';
 
 const laender = ['at', 'by', 'de', 'ch'];
 
-/// Erlaubter Host für Etikettenbilder.
+/// Host, bei dem die Herkunft aus der Lizenz selbst folgt.
 ///
-/// Wir hosten keine Bilder, wir verlinken auf Open Food Facts (CC-BY-SA,
-/// siehe DATENHERKUNFT.md). Ein Link auf eine Brauerei-Webseite wäre eine
-/// Urheberrechtsfrage, keine Geschmacksfrage.
-const bildHost = 'images.openfoodfacts.org';
+/// Open-Food-Facts-Bilder stehen unter CC-BY-SA; die Zuordnung ergibt sich
+/// aus der Produktseite zum Barcode. Bilder von **anderen** Hosts —
+/// insbesondere von den Brauereien selbst — brauchen eine ausdrückliche
+/// Quellenangabe. Siehe DATENHERKUNFT.md.
+const offHost = 'images.openfoodfacts.org';
 
 /// Obergrenze aus Migration 0023. Was länger ist, lehnt der Server ab.
 const storyMax = 1200;
@@ -160,10 +161,21 @@ void main() {
       }
       final bild = b['image_url'];
       if (bild != null) {
-        if (bild is! String || !bild.startsWith('https://$bildHost/')) {
-          befunde.add('$datei/$id: `image_url` zeigt nicht auf $bildHost — '
-              'wir hosten keine Bilder und verlinken nur Open Food Facts '
-              '(Lizenzfrage, siehe DATENHERKUNFT.md)');
+        if (bild is! String || !bild.startsWith('https://')) {
+          befunde.add('$datei/$id: `image_url` ist keine https-Adresse — '
+              'die Web-App blockiert unverschlüsselte Bilder als '
+              '„mixed content"');
+        } else if (!bild.startsWith('https://$offHost/')) {
+          // Der Kern der Regel: Ein fremdes Produktfoto ohne
+          // Herkunftsangabe zu zeigen ist der Unterschied zwischen
+          // Zitieren und Nehmen. Bei Open Food Facts folgt die Herkunft
+          // aus der Lizenz, überall sonst muss sie dastehen.
+          final quelle = b['image_source'];
+          if (quelle is! String || !quelle.startsWith('https://')) {
+            befunde.add('$datei/$id: Bild von einer fremden Seite ohne '
+                '`image_source` — die Quelle muss ausgewiesen sein '
+                '(DATENHERKUNFT.md)');
+          }
         }
       }
       final story = b['story'];
