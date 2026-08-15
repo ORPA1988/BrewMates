@@ -17,16 +17,26 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   gegengeprüft (Spalten, Constraints, Enum, Index, vier neue Funktionen,
   Policy; `friendships` unverändert alle auf `freund`, also keine
   Sichtbarkeitsänderung am Rollout-Tag). Kein Schema-Drift.
-  ⚠️ **`0025` ist bewusst NICHT eingespielt und wartet.** Es entzieht
-  `select (thirsty_until)` auf `profiles`; jeder Client vor 0.10
-  selektiert die Spalte direkt mit und bekäme danach die **gesamte**
-  Profilabfrage verweigert — keine Freundesliste, kein eigenes Profil.
-  Erst einspielen, wenn keine Clients vor 0.10 mehr zugreifen (Play
-  Console / API-Logs). Im Zweifel warten: Die Spalte ist seit 0018 lesbar,
-  0025 ist eine aufgeschobene Härtung, kein Rückschritt.
-  **Lehre aus 0024:** Eine Migration, die ein Recht entzieht, gehört nie
-  in dieselbe Datei wie die Ersatzschnittstelle — sonst gibt es kein
-  Zeitfenster, in dem alter und neuer Client zugleich funktionieren.
+  `0025` (Tabellenrechte) ist **jederzeit einspielbar** und ändert live
+  nichts — es schreibt fest, was dort ohnehin gilt. Ohne diese Migration
+  ließ sich das Projekt aus dem Repo **nicht wiederherstellen**: Die
+  DML-Rechte für `anon`/`authenticated` stammten aus Supabase-Default-
+  Privileges und standen in keiner Migration. Aufgefallen beim ersten
+  echten From-scratch-Aufbau für die RLS-Tests.
+  ⚠️ **`0026` ist bewusst NICHT eingespielt und wartet.** Es nimmt
+  `thirsty_until` aus den lesbaren Spalten von `profiles`; jeder Client
+  vor 0.10 selektiert sie direkt mit und bekäme danach die **gesamte**
+  Profilabfrage verweigert. Erst einspielen, wenn keine Clients vor 0.10
+  mehr zugreifen (Play Console / API-Logs).
+  **Zwei Lehren, beide teuer erkauft:**
+  (1) Eine Migration, die ein Recht entzieht, gehört nie in dieselbe Datei
+  wie die Ersatzschnittstelle — sonst gibt es kein Zeitfenster, in dem
+  alter und neuer Client zugleich funktionieren.
+  (2) `revoke select (spalte)` ist **wirkungslos**, solange ein Recht auf
+  Tabellenebene besteht. Postgres meldet „REVOKE" und lässt die Spalte
+  lesbar. Wer eine Spalte verbergen will, entzieht das Tabellenrecht und
+  gewährt alle übrigen Spalten einzeln — mit der Folge, dass jede neue
+  Spalte auf `profiles` ihr `grant select (…)` mitbringen muss.
   Frühere Migrationen (0011 Gasthäuser, 0012
   Challenges, 0013 Vertrauensstufen + edit_log, 0014 complete_challenge-RPC
   + contribution_leaderboard, 0015 venues.opening_hours_json, 0016

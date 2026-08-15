@@ -1,3 +1,8 @@
 # Persönliche Claude-Code-Einstellungen (Berechtigungen je Rechner).
 # Die geteilten Regeln stehen in .claude/settings.json und sind versioniert.
 .claude/settings.local.json
+
+# Lokale Artefakte der Supabase-CLI (`supabase start`).
+# .temp/start-secrets enthält die Schlüssel der lokalen Instanz.
+supabase/.temp/
+supabase/.branches/
