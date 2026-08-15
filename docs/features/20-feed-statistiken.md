@@ -23,19 +23,25 @@ Zielvorgabe. Ein Rückblick, kein Wettbewerb.
 
 Ein Statistik-Bereich, erreichbar aus dem Feed und aus dem Profil:
 
-- **Gesamt:** Anzahl Check-ins, verschiedene Biere, verschiedene
-  Brauereien, geschätzte Menge in Litern
+- **Gesamt:** Check-ins, verschiedene Biere, Brauereien, Orte, Menge in
+  Litern, Ø Bewertung, alkoholfreie
 - **Aufteilungen** als Balken, jeweils absteigend:
-  Land · Stil · Gebinde (Fass, Flasche, Dose, Growler) · Brauerei ·
-  Gasthaus
-- **Zeitraum** wählbar: dieser Monat · dieses Jahr · alles · frei
-- **Filter** kombinierbar mit den Aufteilungen — „nur Österreich, nur
-  Fassbier, dieses Jahr"
-- **Verlauf:** Check-ins je Monat als schlichte Balkenreihe
+  Land · Stil (Top 10) · Gebinde (Fass, Flasche, Dose, Growler,
+  „ohne Angabe") · Brauerei (Top 10)
+- **Zeitraum:** dieser Monat · dieses Jahr · alles
+- **Filter** für Land und Stil, kombinierbar mit dem Zeitraum — „nur
+  Österreich, nur Pils, dieses Jahr"
+- **Verlauf:** Check-ins je Monat als schlichte Balkenreihe. Monate ohne
+  Eintrag fehlen, statt als Null zu erscheinen — kein Eintrag ist kein
+  Nullwert.
 
-Ausgewertet werden zunächst **eigene** Check-ins. Das ist die ehrliche
-Grenze: Freundesdaten liegen nur als letzte 50 Einträge vor, eine
-Auswertung darüber wäre falsch statt unvollständig.
+Ausgewertet werden **eigene** Check-ins. Das ist die ehrliche Grenze:
+Von Freunden liegt nur das geladene Fenster vor, eine Auswertung darüber
+wäre falsch statt unvollständig.
+
+Orte erscheinen als Zahl, aber nicht als Balken: Der Gasthausname ist am
+Check-in denormalisiert, Tippfehler und Schreibvarianten würden dieselbe
+Wirtschaft mehrfach auflisten.
 
 ## Technische Umsetzung
 
@@ -52,9 +58,9 @@ Auswertung darüber wäre falsch statt unvollständig.
 Die Ergebnisklasse heißt `CheckinStats`, nicht `BeerStats` — den Namen
 belegt bereits das Join-Modell für Bier-Bewertungen.
 
-**Die fehlende Zutat ist die Menge.** `ServingStyle` (Gebinde) gibt es
+**Die fehlende Zutat war die Menge.** `ServingStyle` (Gebinde) gab es
 bereits, aber keine Füllmenge. Neu: `volume_ml` als Ganzzahl, im Check-in
-über Schnellauswahl gesetzt (0,25 · 0,33 · 0,5 · 1,0 l · eigener Wert),
+über Auswahlchips gesetzt (0,2 · 0,25 · 0,33 · 0,4 · 0,5 · 1 l),
 vorbelegt nach Gebinde. Alte Check-ins ohne Angabe zählen mit einem
 Schätzwert je Gebinde und werden als geschätzt gekennzeichnet — eine
 Literzahl, die so tut, als wäre sie gemessen, wäre eine Lüge.
@@ -104,6 +110,8 @@ Erledigt.
 
 ## Offene Punkte / Ideen
 
+- Freier Zeitraum („von … bis") neben Monat/Jahr/alles
+- Eigene Füllmenge eintippen, wenn keiner der Chips passt
 - „Dein Bierjahr" als teilbarer Jahresrückblick — die Auswertung von hier
   ist die Grundlage dafür
 - Crew-Statistiken, sobald es einen Crew-Feed gibt
