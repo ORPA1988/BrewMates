@@ -13,7 +13,7 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0025` und `0027`–`0029` sind LIVE** — `0020–0024` am 2026-08-15 eingespielt und
+  **`0001–0029` sind LIVE, lückenlos** — `0020–0024` am 2026-08-15 eingespielt und
   gegengeprüft (Spalten, Constraints, Enum, Index, vier neue Funktionen,
   Policy; `friendships` unverändert alle auf `freund`, also keine
   Sichtbarkeitsänderung am Rollout-Tag). Kein Schema-Drift.
@@ -23,11 +23,30 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   DML-Rechte für `anon`/`authenticated` stammten aus Supabase-Default-
   Privileges und standen in keiner Migration. Aufgefallen beim ersten
   echten From-scratch-Aufbau für die RLS-Tests.
-  ⚠️ **`0026` ist bewusst NICHT eingespielt und wartet.** Es nimmt
-  `thirsty_until` aus den lesbaren Spalten von `profiles`; jeder Client
-  vor 0.10 selektiert sie direkt mit und bekäme danach die **gesamte**
-  Profilabfrage verweigert. Erst einspielen, wenn keine Clients vor 0.10
-  mehr zugreifen (Play Console / API-Logs).
+  `0026` (`thirsty_until` aus den lesbaren Spalten von `profiles`) ist
+  **eingespielt** — am 2026-08-15, zusammen mit dem Rest. Gelesen wird
+  seither über `my_thirsty_until()`, geschrieben weiterhin direkt
+  (`0026` fasst nur `select` an, nie `update`).
+  ⚠️ **Hier stand bis 2026-08-16 das Gegenteil** — „bewusst NICHT
+  eingespielt und wartet". Der Rechtestand widersprach dem seit dem
+  ersten Tag: Tabellenrecht entzogen, `thirsty_until` nicht gewährt, 22
+  Einzelspalten gewährt. Aufgefallen erst, als der Rollout anstand.
+  **Die Lehre:** Eine Datei, die einen Sicherheitsvorbehalt behauptet,
+  ist kein Beleg für ihn. Wer plant, ob eine Migration laufen darf,
+  fragt die Datenbank — `information_schema.table_privileges` und
+  `column_privileges` —, nicht diesen Absatz. Ein Vorbehalt, den man
+  für aktiv hält, obwohl er längst gefallen ist, ist gefährlicher als
+  gar keiner: Man baut die nächste Entscheidung darauf.
+  **Riegel scharf** (2026-08-16): `app_config.min_supported_version`
+  steht auf `0.10.2`, nachdem 0.10.2 ausgerollt ist. Das sperrt heute
+  **niemanden** aus — der Riegel existiert erst ab 0.10.2, alles
+  darunter fragt ihn nie. Sein Wert liegt in der Zukunft.
+  ⚠️ **`beers.barcode` darf deshalb noch NICHT fallen.** Ersetzt ist sie
+  durch `beer_barcodes` (0028), das mit 0.10.2 kam — Clients auf
+  0.10.0/0.10.1 lesen noch die alte Spalte und **haben den Riegel
+  nicht**. Sie brächen wortlos. Vor dem Entfernen deren Anteil in der
+  Play Console prüfen; „0 % unter 0.10" (Stand 2026-08-16) beantwortet
+  diese Frage **nicht**.
   **Zwei Lehren, beide teuer erkauft:**
   (1) Eine Migration, die ein Recht entzieht, gehört nie in dieselbe Datei
   wie die Ersatzschnittstelle — sonst gibt es kein Zeitfenster, in dem
