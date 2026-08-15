@@ -959,6 +959,20 @@ class AppDatabase extends _$AppDatabase {
       into(barcodeVolumes).insertOnConflictUpdate(
           BarcodeVolumesCompanion.insert(ean: ean, volumeMl: volumeMl));
 
+  /// Viele Gebindegrößen auf einmal übernehmen (Community-Abgleich).
+  ///
+  /// Wie [setBarcodeVolume] idempotent: Der Abgleich läuft bei jedem
+  /// Start, und eine korrigierte Angabe soll die alte ersetzen.
+  Future<void> setBarcodeVolumes(Map<String, int> volumes) async {
+    if (volumes.isEmpty) return;
+    await batch((b) {
+      b.insertAllOnConflictUpdate(barcodeVolumes, [
+        for (final e in volumes.entries)
+          BarcodeVolumesCompanion.insert(ean: e.key, volumeMl: e.value),
+      ]);
+    });
+  }
+
   /// Bekannte Gebindegröße zu einem Barcode (null = unbekannt).
   ///
   /// Damit weiß der Check-in nach dem Scannen, ob eine 0,33er oder eine

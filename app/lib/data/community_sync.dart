@@ -63,6 +63,7 @@ class CommunitySync {
       if (jsonString == null) continue;
       final rows = parseBeers(jsonString);
       await db.upsertCommunityData(breweryRows: const [], beerRows: rows);
+      await db.setBarcodeVolumes(parseBarcodeVolumes(jsonString));
       imported += rows.length;
     }
     return imported;
@@ -104,6 +105,7 @@ class CommunitySync {
       if (body == null) continue;
       final rows = parseBeers(body);
       await db.upsertCommunityData(breweryRows: const [], beerRows: rows);
+      await db.setBarcodeVolumes(parseBarcodeVolumes(body));
       imported += rows.length;
       fetched++;
     }
@@ -155,6 +157,30 @@ class CommunitySync {
           dataStatus: Value(b['data_status'] as String?),
         ),
     ];
+  }
+
+  /// Gebindegrößen je Barcode aus einer Bier-Datei.
+  ///
+  /// Steht in den Community-Dateien als optionales `barcode_volumes`
+  /// neben `barcodes`. Eine EAN bezeichnet die Handelseinheit — dieselbe
+  /// Marke in 0,33 und 0,5 hat zwei Nummern —, deshalb hängt die Größe
+  /// am Code und nicht am Bier.
+  ///
+  /// Ältere App-Stände lesen das Feld nicht und ignorieren es; deshalb
+  /// konnte es ohne Formatbruch dazukommen.
+  static Map<String, int> parseBarcodeVolumes(String jsonString) {
+    final data = json.decode(jsonString) as Map<String, dynamic>;
+    final list = (data['beers'] as List).cast<Map<String, dynamic>>();
+    final out = <String, int>{};
+    for (final b in list) {
+      final vols = b['barcode_volumes'] as Map<String, dynamic>?;
+      if (vols == null) continue;
+      vols.forEach((ean, ml) {
+        final wert = (ml as num?)?.toInt();
+        if (wert != null && wert > 0) out[ean] = wert;
+      });
+    }
+    return out;
   }
 
   static List<BeersCompanion> parseBeers(String jsonString) {

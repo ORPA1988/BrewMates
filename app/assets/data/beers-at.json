@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "updated": "2026-08-13",
+  "version": 4,
+  "updated": "2026-08-15",
   "beers": [
     {
       "id": "at-stiegl-goldbraeu",
@@ -13,12 +13,20 @@
       "barcodes": [
         "90034107",
         "90034558",
-        "90034695"
+        "90034695",
+        "9003402290513",
+        "9003400003078"
       ],
       "image_url": "https://images.openfoodfacts.org/images/products/90034107/front.4.400.jpg",
       "description_manufacturer": "Das Salzburger Flaggschiff von Stiegl: ein mild gehopftes, goldfarbenes Märzen mit feiner Malznote, gebraut als ausgewogenes Bier für jeden Tag.",
       "description_community": "Gilt als der süffige österreichische Standard; unaufgeregt, sauber und sehr trinkbar, ohne geschmacklich groß aufzufallen.",
-      "community_rating": 3.3
+      "community_rating": 3.3,
+      "barcode_volumes": {
+        "90034107": 500,
+        "90034558": 500,
+        "90034695": 330,
+        "9003402290513": 330
+      }
     },
     {
       "id": "at-stiegl-pils",
@@ -65,7 +73,10 @@
       "image_url": "https://images.openfoodfacts.org/images/products/90034077/front_fr.3.400.jpg",
       "description_manufacturer": "Unfiltriertes Bio-Zwickl mit natürlicher Hefetrübung, das Stiegl als besonders naturbelassenes und bekömmliches Bier positioniert.",
       "description_community": "Angenehm mild und hefig-weich; viele halten es für das interessanteste Bier im Stiegl-Kernsortiment.",
-      "community_rating": 3.5
+      "community_rating": 3.5,
+      "barcode_volumes": {
+        "90034077": 500
+      }
     },
     {
       "id": "at-stiegl-freibier",
@@ -100,7 +111,11 @@
       "image_url": "https://images.openfoodfacts.org/images/products/90076343/front_de.17.400.jpg",
       "description_manufacturer": "Das klassische Wiener Helle der Ottakringer Brauerei: mild, rund und auf hohe Trinkbarkeit ausgelegt – ein Stück Wiener Wirtshauskultur.",
       "description_community": "Das typische Wiener Wirtshaus- und Gastgartenbier, oft schlicht als '16er Blech' aus der Dose kultig; süffig, aber geschmacklich schlicht.",
-      "community_rating": 3.1
+      "community_rating": 3.1,
+      "barcode_volumes": {
+        "90076091": 330,
+        "90076343": 500
+      }
     },
     {
       "id": "at-ottakringer-wiener-original",
@@ -157,7 +172,10 @@
       "image_url": "https://images.openfoodfacts.org/images/products/90076503/front_de.28.400.jpg",
       "description_manufacturer": "Das alkoholfreie Bier der Ottakringer Brauerei mit augenzwinkerndem Wiener Namen, gebraut als vollwertige Bieralternative ohne Alkohol.",
       "description_community": "Vor allem wegen des Namens Kult; geschmacklich ein durchschnittliches Alkoholfreies mit süßlicher Würzenote.",
-      "community_rating": 2.9
+      "community_rating": 2.9,
+      "barcode_volumes": {
+        "90076503": 500
+      }
     },
     {
       "id": "at-goesser-maerzen",
@@ -170,12 +188,19 @@
       "barcodes": [
         "90129018",
         "9001511100617",
-        "90288050"
+        "90288050",
+        "90129247"
       ],
       "image_url": "https://images.openfoodfacts.org/images/products/90129018/front_de.14.400.jpg",
       "description_manufacturer": "Das meistverkaufte Bier der Marke Gösser: ein goldgelbes Märzen aus der Steiermark, das mit dem Slogan vom besten Bier des Landes als österreichische Institution vermarktet wird.",
       "description_community": "Allgegenwärtiges Standardbier in ganz Österreich; süffig und unauffällig, in Blindverkostungen meist im Mittelfeld.",
-      "community_rating": 3.2
+      "community_rating": 3.2,
+      "barcode_volumes": {
+        "90129018": 500,
+        "90288050": 330,
+        "9001511100617": 500,
+        "90129247": 500
+      }
     },
     {
       "id": "at-goesser-spezial",
@@ -215,7 +240,10 @@
       "image_url": "https://images.openfoodfacts.org/images/products/90129063/front.4.400.jpg",
       "description_manufacturer": "Ein dunkles, mildes Bier mit süßlicher Malznote und niedrigem Alkoholgehalt, das an die Klostertradition des Stifts Göss anknüpft.",
       "description_community": "Süßlich-malziges Dunkles, das polarisiert: für die einen ein gemütliches Dessertbier, für andere zu süß und zu leicht.",
-      "community_rating": 3.0
+      "community_rating": 3.0,
+      "barcode_volumes": {
+        "90129063": 500
+      }
     },
     {
       "id": "at-goesser-naturgold",
@@ -226,12 +254,17 @@
       "ibu": null,
       "is_alcohol_free": true,
       "barcodes": [
-        "9028800602270"
+        "9028800602270",
+        "90288340"
       ],
       "image_url": "https://images.openfoodfacts.org/images/products/902/880/060/2270/front_de.9.400.jpg",
       "description_manufacturer": "Das alkoholfreie Vollbier von Gösser, das mit vollem Geschmack und natürlichen Rohstoffen als vollwertige Alternative beworben wird.",
       "description_community": "Eines der verbreitetsten Alkoholfreien in Österreich; ordentlich, aber mit der stiltypisch süßlichen Würzenote.",
-      "community_rating": 3.0
+      "community_rating": 3.0,
+      "barcode_volumes": {
+        "90288340": 500,
+        "9028800602270": 500
+      }
     },
     {
       "id": "at-zipfer-urtyp",
@@ -248,7 +281,11 @@
       "image_url": "https://images.openfoodfacts.org/images/products/90031779/front_de.18.400.jpg",
       "description_manufacturer": "Das hopfenbetonte Aushängeschild aus Zipf: ein helles Vollbier mit Naturhopfen, das die Brauerei als besonders urtypisch und herb-frisch positioniert.",
       "description_community": "Für viele das hopfigste unter den österreichischen Standardbieren; trocken, herb und erfrischend, ein Klassiker im oberösterreichischen Wirtshaus.",
-      "community_rating": 3.4
+      "community_rating": 3.4,
+      "barcode_volumes": {
+        "90031779": 500,
+        "9028800632161": 330
+      }
     },
     {
       "id": "at-zipfer-pils",
@@ -271,12 +308,16 @@
       "ibu": null,
       "is_alcohol_free": true,
       "barcodes": [
-        "9028800140796"
+        "9028800140796",
+        "9028800602751"
       ],
       "image_url": "https://images.openfoodfacts.org/images/products/902/880/014/0796/front_en.3.400.jpg",
       "description_manufacturer": "Alkoholfreies Helles aus Zipf, das mit frischem, hellem Biergeschmack und der typischen Zipfer Hopfennote wirbt.",
       "description_community": "Frisch und vergleichsweise schlank für ein Alkoholfreies; gute Wahl, wenn es hopfig statt süß sein soll.",
-      "community_rating": 3.1
+      "community_rating": 3.1,
+      "barcode_volumes": {
+        "9028800602751": 500
+      }
     },
     {
       "id": "at-puntigamer-maerzen",
@@ -321,7 +362,11 @@
       "image_url": "https://images.openfoodfacts.org/images/products/900/310/015/1024/front_de.3.400.jpg",
       "description_manufacturer": "Das klassische Lager aus Schwechat, das sich auf die Braupioniertradition von Anton Dreher beruft: hell, mild und auf Trinkfreude ausgelegt.",
       "description_community": "Ein unaufgeregtes Wiener Umland-Lager mit historischem Nimbus; süffig, aber ohne Ecken und Kanten.",
-      "community_rating": 3.0
+      "community_rating": 3.0,
+      "barcode_volumes": {
+        "90031274": 500,
+        "9003100151024": 500
+      }
     },
     {
       "id": "at-schwechater-wiener-lager",
@@ -361,7 +406,10 @@
       "image_url": "https://images.openfoodfacts.org/images/products/900/310/015/9020/front_de.10.400.jpg",
       "description_manufacturer": "Das traditionsreiche Premiumbier aus Wieselburg mit kräftiger goldener Farbe und betonter Malzigkeit, gebraut nach überlieferter Rezeptur.",
       "description_community": "Im Mostviertel fest verwurzelt; wird als ehrliches, malzbetontes Traditionsbier beschrieben.",
-      "community_rating": 3.2
+      "community_rating": 3.2,
+      "barcode_volumes": {
+        "9003100159020": 500
+      }
     },
     {
       "id": "at-wieselburger-gold",
@@ -389,7 +437,10 @@
       "image_url": "https://images.openfoodfacts.org/images/products/900/280/300/0233/front_de.12.400.jpg",
       "description_manufacturer": "Das Aushängeschild der Kärntner Privatbrauerei Hirt: ein feinherbes Pils mit eigenem Quellwasser und langer Reifung gebraut.",
       "description_community": "Gilt vielen als eines der besten Pils Österreichs; angenehm herb, sauber und mit gutem Ruf weit über Kärnten hinaus.",
-      "community_rating": 3.6
+      "community_rating": 3.6,
+      "barcode_volumes": {
+        "9002803000233": 500
+      }
     },
     {
       "id": "at-hirter-morchl",
@@ -424,12 +475,17 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "90145056"
+        "90145056",
+        "90145018"
       ],
       "image_url": "https://images.openfoodfacts.org/images/products/90145056/front_de.4.400.jpg",
       "description_manufacturer": "Das Hauptbier der genossenschaftlich organisierten Brauerei Murau: ein süffiges Märzen aus dem obersteirischen Bergland, gebraut mit regionalen Rohstoffen.",
       "description_community": "In der Obersteiermark die klare Nummer eins; sauberes, frisches Märzen, das bei Bierprämierungen regelmäßig gut abschneidet.",
-      "community_rating": 3.4
+      "community_rating": 3.4,
+      "barcode_volumes": {
+        "90145018": 500,
+        "90145056": 330
+      }
     },
     {
       "id": "at-trumer-pils",
@@ -469,7 +525,10 @@
       "image_url": "https://images.openfoodfacts.org/images/products/000/009/015/1835/front_de.12.400.jpg",
       "description_manufacturer": "Das klassische Märzen der Privatbrauerei Egger aus Unterradlberg: mild, goldgelb und auf unkomplizierte Trinkbarkeit ausgelegt.",
       "description_community": "Preisbewusstes, süffiges Standardbier aus Niederösterreich; unauffällig, aber solide.",
-      "community_rating": 2.9
+      "community_rating": 2.9,
+      "barcode_volumes": {
+        "90151835": 500
+      }
     },
     {
       "id": "at-egger-zwickl",
@@ -493,7 +552,13 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Das Standardbier der Zillertal Bier Brauerei in Zell am Ziller, gebraut mit Tiroler Bergwasser – die älteste Privatbrauerei Tirols.",
       "description_community": "Im Zillertal allgegenwärtig; frisches, sauberes Märzen mit regionalem Sympathiebonus.",
-      "community_rating": 3.2
+      "community_rating": 3.2,
+      "barcodes": [
+        "90242007"
+      ],
+      "barcode_volumes": {
+        "90242007": 500
+      }
     },
     {
       "id": "at-zillertal-weissbier",
@@ -516,12 +581,17 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "9013500008101"
+        "9013500008101",
+        "90135309"
       ],
       "image_url": "https://images.openfoodfacts.org/images/products/901/350/000/8101/front_de.3.400.jpg",
       "description_manufacturer": "Das bekannteste Bier der Dornbirner Mohrenbrauerei: ein bernsteinfarbenes Spezialbier mit kräftiger Malznote, das in Vorarlberg als Landesklassiker gilt.",
       "description_community": "In Vorarlberg das Bier schlechthin; malzig-würzig und mit starker regionaler Identität, außerhalb des Ländles kaum zu bekommen.",
-      "community_rating": 3.4
+      "community_rating": 3.4,
+      "barcode_volumes": {
+        "90135309": 500,
+        "9013500008101": 330
+      }
     },
     {
       "id": "at-mohrenbraeu-kellerbier",
@@ -533,7 +603,13 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Unfiltriertes, naturtrübes Kellerbier aus Dornbirn, das mit ursprünglichem Braucharakter und feiner Hefenote beworben wird.",
       "description_community": "Wird als süffige, hefige Alternative zum Spezial geschätzt; angenehm rustikal.",
-      "community_rating": 3.4
+      "community_rating": 3.4,
+      "barcodes": [
+        "9013500010920"
+      ],
+      "barcode_volumes": {
+        "9013500010920": 330
+      }
     },
     {
       "id": "at-fohrenburger-jubilaeum",
@@ -644,7 +720,13 @@
       "is_alcohol_free": false,
       "description_manufacturer": "Das meistgetrunkene Bier der Privatbrauerei Zwettl: ein goldgelbes, mild gehopftes Bier mit Waldviertler Braugerste und weichem Wasser.",
       "description_community": "Verlässliches Waldviertler Standardbier; süffig und sauber, mit gutem Ruf als ehrliches Privatbrauerei-Bier.",
-      "community_rating": 3.3
+      "community_rating": 3.3,
+      "barcodes": [
+        "90083150"
+      ],
+      "barcode_volumes": {
+        "90083150": 500
+      }
     },
     {
       "id": "at-freistaedter-ratsherrn-premium",
@@ -655,12 +737,16 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "90104015"
+        "90104015",
+        "90104084"
       ],
       "image_url": "https://images.openfoodfacts.org/images/products/90104015/front_de.4.400.jpg",
       "description_manufacturer": "Das Premiumbier der Braucommune Freistadt, der historischen Bürgerbrauerei des Mühlviertels: goldgelb, feinwürzig und mit regionalen Rohstoffen gebraut.",
       "description_community": "Aushängeschild der genossenschaftlichen Braucommune; ausgewogen und sauber, im Mühlviertel die erste Wahl.",
-      "community_rating": 3.4
+      "community_rating": 3.4,
+      "barcode_volumes": {
+        "90104015": 500
+      }
     },
     {
       "id": "at-freistaedter-rotschopf",
@@ -949,13 +1035,4599 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "0608782502288"
+        "0608782502288",
+        "9009100000669"
       ],
       "image_url": "https://images.openfoodfacts.org/images/products/060/878/250/2288/front_fr.6.400.jpg",
       "description_manufacturer": "Nur einmal im Jahr am 6. Dezember eingebraut und zehn Monate gereift: ein extrem starkes, likörartiges Lagerbier mit Noten von Dörrobst, Karamell und Portwein.",
       "description_community": "Legendäres Sammler- und Digestif-Bier, das lange als stärkstes Lagerbier der Welt galt; nichts für nebenbei, aber ein Erlebnis.",
       "community_rating": 4.0,
-      "story": "Samichlaus wird nur ein einziges Mal im Jahr gebraut — am 6. Dezember, dem Nikolaustag — und lagert danach zehn Monate, bevor er abgefüllt wird. Über Jahre galt er als stärkstes Lagerbier der Welt."
+      "story": "Samichlaus wird nur ein einziges Mal im Jahr gebraut — am 6. Dezember, dem Nikolaustag — und lagert danach zehn Monate, bevor er abgefüllt wird. Über Jahre galt er als stärkstes Lagerbier der Welt.",
+      "barcode_volumes": {
+        "9009100000669": 330,
+        "0608782502288": 750
+      }
+    },
+    {
+      "id": "at-goesser-goesser-biostoff",
+      "brewery_id": "at-goesser-2",
+      "name": "Gösser Biostoff",
+      "style": "Vollbier",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9028800149515"
+      ]
+    },
+    {
+      "id": "at-goesser-goesser-naturradler-zitrone",
+      "brewery_id": "at-goesser-2",
+      "name": "Gösser NaturRadler Zitrone",
+      "style": "Biermischgetränk aus 60% Fruchtsaftlimonade mit Zitronensaft und 40% Vollbier",
+      "abv": 2.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90288104",
+        "9028800616482"
+      ],
+      "barcode_volumes": {
+        "90288104": 500,
+        "9028800616482": 500
+      }
+    },
+    {
+      "id": "at-goesser-goesser-naturradler-0-0-alkoholfrei-zitrone",
+      "brewery_id": "at-goesser-2",
+      "name": "Gösser NaturRadler 0,0% alkoholfrei Zitrone",
+      "style": "Alkoholfreies Biermischgetränk aus 50% Fruchtsaftlimonade und 50% alkoholfreiem Bier",
+      "abv": 0.0,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": [
+        "9028800627907"
+      ],
+      "barcode_volumes": {
+        "9028800627907": 500
+      }
+    },
+    {
+      "id": "at-goesser-goesser-naturradler-0-0-alkoholfrei-himbeer-rhabarber",
+      "brewery_id": "at-goesser-2",
+      "name": "Gösser NaturRadler 0,0% alkoholfrei Himbeer-Rhabarber",
+      "style": "Alkoholfreies Biermischgetränk aus 60% Fruchtsaftlimonade und 40% alkoholfreiem Bier",
+      "abv": 0.0,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": [
+        "9028800641286"
+      ],
+      "barcode_volumes": {
+        "9028800641286": 330
+      }
+    },
+    {
+      "id": "at-goesser-goesser-naturradler-extra-frisch-zitrus-mix",
+      "brewery_id": "at-goesser-2",
+      "name": "Gösser NaturRadler extra-frisch Zitrus-Mix",
+      "style": "Biermischgetränk aus 60% Mehrfruchtsaftlimonade und 40% Vollbier",
+      "abv": 2.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-goesser-goesser-gold",
+      "brewery_id": "at-goesser-2",
+      "name": "Gösser Gold",
+      "style": "Vollbier",
+      "abv": 5.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-goesser-goesser-stifts-zwickl-hell",
+      "brewery_id": "at-goesser-2",
+      "name": "Gösser Stifts-Zwickl hell",
+      "style": "Vollbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-goesser-goesser-stifts-zwickl-dunkel",
+      "brewery_id": "at-goesser-2",
+      "name": "Gösser Stifts-Zwickl dunkel",
+      "style": "Vollbier",
+      "abv": 5.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90288401"
+      ],
+      "barcode_volumes": {
+        "90288401": 500
+      }
+    },
+    {
+      "id": "at-goesser-goesser-helles",
+      "brewery_id": "at-goesser-2",
+      "name": "Gösser Helles",
+      "style": "Vollbier",
+      "abv": 4.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-goesser-goesser-bock",
+      "brewery_id": "at-goesser-2",
+      "name": "Gösser Bock",
+      "style": "Bockbier",
+      "abv": 7.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-goesser-goesser-natur-saurer-radler-soda-zitron",
+      "brewery_id": "at-goesser-2",
+      "name": "Gösser Natur Saurer Radler Soda Zitron",
+      "style": "Biermischgetränk",
+      "abv": 2.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-puntigamer-das-bierige-bier",
+      "brewery_id": "at-puntigamer-2",
+      "name": "Puntigamer Das \"bierige\" Bier",
+      "style": "helles Vollbier",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-puntigamer-pr0-0st-alkoholfrei",
+      "brewery_id": "at-puntigamer-2",
+      "name": "Puntigamer PR0,0ST Alkoholfrei",
+      "style": "Alkoholfreies Bier",
+      "abv": 0.0,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-puntigamer-winterbier",
+      "brewery_id": "at-puntigamer-2",
+      "name": "Puntigamer Winterbier",
+      "style": "Bier",
+      "abv": 6.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-schwechater-alkoholfrei",
+      "brewery_id": "at-schwechater-2",
+      "name": "Schwechater Alkoholfrei",
+      "style": "Alkoholfreies Bier",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-schwechater-hopfenperle",
+      "brewery_id": "at-schwechater-2",
+      "name": "Schwechater Hopfenperle",
+      "style": "Fassbier",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-zipfer-maerzen",
+      "brewery_id": "at-zipfer-2",
+      "name": "Zipfer Märzen",
+      "style": "Bier",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9028800631355"
+      ],
+      "barcode_volumes": {
+        "9028800631355": 330
+      }
+    },
+    {
+      "id": "at-brauerei-zipfer-kellerbier",
+      "brewery_id": "at-zipfer-2",
+      "name": "Zipfer Kellerbier",
+      "style": "Kellerbier (unfiltriert, naturtrüb)",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-zipfer-naturhopfen-pils",
+      "brewery_id": "at-zipfer-2",
+      "name": "Zipfer Naturhopfen-Pils",
+      "style": "Pils",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-zipfer-limetten-radler",
+      "brewery_id": "at-zipfer-2",
+      "name": "Zipfer Limetten Radler",
+      "style": "Radler",
+      "abv": 2.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9028800601181"
+      ]
+    },
+    {
+      "id": "at-brauerei-zipfer-drei",
+      "brewery_id": "at-zipfer-2",
+      "name": "Zipfer Drei",
+      "style": "Bier",
+      "abv": 3.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9003100106505"
+      ]
+    },
+    {
+      "id": "at-brauerei-zipfer-0-0",
+      "brewery_id": "at-zipfer-2",
+      "name": "Zipfer 0.0",
+      "style": "alkoholfreies Bier",
+      "abv": 0.0,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-zipfer-josefi-bock",
+      "brewery_id": "at-zipfer-2",
+      "name": "Zipfer Josefi Bock",
+      "style": "Osterbock",
+      "abv": 7.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-zipfer-stefani-bock",
+      "brewery_id": "at-zipfer-2",
+      "name": "Zipfer Stefani Bock",
+      "style": "Bock",
+      "abv": 7.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-zipfer-doppelgold",
+      "brewery_id": "at-zipfer-2",
+      "name": "Zipfer Doppelgold",
+      "style": "Spezialbier",
+      "abv": 5.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-wieselburger-spezial",
+      "brewery_id": "at-wieselburger-2",
+      "name": "Wieselburger Spezial",
+      "style": "Bier",
+      "abv": 5.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-wieselburger-schwarzbier",
+      "brewery_id": "at-wieselburger-2",
+      "name": "Wieselburger Schwarzbier",
+      "style": "Schwarzbier",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9028800633274"
+      ],
+      "barcode_volumes": {
+        "9028800633274": 500
+      }
+    },
+    {
+      "id": "at-brauerei-wieselburger-zwickl",
+      "brewery_id": "at-wieselburger-2",
+      "name": "Wieselburger Zwickl",
+      "style": "Zwickl (naturtrüb)",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-wieselburger-0-0",
+      "brewery_id": "at-wieselburger-2",
+      "name": "Wieselburger 0,0",
+      "style": "alkoholfreies Bier",
+      "abv": 0.05,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-hell",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Hell",
+      "style": "Vollbier, (Bayrisch) Hell",
+      "abv": 4.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9003400390437",
+        "9003402194132",
+        "9003402290537"
+      ],
+      "barcode_volumes": {
+        "9003400390437": 500,
+        "9003402194132": 330,
+        "9003402290537": 330
+      }
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-weisse-naturtrueb",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Weisse Naturtrüb",
+      "style": "Vollbier, Weizenbier",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-columbus-1492",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Columbus 1492",
+      "style": "Vollbier, Pale Ale",
+      "abv": 4.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-0-0-alkoholfrei",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl 0,0% alkoholfrei",
+      "style": "Alkoholfreies Bier",
+      "abv": 0.0,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-sport-weisse-alkoholfrei",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl Sport-Weisse alkoholfrei",
+      "style": "alkoholfreies Weizenbier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-radler-naturtrueb-zitrone",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Radler naturtrüb Zitrone",
+      "style": "Biermischgetränk",
+      "abv": 2.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9003402604082",
+        "9003402194774",
+        "9003400394275"
+      ],
+      "barcode_volumes": {
+        "9003402604082": 500,
+        "9003402194774": 330,
+        "9003400394275": 500
+      }
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-radler-naturtrueb-grapefruit",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Radler naturtrüb Grapefruit",
+      "style": "Biermischgetränk",
+      "abv": 2.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9003400393087",
+        "9003400393285"
+      ],
+      "barcode_volumes": {
+        "9003400393087": 500,
+        "9003400393285": 500
+      }
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-radler-himbeere",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Radler Himbeere",
+      "style": "Biermischgetränk",
+      "abv": 2.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9003400393063"
+      ],
+      "barcode_volumes": {
+        "9003400393063": 500
+      }
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-radler-0-0-zitrone",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Radler 0,0% Zitrone",
+      "style": "Alkoholfreies Biermischgetränk",
+      "abv": 0.0,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": [
+        "9003402293194"
+      ]
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-sommerbrise-rose-alkoholfrei",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Sommerbrise Rosé alkoholfrei",
+      "style": "Alkoholfreies Biermischgetränk",
+      "abv": 0.45,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-kreativ-bio-hausbier-hopfenlager",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Kreativ Bio Hausbier Hopfenlager",
+      "style": "Kreativbier, Vollbier, Hoppy Hell",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-kreativ-bio-hausbier-almrausch",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Kreativ Bio Hausbier Almrausch",
+      "style": "Kreativbier, Rotes Zirben-Zwickl",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9003400196343"
+      ],
+      "barcode_volumes": {
+        "9003400196343": 250
+      }
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-kreativ-bio-hausbier-rosamunde",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Kreativ Bio Hausbier Rosamunde",
+      "style": "Kreativbier, Berliner Style Himbeer Weiße",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-kreativ-bio-hausbier-gipfelstuermer",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Kreativ Bio Hausbier Gipfelstürmer",
+      "style": "Kreativbier, Vollbier, Hopfige Dinkelweisse",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-kreativ-bio-hausbier-ginder",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Kreativ Bio Hausbier Ginder",
+      "style": "Kreativbier, GIN-Style IPA",
+      "abv": 5.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-kreativ-bio-hausbier-christkindl",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Kreativ Bio Hausbier Christkindl",
+      "style": "Kreativbier, Honey Amber Ale",
+      "abv": 5.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-braukunst-edition",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Braukunst-Edition",
+      "style": "Vollbier",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-lebensraum-edition",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Lebensraum-Edition",
+      "style": "Vollbier",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stieglbrauerei-stiegl-suedtirol-edition",
+      "brewery_id": "at-stiegl-2",
+      "name": "Stiegl-Südtirol Edition",
+      "style": "Vollbier",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-ottakringer-ottakringer-lager",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Ottakringer Lager",
+      "style": "Märzen-/Lagerbier",
+      "abv": 4.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-ottakringer-ottakringer-wiener-spezial",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Ottakringer Wiener Spezial",
+      "style": "Spezialbier",
+      "abv": 5.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-ottakringer-ottakringer-bio-zwickl-hell",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Ottakringer Bio-Zwickl Hell",
+      "style": "Zwicklbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-ottakringer-ottakringer-bio-zwickl-dunkel",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Ottakringer Bio-Zwickl Dunkel",
+      "style": "Zwicklbier",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-ottakringer-ottakringer-bio-zwickl-rot-rotes-zwickl",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Ottakringer Bio-Zwickl Rot (Rotes Zwickl)",
+      "style": "Zwicklbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-ottakringer-ottakringer-null-komma-josef-radler-zitrone-minze",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Ottakringer Null Komma Josef Radler Zitrone Minze",
+      "style": "Radler Alkoholfrei",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": [
+        "9007600306939"
+      ]
+    },
+    {
+      "id": "at-ottakringer-ottakringer-citrus-radler",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Ottakringer Citrus Radler",
+      "style": "Radler",
+      "abv": 2.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9007600306311"
+      ],
+      "barcode_volumes": {
+        "9007600306311": 500
+      }
+    },
+    {
+      "id": "at-ottakringer-ottakringer-pils",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Ottakringer Pils",
+      "style": "Pils",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-ottakringer-ottakringer-g-mischtes",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Ottakringer G'mischtes",
+      "style": "Mischbier",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-ottakringer-ottakringer-sechzehn",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Ottakringer Sechzehn",
+      "style": "Märzen-/Lagerbier",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-ottakringer-ottakringer-2-9",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Ottakringer 2,9%",
+      "style": "Leichtbier",
+      "abv": 2.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-ottakringer-ottakringer-bier-spritz",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Ottakringer Bier Spritz",
+      "style": "Biermischgetränk",
+      "abv": 4.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-ottakringer-ottakringer-frucade-radler",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Ottakringer Frucade Radler",
+      "style": "Radler",
+      "abv": 2.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-hirter-maerzen",
+      "brewery_id": "at-hirter-2",
+      "name": "Hirter Märzen",
+      "style": "Märzen",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-hirter-zwickl",
+      "brewery_id": "at-hirter-2",
+      "name": "Hirter Zwickl",
+      "style": "Zwickl (unfiltriert)",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-hirter-weizen",
+      "brewery_id": "at-hirter-2",
+      "name": "Hirter Weizen",
+      "style": "Hefeweißbier (unfiltriert)",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-hirter-biohanfbier",
+      "brewery_id": "at-hirter-2",
+      "name": "Hirter Biohanfbier",
+      "style": "Kreativbier",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-hirter-kellermeister",
+      "brewery_id": "at-hirter-2",
+      "name": "Hirter Kellermeister",
+      "style": "Zwickl",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-hirter-freigeist",
+      "brewery_id": "at-hirter-2",
+      "name": "Hirter Freigeist",
+      "style": "Alkoholfreies Bier",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-hirter-hello",
+      "brewery_id": "at-hirter-2",
+      "name": "Hirter Hello",
+      "style": "Lagerbier/Helles",
+      "abv": 3.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-hirter-kraeuterradler",
+      "brewery_id": "at-hirter-2",
+      "name": "Hirter Kräuterradler",
+      "style": "Radler",
+      "abv": 2.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-hirter-herbstkult",
+      "brewery_id": "at-hirter-2",
+      "name": "Hirter Herbstkult",
+      "style": "Zwickl (unfiltriert)",
+      "abv": 5.4,
+      "ibu": 26,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-hirter-rubin-bock",
+      "brewery_id": "at-hirter-2",
+      "name": "Hirter Rubin Bock",
+      "style": "Bockbier",
+      "abv": 7.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-murauer-pils",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer Pils",
+      "style": "Vollbier",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90145025"
+      ],
+      "barcode_volumes": {
+        "90145025": 500
+      }
+    },
+    {
+      "id": "at-brauerei-murauer-dunkel",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer Dunkel",
+      "style": "Spezialbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90145032"
+      ],
+      "barcode_volumes": {
+        "90145032": 500
+      }
+    },
+    {
+      "id": "at-brauerei-murauer-zwickl-hell",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer Zwickl Hell",
+      "style": "Vollbier",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9014500015175"
+      ],
+      "barcode_volumes": {
+        "9014500015175": 750
+      }
+    },
+    {
+      "id": "at-brauerei-murauer-weissbier",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer Weissbier",
+      "style": "Vollbier",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9014500000430"
+      ]
+    },
+    {
+      "id": "at-brauerei-murauer-bock-bier",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer Bock Bier",
+      "style": "Starkbier",
+      "abv": 7.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90145049"
+      ],
+      "barcode_volumes": {
+        "90145049": 500
+      }
+    },
+    {
+      "id": "at-brauerei-murauer-11-11",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer 11/11",
+      "style": "Vollbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-murauer-black-hill",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer Black Hill",
+      "style": "Vollbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-murauer-pale-ale",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer Pale Ale",
+      "style": "Vollbier",
+      "abv": 5.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-murauer-stout",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer Stout",
+      "style": "Spezialbier",
+      "abv": 5.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-murauer-hoamat-weisse",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer Hoamat Weisse",
+      "style": "Vollbier",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-murauer-preisel-bier",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer preisel&bier",
+      "style": "Biermischgetränk",
+      "abv": 2.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90145568"
+      ],
+      "barcode_volumes": {
+        "90145568": 330
+      }
+    },
+    {
+      "id": "at-brauerei-murauer-zitro-bier",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer zitro&bier",
+      "style": "Biermischgetränk",
+      "abv": 2.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9014500001062",
+        "90145391"
+      ],
+      "barcode_volumes": {
+        "90145391": 500
+      }
+    },
+    {
+      "id": "at-brauerei-murauer-hm-radler",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer hm Radler",
+      "style": "Biermischgetränk",
+      "abv": 2.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9014500002427"
+      ],
+      "barcode_volumes": {
+        "9014500002427": 330
+      }
+    },
+    {
+      "id": "at-brauerei-murauer-alkoholfrei",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer Alkoholfrei",
+      "style": "Alkoholfreies Bier",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": [
+        "9014500001789"
+      ],
+      "barcode_volumes": {
+        "9014500001789": 500
+      }
+    },
+    {
+      "id": "at-brauerei-murauer-kristallweizen-alkoholfrei",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer Kristallweizen Alkoholfrei",
+      "style": "Alkoholfreies Bier",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-murauer-lambertini",
+      "brewery_id": "at-murauer-2",
+      "name": "Murauer Lambertini",
+      "style": "Vollbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-trumer-trumer-freispiel-alkoholfrei",
+      "brewery_id": "at-trumer-pils",
+      "name": "Trumer Freispiel alkoholfrei",
+      "style": "Alkoholfreie Pilsspezialität",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-trumer-obertrumer-original-bio-zwickl",
+      "brewery_id": "at-trumer-pils",
+      "name": "Obertrumer Original Bio Zwickl",
+      "style": "Bio Märzen Zwickl",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-trumer-obertrumer-maerzen",
+      "brewery_id": "at-trumer-pils",
+      "name": "Obertrumer Märzen",
+      "style": "Märzen",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-trumer-trumer-hopfenspiel",
+      "brewery_id": "at-trumer-pils",
+      "name": "Trumer Hopfenspiel",
+      "style": "Session Pils",
+      "abv": 2.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-trumer-obertrumer-hopfen-helles",
+      "brewery_id": "at-trumer-pils",
+      "name": "Obertrumer Hopfen Helles",
+      "style": "Helles",
+      "abv": 4.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-trumer-salzburger-landbier",
+      "brewery_id": "at-trumer-pils",
+      "name": "Salzburger Landbier",
+      "style": "Landbier",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-trumer-obertrumer-bio-herbstbier",
+      "brewery_id": "at-trumer-pils",
+      "name": "Obertrumer Bio Herbstbier",
+      "style": "Amber Ale",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-trumer-obertrumer-radler-zitrone",
+      "brewery_id": "at-trumer-pils",
+      "name": "Obertrumer Radler Zitrone",
+      "style": "Radler",
+      "abv": 2.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-pfiff",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Pfiff",
+      "style": "Klassiker",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-festbock",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Festbock",
+      "style": "Bierspezialität",
+      "abv": 7.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9013500011002"
+      ],
+      "barcode_volumes": {
+        "9013500011002": 330
+      }
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-helles",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Helles",
+      "style": "Klassiker",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-gold",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Gold",
+      "style": "Bierspezialität",
+      "abv": 5.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-pilsner",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Pilsner",
+      "style": "Bierspezialität",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9013500011088"
+      ],
+      "barcode_volumes": {
+        "9013500011088": 330
+      }
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-gambrinus",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Gambrinus",
+      "style": "Bierspezialitäten",
+      "abv": 4.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9013500010968"
+      ],
+      "barcode_volumes": {
+        "9013500010968": 330
+      }
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-bluetenweiss",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Blütenweiß",
+      "style": "Creativ Bier",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-weizen",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Weizen",
+      "style": "Bierspezialität",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9013500008064"
+      ],
+      "barcode_volumes": {
+        "9013500008064": 500
+      }
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-pale-ale",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Pale Ale",
+      "style": "Bierspezialität",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-saison",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Saison",
+      "style": "Creativ Bier",
+      "abv": 6.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-hopfenplotz",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Hopfenplotz",
+      "style": "Creativ Bier",
+      "abv": 7.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-radler-sauer",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Radler Sauer",
+      "style": "Radler",
+      "abv": 3.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-eisbock",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Eisbock",
+      "style": "Creativ Bier",
+      "abv": 10.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-export",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Export",
+      "style": "Klassiker",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90135323"
+      ],
+      "barcode_volumes": {
+        "90135323": 500
+      }
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-alkoholfrei",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Alkoholfrei",
+      "style": "Klassiker",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-radler-grapefruit",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Radler Grapefruit",
+      "style": "Radler",
+      "abv": 2.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-radler-zitrone-naturtrueb",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Radler Zitrone Naturtrüb",
+      "style": "Radler",
+      "abv": 2.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-mohrenbrauerei-mohrenbraeu-pfeffersack",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu Pfeffersack",
+      "style": "Creativ Bier",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-kaiser-kaiser-fasstyp",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Kaiser Fasstyp",
+      "style": "Bier",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90031151"
+      ],
+      "barcode_volumes": {
+        "90031151": 500
+      }
+    },
+    {
+      "id": "at-kaiser-kaiser-premium",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Kaiser Premium",
+      "style": "Bier",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-kaiser-kaiser-goldquell",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Kaiser Goldquell",
+      "style": "Bier",
+      "abv": 5.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-kaiser-kaiser-doppelmalz",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Kaiser Doppelmalz",
+      "style": "Bier",
+      "abv": 4.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-kaiser-kaiser-ruperti",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Kaiser Ruperti",
+      "style": "Bernstein-Märzen",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-kaiser-kaiser-moasterbraeu",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Kaiser Moasterbräu",
+      "style": "Kellerpils",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-kaiser-kaiser-hofquell",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Kaiser Hofquell",
+      "style": "Naturtrüb",
+      "abv": 4.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-kaiser-kaiser-salzquell",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Kaiser Salzquell",
+      "style": "Frühlings-Spezialität mit feiner Bergsalznote",
+      "abv": 4.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-kaiser-kaiser-bergquell",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Kaiser Bergquell",
+      "style": "Sommer-Edition mit Bergkräuter-Geschmack",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-kaiser-kaiser-herbstquell",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Kaiser Herbstquell",
+      "style": "Maroni-Spezialität für den Herbst",
+      "abv": 6.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-kaiser-kaiser-winterquell",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Kaiser Winterquell",
+      "style": "Saisonaler Winterbock",
+      "abv": 7.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-fohrenburger-oberlaender",
+      "brewery_id": "at-fohrenburger",
+      "name": "Fohrenburger Oberländer",
+      "style": "Spezialbier",
+      "abv": 5.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-fohrenburger-stiftle-stift",
+      "brewery_id": "at-fohrenburger",
+      "name": "Fohrenburger Stiftle/Stift",
+      "style": "Märzenbier",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90165078"
+      ]
+    },
+    {
+      "id": "at-brauerei-fohrenburger-saurer-radler",
+      "brewery_id": "at-fohrenburger",
+      "name": "Fohrenburger Saurer Radler",
+      "style": "Biermischgetränk aus 60% Spezialbier und 40% Quellwasser mit Kohlensäure versetzt",
+      "abv": 3.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-fohrenburger-alkoholfrei",
+      "brewery_id": "at-fohrenburger",
+      "name": "Fohrenburger Alkoholfrei",
+      "style": "Alkoholfreies Bier",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": [
+        "90165061"
+      ],
+      "barcode_volumes": {
+        "90165061": 500
+      }
+    },
+    {
+      "id": "at-brauerei-fohrenburger-weizen",
+      "brewery_id": "at-fohrenburger",
+      "name": "Fohrenburger Weizen",
+      "style": "Spezialbier, Weizenbier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-fohrenburger-weizen-alkoholfrei",
+      "brewery_id": "at-fohrenburger",
+      "name": "Fohrenburger Weizen alkoholfrei",
+      "style": "Alkoholfreies Weizenbier",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-engelburg-braeu",
+      "brewery_id": "at-fohrenburger",
+      "name": "Engelburg Bräu",
+      "style": "Schankbier",
+      "abv": 4.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-egger-zwickl-rosl",
+      "brewery_id": "at-egger-2",
+      "name": "Egger Zwickl (Rosl)",
+      "style": "Zwickl (naturtrüb)",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-egger-zisch",
+      "brewery_id": "at-egger-2",
+      "name": "Egger Zisch",
+      "style": "alkoholfreies Bier, naturtrüb (als Zwickl)",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-egger-hopf-n-roll",
+      "brewery_id": "at-egger-2",
+      "name": "Egger Hopf'n'Roll",
+      "style": "kaltgehopftes Lager",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9015180126045"
+      ],
+      "barcode_volumes": {
+        "9015180126045": 330
+      }
+    },
+    {
+      "id": "at-privatbrauerei-egger-zitrusradler",
+      "brewery_id": "at-egger-2",
+      "name": "Egger Zitrusradler",
+      "style": "Radler (52% Zitruslimonade, 48% Egger Vollbier)",
+      "abv": 2.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-zwettler-saphir",
+      "brewery_id": "at-zwettler-2",
+      "name": "Zwettler Saphir",
+      "style": "Pils norddeutscher Art",
+      "abv": 5.3,
+      "ibu": 40,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-zwettler-frei-alkoholfrei",
+      "brewery_id": "at-zwettler-2",
+      "name": "Zwettler FREI alkoholfrei",
+      "style": "alkoholfreies Bier",
+      "abv": 0.5,
+      "ibu": 21,
+      "is_alcohol_free": true,
+      "barcodes": [
+        "9008300000554"
+      ],
+      "barcode_volumes": {
+        "9008300000554": 330
+      }
+    },
+    {
+      "id": "at-privatbrauerei-zwettler-export-lager",
+      "brewery_id": "at-zwettler-2",
+      "name": "Zwettler Export Lager",
+      "style": "österreichisches Märzen/Lager",
+      "abv": 5.0,
+      "ibu": 23,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-zwettler-zwickl",
+      "brewery_id": "at-zwettler-2",
+      "name": "Zwettler Zwickl",
+      "style": "Zwickl Bier",
+      "abv": 5.5,
+      "ibu": 28,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-zwettler-dunkles",
+      "brewery_id": "at-zwettler-2",
+      "name": "Zwettler Dunkles",
+      "style": "dunkles Lager",
+      "abv": 3.4,
+      "ibu": 16,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-zwettler-pils-classic",
+      "brewery_id": "at-zwettler-2",
+      "name": "Zwettler Pils Classic",
+      "style": "österreichisches Pilsbier",
+      "abv": 4.9,
+      "ibu": 27,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-zwettler-stiftsbraeu",
+      "brewery_id": "at-zwettler-2",
+      "name": "Zwettler Stiftsbräu",
+      "style": "österreichisches Schankbier",
+      "abv": 4.2,
+      "ibu": 17,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-zwettler-luftikus",
+      "brewery_id": "at-zwettler-2",
+      "name": "Zwettler Luftikus",
+      "style": "alkoholfreies Bier",
+      "abv": 0.5,
+      "ibu": 21,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-zwettler-radler-citrus-naturtrueb",
+      "brewery_id": "at-zwettler-2",
+      "name": "Zwettler Radler Citrus Naturtrüb",
+      "style": "Radler",
+      "abv": 2.0,
+      "ibu": 9,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-kuenringer-festbock",
+      "brewery_id": "at-zwettler-2",
+      "name": "Kuenringer Festbock",
+      "style": "helles Bockbier",
+      "abv": 6.8,
+      "ibu": 27,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-braucommune-freistaedter-maerzen",
+      "brewery_id": "at-freistaedter-2",
+      "name": "Freistädter Märzen",
+      "style": "Märzen",
+      "abv": 4.8,
+      "ibu": 22,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-braucommune-freistaedter-bio-zwickl",
+      "brewery_id": "at-freistaedter-2",
+      "name": "Freistädter Bio Zwickl",
+      "style": "Zwickl",
+      "abv": 4.7,
+      "ibu": 23,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90104114"
+      ],
+      "barcode_volumes": {
+        "90104114": 330
+      }
+    },
+    {
+      "id": "at-braucommune-freistaedter-junghopfenpils",
+      "brewery_id": "at-freistaedter-2",
+      "name": "Freistädter Junghopfenpils",
+      "style": "Pils",
+      "abv": 4.8,
+      "ibu": 33,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-braucommune-freistaedter-pegasus",
+      "brewery_id": "at-freistaedter-2",
+      "name": "Freistädter Pegasus",
+      "style": "Bier",
+      "abv": 5.4,
+      "ibu": 24,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-braucommune-freistaedter-imperator",
+      "brewery_id": "at-freistaedter-2",
+      "name": "Freistädter Imperator",
+      "style": "Bier",
+      "abv": 8.2,
+      "ibu": 28,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90104169"
+      ]
+    },
+    {
+      "id": "at-braucommune-freistaedter-traditionsbock",
+      "brewery_id": "at-freistaedter-2",
+      "name": "Freistädter Traditionsbock",
+      "style": "Bock",
+      "abv": 7.0,
+      "ibu": 26,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-braucommune-freistaedter-oktoberbier",
+      "brewery_id": "at-freistaedter-2",
+      "name": "Freistädter Oktoberbier",
+      "style": "Bier",
+      "abv": 5.3,
+      "ibu": 28,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-braucommune-freistaedter-lager",
+      "brewery_id": "at-freistaedter-2",
+      "name": "Freistädter Lager",
+      "style": "Lager",
+      "abv": 3.9,
+      "ibu": 24,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90104107"
+      ]
+    },
+    {
+      "id": "at-braucommune-freistaedter-imperial-stout",
+      "brewery_id": "at-freistaedter-2",
+      "name": "Freistädter Imperial Stout",
+      "style": "Starkbier (Elixier, Jahrgangsbier 2026)",
+      "abv": 8.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-braucommune-freistaedter-alkoholfrei-hell",
+      "brewery_id": "at-freistaedter-2",
+      "name": "Freistädter Alkoholfrei hell",
+      "style": "alkoholfreies Bier",
+      "abv": 0.5,
+      "ibu": 29,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-braucommune-freistaedter-alkoholfrei-grapefruit-radler",
+      "brewery_id": "at-freistaedter-2",
+      "name": "Freistädter Alkoholfrei Grapefruit Radler",
+      "style": "alkoholfreier Radler",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-classic-maerzen",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Classic Märzen",
+      "style": "österreichisches Märzen",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90091148"
+      ]
+    },
+    {
+      "id": "at-brauerei-gold",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Gold",
+      "style": "Vollbier",
+      "abv": 5.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-hopfenkoenig",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Hopfenkönig",
+      "style": "hopfenaromatisches Vollbier",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-malzmeister-dunkel",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Malzmeister Dunkel",
+      "style": "österreichisches Dunkles",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-naturbursch-bio-zwickl",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Naturbursch Bio-Zwickl",
+      "style": "naturtrübes Vollbier",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-urbock-23",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Urbock 23°",
+      "style": "Doppelbock",
+      "abv": 9.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-goldener-bock",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Goldener Bock",
+      "style": "Bio-Bock",
+      "abv": 6.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-samichlaus-helles",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Samichlaus Helles",
+      "style": "Barley Wine",
+      "abv": 14.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-samichlaus-schwarzes",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Samichlaus Schwarzes",
+      "style": "Barley Wine",
+      "abv": 14.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-samichlaus-barrique",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Samichlaus Barrique",
+      "style": "Barley Wine",
+      "abv": 14.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-wildschuetz",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Wildschütz",
+      "style": "Bernstein Lager",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-leichtsinn",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Leichtsinn",
+      "style": "Leichtbier",
+      "abv": 2.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-sommerfrisch",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Sommerfrisch",
+      "style": "hopfengestopftes Bier",
+      "abv": 3.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-radler-naturtrueb",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Radler naturtrüb",
+      "style": "Biermischgetränk",
+      "abv": 2.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-freibier-original-alkoholfrei",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Freibier Original alkoholfrei",
+      "style": "alkoholfreies Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-freibier-naturtrueb-alkoholfrei",
+      "brewery_id": "at-schloss-eggenberg-samichlaus",
+      "name": "Freibier naturtrüb alkoholfrei",
+      "style": "alkoholfreies Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-abtei-bier-edition-2026",
+      "brewery_id": "at-schlaegl",
+      "name": "Abtei Bier Edition 2026",
+      "style": "Starkbier",
+      "abv": 6.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-boehmerwald-zwickl",
+      "brewery_id": "at-schlaegl",
+      "name": "Böhmerwald Zwickl",
+      "style": "Naturtrübes Vollbier",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-chorherren-pils",
+      "brewery_id": "at-schlaegl",
+      "name": "Chorherren Pils",
+      "style": "Premium Pils",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-das-kleine-feine",
+      "brewery_id": "at-schlaegl",
+      "name": "Das Kleine Feine",
+      "style": "Märzen",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-der-entdecker",
+      "brewery_id": "at-schlaegl",
+      "name": "Der Entdecker",
+      "style": "Pils",
+      "abv": 4.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-der-entschlossene",
+      "brewery_id": "at-schlaegl",
+      "name": "Der Entschlossene",
+      "style": "Festbier",
+      "abv": 5.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-der-maerchenprinz",
+      "brewery_id": "at-schlaegl",
+      "name": "Der Märchenprinz",
+      "style": "Sauerbier mit Marille und Pfirsich",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-die-blumige",
+      "brewery_id": "at-schlaegl",
+      "name": "Die Blumige",
+      "style": "Lavendelbier",
+      "abv": 6.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-die-mutige",
+      "brewery_id": "at-schlaegl",
+      "name": "Die Mutige",
+      "style": "NEIPA",
+      "abv": 5.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-heimat-bio-bier",
+      "brewery_id": "at-schlaegl",
+      "name": "Heimat Bio Bier",
+      "style": "Untergäriges Bio Bier",
+      "abv": 4.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-inprimus-kristall",
+      "brewery_id": "at-schlaegl",
+      "name": "inPrimus Kristall",
+      "style": "Versektetes Spezialbier",
+      "abv": 6.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-kristall",
+      "brewery_id": "at-schlaegl",
+      "name": "Kristall",
+      "style": "Spezialbier",
+      "abv": 5.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90161018"
+      ],
+      "barcode_volumes": {
+        "90161018": 500
+      }
+    },
+    {
+      "id": "at-stiftsbrauerei-malz-koenig",
+      "brewery_id": "at-schlaegl",
+      "name": "Malz König",
+      "style": "Dunkles Vollbier",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-roggen-gold",
+      "brewery_id": "at-schlaegl",
+      "name": "Roggen Gold",
+      "style": "Bio Roggen Bier",
+      "abv": 5.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-stifter-bier",
+      "brewery_id": "at-schlaegl",
+      "name": "Stifter Bier",
+      "style": "Premium Bier",
+      "abv": 5.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-unbeschwert",
+      "brewery_id": "at-schlaegl",
+      "name": "Unbeschwert",
+      "style": "Alkoholfreies Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-urquell",
+      "brewery_id": "at-schlaegl",
+      "name": "Urquell",
+      "style": "Märzen",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-zitronen-radler",
+      "brewery_id": "at-schlaegl",
+      "name": "Zitronen Radler",
+      "style": "Radler",
+      "abv": 2.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-edelguss",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Edelguss",
+      "style": "Filtriertes Helles",
+      "abv": 4.9,
+      "ibu": 20,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-edelguss-radler",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Edelguss Radler",
+      "style": "Zitronenradler",
+      "abv": 2.9,
+      "ibu": 13,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-weizenguss",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Weizenguss",
+      "style": "Naturtrübes Weißbier",
+      "abv": 5.4,
+      "ibu": 17,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-weizenguss-bio-alkoholfrei",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Weizenguss Bio-Alkoholfrei",
+      "style": "Alkoholfreies, isotonisches Bio-Weissbier",
+      "abv": null,
+      "ibu": 15,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-red-ale",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Red Ale",
+      "style": "Naturtrübes Bio-Vollbier",
+      "abv": 4.7,
+      "ibu": 25,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-austrian-amber-ale",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Austrian Amber Ale",
+      "style": "Amber (Pale) Ale",
+      "abv": 5.4,
+      "ibu": 38,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-citra-beach",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Citra Beach",
+      "style": "Summer Ale",
+      "abv": 4.5,
+      "ibu": 26,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-das-schwarze-schaf",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Das Schwarze Schaf",
+      "style": "Irish Dry Stout",
+      "abv": 5.0,
+      "ibu": 35,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-die-schwarze-kuh",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Die Schwarze Kuh",
+      "style": "Imperial Stout",
+      "abv": 9.2,
+      "ibu": 54,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-die-alte-kuh",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Die alte Kuh",
+      "style": "Naturtrübes Starkbier",
+      "abv": 10.5,
+      "ibu": 50,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-horny-betty",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Horny Betty",
+      "style": "Triple-Bock",
+      "abv": 9.0,
+      "ibu": 36,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-alte-betty",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Alte Betty",
+      "style": "Naturtrübes, dunkles Bio-Starkbier",
+      "abv": 10.3,
+      "ibu": 36,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-dies-irae",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Dies Irae",
+      "style": "Barley Wine",
+      "abv": 9.5,
+      "ibu": 56,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-eisbergbock",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Eisbergbock",
+      "style": "Eisbergbock",
+      "abv": 11.5,
+      "ibu": 35,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-krinnawible",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Krinnawible",
+      "style": "Extremes Starkbier/Whisky-Bier",
+      "abv": 14.5,
+      "ibu": 36,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-krispindl",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Krispindl",
+      "style": "Naturtrübes Bio-Leichtbier",
+      "abv": 3.3,
+      "ibu": 28,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-nicobar-ipa",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Nicobar IPA",
+      "style": "India Pale Ale",
+      "abv": 6.4,
+      "ibu": 58,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-nicobar-ipa-alkoholfrei",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Nicobar IPA Alkoholfrei",
+      "style": "Alkoholfreies India Pale Ale",
+      "abv": null,
+      "ibu": 30,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-jakobsgold-alkoholfrei",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Jakobsgold Alkoholfrei",
+      "style": "Alkoholfreies Bier",
+      "abv": null,
+      "ibu": 24,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-glutenfrei-lager",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Glutenfrei Lager",
+      "style": "Naturtrübes, glutenfreies Lager",
+      "abv": 4.9,
+      "ibu": 21,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-glutenfrei-rhabarber-radler",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Glutenfrei Rhabarber Radler",
+      "style": "Glutenfreier Rhabarber-Radler",
+      "abv": 2.5,
+      "ibu": 12,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauhaus-steinbier",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Steinbier",
+      "style": "Naturtrübes Spezialbier",
+      "abv": 5.6,
+      "ibu": 24,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120060220673"
+      ],
+      "barcode_volumes": {
+        "9120060220673": 330
+      }
+    },
+    {
+      "id": "at-brauhaus-winter-steinbier",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Winter-Steinbier",
+      "style": "Naturtrübes Spezialbier",
+      "abv": 6.44,
+      "ibu": 29,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-goldlager",
+      "brewery_id": "at-starkenberger-2",
+      "name": "GoldLager",
+      "style": "Lager",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-tiroler-hell-bio",
+      "brewery_id": "at-starkenberger-2",
+      "name": "Tiroler hell - Bio",
+      "style": "Lager",
+      "abv": 4.6,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-maerzen",
+      "brewery_id": "at-starkenberger-2",
+      "name": "Märzen",
+      "style": "Märzen",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90205217"
+      ],
+      "barcode_volumes": {
+        "90205217": 500
+      }
+    },
+    {
+      "id": "at-brauerei-dunkel",
+      "brewery_id": "at-starkenberger-2",
+      "name": "Dunkel",
+      "style": "Spezial",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-heimatbier",
+      "brewery_id": "at-starkenberger-2",
+      "name": "HeimatBier",
+      "style": "Lager",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-schlosspils",
+      "brewery_id": "at-starkenberger-2",
+      "name": "SchlossPils",
+      "style": "Pils",
+      "abv": 4.8,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-bioperle",
+      "brewery_id": "at-starkenberger-2",
+      "name": "BioPerle",
+      "style": "Helles",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-festbock",
+      "brewery_id": "at-starkenberger-2",
+      "name": "Festbock",
+      "style": "Bock",
+      "abv": 6.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-zwickl",
+      "brewery_id": "at-starkenberger-2",
+      "name": "Zwickl",
+      "style": "Zwickl",
+      "abv": 5.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-naturradler",
+      "brewery_id": "at-starkenberger-2",
+      "name": "NaturRadler",
+      "style": "Biermischgetränk",
+      "abv": 2.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "42359739",
+        "9028800638644",
+        "9028800607855",
+        "90288456",
+        "90288470",
+        "90288197",
+        "9028800638590",
+        "90288647"
+      ],
+      "barcode_volumes": {
+        "9028800638644": 500,
+        "9028800607855": 500,
+        "90288456": 330,
+        "90288470": 500,
+        "90288197": 500,
+        "9028800638590": 500,
+        "90288647": 330
+      }
+    },
+    {
+      "id": "at-brauerei-tiroler-radler-sauer",
+      "brewery_id": "at-starkenberger-2",
+      "name": "Tiroler Radler sauer",
+      "style": "Biermischgetränk",
+      "abv": 2.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-alkoholfrei",
+      "brewery_id": "at-starkenberger-2",
+      "name": "Alkoholfrei",
+      "style": "Helles",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-export",
+      "brewery_id": "at-uttendorfer",
+      "name": "Export",
+      "style": "Export",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-dunkles-weissbier",
+      "brewery_id": "at-uttendorfer",
+      "name": "dunkles Weißbier",
+      "style": "dunkles Weißbier",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-helles-weissbier",
+      "brewery_id": "at-uttendorfer",
+      "name": "helles Weißbier",
+      "style": "helles Weißbier",
+      "abv": 5.1,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-pils",
+      "brewery_id": "at-uttendorfer",
+      "name": "Pils",
+      "style": "Pils",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120060130415",
+        "9002882000056"
+      ],
+      "barcode_volumes": {
+        "9120060130415": 330,
+        "9002882000056": 330
+      }
+    },
+    {
+      "id": "at-brauerei-bock-dunkel",
+      "brewery_id": "at-uttendorfer",
+      "name": "Bock dunkel",
+      "style": "Bock",
+      "abv": 7.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-bock-hell",
+      "brewery_id": "at-uttendorfer",
+      "name": "Bock hell",
+      "style": "Bock",
+      "abv": 7.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-premium",
+      "brewery_id": "at-uttendorfer",
+      "name": "Premium",
+      "style": "Bier",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-falstaff",
+      "brewery_id": "at-uttendorfer",
+      "name": "Falstaff",
+      "style": "Bier",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-hell-leicht",
+      "brewery_id": "at-uttendorfer",
+      "name": "Hell - leicht",
+      "style": "Bier",
+      "abv": 2.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-vicedominator",
+      "brewery_id": "at-uttendorfer",
+      "name": "Vicedominator",
+      "style": "Bier",
+      "abv": 6.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-kraeuter-radler",
+      "brewery_id": "at-uttendorfer",
+      "name": "Kräuter-Radler",
+      "style": "Radler",
+      "abv": 2.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bierol-the-padawan-pale-ale",
+      "brewery_id": "at-bierol",
+      "name": "The Padawan – Pale Ale",
+      "style": "Pale Ale",
+      "abv": 5.6,
+      "ibu": 45,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bierol-el-patron-double-ipa",
+      "brewery_id": "at-bierol",
+      "name": "El Patron – Double IPA",
+      "style": "Double India Pale Ale",
+      "abv": 8.2,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bierol-mountain-pale-ale-ipa",
+      "brewery_id": "at-bierol",
+      "name": "Mountain Pale Ale – IPA",
+      "style": "India Pale Ale",
+      "abv": 6.3,
+      "ibu": 60,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bierol-bierol-helles-lagerbier",
+      "brewery_id": "at-bierol",
+      "name": "Bierol Helles - Lagerbier",
+      "style": "Lagerbier",
+      "abv": 4.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bierol-bierol-sommerbier",
+      "brewery_id": "at-bierol",
+      "name": "Bierol Sommerbier",
+      "style": "Schankbier",
+      "abv": 3.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bierol-fraxbie-session-ipa",
+      "brewery_id": "at-bierol",
+      "name": "FraXBie - Session IPA",
+      "style": "Session IPA",
+      "abv": 3.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bierol-haumtaucher-ipa",
+      "brewery_id": "at-bierol",
+      "name": "Haumtaucher - IPA",
+      "style": "IPA",
+      "abv": 4.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bierol-hardigatti-2026-hazy-ipa",
+      "brewery_id": "at-bierol",
+      "name": "Hardigatti 2026 - Hazy IPA",
+      "style": "Hazy IPA",
+      "abv": 6.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bierol-schafehax-neipa",
+      "brewery_id": "at-bierol",
+      "name": "Schafehax - NEIPA",
+      "style": "NEIPA",
+      "abv": 6.0,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bierol-sunn-seiterl-bio-golden-ale",
+      "brewery_id": "at-bierol",
+      "name": "Sunn-Seiterl - BIO Golden Ale",
+      "style": "BIO Golden Ale",
+      "abv": 4.7,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bierol-oha-bier-pale-ale",
+      "brewery_id": "at-bierol",
+      "name": "OHA-Bier - Pale Ale",
+      "style": "Pale Ale (alkoholfrei)",
+      "abv": 0.5,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-bierol-zapfn-bio-zirbenradler",
+      "brewery_id": "at-bierol",
+      "name": "Zapfn - BIO Zirbenradler",
+      "style": "Radler",
+      "abv": 2.5,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bierol-vogelsang-schnepfenstrauss",
+      "brewery_id": "at-bierol",
+      "name": "Vogelsang - Schnepfenstrauss",
+      "style": "New England IPA",
+      "abv": 6.3,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bierol-vogelsang-schopfwachtel",
+      "brewery_id": "at-bierol",
+      "name": "Vogelsang - Schopfwachtel",
+      "style": "Black IPA",
+      "abv": 5.9,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-bio-classic",
+      "brewery_id": "at-loncium",
+      "name": "Bio Classic",
+      "style": "Bio-Helles (bayrische Brauart)",
+      "abv": 4.9,
+      "ibu": 25,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-bio-helles",
+      "brewery_id": "at-loncium",
+      "name": "Bio Helles",
+      "style": "BIO-Kellerbier",
+      "abv": 4.9,
+      "ibu": 25,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-bio-gailtaler-weisse",
+      "brewery_id": "at-loncium",
+      "name": "Bio Gailtaler Weiße",
+      "style": "Weizenbierspezialität",
+      "abv": 5.2,
+      "ibu": 25,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-bio-austrian-amber-lager",
+      "brewery_id": "at-loncium",
+      "name": "Bio Austrian Amber Lager",
+      "style": "untergärige Spezialität",
+      "abv": 5.5,
+      "ibu": 22,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-bio-schwarze-gams",
+      "brewery_id": "at-loncium",
+      "name": "Bio Schwarze Gams",
+      "style": "untergäriges Spezialbier",
+      "abv": 6.2,
+      "ibu": 23,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-bio-dunkler-weizenbock",
+      "brewery_id": "at-loncium",
+      "name": "Bio Dunkler Weizenbock",
+      "style": "obergärige Brauspezialität",
+      "abv": 6.8,
+      "ibu": 18,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-royal-dark",
+      "brewery_id": "at-loncium",
+      "name": "Royal Dark",
+      "style": "Milk Stout",
+      "abv": 5.7,
+      "ibu": 20,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-freepa",
+      "brewery_id": "at-loncium",
+      "name": "Freepa",
+      "style": "alkoholfreies Pale Ale",
+      "abv": 0.5,
+      "ibu": 45,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-carinthi-p-a",
+      "brewery_id": "at-loncium",
+      "name": "Carinthi(p)a",
+      "style": "Session IPA",
+      "abv": 5.6,
+      "ibu": 45,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-juicy-neipa",
+      "brewery_id": "at-loncium",
+      "name": "Juicy Neipa",
+      "style": "New England IPA",
+      "abv": 5.7,
+      "ibu": 45,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-hazy-neipa",
+      "brewery_id": "at-loncium",
+      "name": "Hazy Neipa",
+      "style": "alkoholfreies New England Style IPA",
+      "abv": 0.5,
+      "ibu": 40,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-rogg-n-roll",
+      "brewery_id": "at-loncium",
+      "name": "Rogg'n Roll",
+      "style": "obergäriges Roggen Ale",
+      "abv": 5.4,
+      "ibu": 23,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-illuminati",
+      "brewery_id": "at-loncium",
+      "name": "Illuminati",
+      "style": "Bier",
+      "abv": 6.5,
+      "ibu": 22,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-rose",
+      "brewery_id": "at-loncium",
+      "name": "Rosé",
+      "style": "Sommerbier",
+      "abv": 4.7,
+      "ibu": 15,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-downhill",
+      "brewery_id": "at-loncium",
+      "name": "Downhill",
+      "style": "Dry hopped Lagerbier",
+      "abv": 4.9,
+      "ibu": 20,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-loncium-lemonrose-mary",
+      "brewery_id": "at-loncium",
+      "name": "Lemonrose & Mary",
+      "style": "Obergärige Bierspezialität",
+      "abv": 5.5,
+      "ibu": 18,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiegl-hausbier-nr-55",
+      "brewery_id": "at-stiegl-2",
+      "name": "Hausbier Nr. 55",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9003400194806"
+      ]
+    },
+    {
+      "id": "at-stiegl-hell-6er-tragerl",
+      "brewery_id": "at-stiegl-2",
+      "name": "Hell (6er-Tragerl)",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9003400391632"
+      ],
+      "barcode_volumes": {
+        "9003400391632": 500
+      }
+    },
+    {
+      "id": "at-goesser-goesser-natur-hell",
+      "brewery_id": "at-goesser-2",
+      "name": "Gösser Natur Hell",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90288593"
+      ],
+      "barcode_volumes": {
+        "90288593": 500
+      }
+    },
+    {
+      "id": "at-ottakringer-ottakringer-bier",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Ottakringer Bier",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90076107",
+        "9007600303167"
+      ],
+      "barcode_volumes": {
+        "90076107": 500,
+        "9007600303167": 500
+      }
+    },
+    {
+      "id": "at-ottakringer-kuehles-blondes-extrablond",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Kühles Blondes Extrablond",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9007600304386",
+        "4061461010119"
+      ],
+      "barcode_volumes": {
+        "9007600304386": 500
+      }
+    },
+    {
+      "id": "at-ottakringer-falco-brew",
+      "brewery_id": "at-ottakringer-2",
+      "name": "Falco Brew",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9007600305895"
+      ]
+    },
+    {
+      "id": "at-ottakringer-brauwerk-session-ipa",
+      "brewery_id": "at-ottakringer-brauwerk",
+      "name": "Session IPA",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9007600304812"
+      ],
+      "barcode_volumes": {
+        "9007600304812": 330
+      }
+    },
+    {
+      "id": "at-zipfer-zipfer-bier",
+      "brewery_id": "at-zipfer-2",
+      "name": "Zipfer Bier",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90031977"
+      ],
+      "barcode_volumes": {
+        "90031977": 500
+      }
+    },
+    {
+      "id": "at-zipfer-hops-zitrone",
+      "brewery_id": "at-zipfer-2",
+      "name": "HOPS Zitrone",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9028800631096",
+        "9028800737927",
+        "9028800142899"
+      ],
+      "barcode_volumes": {
+        "9028800737927": 330,
+        "9028800142899": 330
+      }
+    },
+    {
+      "id": "at-puntigamer-puntigamer",
+      "brewery_id": "at-puntigamer-2",
+      "name": "Puntigamer",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90129025"
+      ],
+      "barcode_volumes": {
+        "90129025": 500
+      }
+    },
+    {
+      "id": "at-puntigamer-puntigamer-bier",
+      "brewery_id": "at-puntigamer-2",
+      "name": "Puntigamer Bier",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-puntigamer-puntigamer-tray",
+      "brewery_id": "at-puntigamer-2",
+      "name": "Puntigamer Tray",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90288081"
+      ],
+      "barcode_volumes": {
+        "90288081": 500
+      }
+    },
+    {
+      "id": "at-puntigamer-puntigamer-dose",
+      "brewery_id": "at-puntigamer-2",
+      "name": "Puntigamer Dose",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9001511400557"
+      ],
+      "barcode_volumes": {
+        "9001511400557": 500
+      }
+    },
+    {
+      "id": "at-schwechater-schwechater-bier-0-0",
+      "brewery_id": "at-schwechater-2",
+      "name": "Schwechater Bier 0,0%",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": [
+        "9028800142400"
+      ]
+    },
+    {
+      "id": "at-wieselburger-wieselburger-bier",
+      "brewery_id": "at-wieselburger-2",
+      "name": "Wieselburger Bier",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90031656",
+        "9028800633014",
+        "9028800633069"
+      ],
+      "barcode_volumes": {
+        "90031656": 500,
+        "9028800633014": 500,
+        "9028800633069": 330
+      }
+    },
+    {
+      "id": "at-edelweiss-edelweiss-hefetrueb-weizenbier",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Edelweiss Hefetrüb Weizenbier",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9003100123021",
+        "9028800148365",
+        "9028800636060"
+      ],
+      "barcode_volumes": {
+        "9003100123021": 500,
+        "9028800148365": 500,
+        "9028800636060": 500
+      }
+    },
+    {
+      "id": "at-murauer-der-steirer",
+      "brewery_id": "at-murauer-2",
+      "name": "Der Steirer",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90145353"
+      ],
+      "barcode_volumes": {
+        "90145353": 500
+      }
+    },
+    {
+      "id": "at-hirter-hirter-bier",
+      "brewery_id": "at-hirter-2",
+      "name": "Hirter Bier",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9002803021139"
+      ]
+    },
+    {
+      "id": "at-mohrenbraeu-mohrenbraeu-0-33",
+      "brewery_id": "at-mohrenbraeu-2",
+      "name": "Mohrenbräu 0,33",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90135491"
+      ],
+      "barcode_volumes": {
+        "90135491": 330
+      }
+    },
+    {
+      "id": "at-huber-braeu-huber-braeu-original",
+      "brewery_id": "at-huber-braeu",
+      "name": "Huber Bräu Original",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90236068"
+      ],
+      "barcode_volumes": {
+        "90236068": 500
+      }
+    },
+    {
+      "id": "at-egger-waelder-bier",
+      "brewery_id": "at-egger-2",
+      "name": "Wälder Bier",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90254154"
+      ]
+    },
+    {
+      "id": "at-frastanzer-frastanzer-dark",
+      "brewery_id": "at-frastanzer-2",
+      "name": "Frastanzer Dark",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90140150"
+      ],
+      "barcode_volumes": {
+        "90140150": 330
+      }
+    },
+    {
+      "id": "at-brauhaus-gusswerk-bio-brotbier",
+      "brewery_id": "at-gusswerk-2",
+      "name": "Bio Brotbier",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120060222714"
+      ],
+      "barcode_volumes": {
+        "9120060222714": 330
+      }
+    },
+    {
+      "id": "at-bevog-helles-export",
+      "brewery_id": "at-bevog-2",
+      "name": "Helles Export",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120053282138"
+      ],
+      "barcode_volumes": {
+        "9120053282138": 500
+      }
+    },
+    {
+      "id": "at-bevog-buzz-hazy-ipa",
+      "brewery_id": "at-bevog-2",
+      "name": "Buzz Hazy IPA",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120053282558"
+      ],
+      "barcode_volumes": {
+        "9120053282558": 330
+      }
+    },
+    {
+      "id": "at-bevog-kramah-india-pale-ale",
+      "brewery_id": "at-bevog-2",
+      "name": "Kramah India Pale Ale",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stift-engelszell-gregorius-trappistenbier",
+      "brewery_id": "at-engelszeller-gregorius",
+      "name": "Gregorius Trappistenbier",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stift-engelszell-benno-trappistenbier",
+      "brewery_id": "at-engelszeller-gregorius",
+      "name": "Benno Trappistenbier",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stift-engelszell-nivard-trappistenbier",
+      "brewery_id": "at-engelszeller-gregorius",
+      "name": "Nivard Trappistenbier",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-egger-zitrus-radler",
+      "brewery_id": "at-egger-2",
+      "name": "Zitrus Radler",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9015180128285"
+      ],
+      "barcode_volumes": {
+        "9015180128285": 500
+      }
+    },
+    {
+      "id": "at-grieskirchner-grieskircher-pils",
+      "brewery_id": "at-grieskirchner-2",
+      "name": "Grieskircher Pils",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-baumgartner-baumgartner-weisse",
+      "brewery_id": "at-baumgartner-2",
+      "name": "Baumgartner Weisse",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9014700000704"
+      ],
+      "barcode_volumes": {
+        "9014700000704": 500
+      }
+    },
+    {
+      "id": "at-baumgartner-maerzenbier",
+      "brewery_id": "at-baumgartner-2",
+      "name": "Märzenbier",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90147159"
+      ]
+    },
+    {
+      "id": "at-stift-engelszell-weiss-trappisten",
+      "brewery_id": "at-engelszeller-gregorius",
+      "name": "Weiß Trappisten",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120041150869"
+      ],
+      "barcode_volumes": {
+        "9120041150869": 330
+      }
+    },
+    {
+      "id": "at-stift-engelszell-zwickl-trappisten",
+      "brewery_id": "at-engelszeller-gregorius",
+      "name": "Zwickl Trappisten",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120041150906"
+      ],
+      "barcode_volumes": {
+        "9120041150906": 330
+      }
+    },
+    {
+      "id": "at-stift-engelszell-festbier-10-jahre-trappistenbrauerei",
+      "brewery_id": "at-engelszeller-gregorius",
+      "name": "Festbier 10 Jahre Trappistenbrauerei",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120041151071"
+      ],
+      "barcode_volumes": {
+        "9120041151071": 330
+      }
+    },
+    {
+      "id": "at-wurmhoeringer-wurmhoeringer",
+      "brewery_id": "at-wurmhoeringer",
+      "name": "Wurmhöringer",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90153501"
+      ],
+      "barcode_volumes": {
+        "90153501": 500
+      }
+    },
+    {
+      "id": "at-bierol-sunnseitler",
+      "brewery_id": "at-bierol",
+      "name": "Sunnseitler",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120070490820"
+      ]
+    },
+    {
+      "id": "at-bierol-zapfen",
+      "brewery_id": "at-bierol",
+      "name": "Zapfen",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120070490837"
+      ]
+    },
+    {
+      "id": "at-bierol-kubrew",
+      "brewery_id": "at-bierol",
+      "name": "Kubrew",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120070491056"
+      ]
+    },
+    {
+      "id": "at-zillertal-bier-zillertal-schwarzes",
+      "brewery_id": "at-zillertal",
+      "name": "Zillertal schwarzes",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90242168"
+      ]
+    },
+    {
+      "id": "at-frastanzer-stiftle",
+      "brewery_id": "at-frastanzer-2",
+      "name": "Stiftle",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "90140440"
+      ]
+    },
+    {
+      "id": "at-brauwerk-export-hell",
+      "brewery_id": "at-ottakringer-brauwerk",
+      "name": "Export Hell",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "4060148023657"
+      ],
+      "barcode_volumes": {
+        "4060148023657": 500
+      }
+    },
+    {
+      "id": "at-brew-age-alpha-tier",
+      "brewery_id": "at-brewage",
+      "name": "Alpha Tier",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "9120065560408"
+      ]
+    },
+    {
+      "id": "at-privatbrauerei-hirt-hirter-bieressig-dunkel",
+      "brewery_id": "at-hirter-2",
+      "name": "Hirter Bieressig Dunkel",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-ottakringer-brauwerk-sunbeam-blonde",
+      "brewery_id": "at-ottakringer-brauwerk",
+      "name": "Sunbeam (Blonde)",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-ottakringer-brauwerk-black-proud-porter",
+      "brewery_id": "at-ottakringer-brauwerk",
+      "name": "Black & Proud (Porter)",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-ottakringer-brauwerk-felber-hopfenmadl-hoppy-vienna-lager",
+      "brewery_id": "at-ottakringer-brauwerk",
+      "name": "Felber Hopfenmadl (Hoppy Vienna Lager)",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brew-age-alphatier-new-england-ipa",
+      "brewery_id": "at-brewage",
+      "name": "Alphatier - New England IPA",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-zwettl-weitra-braeu-weitra-braeu-das-ohne-alkoholfreies",
+      "brewery_id": "at-zwettler-2",
+      "name": "Weitra Bräu Das Ohne - alkoholfreies BIO Bier 0,33L",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-frastanz-s-klenne",
+      "brewery_id": "at-frastanzer-2",
+      "name": "s'klenne",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-frastanz-s-dunkle-bio",
+      "brewery_id": "at-frastanzer-2",
+      "name": "s'dunkle BIO",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-frastanz-3-schwestern-bock-bio",
+      "brewery_id": "at-frastanzer-2",
+      "name": "3 Schwestern Bock BIO",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-frastanz-s-jubi",
+      "brewery_id": "at-frastanzer-2",
+      "name": "s'jubi",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-frastanz-freibier",
+      "brewery_id": "at-frastanzer-2",
+      "name": "freibier",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-frastanz-helles",
+      "brewery_id": "at-frastanzer-2",
+      "name": "helles",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-frastanz-handcrafted-hoppy",
+      "brewery_id": "at-frastanzer-2",
+      "name": "handcrafted \"hoppy\"",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-egg-egger-waelder",
+      "brewery_id": "at-brauerei-egg",
+      "name": "Egger Wälder",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-egg-egger-edel-pils",
+      "brewery_id": "at-brauerei-egg",
+      "name": "Egger Edel Pils",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-egg-egger-heller-jokl",
+      "brewery_id": "at-brauerei-egg",
+      "name": "Egger Heller Jokl",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-zillertal-bier-zeller-hell",
+      "brewery_id": "at-zillertal",
+      "name": "Zeller Hell",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-zillertal-bier-biozwickl",
+      "brewery_id": "at-zillertal",
+      "name": "BioZwickl",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-zillertal-bier-weissbier-hell",
+      "brewery_id": "at-zillertal",
+      "name": "Weißbier Hell",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-zillertal-bier-tyroler-hell",
+      "brewery_id": "at-zillertal",
+      "name": "Tyroler Hell",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-zillertal-bier-bioradler",
+      "brewery_id": "at-zillertal",
+      "name": "BioRadler",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-zillertal-bier-gauder-bock",
+      "brewery_id": "at-zillertal",
+      "name": "Gauder Bock",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-zillertal-bier-525-tyroler-jubilaeumsbock",
+      "brewery_id": "at-zillertal",
+      "name": "525 Tyroler Jubiläumsbock",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-zillertal-bier-granat",
+      "brewery_id": "at-zillertal",
+      "name": "Granat",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-zillertal-bier-517-dinkel-weizen",
+      "brewery_id": "at-zillertal",
+      "name": "517 Dinkel-Weizen",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-zillertal-bier-gauder-steinbock-naturtrueb",
+      "brewery_id": "at-zillertal",
+      "name": "Gauder Steinbock Naturtrüb",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-die-weisse-salzburg-die-weisse-hell-das-original",
+      "brewery_id": "at-die-weisse",
+      "name": "Die Weisse Hell - Das Original",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-die-weisse-salzburg-die-weisse-dunkel",
+      "brewery_id": "at-die-weisse",
+      "name": "Die Weisse Dunkel",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-die-weisse-salzburg-die-weisse-bock",
+      "brewery_id": "at-die-weisse",
+      "name": "Die Weisse Bock",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bierol-vogelsang-schnepfenstraus-0-33l-dose",
+      "brewery_id": "at-bierol",
+      "name": "Vogelsang - Schnepfenstraus 0,33L Dose",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-braucommune-in-freistadt-freistaedter-spezialitaeten-sortiment",
+      "brewery_id": "at-freistaedter-2",
+      "name": "Freistädter Spezialitäten (Sortiment)",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-stiftsbrauerei-schlaegl-bierabo-charakterstark",
+      "brewery_id": "at-schlaegl",
+      "name": "Bierabo Charakterstark",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-schnaitl-schnaitl-original",
+      "brewery_id": "at-schnaitl",
+      "name": "Schnaitl Original",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-schnaitl-schnaitl-dunkel",
+      "brewery_id": "at-schnaitl",
+      "name": "Schnaitl Dunkel",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-schnaitl-schnaitl-naturtrueb",
+      "brewery_id": "at-schnaitl",
+      "name": "Schnaitl Naturtrüb",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-schnaitl-schnaitl-pils-de-luxe",
+      "brewery_id": "at-schnaitl",
+      "name": "Schnaitl Pils de luxe",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-schnaitl-bayern-weisse-hell",
+      "brewery_id": "at-schnaitl",
+      "name": "Bayern Weisse Hell",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-schnaitl-schnaitl-boehmisches-lager",
+      "brewery_id": "at-schnaitl",
+      "name": "Schnaitl Böhmisches Lager",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-schnaitl-schnaitl-festbock",
+      "brewery_id": "at-schnaitl",
+      "name": "Schnaitl Festbock",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-schnaitl-stille-nacht-festbier-4er-karton-0-33-l",
+      "brewery_id": "at-schnaitl",
+      "name": "Stille Nacht Festbier (4er-Karton 0,33 l)",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-raschhofer-raschhofer-zwickl",
+      "brewery_id": "at-raschhofer",
+      "name": "Raschhofer Zwickl",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-raschhofer-raschhofer-pils",
+      "brewery_id": "at-raschhofer",
+      "name": "Raschhofer Pils",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-raschhofer-raschhofer-weizen-hell",
+      "brewery_id": "at-raschhofer",
+      "name": "Raschhofer Weizen hell",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-raschhofer-raschhofer-innviertler-hell",
+      "brewery_id": "at-raschhofer",
+      "name": "Raschhofer Innviertler hell",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-raschhofer-silberpfeil-pale-ale",
+      "brewery_id": "at-raschhofer",
+      "name": "Silberpfeil Pale Ale",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-raschhofer-tausendsassa",
+      "brewery_id": "at-raschhofer",
+      "name": "TausendSassa",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-raschhofer-roter-engel-red-ale",
+      "brewery_id": "at-raschhofer",
+      "name": "Roter Engel Red Ale",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-raschhofer-teufelskerl-bock",
+      "brewery_id": "at-raschhofer",
+      "name": "Teufelskerl Bock",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-raschhofer-der-zwicklradler",
+      "brewery_id": "at-raschhofer",
+      "name": "Der Zwicklradler",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-jos-baumgartner-schaerding-baumgartner-zwickl",
+      "brewery_id": "at-baumgartner-2",
+      "name": "Baumgartner Zwickl",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-jos-baumgartner-schaerding-baumgartner-hell",
+      "brewery_id": "at-baumgartner-2",
+      "name": "Baumgartner Hell",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-jos-baumgartner-schaerding-baumgartner-export",
+      "brewery_id": "at-baumgartner-2",
+      "name": "Baumgartner Export",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-jos-baumgartner-schaerding-baumgartner-pils",
+      "brewery_id": "at-baumgartner-2",
+      "name": "Baumgartner Pils",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-jos-baumgartner-schaerding-baumgartner-bock",
+      "brewery_id": "at-baumgartner-2",
+      "name": "Baumgartner Bock",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-brauerei-jos-baumgartner-schaerding-baumgartner-baunti-lager",
+      "brewery_id": "at-baumgartner-2",
+      "name": "Baumgartner Baunti Lager",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-privatbrauerei-gols-golser-bio-premium",
+      "brewery_id": "at-golser",
+      "name": "Golser Bio Premium",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-huber-braeu-st-johanner-original",
+      "brewery_id": "at-huber-braeu",
+      "name": "St. Johanner Original",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-huber-braeu-der-juchizza",
+      "brewery_id": "at-huber-braeu",
+      "name": "Der Juchizza",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-huber-braeu-grapefruit-weissbier-radler",
+      "brewery_id": "at-huber-braeu",
+      "name": "Grapefruit-Weißbier-Radler",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-huber-braeu-meisterpils",
+      "brewery_id": "at-huber-braeu",
+      "name": "Meisterpils",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-huber-braeu-spezial",
+      "brewery_id": "at-huber-braeu",
+      "name": "Spezial",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-huber-braeu-huber-bock",
+      "brewery_id": "at-huber-braeu",
+      "name": "Huber Bock",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-huber-braeu-augustinus",
+      "brewery_id": "at-huber-braeu",
+      "name": "Augustinus",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-huber-braeu-tiroler-hefeweizen-hell",
+      "brewery_id": "at-huber-braeu",
+      "name": "Tiroler Hefeweizen Hell",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-huber-braeu-die-leichte-weisse",
+      "brewery_id": "at-huber-braeu",
+      "name": "Die leichte Weiße",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-huber-braeu-weissbier-alkoholfrei",
+      "brewery_id": "at-huber-braeu",
+      "name": "Weißbier alkoholfrei",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-bitz",
+      "brewery_id": "at-bevog-2",
+      "name": "Bitz",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-tak",
+      "brewery_id": "at-bevog-2",
+      "name": "TAK",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-deetz",
+      "brewery_id": "at-bevog-2",
+      "name": "DEETZ",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-helles-0-33l",
+      "brewery_id": "at-bevog-2",
+      "name": "HELLES 0.33L",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-pilsner",
+      "brewery_id": "at-bevog-2",
+      "name": "PILSNER",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-woo",
+      "brewery_id": "at-bevog-2",
+      "name": "WOO",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-ledena",
+      "brewery_id": "at-bevog-2",
+      "name": "LEDENA",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-helles-bottle",
+      "brewery_id": "at-bevog-2",
+      "name": "HELLES BOTTLE",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-prh-2-6-lite-ale",
+      "brewery_id": "at-bevog-2",
+      "name": "PRH 2.6 LITE ALE",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-cao-vit-gibbon",
+      "brewery_id": "at-bevog-2",
+      "name": "Cao-Vit Gibbon",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-hana",
+      "brewery_id": "at-bevog-2",
+      "name": "HANA",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-macedonian-grayling",
+      "brewery_id": "at-bevog-2",
+      "name": "Macedonian Grayling",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-lola",
+      "brewery_id": "at-bevog-2",
+      "name": "LOLA",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-aline-2025",
+      "brewery_id": "at-bevog-2",
+      "name": "Aline 2025",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-hagger-12-25",
+      "brewery_id": "at-bevog-2",
+      "name": "HAGGER 12/25",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-wolgor-12-25",
+      "brewery_id": "at-bevog-2",
+      "name": "WOLGOR 12/25",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-tri-2024",
+      "brewery_id": "at-bevog-2",
+      "name": "TRI 2024",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bevog-grape-ale-ii-0-75l",
+      "brewery_id": "at-bevog-2",
+      "name": "Grape ale II 0,75L",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bio-brauerei-schremser-schremser-roggen-bio-bier",
+      "brewery_id": "at-schremser-2",
+      "name": "Schremser Roggen Bio Bier",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-bio-brauerei-schremser-schremser-naturparkradler-naturtrueb",
+      "brewery_id": "at-schremser-2",
+      "name": "Schremser Naturparkradler Naturtrüb",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-puntigamer-puntigamer-frei-radler",
+      "brewery_id": "at-puntigamer-2",
+      "name": "Puntigamer Frei Radler",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-schwechater-schwechater-bier-maerzen",
+      "brewery_id": "at-schwechater-2",
+      "name": "Schwechater Bier (Märzen)",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-schwechater-schwechater-alkoholfrei-dose",
+      "brewery_id": "at-schwechater-2",
+      "name": "Schwechater Alkoholfrei (Dose)",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-kaiser-kaiser-sport-radler",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Kaiser Sport Radler",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-edelweiss-edelweiss-alkoholfrei",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Edelweiss Alkoholfrei",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-edelweiss-edelweiss-hofbraeu",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Edelweiss Hofbräu",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-edelweiss-edelweiss-dunkel",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Edelweiss Dunkel",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-edelweiss-edelweiss-gamsbock",
+      "brewery_id": "at-kaltenhauser-edelweiss",
+      "name": "Edelweiss Gamsbock",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-neufeldner-biobrauerei-maerzen-0-5l",
+      "brewery_id": "at-neufeldner-bio-bier",
+      "name": "Märzen 0,5l",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-neufeldner-biobrauerei-sommer-bier-0-33l",
+      "brewery_id": "at-neufeldner-bio-bier",
+      "name": "Sommer Bier 0,33l",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-neufeldner-biobrauerei-zwickl-0-5l",
+      "brewery_id": "at-neufeldner-bio-bier",
+      "name": "Zwickl 0,5l",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-neufeldner-biobrauerei-muehlviertler-weisse-0-5l",
+      "brewery_id": "at-neufeldner-bio-bier",
+      "name": "Mühlviertler Weisse 0,5l",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-neufeldner-biobrauerei-hopferl-0-5l",
+      "brewery_id": "at-neufeldner-bio-bier",
+      "name": "Hopferl 0,5l",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-neufeldner-biobrauerei-citrus-radler-alkoholfrei-0-33l",
+      "brewery_id": "at-neufeldner-bio-bier",
+      "name": "Citrus Radler alkoholfrei 0,33l",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-neufeldner-biobrauerei-pils-naturtrueb-0-33l",
+      "brewery_id": "at-neufeldner-bio-bier",
+      "name": "Pils naturtrüb 0,33l",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-villacher-bier-villacher-freilich-0-0",
+      "brewery_id": "at-villacher-2",
+      "name": "Villacher FREILICH 0,0%",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": true,
+      "barcodes": []
+    },
+    {
+      "id": "at-villacher-bier-villacher-glockner-pils",
+      "brewery_id": "at-villacher-2",
+      "name": "Villacher Glockner Pils",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-villacher-bier-villacher-draustadt-lager",
+      "brewery_id": "at-villacher-2",
+      "name": "Villacher Draustadt Lager",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-villacher-bier-villacher-keller-dunkles",
+      "brewery_id": "at-villacher-2",
+      "name": "Villacher Keller Dunkles",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-villacher-bier-villacher-special-blonde",
+      "brewery_id": "at-villacher-2",
+      "name": "Villacher Special Blonde",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-schladminger-schladminger-schnee-weisse-bio",
+      "brewery_id": "at-schladminger-2",
+      "name": "Schladminger Schnee Weiße Bio",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-schladminger-schladminger-sepp",
+      "brewery_id": "at-schladminger-2",
+      "name": "Schladminger Sepp",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
+    },
+    {
+      "id": "at-schladminger-schladminger-sortiment-biozwickl-schnee-weisse-maerzen-se",
+      "brewery_id": "at-schladminger-2",
+      "name": "Schladminger Sortiment (BioZwickl, Schnee Weiße, Märzen, Sepp)",
+      "style": "Bier",
+      "abv": null,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": []
     }
   ]
 }
