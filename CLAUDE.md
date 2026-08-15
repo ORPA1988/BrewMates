@@ -61,6 +61,24 @@ mit 403 (Branch-Scope-Token). Der Lauf baut APK+AAB und veröffentlicht sie.
 - Karten-Wording zentral: `activeUsersLabel()` in
   `app/lib/features/map/map_screen.dart`.
 - Nicht-Freunde erscheinen auf der Karte NIE mit Position, nur als Zähler.
+- **Pflicht bei JEDER Funktionsänderung**: Jede Funktion hat ein Dokument
+  unter `docs/features/` (Vorlage: `_vorlage.md`, Index: `README.md`) mit
+  Zielsetzung, Nutzersicht, technischer Umsetzung, Modularität,
+  Plattformen, Skalierung, Status und Plan. Das Dokument wird **im selben
+  Commit** mitgezogen — Status, „Zuletzt geprüft"-Datum und die
+  betroffenen Abschnitte. Eine NEUE Funktion beginnt mit ihrem Dokument,
+  nicht mit dem ersten Widget. Roadmap (`docs/06-roadmap.md`) verlinkt
+  dorthin und sagt nur noch WANN, nicht WAS.
+- **Architektur-Leitplanken**: `docs/11-modularitaet-und-portierbarkeit.md`
+  — Schichtrichtung `features → domain/data → core`, keine
+  Cross-Imports zwischen Features (gilt heute lückenlos), neue Funktionen
+  bekommen eigene API- und Provider-Datei statt in die Sammelstellen
+  (`online_service.dart` 1705 Z., `providers.dart` 71 Provider,
+  `database.dart` 13 Tabellen) hineinzuwachsen. Kein `dart:io` in `lib/`,
+  nichts zur Laufzeit von fremden CDNs nachladen.
+- **Aktueller Befund** zu Vollständigkeit und Skalierbarkeit aller
+  Funktionen: `docs/12-funktionsaudit.md` (dringlichster Punkt: 26
+  Bildschirme bauen Listen eifrig, Feed/Tagebuch zusätzlich ohne Limit).
 - **Pflicht bei JEDEM Entwicklungslauf**: nutzererstellte Biere prüfen
   (`beers.verified = false` in Supabase) und fehlende Infos ergänzen —
   Anleitung + SQL in `docs/10-community-datenpflege.md`. Beste Quelle ist

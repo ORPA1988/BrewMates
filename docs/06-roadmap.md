@@ -16,6 +16,13 @@ keine gleichrangigen Einstiege mehr.
 Zeitschätzungen gelten für ein Team von **2–3 Entwicklern**; **mit
 KI-Unterstützung deutlich schneller** (erfahrungsgemäß etwa halbe bis drittel Zeit).
 
+> **Diese Roadmap sagt, wann etwas kommt.** Was eine Funktion ist, wie sie
+> gebaut ist und wie weit sie steht, steht je Funktion in einem eigenen
+> Dokument unter **[docs/features/](features/README.md)** — samt
+> Zielsetzung, technischer Umsetzung, Plattformen, Skalierung und
+> Umsetzungsplan. Der aktuelle Gesamtbefund zu allen bestehenden
+> Funktionen steht im **[Funktionsaudit](12-funktionsaudit.md)**.
+
 ## Was sich gegenüber Roadmap 1.0 geändert hat
 
 - **Hero-Aktionen statt Tab-zentriertem Einstieg**: Die alte Roadmap dachte die
@@ -119,13 +126,63 @@ Kosten trägt (siehe [docs/09](09-wachstum-und-geschaeftsmodell.md)).
       Etikett genügt — *Vorstufe fertig: Foto + EAN landen beim Anlegen
       direkt in der Community-DB (Migration 0010), die Community validiert
       über Check-ins vs. „Kein Bier"-Meldungen (±10-Regel)*
-- [ ] **Crews** (Gruppen) mit Crew-Feed und Crew-Beacons
+- [x] **Crews** (Gruppen) mit Crew-Beacons — *seit 0.9.12: anlegen,
+      Einladungscode, Mitglieder, Sichtbarkeit „nur meine Crew";
+      **Crew-Feed steht noch aus** (siehe
+      [Funktion 09](features/09-crews.md))*
 - [ ] **Monetarisierung gemäß docs/09**: Premium („BrewMates Pro") zuerst,
       Werbung nur optional und dezent – Kernfunktionen bleiben gratis
 - [x] **Bier-DB über Österreich hinaus**: Erweiterung auf den DACH-Raum
       (Deutschland, Schweiz) mit demselben Community-Workflow — *seit
       0.9.13: 95 Biere / 40 Brauereien Restdeutschland + 45 Biere /
       18 Brauereien Schweiz (`beers-de/ch.json`, `breweries-de/ch.json`)*
+
+---
+
+## Stufe D — „Nachschärfen & Abstufen" *(0.9.14 → 0.10, in Arbeit)*
+
+Ziel: die Lücken schließen, die das [Funktionsaudit](12-funktionsaudit.md)
+gefunden hat, und den Daten mehr Bedeutung geben. Jeder Punkt hat ein
+eigenes Dokument mit Umsetzungsplan.
+
+**Zuerst — Lücken im Bestand (0.9.14):**
+
+- [ ] **[Feed-Einträge löschen](features/19-feed-eintraege-loeschen.md)** —
+      eigene Check-ins entfernen, offlinefähig, mit „Rückgängig".
+      Die klarste Lücke im Bestand: Heute geht das nur über die
+      Kontolöschung.
+- [ ] **Listen auf Wachstum vorbereiten** — 26 Bildschirme bauen heute alle
+      Einträge sofort; Feed und Tagebuch zusätzlich ohne Obergrenze.
+      Mechanische Umstellung, vor dem Play-Store-Start fällig.
+- [ ] **[Freunde per QR-Code](features/22-freunde-per-qr-code.md)** —
+      der Wirtshaustisch-Fall, den die Namenssuche schlecht bedient.
+- [ ] **[Beacon-Laufzeit](features/23-beacon-laufzeit.md)** wählbar —
+      die Datenbank kann es längst, die App fragt nicht danach.
+
+**Danach — mehr Bedeutung (0.9.15 / 0.9.16):**
+
+- [ ] **[Feed-Statistiken](features/20-feed-statistiken.md)** — Menge,
+      Land, Stil, Gebinde, Zeitraum, frei filterbar. Braucht als einzige
+      neue Zutat die Füllmenge je Check-in.
+- [ ] **[Hintergrundgeschichten](features/21-hintergrundgeschichten.md)** —
+      Geschichten zu Bieren und Brauereien, beim ersten Scan angeboten.
+      Recherchiert und gepflegt, ab Vertrauensstufe 3 bearbeitbar.
+
+**Dann — Abstufung (0.10):**
+
+- [ ] **[Freundeskreise](features/24-freundeskreise.md)** — Bekannte,
+      Freunde, Best Buddys mit gestaffelter Sichtbarkeit. Die invasivste
+      Änderung der Stufe: Sie berührt jede Sichtbarkeitsregel und gehört
+      serverseitig durchgesetzt.
+
+**Später — Wirtschaftliches (nach 1.0):**
+
+- [ ] **[Brauerei-Besitz](features/25-brauerei-besitz.md)** — echte
+      Betreiber beantragen ihre Brauerei, Admins verifizieren, danach
+      pflegen sie ihre Daten selbst.
+- [ ] **[Bier-Angebote](features/26-bier-angebote.md)** — sehr späte
+      Ausbaustufe; das Dokument hält vor allem die Leitplanken fest,
+      damit sie nicht später verhandelt werden.
 
 ---
 
