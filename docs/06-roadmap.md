@@ -139,41 +139,40 @@ Kosten trägt (siehe [docs/09](09-wachstum-und-geschaeftsmodell.md)).
 
 ---
 
-## Stufe D — „Nachschärfen & Abstufen" *(0.9.14 → 0.10, in Arbeit)*
+## Stufe D — „Nachschärfen & Abstufen" *(✅ abgeschlossen mit 0.10.0-beta)*
 
 Ziel: die Lücken schließen, die das [Funktionsaudit](12-funktionsaudit.md)
 gefunden hat, und den Daten mehr Bedeutung geben. Jeder Punkt hat ein
 eigenes Dokument mit Umsetzungsplan.
 
-**Zuerst — Lücken im Bestand (0.9.14):**
+**Lücken im Bestand (0.9.14):**
 
-- [ ] **[Feed-Einträge löschen](features/19-feed-eintraege-loeschen.md)** —
-      eigene Check-ins entfernen, offlinefähig, mit „Rückgängig".
-      Die klarste Lücke im Bestand: Heute geht das nur über die
-      Kontolöschung.
-- [ ] **Listen auf Wachstum vorbereiten** — 26 Bildschirme bauen heute alle
-      Einträge sofort; Feed und Tagebuch zusätzlich ohne Obergrenze.
-      Mechanische Umstellung, vor dem Play-Store-Start fällig.
-- [ ] **[Freunde per QR-Code](features/22-freunde-per-qr-code.md)** —
-      der Wirtshaustisch-Fall, den die Namenssuche schlecht bedient.
-- [ ] **[Beacon-Laufzeit](features/23-beacon-laufzeit.md)** wählbar —
-      die Datenbank kann es längst, die App fragt nicht danach.
+- [x] **[Feed-Einträge löschen](features/19-feed-eintraege-loeschen.md)** —
+      eigene Check-ins entfernen, offlinefähig, mit „Rückgängig"
+      (Drift v10, `checkin_delete_queue`)
+- [x] **Listen auf Wachstum vorbereitet** — Feed und Tagebuch laden
+      30er-Seiten, fünf wachsende Listen bauen faul, Migration 0020 bringt
+      den fehlenden `created_at`-Index
+- [x] **[Freunde per QR-Code](features/22-freunde-per-qr-code.md)** —
+      Code anzeigen und scannen (`qr_flutter`, `mobile_scanner`)
+- [x] **[Beacon-Laufzeit](features/23-beacon-laufzeit.md)** — 30 min bis
+      12 h, verlängerbar, Grenzen serverseitig (0021)
 
-**Danach — mehr Bedeutung (0.9.15 / 0.9.16):**
+**Mehr Bedeutung (0.9.15 / 0.9.16):**
 
-- [ ] **[Feed-Statistiken](features/20-feed-statistiken.md)** — Menge,
-      Land, Stil, Gebinde, Zeitraum, frei filterbar. Braucht als einzige
-      neue Zutat die Füllmenge je Check-in.
-- [ ] **[Hintergrundgeschichten](features/21-hintergrundgeschichten.md)** —
-      Geschichten zu Bieren und Brauereien, beim ersten Scan angeboten.
-      Recherchiert und gepflegt, ab Vertrauensstufe 3 bearbeitbar.
+- [x] **[Statistiken](features/20-feed-statistiken.md)** — Menge, Land,
+      Stil, Gebinde, Zeitraum und Filter; Füllmenge je Check-in neu
+      (Drift v11, 0022)
+- [x] **[Hintergrundgeschichten](features/21-hintergrundgeschichten.md)** —
+      Feld, Anzeige und Erst-Scan-Hinweis (Drift v12, 0023); 30 von 125
+      Brauereien erzählt, der Rest folgt bei der laufenden Datenpflege
 
-**Dann — Abstufung (0.10):**
+**Abstufung (0.10):**
 
-- [ ] **[Freundeskreise](features/24-freundeskreise.md)** — Bekannte,
-      Freunde, Best Buddys mit gestaffelter Sichtbarkeit. Die invasivste
-      Änderung der Stufe: Sie berührt jede Sichtbarkeitsregel und gehört
-      serverseitig durchgesetzt.
+- [x] **[Freundeskreise](features/24-freundeskreise.md)** — Bekannte,
+      Freunde, Best Buddys; Beacon-Position und Bierlaune serverseitig
+      abgestuft (0024). Offen: Aufteilung je Zeile einstellbar,
+      Session-Sichtbarkeit „nur Best Buddys"
 
 **Später — Wirtschaftliches (nach 1.0):**
 

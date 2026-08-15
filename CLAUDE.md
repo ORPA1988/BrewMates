@@ -3,17 +3,21 @@
 BrewMates: Android-Bier-App (Untappd × Beer with Me), Flutter, deutschsprachig,
 Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
 
-## Aktueller Stand (2026-08-14)
+## Aktueller Stand (2026-08-15)
 
 - **Branch**: PRs #2–#4 sind in `main` gemerged; neue Arbeit startet auf
   frischen Branches von `main`.
-  Version `0.9.13-beta+17` (Beta 0.x bis
+  Version `0.10.0-beta+18` (Beta 0.x bis
   zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch; die
   frühen Alpha-Releases wurden von 1.1/1.2 auf 0.1.0/0.2.0 umbenannt).
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
-- **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU). Migrationen
-  `supabase/migrations/0001–0019` sind LIVE (0011 Gasthäuser, 0012
+- **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
+  ⚠️ **`0020–0024` liegen im Repo, sind aber NOCH NICHT eingespielt.**
+  Die App aus 0.10 setzt sie voraus: ohne 0022 scheitert der Check-in-
+  Upload an `volume_ml`, ohne 0024 die Freundesliste an `requester_tier`.
+  Vor dem nächsten Release einspielen.
+  Migrationen `0001–0019` sind LIVE (0011 Gasthäuser, 0012
   Challenges, 0013 Vertrauensstufen + edit_log, 0014 complete_challenge-RPC
   + contribution_leaderboard, 0015 venues.opening_hours_json, 0016
   user_badges/wishlist_items für den Cloud-Sync, 0017
@@ -42,6 +46,7 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   `ext.flutter`-Map + AGP-8.1-Classpath — nicht „aufräumen".
 - Gepinnte Pakete (Flutter-3.24-Toolchain): `mobile_scanner ^5.2.3`,
   `geolocator ^13.0.2` — nicht ohne Toolchain-Upgrade anheben.
+  `qr_flutter ^4.1.0` (reines Dart) kam mit den Freundes-QR-Codes dazu.
 - `flutter test` NIE nach `tail` pipen (scheint zu hängen) — in Datei
   umleiten und die Datei lesen.
 
@@ -77,8 +82,15 @@ mit 403 (Branch-Scope-Token). Der Lauf baut APK+AAB und veröffentlicht sie.
   `database.dart` 13 Tabellen) hineinzuwachsen. Kein `dart:io` in `lib/`,
   nichts zur Laufzeit von fremden CDNs nachladen.
 - **Aktueller Befund** zu Vollständigkeit und Skalierbarkeit aller
-  Funktionen: `docs/12-funktionsaudit.md` (dringlichster Punkt: 26
-  Bildschirme bauen Listen eifrig, Feed/Tagebuch zusätzlich ohne Limit).
+  Funktionen: `docs/12-funktionsaudit.md`. Die dringlichsten Punkte sind
+  mit 0.10 erledigt (Seitenladen, faule Listen, Feed-Index, Löschen);
+  offen bleiben Trigram-Index für die Freundessuche und ein
+  Delta-Restore.
+- **Drift-Stand v12**: v10 Warteschlange gelöschter Check-ins, v11
+  `checkins.volumeMl`, v12 `story` bei Bier und Brauerei. Schreibende
+  Aktionen, die offline funktionieren sollen, folgen dem Muster
+  `venue_queue.dart` / `checkin_delete_queue.dart` (FIFO, idempotent,
+  Verbindungsfehler bricht ab, fachlicher Fehler verwirft).
 - **Pflicht bei JEDEM Entwicklungslauf**: nutzererstellte Biere prüfen
   (`beers.verified = false` in Supabase) und fehlende Infos ergänzen —
   Anleitung + SQL in `docs/10-community-datenpflege.md`. Beste Quelle ist
