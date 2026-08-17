@@ -74,6 +74,50 @@ Aufruf erfolgt.
 Im Freunde-Bildschirm bleibt jede Anfrage sichtbar und änderbar, auch die
 zurückgestellten.
 
+### Der QR-Code stellte keine Anfrage (2026-08-16)
+
+Ein Scan endete beim **Anzeigen** des Profils und wartete auf einen
+zweiten Tipp auf „Freundschaft anfragen". Für den Menschen davor sah das
+aus wie eine reine Suche: Er sah den Namen, steckte das Telefon ein — und
+beim anderen kam nie etwas an. Wer einen fremden QR-Code scannt, will
+genau dieses eine; der Scan **ist** die Absicht.
+
+Jetzt geht die Anfrage mit dem Scan raus. Damit trägt das Präfix
+`brewmates:friend:` die volle Last: Ohne die Prüfung würde jeder
+WLAN- oder Speisekarten-Code eine Anfrage auslösen, und zwar ohne
+Rückfrage. Ein Test hält das fest.
+
+### Gestellte Anfragen waren unsichtbar
+
+Wer jemanden angefragt hatte, sah davon **nichts mehr** — nicht in der
+Suche, nicht in der Freundesliste. Ein zweiter Versuch lief in „Anfrage
+läuft schon", ohne dass je erkennbar war, dass man selbst der Absender
+ist. Zurücknehmen ging gar nicht: Ein Fehlgriff war endgültig, und man
+konnte nur hoffen, dass der andere ablehnt.
+
+Neu: `outgoingRequests()` und `withdrawRequest()`, eine Liste „Von dir
+angefragt" mit „Zurücknehmen", und dieselbe Rücknahme direkt nach dem
+Scan. Die Zeile wird **gelöscht** statt auf einen Status gesetzt — sonst
+ließe der Unique-Index auf dem Paar keine neue Anfrage mehr zu.
+
+### Offene Anfragen sind jetzt von überall sichtbar
+
+Eine Zahl am Profil-Tab. Vorher standen Anfragen nur auf der Startseite;
+wer die App auf einem anderen Tab offen hatte, sah nie, dass jemand auf
+eine Antwort wartet.
+
+### Was weiterhin fehlt: eine Meldung bei geschlossener App
+
+Es gibt **keinen** Benachrichtigungsweg — kein FCM, kein Realtime. Die
+Anfrageliste wird alle 30 Sekunden neu geladen, das wirkt also nur,
+solange die App läuft. Wer sie geschlossen hat, erfährt nichts, bis er
+sie öffnet.
+
+Echte Meldungen brauchen Firebase Cloud Messaging: ein Firebase-Projekt,
+`google-services.json`, ein Gerätetoken je Installation und eine
+Edge Function, die über die FCM-HTTP-v1-Schnittstelle sendet. Der
+Projektschlüssel ist der Teil, der nicht aus dem Repo kommen kann.
+
 ## Modularität
 
 - **Hängt ab von:** Konto (01)
