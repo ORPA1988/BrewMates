@@ -133,3 +133,18 @@ final friendRequestsProvider =
   if (online == null) return const [];
   return online.friends.incomingRequests();
 });
+
+/// Anfragen, die ich selbst gestellt habe und die noch offen sind.
+///
+/// Sie waren bisher unsichtbar: Wer jemanden angefragt hatte, sah davon
+/// nichts — nicht in der Suche, nicht in der Freundesliste. Der zweite
+/// Versuch lief dann in „Anfrage laeuft schon", ohne dass je erkennbar
+/// war, dass man selbst der Absender ist.
+final outgoingRequestsProvider =
+    FutureProvider<List<OutgoingRequest>>((ref) async {
+  ref.watch(onlineUserProvider);
+  ref.watch(clockProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) return const [];
+  return online.friends.outgoingRequests();
+});

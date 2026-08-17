@@ -119,6 +119,19 @@ class FriendRequest {
   final RemoteProfile from;
 }
 
+/// Eine Anfrage, die man selbst gestellt hat und die noch offen ist.
+///
+/// Bis 0.10.4 gab es die nicht: Wer jemanden angefragt hatte, sah davon
+/// nichts mehr — nicht in der Suche, nicht in der Freundesliste. Ein
+/// zweiter Versuch lief dann in „Anfrage laeuft schon", ohne dass je
+/// erkennbar war, dass man sie selbst gestellt hatte.
+class OutgoingRequest {
+  const OutgoingRequest({required this.friendshipId, required this.to});
+
+  final String friendshipId;
+  final RemoteProfile to;
+}
+
 /// Aktive Session eines Freundes.
 class RemoteSession {
   const RemoteSession({

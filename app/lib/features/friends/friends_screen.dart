@@ -55,8 +55,32 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
     if (online == null) return;
     final err = await online.friends.sendFriendRequest(profile.id);
     if (!mounted) return;
+    // Damit die Anfrage sofort unter „Von dir angefragt" auftaucht —
+    // sonst waere sie bis zum naechsten 30-Sekunden-Takt wieder unsichtbar,
+    // also genau das Problem, das diese Liste behebt.
+    if (err == null) ref.invalidate(outgoingRequestsProvider);
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(err ?? 'Anfrage gesendet 🍻')));
+  }
+
+  /// Eine selbst gestellte Anfrage zuruecknehmen.
+  Future<void> _zuruecknehmen(OutgoingRequest anfrage) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final online = await ref.read(onlineServiceProvider.future);
+    final ok =
+        await online?.friends.withdrawRequest(anfrage.friendshipId) ?? false;
+    if (!mounted) return;
+    if (!ok) {
+      // Regel aus A-8: keinen Erfolg behaupten, der nicht stattfand.
+      messenger.showSnackBar(const SnackBar(
+        content: Text('Hat nicht geklappt — vielleicht ist sie schon '
+            'angenommen.'),
+      ));
+      return;
+    }
+    ref.invalidate(outgoingRequestsProvider);
+    messenger.showSnackBar(
+        const SnackBar(content: Text('Anfrage zurückgenommen.')));
   }
 
   Future<void> _respond(FriendRequest request, {required bool accept}) async {
@@ -373,6 +397,8 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
 
     final requests =
         ref.watch(friendRequestsProvider).valueOrNull ?? const [];
+    final gestellt =
+        ref.watch(outgoingRequestsProvider).valueOrNull ?? const [];
     final friends = ref.watch(onlineFriendsProvider).valueOrNull;
     final blocked =
         ref.watch(blockedProfilesProvider).valueOrNull ?? const [];
@@ -450,6 +476,36 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
                               _respond(request, accept: false),
                         ),
                       ],
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 16),
+            ],
+
+            // ------------------------------------------------------------------
+            // Von mir gestellt
+            //
+            // Diese Liste gab es nicht. Wer jemanden angefragt hatte, sah
+            // danach nichts mehr — weder dass die Anfrage laeuft, noch
+            // eine Moeglichkeit, sie zurueckzunehmen. Ein Fehlgriff war
+            // damit endgueltig, und man konnte nur hoffen, dass der andere
+            // ablehnt.
+            // ------------------------------------------------------------------
+            if (gestellt.isNotEmpty) ...[
+              Text('Von dir angefragt', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 4),
+              for (final anfrage in gestellt)
+                Card(
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      child: Text(anfrage.to.avatarEmoji,
+                          style: const TextStyle(fontSize: 20)),
+                    ),
+                    title: Text(anfrage.to.displayName),
+                    subtitle: const Text('wartet auf Antwort'),
+                    trailing: TextButton(
+                      onPressed: () async => _zuruecknehmen(anfrage),
+                      child: const Text('Zurücknehmen'),
                     ),
                   ),
                 ),

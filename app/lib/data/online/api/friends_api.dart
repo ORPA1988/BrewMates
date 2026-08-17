@@ -152,6 +152,58 @@ class FriendsApi extends OnlineApi {
     }
   }
 
+  /// Anfragen, die ich selbst gestellt habe und die noch offen sind.
+  Future<List<OutgoingRequest>> outgoingRequests() async {
+    final me = currentUser;
+    if (me == null) return const [];
+    try {
+      final rows = await client
+          .from('friendships')
+          .select('id, addressee:profiles!friendships_addressee_id_fkey('
+              '${OnlineApi.profileCols})')
+          .eq('requester_id', me.id)
+          .eq('status', 'pending');
+      return [
+        for (final r in rows)
+          OutgoingRequest(
+            friendshipId: r['id'] as String,
+            to: RemoteProfile.fromRow(r['addressee'] as Map<String, dynamic>),
+          ),
+      ];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Eine eigene Anfrage zurueckziehen.
+  ///
+  /// Ohne diesen Weg war ein versehentlicher Scan endgueltig: Man konnte
+  /// eine gestellte Anfrage weder sehen noch zuruecknehmen und musste
+  /// darauf hoffen, dass der andere sie ablehnt.
+  ///
+  /// Die Zeile wird geloescht statt auf einen Status gesetzt — dann ist
+  /// derselbe Mensch spaeter wieder anfragbar. Der Unique-Index auf dem
+  /// Paar liesse das sonst nicht zu.
+  Future<bool> withdrawRequest(String friendshipId) async {
+    final me = currentUser;
+    if (me == null) return false;
+    try {
+      // `requester_id`-Bedingung nicht nur der Sauberkeit halber: Ohne sie
+      // wuerde derselbe Aufruf eine **eingehende** Anfrage loeschen, statt
+      // sie abzulehnen — dieselbe Zeile, anderer Vorgang.
+      final betroffen = await client
+          .from('friendships')
+          .delete()
+          .eq('id', friendshipId)
+          .eq('requester_id', me.id)
+          .eq('status', 'pending')
+          .select('id');
+      return betroffen.isNotEmpty;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Freundschaftsanfrage annehmen oder ablehnen.
   ///
   /// Gibt zurück, ob der Server es übernommen hat. Eine stille

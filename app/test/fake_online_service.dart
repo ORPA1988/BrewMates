@@ -40,6 +40,12 @@ class FakeOnlineService extends OnlineService {
   List<FriendRequest> anfragen = const [];
   List<RemoteProfile> blockierte = const [];
 
+  /// Anfragen, die der Testnutzer selbst gestellt hat.
+  List<OutgoingRequest> gestellteAnfragen = const [];
+
+  /// Profile, die der „Server" per ID kennt — fuer den QR-Weg.
+  Map<String, RemoteProfile> profileNachId = const {};
+
   /// Ein angemeldeter Nutzer muss vorgetäuscht werden: Die Provider
   /// prüfen `currentUser != null`, bevor sie überhaupt etwas versuchen.
   @override
@@ -143,6 +149,43 @@ class _FakeFriendsApi extends FriendsApi {
       : super(_fake.client, (() => _fake.currentUser));
 
   final FakeOnlineService _fake;
+
+  @override
+  Future<RemoteProfile?> profileById(String profileId) async {
+    _fake.aufrufe.add('profileById:$profileId');
+    return _fake.profileNachId[profileId];
+  }
+
+  @override
+  Future<String?> sendFriendRequest(String profileId) async {
+    _fake.aufrufe.add('sendFriendRequest:$profileId');
+    if (_fake.schlaegtFehl) return 'Anfrage fehlgeschlagen.';
+    final ziel = _fake.profileNachId[profileId];
+    if (ziel != null) {
+      _fake.gestellteAnfragen = [
+        ..._fake.gestellteAnfragen,
+        OutgoingRequest(friendshipId: 'fs-$profileId', to: ziel),
+      ];
+    }
+    return null;
+  }
+
+  @override
+  Future<List<OutgoingRequest>> outgoingRequests() async {
+    _fake.aufrufe.add('outgoingRequests');
+    return _fake.gestellteAnfragen;
+  }
+
+  @override
+  Future<bool> withdrawRequest(String friendshipId) async {
+    _fake.aufrufe.add('withdrawRequest:$friendshipId');
+    if (_fake.schlaegtFehl) return false;
+    _fake.gestellteAnfragen = [
+      for (final a in _fake.gestellteAnfragen)
+        if (a.friendshipId != friendshipId) a,
+    ];
+    return true;
+  }
 
   @override
   Future<List<RemoteProfile>> friends() async => _fake.freunde;

@@ -132,6 +132,20 @@ class AppShell extends ConsumerWidget {
       ],
     );
 
+    // Offene Freundschaftsanfragen als Zahl am Profil-Tab.
+    //
+    // Sie standen bisher nur auf der Startseite. Wer die App auf einem
+    // anderen Tab offen hatte — oder sie nur kurz oeffnete, um etwas
+    // einzuchecken —, sah nie, dass jemand auf eine Antwort wartet.
+    // Ein Mensch, der wartet, gehoert an eine Stelle, die man von ueberall
+    // sieht.
+    final offeneAnfragen =
+        ref.watch(friendRequestsProvider).valueOrNull?.length ?? 0;
+
+    Widget symbol(IconData icon) => offeneAnfragen == 0
+        ? Icon(icon)
+        : Badge.count(count: offeneAnfragen, child: Icon(icon));
+
     if (isWide) {
       return Scaffold(
         body: Row(
@@ -143,8 +157,10 @@ class AppShell extends ConsumerWidget {
               destinations: [
                 for (final d in _destinations)
                   NavigationRailDestination(
-                    icon: Icon(d.icon),
-                    selectedIcon: Icon(d.selected),
+                    icon: d.label == 'Profil' ? symbol(d.icon) : Icon(d.icon),
+                    selectedIcon: d.label == 'Profil'
+                        ? symbol(d.selected)
+                        : Icon(d.selected),
                     label: Text(d.label),
                   ),
               ],
@@ -164,8 +180,9 @@ class AppShell extends ConsumerWidget {
         destinations: [
           for (final d in _destinations)
             NavigationDestination(
-              icon: Icon(d.icon),
-              selectedIcon: Icon(d.selected),
+              icon: d.label == 'Profil' ? symbol(d.icon) : Icon(d.icon),
+              selectedIcon:
+                  d.label == 'Profil' ? symbol(d.selected) : Icon(d.selected),
               label: d.label,
             ),
         ],
