@@ -123,6 +123,47 @@ class HomeScreen extends ConsumerWidget {
                   )
                 : _ActiveBeaconCard(session: mySession),
           ),
+          // Testphase: drei kleine Knöpfe direkt unter „Zusammenkommen".
+          // Ein Fehler im Wirtshaus soll mit zwei Tipps gemeldet sein;
+          // die Roadmap zeigt in Alltagssprache, was daraus wird. Der
+          // Schalter liegt in app_config — abschaltbar ohne Release.
+          if (ref.watch(feedbackEnabledProvider).valueOrNull ?? false)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => context.push('/feedback?art=bug'),
+                      icon: const Icon(Icons.bug_report_outlined, size: 18),
+                      label: const Text('Fehler'),
+                      style: OutlinedButton.styleFrom(
+                          visualDensity: VisualDensity.compact),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => context.push('/feedback?art=wish'),
+                      icon: const Icon(Icons.lightbulb_outline, size: 18),
+                      label: const Text('Wunsch'),
+                      style: OutlinedButton.styleFrom(
+                          visualDensity: VisualDensity.compact),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => context.push('/roadmap'),
+                      icon: const Icon(Icons.map_outlined, size: 18),
+                      label: const Text('Roadmap'),
+                      style: OutlinedButton.styleFrom(
+                          visualDensity: VisualDensity.compact),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           const SizedBox(height: 8),
           Center(
             child: TextButton.icon(

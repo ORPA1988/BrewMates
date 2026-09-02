@@ -38,6 +38,14 @@ const TEXTE: Record<string, { title: string; body: string }> = {
     title: "BrewMates",
     body: "Ein BrewMate ist auf ein Bier unterwegs",
   },
+  session_toast: {
+    title: "BrewMates",
+    body: "Jemand hat dir zugeprostet 🍻",
+  },
+  session_joined: {
+    title: "BrewMates",
+    body: "Jemand ist bei deinem Beacon dabei 🍻",
+  },
 };
 
 // --- Google OAuth2 mit Dienstkonto (RS256-JWT, WebCrypto) -----------------

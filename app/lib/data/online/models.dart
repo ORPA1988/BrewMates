@@ -179,6 +179,10 @@ class RemoteNotification {
         return '$wer hat deine Anfrage angenommen 🍻';
       case 'beacon':
         return '$wer ist auf ein Bier unterwegs';
+      case 'session_toast':
+        return '$wer hat dir zugeprostet 🍻';
+      case 'session_joined':
+        return '$wer ist bei deinem Beacon dabei 🍻';
       default:
         return wer;
     }
@@ -288,3 +292,92 @@ class RemoteCrew {
 /// - Netzfehler werden geschluckt, wo der lokale Zustand die Wahrheit ist
 ///   (Spiegel-Schreibvorgänge), und als Meldung zurückgegeben, wo der
 ///   Nutzer eine Antwort erwartet (Login, Anfragen).
+
+/// Wer bei einer Session mitmacht — vom Server, nicht aus der lokalen DB.
+class RemoteParticipant {
+  const RemoteParticipant({required this.profile, required this.joined});
+  final RemoteProfile profile;
+  /// true = „Bin dabei", false = nur zugeprostet.
+  final bool joined;
+}
+
+enum FeedbackKind { bug, wish }
+
+enum FeedbackStatus { open, planned, done, declined }
+
+/// Eine eigene Meldung mit Status — Nachvollziehbarkeit fuer den Tester.
+class FeedbackItem {
+  const FeedbackItem({
+    required this.id,
+    required this.kind,
+    required this.body,
+    required this.status,
+    required this.createdAt,
+    this.reply,
+    this.roadmapTitle,
+  });
+
+  factory FeedbackItem.fromRow(Map<String, dynamic> r) {
+    final rm = r['roadmap'];
+    return FeedbackItem(
+      id: r['id'] as String,
+      kind: r['kind'] == 'wish' ? FeedbackKind.wish : FeedbackKind.bug,
+      body: r['body'] as String,
+      status: FeedbackStatus.values.firstWhere(
+          (s) => s.name == r['status'],
+          orElse: () => FeedbackStatus.open),
+      createdAt: DateTime.parse(r['created_at'] as String).toLocal(),
+      reply: r['reply'] as String?,
+      roadmapTitle: rm is Map ? rm['title'] as String? : null,
+    );
+  }
+
+  final String id;
+  final FeedbackKind kind;
+  final String body;
+  final FeedbackStatus status;
+  final DateTime createdAt;
+  final String? reply;
+  final String? roadmapTitle;
+
+  String get statusLabel => switch (status) {
+        FeedbackStatus.open => 'Eingegangen',
+        FeedbackStatus.planned => 'Geplant',
+        FeedbackStatus.done => 'Erledigt',
+        FeedbackStatus.declined => 'Nicht geplant',
+      };
+}
+
+enum RoadmapStatus { planned, inProgress, done }
+
+/// Ein Roadmap-Punkt in Alltagssprache.
+class RoadmapItem {
+  const RoadmapItem({
+    required this.id,
+    required this.title,
+    required this.summary,
+    required this.status,
+  });
+
+  factory RoadmapItem.fromRow(Map<String, dynamic> r) => RoadmapItem(
+        id: r['id'] as String,
+        title: r['title'] as String,
+        summary: r['summary'] as String,
+        status: switch (r['status']) {
+          'in_progress' => RoadmapStatus.inProgress,
+          'done' => RoadmapStatus.done,
+          _ => RoadmapStatus.planned,
+        },
+      );
+
+  final String id;
+  final String title;
+  final String summary;
+  final RoadmapStatus status;
+
+  String get statusEmoji => switch (status) {
+        RoadmapStatus.inProgress => '🔧',
+        RoadmapStatus.planned => '🗓️',
+        RoadmapStatus.done => '✅',
+      };
+}

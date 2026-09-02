@@ -36,6 +36,7 @@ part 'providers/beers.dart';
 part 'providers/challenges.dart';
 part 'providers/entdecken.dart';
 part 'providers/feed.dart';
+part 'providers/feedback.dart';
 part 'providers/glocke.dart';
 part 'providers/online.dart';
 part 'providers/push.dart';
