@@ -1,6 +1,6 @@
 # Datenherkunft
 
-Die Community-Datenbank umfasst acht Dateien: `beers-at.json` und `breweries-at.json` (Österreich, 68 Biere / 34 Brauereien), `beers-by.json` und `breweries-by.json` (Bayern, 72 Biere / 33 Brauereien), `beers-de.json` und `breweries-de.json` (Deutschland ohne Bayern, 95 Biere / 40 Brauereien) sowie `beers-ch.json` und `breweries-ch.json` (Schweiz, 45 Biere / 18 Brauereien). Biere und Brauereien sind über das Feld `brewery_id` miteinander verknüpft.
+Die Community-Datenbank umfasst acht Dateien: `beers-at.json` und `breweries-at.json` (Österreich, 442 Biere / 46 Brauereien), `beers-by.json` und `breweries-by.json` (Bayern, 72 Biere / 33 Brauereien), `beers-de.json` und `breweries-de.json` (Deutschland ohne Bayern, 95 Biere / 40 Brauereien) sowie `beers-ch.json` und `breweries-ch.json` (Schweiz, 45 Biere / 18 Brauereien). Biere und Brauereien sind über das Feld `brewery_id` miteinander verknüpft.
 
 Die Bier- und Brauereidaten stammen aus dem Trainingswissen eines KI-Modells (Stand ca. 2025) und wurden redaktionell zusammengestellt — ohne Gewähr auf Vollständigkeit oder Richtigkeit einzelner Angaben (z. B. Alkoholgehalt oder Sortimentsstand). Das Feld `community_rating` ist eine konservative redaktionelle Schätzung auf Basis des allgemeinen Rufs der Biere und kein gemessener oder von einer Plattform übernommener Wert. Beschreibungstexte sind Paraphrasen und keine wörtlichen Zitate der Brauereien. Korrekturen und Ergänzungen sind ausdrücklich willkommen — bitte per GitHub-Issue melden.
 
@@ -45,6 +45,67 @@ Nominatim/OpenStreetMap (ODbL) nachgetragen — allerdings nur auf
 so in ihrem `data_status`: Die Markierung zeigt den Ort, nicht die
 Braustätte. Eine erfundene Hausadresse wäre schlimmer als eine
 gekennzeichnete Näherung.
+
+## Überarbeitung Österreich, 2026-09-02
+
+Der Ausbau vom 2026-08-15 hatte den Recherchedatensatz **neben** den
+bestehenden Bestand gelegt, statt ihn hineinzuarbeiten. 25 Brauereien
+standen danach doppelt in der Datei, dazu 41 doppelte Biere. Diese
+Überarbeitung führt beides zusammen: 71 → 46 Brauereien, 487 → 442
+Biere.
+
+### Die EAN-Zuordnung war teilweise falsch
+
+Alle 320 hinterlegten Barcodes wurden einzeln gegen die Produkt- und
+Markensuche von [Open Food Facts](https://world.openfoodfacts.org)
+geprüft (Abruf 2026-09-02). Dabei zeigte sich, dass die Zuordnung der
+Fremdquelle über **Produktnamen** gelaufen war — und Namen wie
+„NaturRadler“, „Steinbier“ oder „Pils“ tragen mehrere Brauereien. 13
+EANs des Gösser NaturRadlers hingen am NaturRadler der Starkenberger
+Brauerei; weitere Einzelfälle in
+[docs/features/03](../../../docs/features/03-barcode-scanner.md).
+
+Die österreichische Barcode-Tabelle ist deshalb **vollständig neu
+gesetzt**: 207 Codes, jeder gegen Open Food Facts belegt, 136 davon mit
+Gebindegröße. Wo Open Food Facts keine plausible Menge nennt, steht
+**keine** — eine erfundene Zahl wäre schlimmer als eine fehlende. Sechs
+zuvor hinterlegte Codes wurden ersatzlos entfernt: Sie waren belegbar
+falsch, und wohin sie gehören, ließ sich nicht belegen. Ein siebter
+(`25227868`) scheiterte an der GS1-Prüfziffer und ist damit keine gültige
+GTIN.
+
+### Brauereien: recherchiert statt geschätzt
+
+Zwölf Brauereien, die bisher nur Name, Ort und Näherungskoordinate
+hatten, wurden am 2026-09-02 recherchiert (Gründungsjahr, Adresse,
+Webseite, Eigentumsverhältnisse, wo veröffentlicht Ausstoß und
+Mitarbeiterzahl): Hofbräu Kaltenhausen, Brauerei Vitzthum, Bierol,
+Loncium, Ottakringer Brauwerk, Huber Bräu, Wurmhöringer, Die Weisse,
+Schnaitl, Privatbrauerei Gols, Neufeldner BioBrauerei und Brauerei Egg.
+Quellen stehen je Datensatz in `data_status`.
+
+Neu getrennt sind **Kaiser** und **Edelweiss**: Beide hingen an einer
+gemeinsamen Sammel-ID der Brau Union. Kaiser wird in Wieselburg gebraut
+und hängt jetzt dort; Edelweiss steht bei Hofbräu Kaltenhausen, seiner
+Markenheimat — mit dem Hinweis im `notes`-Feld, dass der Braubetrieb dort
+2011 endete und die Produktion nach Zipf und Wieselburg ging.
+
+### Bilder
+
+Alle 352 Bild-URLs des österreichischen Bestands wurden abgerufen. Acht
+tote Links der Brauerei Murau (Seite umgebaut) sind durch die aktuellen
+ersetzt, 30 fehlende Bilder aus Open Food Facts ergänzt (CC-BY-SA, mit
+`image_source` auf die Produktseite). Kein Bild einer fremden Seite steht
+ohne Quellenangabe — das erzwingen `tools/validate_data.dart` und
+`test/bild_herkunft_test.dart`.
+
+### Was **nicht** aus der Recherche kam
+
+Der **Alkoholgehalt** von 115 der 442 österreichischen Biere fehlt
+weiterhin. Die meisten Brauereien veröffentlichen ihn nicht auf der
+Produktseite, und aus dem Stil zu raten wäre eine Zahl ohne Deckung. Aus
+demselben Grund stehen 83 Biere weiter auf dem Stil „Bier“: Was die
+Brauerei nicht sagt, sagen wir auch nicht.
 
 ## Produktfotos der Brauereien (seit 2026-08-15)
 
@@ -101,5 +162,5 @@ Fläche — sie wird geglaubt und weitererzählt. Brauereien ohne gesicherte
 Geschichte haben deshalb kein `story`-Feld; die Anzeige lässt den
 Abschnitt dann weg.
 
-Stand: 30 Brauereien (Österreich und Bayern) und 1 Bier haben eine
+Stand: 34 Brauereien (Österreich und Bayern) und 1 Bier haben eine
 Geschichte. Korrekturen und Ergänzungen bitte per GitHub-Issue.
