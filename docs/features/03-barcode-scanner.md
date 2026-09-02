@@ -62,11 +62,10 @@ späteren Schritt — nie in derselben Migration wie ihr Ersatz.
 Das Muster ist inzwischen das dritte seiner Art in diesem Projekt: eine
 Sache, die aussieht, als wirke sie, und nichts tut.
 
-Seit 0.10.4 fasst der Client `beers.barcode` **gar nicht mehr** an — weder
-lesend noch schreibend. Migration 0032 entfernt die Spalte, darf aber
-erst laufen, wenn `min_supported_version` auf 0.10.4 steht: 0.10.3
-selektiert sie noch, und ein fehlendes Feld lässt dort die ganze Abfrage
-scheitern. Ein Test allein
+Seit 0.10.4 fasst der Client `beers.barcode` nicht mehr an, und seit dem
+2026-09-02 **gibt es die Spalte nicht mehr** (0032) — eingespielt, nachdem
+der Riegel auf 0.10.4 stand. Für Barcodes gibt es am Server nur noch eine
+Wahrheit: `beer_barcodes`. Ein Test allein
 hätte es nicht gefunden — die Schreibseite funktionierte ja.
 
 Einschränkung fürs Protokoll: EANs werden nach Jahrzehnten gelegentlich

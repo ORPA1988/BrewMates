@@ -49,7 +49,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [23](23-beacon-laufzeit.md) | Beacon-Laufzeit | 🟢 | 30 min – 12 h, verlängerbar, serverseitig begrenzt |
 | [24](24-freundeskreise.md) | Freundeskreise | 🟢 | Bekannte / Freunde / Best Buddys, RLS-durchgesetzt |
 | [28](28-live-vorschlaege.md) | Live-Vorschläge | 🟢 | Beim Tippen passende Biere/Gasthäuser zum Antippen |
-| [29](29-push-benachrichtigungen.md) | Push-Benachrichtigungen | 🟡 | FCM, inhaltsleer; wartet auf das Secret im Dashboard |
+| [29](29-push-benachrichtigungen.md) | Push-Benachrichtigungen | 🟢 | FCM, inhaltsleer, Ende-zu-Ende verifiziert |
 
 ## Geplante Funktionen
 
