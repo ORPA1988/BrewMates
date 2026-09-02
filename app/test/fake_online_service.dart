@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -100,6 +101,15 @@ class FakeOnlineService extends OnlineService {
     return schlaegtFehl ? 'Fehlgeschlagen' : null;
   }
 
+  /// Steuerbarer Live-Kanal: Tests schieben hier Benachrichtigungen rein.
+  final eingehend = StreamController<RemoteNotification>.broadcast();
+  List<RemoteNotification> ungelesen = const [];
+
+  late final _notifications = _FakeNotificationsApi(this);
+
+  @override
+  NotificationsApi get notifications => _notifications;
+
   late final _sessions = _FakeSessionsApi(this);
   late final _friends = _FakeFriendsApi(this);
 
@@ -141,6 +151,24 @@ class _FakeSessionsApi extends SessionsApi {
     _fake.aufrufe.add('upsertSession:${session.id}');
     _fake.aktiveSessionIds.add(session.id);
     return true;
+  }
+}
+
+class _FakeNotificationsApi extends NotificationsApi {
+  _FakeNotificationsApi(this._fake)
+      : super(_fake.client, (() => _fake.currentUser));
+
+  final FakeOnlineService _fake;
+
+  @override
+  Stream<RemoteNotification> incoming() => _fake.eingehend.stream;
+
+  @override
+  Future<List<RemoteNotification>> unread() async => _fake.ungelesen;
+
+  @override
+  Future<void> markRead(Iterable<String> ids) async {
+    _fake.aufrufe.add('markRead:${ids.join(",")}');
   }
 }
 
@@ -191,7 +219,10 @@ class _FakeFriendsApi extends FriendsApi {
   Future<List<RemoteProfile>> friends() async => _fake.freunde;
 
   @override
-  Future<List<FriendRequest>> incomingRequests() async => _fake.anfragen;
+  Future<List<FriendRequest>> incomingRequests() async {
+    _fake.aufrufe.add('incomingRequests');
+    return _fake.anfragen;
+  }
 
   @override
   Future<List<RemoteProfile>> blockedProfiles() async => _fake.blockierte;

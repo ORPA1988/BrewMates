@@ -9,11 +9,13 @@ import '../../core/supabase_config.dart';
 import 'api/checkins_api.dart';
 import 'api/online_api.dart';
 import 'api/friends_api.dart';
+import 'api/notifications_api.dart';
 import 'api/sessions_api.dart';
 import 'api/venues_api.dart';
 import 'models.dart';
 
 export 'api/checkins_api.dart';
+export 'api/notifications_api.dart';
 export 'api/online_api.dart';
 export 'api/friends_api.dart';
 export 'api/sessions_api.dart';
@@ -28,7 +30,9 @@ class OnlineService {
       : friends = FriendsApi(_client, () => _client.auth.currentUser),
         sessions = SessionsApi(_client, () => _client.auth.currentUser),
         checkins = CheckinsApi(_client, () => _client.auth.currentUser),
-        venues = VenuesApi(_client, () => _client.auth.currentUser);
+        venues = VenuesApi(_client, () => _client.auth.currentUser),
+        notifications =
+            NotificationsApi(_client, () => _client.auth.currentUser);
 
   final SupabaseClient _client;
 
@@ -41,6 +45,9 @@ class OnlineService {
 
   /// Freunde, Anfragen, Suche, Kreise, Blockieren und Melden.
   final FriendsApi friends;
+
+  /// Die Glocke: Benachrichtigungen lesen, live und als Bestand.
+  final NotificationsApi notifications;
 
   /// Live-Beacons: starten, spiegeln, verlängern, beenden.
   final SessionsApi sessions;
@@ -554,14 +561,16 @@ class OnlineService {
           .eq('ean', ean)
           .maybeSingle();
 
-      final abfrage = _client.from('beers').select(
-          'name, style, abv, is_alcohol_free, description, '
-          'label_url, barcode, brewery:breweries(name, country, city)');
-      // Der Zweig ueber die Altspalte ist Uebergang: Ausgelieferte Clients
-      // legen neue Biere weiterhin nur dort an. Er faellt mit der Spalte.
-      final row = zuordnung == null
-          ? await abfrage.eq('barcode', ean).maybeSingle()
-          : await abfrage.eq('id', zuordnung['beer_id'] as String).maybeSingle();
+      // Seit 0030 steht jeder Code in `beer_barcodes` (Backfill inklusive).
+      // `beers.barcode` wird nicht mehr angefasst — die Spalte faellt mit
+      // 0032, sobald kein Client sie mehr liest.
+      if (zuordnung == null) return null;
+      final row = await _client
+          .from('beers')
+          .select('name, style, abv, is_alcohol_free, description, '
+              'label_url, brewery:breweries(name, country, city)')
+          .eq('id', zuordnung['beer_id'] as String)
+          .maybeSingle();
       if (row == null) return null;
       final brewery = row['brewery'] as Map<String, dynamic>?;
       return RemoteBeer(
@@ -574,7 +583,7 @@ class OnlineService {
         isAlcoholFree: (row['is_alcohol_free'] as bool?) ?? false,
         description: row['description'] as String?,
         labelUrl: row['label_url'] as String?,
-        barcode: row['barcode'] as String?,
+        barcode: ean,
       );
     } catch (_) {
       return null;
@@ -716,14 +725,11 @@ class OnlineService {
                 ? null
                 : description.trim(),
         'label_url': photoUrl,
-        'barcode': barcode,
         'created_by': me.id,
       }).select('id').single();
 
-      // Denselben Code auch in `beer_barcodes` hinterlegen, sonst findet
-      // ihn die Suche oben nicht — sie sieht dort zuerst nach. Die
-      // Altspalte bleibt vorerst befuellt, damit ausgelieferte Clients
-      // das Bier weiterhin finden.
+      // Der Code gehoert nach `beer_barcodes` — dort sucht der Scanner.
+      // In `beers.barcode` wird seit 0.10.4 nichts mehr geschrieben.
       if (barcode != null && barcode.isNotEmpty) {
         await _client.from('beer_barcodes').upsert({
           'ean': barcode,
@@ -812,10 +818,11 @@ class OnlineService {
           .select('beer_id')
           .eq('ean', barcode)
           .maybeSingle();
-      final ziel = _client.from('beers').update(patch);
-      await (zuordnung == null
-          ? ziel.eq('barcode', barcode)
-          : ziel.eq('id', zuordnung['beer_id'] as String));
+      if (zuordnung == null) return 'Dieses Bier ist am Server unbekannt.';
+      await _client
+          .from('beers')
+          .update(patch)
+          .eq('id', zuordnung['beer_id'] as String);
       return null;
     } on PostgrestException catch (e) {
       if (e.code == '42501') {

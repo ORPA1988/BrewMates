@@ -132,6 +132,59 @@ class OutgoingRequest {
   final RemoteProfile to;
 }
 
+/// Eine Zeile der Glocke (`notifications`, seit 0031 per Trigger befuellt).
+class RemoteNotification {
+  const RemoteNotification({
+    required this.id,
+    required this.type,
+    required this.createdAt,
+    this.actor,
+    this.subjectType,
+    this.subjectId,
+  });
+
+  factory RemoteNotification.fromRow(Map<String, dynamic> row,
+      {RemoteProfile? actor}) {
+    final eingebettet = row['actor'];
+    return RemoteNotification(
+      id: row['id'] as String,
+      type: row['type'] as String,
+      createdAt: DateTime.parse(row['created_at'] as String).toLocal(),
+      actor: actor ??
+          (eingebettet is Map<String, dynamic>
+              ? RemoteProfile.fromRow(eingebettet)
+              : null),
+      subjectType: row['subject_type'] as String?,
+      subjectId: row['subject_id'] as String?,
+    );
+  }
+
+  final String id;
+
+  /// `friend_request`, `friend_accepted`, spaeter `beacon` u. a.
+  final String type;
+  final DateTime createdAt;
+  final RemoteProfile? actor;
+  final String? subjectType;
+  final String? subjectId;
+
+  /// Der Satz fuer Banner und Liste. Bewusst hier und nicht im Widget:
+  /// Jede Stelle, die eine Benachrichtigung zeigt, soll dasselbe sagen.
+  String get text {
+    final wer = actor?.displayName ?? 'Jemand';
+    switch (type) {
+      case 'friend_request':
+        return '$wer moechte dein BrewMate sein';
+      case 'friend_accepted':
+        return '$wer hat deine Anfrage angenommen 🍻';
+      case 'beacon':
+        return '$wer ist auf ein Bier unterwegs';
+      default:
+        return wer;
+    }
+  }
+}
+
 /// Aktive Session eines Freundes.
 class RemoteSession {
   const RemoteSession({

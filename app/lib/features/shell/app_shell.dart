@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/format.dart';
+import '../../data/online/online_service.dart' show RemoteNotification;
 import '../../data/providers.dart';
 import '../../widgets/beacon_messages.dart';
 
@@ -141,6 +142,25 @@ class AppShell extends ConsumerWidget {
     // sieht.
     final offeneAnfragen =
         ref.watch(friendRequestsProvider).valueOrNull?.length ?? 0;
+
+    // Live-Banner: Kommt eine Benachrichtigung an, waehrend die App offen
+    // ist, sagt sie es — auf jedem Tab. Der Provider entwertet nebenbei
+    // die Listen, sodass Karte und Zahl am Profil-Tab schon stimmen, wenn
+    // der Mensch hintippt.
+    ref.listen<AsyncValue<RemoteNotification>>(incomingNotificationsProvider,
+        (_, next) {
+      final n = next.valueOrNull;
+      if (n == null) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(n.text),
+        action: n.type == 'friend_request'
+            ? SnackBarAction(
+                label: 'Ansehen',
+                onPressed: () => context.go('/friends'),
+              )
+            : null,
+      ));
+    });
 
     Widget symbol(IconData icon) => offeneAnfragen == 0
         ? Icon(icon)

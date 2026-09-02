@@ -7,13 +7,13 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
 
 - **Branch**: PRs #2–#4 sind in `main` gemerged; neue Arbeit startet auf
   frischen Branches von `main`.
-  Version `0.10.3-beta+21` (Beta 0.x bis
+  Version `0.10.4-beta+22` (Beta 0.x bis
   zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch; die
   frühen Alpha-Releases wurden von 1.1/1.2 auf 0.1.0/0.2.0 umbenannt).
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0030` sind LIVE, lückenlos** — `0020–0024` am 2026-08-15 eingespielt und
+  **`0001–0030` sind LIVE, lückenlos; `0031` wartet auf Einspielen, `0032` auf 0.10.4** — `0020–0024` am 2026-08-15 eingespielt und
   gegengeprüft (Spalten, Constraints, Enum, Index, vier neue Funktionen,
   Policy; `friendships` unverändert alle auf `freund`, also keine
   Sichtbarkeitsänderung am Rollout-Tag). Kein Schema-Drift.
@@ -73,7 +73,11 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Barcode-Suche über `beer_barcodes` statt `beers.barcode`, inkl.
   Backfill — 0028 hatte die Tabelle angelegt, aber die Lesestelle nie
   umgestellt, sodass nachgetragene Codes gespeichert und beim Suchen
-  ignoriert wurden).
+  ignoriert wurden; 0031 Benachrichtigungen per Trigger auf `friendships`
+  + `notifications` in Realtime — **geschrieben, CI-geprüft, noch nicht
+  live** (Supabase-Zugang fehlte in der Session); 0032 `beers.barcode`
+  entfernen — **erst nach `min_supported_version` = 0.10.4**, weil 0.10.3
+  die Spalte noch selektiert).
   Google-Login und
   E-Mail-Anmeldung (ohne Bestätigungspflicht) sind eingerichtet und
   funktionieren. Seit 0008 gilt: EXECUTE auf Funktionen wird von PUBLIC
