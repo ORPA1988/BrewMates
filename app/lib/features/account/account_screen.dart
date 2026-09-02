@@ -108,6 +108,14 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 
   Future<void> _signOut(OnlineService online) async {
     setState(() => _busy = true);
+    // Zuerst das Geraetetoken loeschen, dann abmelden — in dieser
+    // Reihenfolge. Nach dem Abmelden greift RLS nicht mehr fuer die eigene
+    // Zeile, und das Telefon klingelte weiter fuer ein fremdes Konto.
+    final token = ref.read(registeredPushTokenProvider);
+    if (token != null) {
+      await online.devices.unregister(token);
+      ref.read(registeredPushTokenProvider.notifier).state = null;
+    }
     await online.signOut();
     if (!mounted) return;
     setState(() => _busy = false);

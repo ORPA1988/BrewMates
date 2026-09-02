@@ -25,6 +25,8 @@ class BrewMatesApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Einmalig: Community-Datenbank importieren und still aktualisieren.
     ref.watch(communityBootstrapProvider);
+    // Push-Token beim Server halten, solange jemand angemeldet ist.
+    ref.watch(pushRegistrationProvider);
 
     // Riegel für zu alte Versionen (Migration 0029). `valueOrNull ?? false`
     // ist die entscheidende Zeile: Solange die Antwort aussteht oder

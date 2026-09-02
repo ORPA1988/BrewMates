@@ -106,6 +106,10 @@ class FakeOnlineService extends OnlineService {
   List<RemoteNotification> ungelesen = const [];
 
   late final _notifications = _FakeNotificationsApi(this);
+  late final _devices = _FakeDevicesApi(this);
+
+  @override
+  DevicesApi get devices => _devices;
 
   @override
   NotificationsApi get notifications => _notifications;
@@ -151,6 +155,25 @@ class _FakeSessionsApi extends SessionsApi {
     _fake.aufrufe.add('upsertSession:${session.id}');
     _fake.aktiveSessionIds.add(session.id);
     return true;
+  }
+}
+
+class _FakeDevicesApi extends DevicesApi {
+  _FakeDevicesApi(this._fake)
+      : super(_fake.client, (() => _fake.currentUser));
+
+  final FakeOnlineService _fake;
+
+  @override
+  Future<bool> register(String token, {String platform = 'android'}) async {
+    _fake.aufrufe.add('devices.register:$token');
+    return !_fake.schlaegtFehl;
+  }
+
+  @override
+  Future<bool> unregister(String token) async {
+    _fake.aufrufe.add('devices.unregister:$token');
+    return !_fake.schlaegtFehl;
   }
 }
 

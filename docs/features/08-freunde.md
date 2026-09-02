@@ -127,10 +127,9 @@ räumt die Glocke.
 
 ### Was weiterhin fehlt: eine Meldung bei geschlossener App
 
-Realtime wirkt nur, solange die App läuft. Wer sie geschlossen hat,
-erfährt nichts, bis er sie öffnet. Der Push hängt an genau dieser
-Tabelle — jede neue Zeile ist ein Anlass —, braucht aber Firebase Cloud
-Messaging.
+Realtime wirkt nur, solange die App läuft. Seit 0.10.4 hängt der
+[Push](29-push-benachrichtigungen.md) an genau dieser Tabelle — jede
+neue Zeile ist ein Anlass.
 
 Echte Meldungen brauchen Firebase Cloud Messaging: ein Firebase-Projekt,
 `google-services.json`, ein Gerätetoken je Installation und eine

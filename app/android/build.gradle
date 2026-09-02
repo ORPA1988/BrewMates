@@ -3,7 +3,9 @@
 // (muss zu den Flutter-3.24-Defaults im :app-Modul passen).
 ext.flutter = [
     compileSdkVersion: 34,
-    minSdkVersion    : 21,
+    // 23 statt 21 seit 0.10.4: firebase_messaging verlangt Android 6.0
+    // (2015). Darunter gibt es keine Play-Dienste mehr, die Push tragen.
+    minSdkVersion    : 23,
     targetSdkVersion : 34,
 ]
 
@@ -18,6 +20,10 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:8.1.0")
+        // Firebase Cloud Messaging (Push). Liest android/app/google-services.json
+        // und erzeugt daraus die Ressourcen, die firebase_core beim Start
+        // braucht. Nur Android — Web und Tests kommen ohne Firebase aus.
+        classpath("com.google.gms:google-services:4.4.2")
     }
 }
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "459886905815",
+    "project_id": "brewmates-13a82",
+    "storage_bucket": "brewmates-13a82.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:459886905815:android:f9091600e4315706c16392",
+        "android_client_info": {
+          "package_name": "de.brewmates.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzoMJiyZXRs66woQOOVIupPHUmrua5dFs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
