@@ -36,6 +36,24 @@ und ein ehrlicher Weg wieder hinaus.
 - **Web:** OAuth-Rücksprung über `Uri.base`, nativ über
   `de.brewmates.app://login-callback`
 
+### Drei Lücken, geschlossen am 2026-09-02
+
+- **Passwort vergessen** gab es nicht. Mit dem Beta-Gate hieß ein
+  vergessenes Passwort: ausgesperrt, neues Konto, alle Freundschaften
+  weg. Jetzt ein Link unter dem Passwortfeld (`resetPasswordForEmail`,
+  Rückkehr über den bestehenden Deep-Link); die Antwort verrät nicht, ob
+  die Adresse existiert. Dazu das Auge zum Anzeigen des Passworts.
+- **„Profil bearbeiten" schrieb nur lokal.** Der Mensch änderte seinen
+  Namen, die Startseite (liest den Server) zeigte weiter den alten, und
+  Freunde sahen die Änderung nie. `updateProfile` schreibt jetzt auch
+  `profiles` und sagt, ob der Server es hat.
+- **„Alle Daten bleiben lokal auf deinem Gerät"** im Profil war falsch,
+  seit Check-ins, Fotos, Erfolge und Wunschliste zum Konto
+  synchronisiert werden. Der Satz sagt jetzt, was gilt: ohne Konto alles
+  lokal, mit Konto sehen nur bestätigte Freunde die Check-ins. Die
+  Versionsangabe daneben war hart „1.0.0" und kommt jetzt aus
+  `AppConfig.appVersion`.
+
 ## Modularität
 
 - **Hängt ab von:** nichts

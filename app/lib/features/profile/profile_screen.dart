@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/db/database.dart';
+import '../../core/config.dart';
 import '../../data/providers.dart';
 import '../../domain/account_level.dart';
 import '../../domain/badges.dart';
@@ -129,7 +130,8 @@ class ProfileScreen extends ConsumerWidget {
             ),
             FilledButton(
               onPressed: () async {
-                await ref.read(actionsProvider).updateProfile(
+                final messenger = ScaffoldMessenger.of(context);
+                final ok = await ref.read(actionsProvider).updateProfile(
                       displayName: nameController.text.trim(),
                       avatarEmoji: selectedEmoji,
                       bio: bioController.text.trim(),
@@ -137,6 +139,13 @@ class ProfileScreen extends ConsumerWidget {
                 if (dialogContext.mounted) {
                   Navigator.of(dialogContext).pop();
                 }
+                messenger.showSnackBar(SnackBar(
+                  content: Text(ok
+                      ? 'Profil gespeichert ✓'
+                      : 'Gespeichert – aber der Server hat es nicht '
+                          'übernommen (keine Verbindung?). Freunde sehen '
+                          'noch den alten Namen.'),
+                ));
               },
               child: const Text('Speichern'),
             ),
@@ -445,12 +454,17 @@ class ProfileScreen extends ConsumerWidget {
           Text('Über', style: theme.textTheme.titleSmall),
           const SizedBox(height: 4),
           Text(
-            'BrewMates 1.0.0',
+            'BrewMates ${AppConfig.appVersion}',
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: scheme.onSurfaceVariant),
           ),
           Text(
-            '🔒 Alle Daten bleiben lokal auf deinem Gerät.',
+            // Vorher stand hier „Alle Daten bleiben lokal" — falsch, seit
+            // Check-ins, Fotos, Erfolge und Wunschliste zum Konto
+            // synchronisiert werden. Eine falsche Datenschutz-Aussage ist
+            // ein Vertrauensbruch, sobald sie auffällt.
+            '🔒 Ohne Konto bleibt alles auf deinem Gerät. Mit Konto sehen '
+            'nur bestätigte Freunde deine Check-ins – nie Fremde.',
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: scheme.onSurfaceVariant),
           ),

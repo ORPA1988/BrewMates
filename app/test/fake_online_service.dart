@@ -114,6 +114,29 @@ class FakeOnlineService extends OnlineService {
   @override
   NotificationsApi get notifications => _notifications;
 
+  late final _checkins = _FakeCheckinsApi(this);
+
+  @override
+  CheckinsApi get checkins => _checkins;
+
+  @override
+  Future<bool> updateMyProfile({String? displayName, String? avatarEmoji}) async {
+    aufrufe.add('updateMyProfile:${displayName ?? ''}:${avatarEmoji ?? ''}');
+    return !schlaegtFehl;
+  }
+
+  @override
+  Future<String?> resetPassword(String email) async {
+    aufrufe.add('resetPassword:$email');
+    return schlaegtFehl ? 'Keine Verbindung.' : null;
+  }
+
+  @override
+  Future<bool> completeChallenge(String challengeId) async {
+    aufrufe.add('completeChallenge:$challengeId');
+    return !schlaegtFehl;
+  }
+
   late final _sessions = _FakeSessionsApi(this);
   late final _friends = _FakeFriendsApi(this);
 
@@ -122,6 +145,31 @@ class FakeOnlineService extends OnlineService {
 
   @override
   FriendsApi get friends => _friends;
+}
+
+class _FakeCheckinsApi extends CheckinsApi {
+  _FakeCheckinsApi(this._fake)
+      : super(_fake.client, (() => _fake.currentUser));
+
+  final FakeOnlineService _fake;
+
+  @override
+  Future<bool> insertCheckin(local.CheckinDetails details) async {
+    _fake.aufrufe.add('insertCheckin:${details.checkin.id}');
+    return !_fake.schlaegtFehl;
+  }
+
+  @override
+  Future<bool> setToastRemote(String checkinId, {required bool on}) async {
+    _fake.aufrufe.add('setToastRemote:$checkinId:$on');
+    return !_fake.schlaegtFehl;
+  }
+
+  @override
+  Future<bool> uploadBadges(Map<String, DateTime> badges) async {
+    _fake.aufrufe.add('uploadBadges:${badges.length}');
+    return !_fake.schlaegtFehl;
+  }
 }
 
 class _FakeSessionsApi extends SessionsApi {
@@ -175,8 +223,15 @@ class _FakeSessionsApi extends SessionsApi {
   @override
   Future<bool> upsertSession(local.Session session, {String? crewId}) async {
     _fake.aufrufe.add('upsertSession:${session.id}');
+    if (_fake.schlaegtFehl) return false;
     _fake.aktiveSessionIds.add(session.id);
     return true;
+  }
+
+  @override
+  Future<bool> joinSession(String sessionId, {required bool joined}) async {
+    _fake.aufrufe.add('joinSession:$sessionId:$joined');
+    return !_fake.schlaegtFehl;
   }
 }
 

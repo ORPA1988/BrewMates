@@ -6,6 +6,7 @@ import '../core/format.dart';
 import '../data/db/database.dart';
 import '../data/providers.dart';
 import 'badge_celebration.dart';
+import 'beacon_messages.dart';
 import 'rating_stars.dart';
 import 'checkin_edit_sheet.dart';
 
@@ -327,9 +328,16 @@ class CheckinCard extends ConsumerWidget {
                         ? await actions.toggleServerToast(
                             checkin.id, serverId!, on: !toasted)
                         : await actions.toggleToast(checkin.id);
-                    if (context.mounted) {
-                      await showBadgeCelebration(context, earned);
+                    if (!context.mounted) return;
+                    if (earned == null) {
+                      // Server hat den Toast nicht — dann zeigen wir ihn
+                      // auch nicht. Vorher sprang er beim nächsten Laden
+                      // wieder zurück.
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(reactionNotSentSnackBar);
+                      return;
                     }
+                    await showBadgeCelebration(context, earned);
                   },
                   style: TextButton.styleFrom(
                     visualDensity: VisualDensity.compact,

@@ -136,7 +136,11 @@ class BrewActions {
   /// ihr automatisch zugeordnet. Gibt neu verdiente Abzeichen zurück.
   /// Check-in speichern. Gibt Feier-Einträge zurück: neu verdiente
   /// Abzeichen UND neu abgeschlossene Challenges.
-  Future<List<CelebrationItem>> createCheckin({
+  /// Check-in anlegen. [synced] sagt, ob der Server ihn hat — offline ist
+  /// er lokal gespeichert und wird nachgeliefert (Retry alle 5 Minuten),
+  /// aber „gespeichert" allein liess den Menschen glauben, Freunde saehen
+  /// ihn schon.
+  Future<({List<CelebrationItem> celebrations, bool synced})> createCheckin({
     required String beerId,
     double? rating,
     String? note,
@@ -168,11 +172,13 @@ class BrewActions {
         ));
     // Online spiegeln (Freunde sehen den Check-in in ihrem Feed).
     final online = await _online();
-    if (online != null) {
+    var synced = true;
+    if (online != null && online.currentUser != null) {
+      synced = false;
       final mine = await _db.myCheckinsDetailed(me.id);
       for (final details in mine) {
         if (details.checkin.id == checkinId) {
-          unawaited(online.checkins.insertCheckin(details));
+          synced = await online.checkins.insertCheckin(details);
           break;
         }
       }
@@ -194,10 +200,13 @@ class BrewActions {
         unawaited(online.completeChallenge(def.id));
       }
     }
-    return [
-      for (final b in badges) CelebrationItem.fromBadge(b),
-      for (final def in completed) CelebrationItem.fromChallenge(def),
-    ];
+    return (
+      celebrations: [
+        for (final b in badges) CelebrationItem.fromBadge(b),
+        for (final def in completed) CelebrationItem.fromChallenge(def),
+      ],
+      synced: synced,
+    );
   }
 
   /// Eigenen Check-in löschen: lokal sofort (auch offline), der Server
@@ -278,7 +287,14 @@ class BrewActions {
   /// Session starten („der eine Tap"). Gibt neu verdiente Abzeichen zurück.
   /// [venueName] darf fehlen (Beacon „unterwegs" mit reiner GPS-Position);
   /// [crewId] gehört zu `visibility == crew` (nur die Crew sieht den Beacon).
-  Future<List<BadgeDef>> startSession({
+  /// Startet den Beacon. [synced] sagt, ob der Server ihn hat.
+  ///
+  /// Bis 2026-09-02 wurde der Server-Aufruf `unawaited` abgesetzt und die
+  /// Oberflaeche meldete immer „deine Freunde wissen Bescheid". Offline
+  /// sass der Mensch dann mit gutem Gewissen im Wirtshaus und war fuer
+  /// niemanden sichtbar. Sichtbarkeit ist der Kern der App — ueber sie
+  /// darf nichts behauptet werden, was der Server nicht bestaetigt hat.
+  Future<({List<BadgeDef> earned, bool synced})> startSession({
     String? venueName,
     String? venueId,
     String? message,
@@ -311,17 +327,29 @@ class BrewActions {
         ));
     // Live-Beacon: eigene Session für Freunde bzw. die Crew sichtbar
     // machen (Stealth bleibt lokal; RLS erzwingt die Sichtbarkeit).
-    if (visibility != SessionVisibility.private) {
-      final online = await _online();
-      if (online != null) {
-        final row = await _db.getMyActiveSession(me.id, now);
-        if (row != null) {
-          unawaited(online.sessions.upsertSession(row, crewId: crewId));
-        }
-      }
+    var synced = true;
+    final online = await _online();
+    if (visibility != SessionVisibility.private && online != null) {
+      final row = await _db.getMyActiveSession(me.id, now);
+      synced = row != null &&
+          await online.sessions.upsertSession(row, crewId: crewId);
     }
-    return BadgeEngine(_db).evaluate(me.id,
-        onlineUserId: (await _online())?.currentUser?.id);
+    final earned = await BadgeEngine(_db)
+        .evaluate(me.id, onlineUserId: online?.currentUser?.id);
+    return (earned: earned, synced: synced);
+  }
+
+  /// Laufenden Beacon erneut zum Server schicken — der „Erneut versuchen"
+  /// nach einem fehlgeschlagenen Start.
+  Future<bool> resyncMySession() async {
+    final me = await _me();
+    final current = await _db.getMyActiveSession(me.id, DateTime.now());
+    if (current == null || current.visibility == SessionVisibility.private) {
+      return false;
+    }
+    final online = await _online();
+    if (online == null) return false;
+    return online.sessions.upsertSession(current);
   }
 
   /// Eigenen Beacon beenden.
@@ -379,33 +407,37 @@ class BrewActions {
   }
 
   /// „Bin dabei!" auf die Session eines Freundes (lokal oder online).
-  Future<List<BadgeDef>> joinSession(String sessionId) async {
+  /// [synced] ist false, wenn der Server es nicht angenommen hat — dann
+  /// weiss der Gastgeber nichts davon, und das muss der Mensch erfahren.
+  Future<({List<BadgeDef> earned, bool synced})> joinSession(
+      String sessionId) async {
     final me = await _me();
+    var synced = true;
     if (isRemoteId(sessionId)) {
       final online = await _online();
-      if (online != null) {
-        unawaited(
-            online.sessions.joinSession(stripRemote(sessionId), joined: true));
-      }
+      synced = online != null &&
+          await online.sessions
+              .joinSession(stripRemote(sessionId), joined: true);
     } else {
       await _db.joinSession(sessionId, me.id, ParticipantKind.joined);
     }
-    return BadgeEngine(_db).evaluate(me.id,
+    final earned = await BadgeEngine(_db).evaluate(me.id,
         onlineUserId: (await _online())?.currentUser?.id);
+    return (earned: earned, synced: synced);
   }
 
-  /// Fern-Prost auf eine Session (lokal oder online).
-  Future<void> toastSession(String sessionId) async {
+  /// Fern-Prost auf eine Session (lokal oder online). Rueckgabe: ob er
+  /// angekommen ist.
+  Future<bool> toastSession(String sessionId) async {
     final me = await _me();
     if (isRemoteId(sessionId)) {
       final online = await _online();
-      if (online != null) {
-        unawaited(
-            online.sessions.joinSession(stripRemote(sessionId), joined: false));
-      }
-    } else {
-      await _db.joinSession(sessionId, me.id, ParticipantKind.toast);
+      return online != null &&
+          await online.sessions
+              .joinSession(stripRemote(sessionId), joined: false);
     }
+    await _db.joinSession(sessionId, me.id, ParticipantKind.toast);
+    return true;
   }
 
   /// 🍺 Bierlaune umschalten: an = 4 Stunden ab jetzt, aus = löschen.
@@ -432,11 +464,11 @@ class BrewActions {
     final mine = await _db.myCheckinsDetailed(me.id);
     if (mine.isEmpty) return null;
     final last = mine.first;
-    final earned = await createCheckin(
+    final ergebnis = await createCheckin(
       beerId: last.beer.id,
       servingStyle: last.checkin.servingStyle,
     );
-    return (last.beer.name, earned);
+    return (last.beer.name, ergebnis.celebrations);
   }
 
   Future<List<BadgeDef>> toggleToast(String checkinId) async {
@@ -449,20 +481,23 @@ class BrewActions {
   /// Toast auf einem hochgeladenen Check-in (eigener oder von Freunden):
   /// Server ist die Wahrheit; lokal wird der Toast gespiegelt, damit
   /// Abzeichen („Prost-Meister") weiterzählen. Gibt neue Abzeichen zurück.
-  Future<List<BadgeDef>> toggleServerToast(
+  /// Rueckgabe null: Der Server hat den Toast nicht angenommen — dann wird
+  /// auch lokal nichts gespiegelt. Vorher wurde lokal umgeschaltet, obwohl
+  /// der Server nichts wusste; beim naechsten Laden sprang es zurueck.
+  Future<List<BadgeDef>?> toggleServerToast(
     String feedId,
     String serverId, {
     required bool on,
   }) async {
     final online = await _online();
-    if (online != null) {
-      await online.checkins.setToastRemote(serverId, on: on);
-      _ref.invalidate(feedReactionsProvider);
-    }
+    if (online == null) return null;
+    final ok = await online.checkins.setToastRemote(serverId, on: on);
+    if (!ok) return null;
+    _ref.invalidate(feedReactionsProvider);
     final me = await _me();
     await _db.toggleToast(feedId, me.id);
     return BadgeEngine(_db)
-        .evaluate(me.id, onlineUserId: online?.currentUser?.id);
+        .evaluate(me.id, onlineUserId: online.currentUser?.id);
   }
 
   Future<void> addComment(String checkinId, String body) async {
@@ -531,10 +566,23 @@ class BrewActions {
     return beerId;
   }
 
-  Future<void> updateProfile(
-          {String? displayName, String? avatarEmoji, String? bio}) =>
-      _db.updateMe(
-          displayName: displayName, avatarEmoji: avatarEmoji, bio: bio);
+  /// Profil aendern — lokal und, mit Konto, am Server.
+  ///
+  /// Bis 2026-09-02 schrieb das nur die lokale Tabelle. Der Mensch aenderte
+  /// seinen Namen, sah auf der Startseite (die den Server liest) weiter den
+  /// alten, und Freunde sahen die Aenderung nie. Rueckgabe: ob der Server
+  /// sie hat (true auch ohne Konto — dann gibt es keinen Server-Zwilling).
+  Future<bool> updateProfile(
+      {String? displayName, String? avatarEmoji, String? bio}) async {
+    await _db.updateMe(
+        displayName: displayName, avatarEmoji: avatarEmoji, bio: bio);
+    final online = await _online();
+    if (online == null || online.currentUser == null) return true;
+    final ok = await online.updateMyProfile(
+        displayName: displayName, avatarEmoji: avatarEmoji);
+    _ref.invalidate(myRemoteProfileProvider);
+    return ok;
+  }
 }
 
 /// Alle wählbaren Geschmacks-Tags (Check-in-Formular).

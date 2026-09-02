@@ -87,6 +87,26 @@ unangetastet — es könnte das andere Gerät sein. Drei Tests in
 vorher gefehlt hat: „unbekannt am Server → übernehmen, **nicht**
 beenden".
 
+### Kein Erfolg, der nicht stattfand (2026-09-02)
+
+Der Beacon-Start setzte den Server-Aufruf `unawaited` ab und meldete
+immer „deine Freunde wissen Bescheid". Offline saß der Mensch mit gutem
+Gewissen im Wirtshaus und war für niemanden sichtbar. Dasselbe bei
+„Prost" und „Bin dabei" auf fremde Sessions.
+
+Jetzt liefert `startSession` `(earned, synced)`. Der Ein-Tap-Beacon
+zeigt bei `synced == false` einen eigenen Zustand — „Beacon läuft, noch
+nicht sichtbar" — mit **Erneut versuchen** (`resyncMySession`) und der
+Wahl, lokal weiterzuführen. Das Formular sagt es in der Snackbar.
+`joinSession`/`toastSession` geben zurück, ob der Gastgeber es
+mitbekommen hat; die Oberfläche sagt sonst „Konnte nicht gesendet
+werden". Die Texte liegen zentral in `widgets/beacon_messages.dart`,
+damit vier Bildschirme dasselbe sagen.
+
+Außerdem behauptete der Ein-Tap-Beacon „3 Stunden" im Text, während er
+längst die zuletzt gewählte Laufzeit nahm — auch 30 Minuten. Der Text
+nennt jetzt die echte Dauer.
+
 ## Modularität
 
 - **Hängt ab von:** Konto (01), Freunde (08), Gasthäuser (05, optional),

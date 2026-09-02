@@ -9,6 +9,7 @@ import '../../core/format.dart' show formatDuration;
 import '../../data/db/database.dart';
 import '../../data/location_service.dart';
 import '../../data/providers.dart';
+import '../../widgets/beacon_messages.dart';
 import '../../data/venue_sync.dart';
 import '../../widgets/badge_celebration.dart';
 import '../../widgets/venue_picker.dart';
@@ -116,7 +117,7 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
     if (!mounted) return;
 
     try {
-      final earned = await ref.read(actionsProvider).startSession(
+      final ergebnis = await ref.read(actionsProvider).startSession(
             venueName: venue,
             venueId: _venueId,
             message: _messageController.text,
@@ -129,16 +130,19 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
           );
       if (!mounted) return;
       final messenger = ScaffoldMessenger.of(context);
-      if (earned.isNotEmpty) {
-        await showBadgeCelebration(context, earned);
+      if (ergebnis.earned.isNotEmpty) {
+        await showBadgeCelebration(context, ergebnis.earned);
       }
       if (!mounted) return;
       context.pop();
-      messenger.showSnackBar(
-        const SnackBar(
-          content: Text('Session gestartet – deine Freunde wissen Bescheid 🍻'),
-        ),
-      );
+      // Kein „deine Freunde wissen Bescheid", das der Server nicht
+      // bestätigt hat.
+      messenger.showSnackBar(SnackBar(
+        content: Text(ergebnis.synced
+            ? 'Beacon läuft – deine Freunde wissen Bescheid 🍻'
+            : beaconStartNotSyncedText),
+        duration: Duration(seconds: ergebnis.synced ? 4 : 7),
+      ));
     } finally {
       if (mounted) setState(() => _submitting = false);
     }

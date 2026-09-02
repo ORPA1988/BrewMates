@@ -2,7 +2,7 @@
 
 > **Status:** 🟢 fertig — Kamera auf Android/iOS/Web, manuelle Eingabe
 > überall.
-> **Seit:** 0.3.0 · **Zuletzt geprüft:** 2026-08-15
+> **Seit:** 0.3.0 · **Zuletzt geprüft:** 2026-09-02
 
 ## Zielsetzung
 
@@ -71,6 +71,50 @@ hätte es nicht gefunden — die Schreibseite funktionierte ja.
 Einschränkung fürs Protokoll: EANs werden nach Jahrzehnten gelegentlich
 neu vergeben, und Aktionsware trägt manchmal fremde Codes. Die EAN ist ein
 sehr guter Schlüssel — **kein Beweis**.
+
+## Der beste Scanner nützt nichts bei falschen Daten (2026-09-02)
+
+Ein Scan der 0,33-Dose **Gösser NaturRadler** schlug ein Bier der
+Starkenberger Brauerei vor. Kein Fehler im Scanner, kein Fehler im
+Server: In `beers-at.json` hingen sämtliche EANs des Gösser NaturRadlers
+am Eintrag `at-brauerei-naturradler` — dem NaturRadler aus Tarrenz. Beim
+Ausbau vom 2026-08-15 waren Produkte aus einer Fremdquelle nach
+Produktnamen zugeordnet worden, und „NaturRadler“ heißen eben mehrere.
+
+Der Abgleich der 320 hinterlegten Codes gegen die Produkt- und
+Markensuche von Open Food Facts förderte dieselbe Verwechslung mehrfach
+zutage:
+
+| EAN | hing an | ist in Wahrheit |
+| --- | --- | --- |
+| `90288456`, `90288470`, `90288104` … (13 Stück) | Starkenberger NaturRadler | Gösser NaturRadler Zitrone |
+| `9120060220673` | Gusswerk Steinbier | Steinbier der Marke „urban keller“ |
+| `9120060130415` | Vitzthum Pils | Ötscher Pils, Bruckners Erzbräu |
+| `42359739` | Gösser NaturRadler | Naturradler der Marke „Linzer“ |
+| `9028800142899` | Zipfer HOPS Zitrone | Zipfer HOPS Grapefruit |
+| `9007600306311` | Ottakringer Citrus Radler | Ottakringer Wassermelone Radler |
+| `9028800636060` | Edelweiss Hefetrüb | Edelweiss Weizen **alkoholfrei** |
+
+**Und der Code, den der Nutzer eigentlich suchte, fehlte:** die 0,33er
+Gösser (`90288456`) war nirgends als 0,33 hinterlegt. Genau deshalb
+landete der Scan bei einem Namensvetter.
+
+Die österreichische EAN-Tabelle ist seither vollständig neu gesetzt: 207
+Codes, jeder einzeln gegen Open Food Facts belegt, 136 davon mit
+Gebindegröße. Sechs Codes stehen bewusst **ohne** Zuordnung da — sie
+waren nachweislich falsch, und wohin sie gehören, ist nicht belegbar. Ein
+Code ohne Bier führt zum Anlegen-Dialog; ein Code am falschen Bier führt
+zu einem falschen Check-in.
+
+`test/community_daten_test.dart` hält das jetzt fest: keine EAN an zwei
+Bieren, jede EAN eine gültige GTIN-8 oder GTIN-13 mit Prüfziffer, keine
+Gebindegröße ohne zugehörigen Code. Die Prüfziffer allein warf `25227868`
+aus dem Bestand — acht Ziffern, aber keine gültige GTIN, also ein
+Hauscode aus irgendeinem Regal.
+
+**Was der Test nicht kann:** Er prüft die Form, nicht die Wahrheit. Dass
+`90288456` zum Gösser NaturRadler gehört und nicht zum Starkenberger,
+weiß keine Regel — das wusste nur der Abgleich gegen eine zweite Quelle.
 
 ## Technische Umsetzung
 

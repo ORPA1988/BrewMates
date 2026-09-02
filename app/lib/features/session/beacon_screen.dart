@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/db/database.dart';
 import '../../data/location_service.dart';
+import '../../core/format.dart' show formatDuration;
 import '../../data/providers.dart';
 import '../../widgets/badge_celebration.dart';
 import '../../widgets/beacon_messages.dart';
@@ -19,7 +20,7 @@ class BeaconScreen extends ConsumerStatefulWidget {
   ConsumerState<BeaconScreen> createState() => _BeaconScreenState();
 }
 
-enum _BeaconState { locating, active, failed }
+enum _BeaconState { locating, active, activeUnsynced, failed }
 
 class _BeaconScreenState extends ConsumerState<BeaconScreen> {
   _BeaconState _state = _BeaconState.locating;
@@ -38,7 +39,7 @@ class _BeaconScreenState extends ConsumerState<BeaconScreen> {
 
     switch (location) {
       case LocationGranted(:final latitude, :final longitude):
-        final earned = await ref.read(actionsProvider).startSession(
+        final ergebnis = await ref.read(actionsProvider).startSession(
               message: 'Alle willkommen! 🍻',
               visibility: SessionVisibility.friends,
               // Der Ein-Tap-Beacon fragt bewusst nichts — er nimmt die
@@ -48,8 +49,12 @@ class _BeaconScreenState extends ConsumerState<BeaconScreen> {
               longitude: longitude,
             );
         if (!mounted) return;
-        setState(() => _state = _BeaconState.active);
-        await showBadgeCelebration(context, earned);
+        // Zwei Wahrheiten, zwei Zustände: Läuft der Beacon nur lokal, darf
+        // der Bildschirm nicht „deine Freunde sehen dich" behaupten.
+        setState(() => _state = ergebnis.synced
+            ? _BeaconState.active
+            : _BeaconState.activeUnsynced);
+        await showBadgeCelebration(context, ergebnis.earned);
       case LocationDenied(:final forever):
         setState(() {
           _state = _BeaconState.failed;
@@ -103,9 +108,13 @@ class _BeaconScreenState extends ConsumerState<BeaconScreen> {
                       style: theme.textTheme.headlineSmall),
                   const SizedBox(height: 8),
                   Text(
-                    'Deine Freunde sehen jetzt 3 Stunden lang, wo du bist – '
-                    'und dass alle willkommen sind. Danach endet die Session '
-                    'automatisch.',
+                    // Die echte Laufzeit, nicht eine Zahl aus dem Text:
+                    // Hier stand „3 Stunden", während der Beacon längst
+                    // die zuletzt gewählte Dauer nahm — auch 30 Minuten.
+                    'Deine Freunde sehen jetzt '
+                    '${formatDuration(ref.read(preferredSessionDurationProvider))} '
+                    'lang, wo du bist – und dass alle willkommen sind. '
+                    'Danach endet der Beacon automatisch.',
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodyLarge,
                   ),
@@ -118,6 +127,42 @@ class _BeaconScreenState extends ConsumerState<BeaconScreen> {
                     child: const Text('Passt 🍻'),
                   ),
                   const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: _undo,
+                    child: const Text('Ups – wieder beenden'),
+                  ),
+                ],
+              ),
+            _BeaconState.activeUnsynced => Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('📴', style: TextStyle(fontSize: 72)),
+                  const SizedBox(height: 16),
+                  Text('Beacon läuft – noch nicht sichtbar',
+                      style: theme.textTheme.headlineSmall,
+                      textAlign: TextAlign.center),
+                  const SizedBox(height: 8),
+                  Text(
+                    beaconStartNotSyncedText,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyLarge,
+                  ),
+                  const SizedBox(height: 24),
+                  FilledButton.icon(
+                    onPressed: () async {
+                      final ok =
+                          await ref.read(actionsProvider).resyncMySession();
+                      if (!mounted) return;
+                      if (ok) setState(() => _state = _BeaconState.active);
+                    },
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Erneut versuchen'),
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () => context.pop(),
+                    child: const Text('Später – lokal weiterführen'),
+                  ),
                   TextButton(
                     onPressed: _undo,
                     child: const Text('Ups – wieder beenden'),

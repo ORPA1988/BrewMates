@@ -1,6 +1,6 @@
 # 04 Bier- & Brauerei-Datenbank
 
-> **Status:** 🟢 fertig — 699 Biere und 162 Brauereien aus dem DACH-Raum,
+> **Status:** 🟢 fertig — 654 Biere und 137 Brauereien aus dem DACH-Raum,
 > kuratiert im Repository, per GitHub aktualisiert.
 > **Seit:** 0.4.0 (AT), DACH seit 0.9.13 · **Zuletzt geprüft:** 2026-09-02
 
@@ -51,12 +51,61 @@ erscheinen beim Tippen von selbst unter der Zeile — siehe
 **Die Gebindegröße** gehört zum Barcode, nicht zum Bier (siehe Funktion
 03). Vorbelegt ist ein halber Liter.
 
+## Überarbeitung Österreich (2026-09-02)
+
+Der Ausbau vom 2026-08-15 hatte einen zweiten Datensatz **neben** den
+bestehenden Bestand gelegt, statt ihn hineinzuarbeiten. Ergebnis: 25
+Brauereien standen doppelt in der Datei — einmal redaktionell gepflegt
+(`at-stiegl`, mit Webseite, Eigentümer und Geschichte), einmal aus der
+Zweitquelle (`at-stiegl-2`, ohne all das, mit abweichendem Gründungsjahr
+und leicht verschobenen Koordinaten). Wer nach „Stiegl“ suchte, fand zwei
+Brauereien und musste raten.
+
+Bereinigt wurde in einem Zug:
+
+- **Brauereien 71 → 46.** Jede Dublette auf den gepflegten Datensatz
+  zusammengeführt. Neu getrennt sind dafür **Kaiser** (gebraut in
+  Wieselburg) und **Edelweiss** (Hofbräu Kaltenhausen) — sie hingen an
+  einer gemeinsamen Sammel-ID, obwohl es zwei Marken zweier Standorte
+  sind.
+- **Biere 487 → 442.** 41 Dubletten zusammengeführt (Barcodes, Bilder und
+  Beschreibungen wandern dabei auf den Gewinner), vier Einträge
+  gestrichen, die keine Biere sind: ein Bieressig, zwei
+  Sortiments-Sammelposten und ein Bierabo. Vier belegte Sorten kamen neu
+  dazu.
+- **IDs entschärft.** `at-brauerei-pils`, `at-brauerei-maerzen`,
+  `at-brauhaus-red-ale` — solche IDs gehören keiner Brauerei und
+  kollidieren mit dem nächsten Import. Sie heißen jetzt
+  `at-vitzthum-uttendorfer-pils`, `at-starkenberger-maerzen`,
+  `at-gusswerk-red-ale`.
+- **Namen mit Marke.** Ein Eintrag, der nur „Märzen“ heißt, ist in einer
+  Suchliste wertlos. Rund 130 Namen tragen jetzt ihre Marke vorn.
+- **Stile vereinheitlicht.** 162 freie Schreibweisen („Vollbier“,
+  „Klassiker“, „Bierspezialität“, halbe Zutatenlisten) auf 49 Stile
+  gezogen; wo der Name den Stil eindeutig nennt, wurde er abgeleitet. 83
+  Einträge stehen weiter auf „Bier“ — dort veröffentlicht die Brauerei
+  nichts, und Raten wäre schlechter als Schweigen.
+- **Bilder.** Alle 352 Bild-URLs einzeln abgerufen; acht tote von Murauer
+  ersetzt, 30 fehlende aus Open Food Facts ergänzt. Kein Bild ohne
+  `image_source`.
+
+Die EAN-Zuordnung war der eigentliche Anlass — siehe
+[03 Barcode-Scanner](03-barcode-scanner.md).
+
+**Was das für bestehende Installationen heißt:** Der Abgleich schreibt
+nur, er löscht nie (`insertAllOnConflictUpdate`). Zusammengeführte und
+umbenannte Einträge bleiben auf dem Gerät also als verwaiste Zeilen
+liegen — vorhandene Check-ins zeigen weiter auf ihr Bier, aber die Suche
+kann eine alte Dublette noch anzeigen. Ein Neuinstallieren räumt das auf;
+ein Aufräumschritt im Abgleich wäre die saubere Lösung und steht offen.
+
 ## Technische Umsetzung
 
 - **Daten:** `app/assets/data/` — acht Dateien
   (`beers|breweries` × `at|by|de|ch`), verknüpft über `brewery_id`.
-  Bestand (gezählt 2026-09-02): 699 Biere (AT 487, BY 72, DE 95, CH 45)
-  und 162 Brauereien (AT 71, BY 33, DE 40, CH 18)
+  Bestand (gezählt 2026-09-02, nach der Österreich-Überarbeitung):
+  654 Biere (AT 442, BY 72, DE 95, CH 45) und 137 Brauereien
+  (AT 46, BY 33, DE 40, CH 18)
 - **Abgleich:** `data/community_sync.dart` — gebündelt beim ersten Start,
   danach von `raw.githubusercontent.com`; fehlende Dateien werden
   übersprungen, nicht als Fehler behandelt
@@ -84,8 +133,8 @@ Alle. Reine Daten.
 ## Skalierung
 
 Acht JSON-Dateien werden beim Start **vollständig** gelesen und in die
-lokale DB geschrieben; die Assets sind zusammen rund 500 KB (699 Biere,
-162 Brauereien). Das trägt gut bis etwa zum Dreifachen. Darüber hinaus — oder mit
+lokale DB geschrieben; die Assets sind zusammen rund 480 KB (654 Biere,
+137 Brauereien). Das trägt gut bis etwa zum Dreifachen. Darüber hinaus — oder mit
 [Hintergrundgeschichten](21-hintergrundgeschichten.md) — gehört der
 Bestand serverseitig durchsucht statt vollständig mitgeliefert.
 
@@ -108,5 +157,9 @@ Saisonbiers.
 
 ## Offene Punkte / Ideen
 
+- Aufräumschritt im Abgleich: zusammengeführte IDs auf bestehenden
+  Installationen entfernen statt liegen lassen
+- Alkoholgehalt für die 115 Biere ohne Angabe — die Brauereien
+  veröffentlichen ihn größtenteils nicht auf der Webseite
 - Weitere Regionen (Tschechien, Belgien) — erst, wenn DACH gepflegt bleibt
 - Saisonbiere und Sondersude, wenn es eine Pflege-Community gibt
