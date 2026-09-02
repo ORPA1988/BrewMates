@@ -3289,10 +3289,10 @@
         "90145056": 330
       },
       "image_url": "https://www.murauerbier.at/wp-content/uploads/2026/07/Maerzen-05.png",
+      "image_source": "https://www.murauerbier.at/produkte/",
       "description_manufacturer": "Das Hauptbier der genossenschaftlich organisierten Brauerei Murau: ein süffiges Märzen aus dem obersteirischen Bergland, gebraut mit regionalen Rohstoffen.",
       "description_community": "In der Obersteiermark die klare Nummer eins; sauberes, frisches Märzen, das bei Bierprämierungen regelmäßig gut abschneidet.",
-      "community_rating": 3.4,
-      "image_source": "https://www.murauerbier.at/produkte/"
+      "community_rating": 3.4
     },
     {
       "id": "at-brauerei-murauer-pale-ale",
@@ -4752,7 +4752,7 @@
       "brewery_id": "at-stiegl",
       "name": "Stiegl Herbstgold",
       "style": "Festbier",
-      "abv": null,
+      "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [

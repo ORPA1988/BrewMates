@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "updated": "2026-08-15",
+  "version": 2,
+  "updated": "2026-09-03",
   "beers": [
     {
       "id": "ch-feldschloesschen-original",
@@ -20,12 +20,23 @@
       "id": "ch-feldschloesschen-alkoholfrei",
       "brewery_id": "ch-feldschloesschen",
       "name": "Feldschlösschen Alkoholfrei",
-      "style": "Alkoholfreies Lager",
+      "style": "Alkoholfreies Bier",
       "abv": 0.0,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "76129216",
+        "76129254",
+        "76129261"
+      ],
+      "barcode_volumes": {
+        "76129216": 330,
+        "76129254": 330,
+        "76129261": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/000/007/612/9216/front_fr.27.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/76129216",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Das meistverkaufte alkoholfreie Bier der Schweiz, hell und mild mit leichter Malznote.",
       "description_community": "Der Klassiker unter den Schweizer Alkoholfreien – unspektakulär, aber überall erhältlich.",
       "community_rating": 2.7
@@ -56,6 +67,10 @@
         "7610055000509",
         "7610055007508"
       ],
+      "barcode_volumes": {
+        "7610055000509": 330,
+        "7610055007508": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/761/005/500/0509/front_fr.7.400.jpg",
       "description_manufacturer": "Helles Lager aus Chur, gebraut mit Bündner Bergwasser; das Standardbier Graubündens.",
       "description_community": "Süffiges Berg-Lager mit starker Heimat-Bindung in Graubünden, geschmacklich Durchschnitt.",
@@ -65,7 +80,7 @@
       "id": "ch-calanda-ittinger",
       "brewery_id": "ch-calanda",
       "name": "Ittinger Klosterbräu",
-      "style": "Amber / Spezialbier",
+      "style": "Amber Ale",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
@@ -85,9 +100,13 @@
       "is_alcohol_free": false,
       "barcodes": [
         "7610096010529",
-        "76400575",
-        "7610096021112"
+        "7610096021112",
+        "76400575"
       ],
+      "barcode_volumes": {
+        "7610096010529": 330,
+        "7610096021112": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/761/009/601/0529/front_de.3.400.jpg",
       "description_manufacturer": "Das helle Hauptbier der Luzerner Traditionsbrauerei, mild und ausgewogen.",
       "description_community": "In der Zentralschweiz fast schon Kulturgut, sonst ein braves Standard-Lager.",
@@ -97,7 +116,7 @@
       "id": "ch-eichhof-braugold",
       "brewery_id": "ch-eichhof",
       "name": "Eichhof Braugold",
-      "style": "Spezialbier hell",
+      "style": "Spezialbier",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
@@ -111,13 +130,16 @@
       "id": "ch-eichhof-hubertus",
       "brewery_id": "ch-eichhof",
       "name": "Eichhof Hubertus",
-      "style": "Dunkles Spezialbier",
+      "style": "Dunkles",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
         "7610096021198"
       ],
+      "barcode_volumes": {
+        "7610096021198": 330
+      },
       "image_url": null,
       "description_manufacturer": "Dunkles Spezialbier, das seit 1906 gebraut wird; röstmalzbetont und leicht süsslich.",
       "description_community": "Ehrwürdiger Dunkelbier-Klassiker, der die Zeit überdauert hat.",
@@ -127,7 +149,7 @@
       "id": "ch-locher-quoellfrisch",
       "brewery_id": "ch-locher",
       "name": "Appenzeller Quöllfrisch naturtrüb",
-      "style": "Naturtrübes Lager",
+      "style": "Zwickl",
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
@@ -141,7 +163,7 @@
       "id": "ch-locher-vollmond",
       "brewery_id": "ch-locher",
       "name": "Appenzeller Vollmond Bier Hell Bio",
-      "style": "Helles Bio-Spezialbier",
+      "style": "Spezialbier",
       "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
@@ -155,7 +177,7 @@
       "id": "ch-locher-quoellfrisch-alkoholfrei",
       "brewery_id": "ch-locher",
       "name": "Quöllfrisch Alkoholfrei",
-      "style": "Alkoholfreies Lager",
+      "style": "Alkoholfreies Bier",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
@@ -173,8 +195,15 @@
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "76137563"
+      ],
+      "barcode_volumes": {
+        "76137563": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/000/007/613/7563/front_en.12.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/76137563",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Das Hauptbier der ältesten Brauerei der Schweiz, ohne beschleunigte Brauverfahren gebraut und Slow-Brewing-zertifiziert.",
       "description_community": "Eines der handwerklich saubersten Standard-Lager der Schweiz, in der Ostschweiz gesetzt.",
       "community_rating": 3.2
@@ -183,7 +212,7 @@
       "id": "ch-schuetzengarten-edelspez",
       "brewery_id": "ch-schuetzengarten",
       "name": "Schützengarten Edelspez",
-      "style": "Spezialbier hell",
+      "style": "Spezialbier",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
@@ -197,12 +226,16 @@
       "id": "ch-schuetzengarten-alkoholfrei",
       "brewery_id": "ch-schuetzengarten",
       "name": "Schützengarten Alkoholfrei",
-      "style": "Alkoholfreies Lager",
+      "style": "Alkoholfreies Bier",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "76137624"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/000/007/613/7624/front_pt.3.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/76137624",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Alkoholfreies Lager aus St. Gallen; Teil eines breiten alkoholfreien Sortiments, das international regelmässig prämiert wird.",
       "description_community": "Solides Alkoholfreies einer Brauerei, die diese Kategorie ernst nimmt.",
       "community_rating": 3.0
@@ -225,7 +258,7 @@
       "id": "ch-rugenbraeu-zwickel",
       "brewery_id": "ch-rugenbraeu",
       "name": "Rugenbräu Zwickel",
-      "style": "Zwickelbier / Kellerbier",
+      "style": "Kellerbier",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
@@ -246,6 +279,9 @@
       "barcodes": [
         "7610048002176"
       ],
+      "barcode_volumes": {
+        "7610048002176": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/761/004/800/2176/front_de.5.400.jpg",
       "description_manufacturer": "Untergäriges, helles, filtriertes Lagerbier aus 100 % Gerstenmalz; der Klassiker der Schaffhauser Brauerei.",
       "description_community": "Grundsolides Regional-Lager mit treuer Anhängerschaft rund um den Munot.",
@@ -255,7 +291,7 @@
       "id": "ch-falken-stammhaus-alkoholfrei",
       "brewery_id": "ch-falken",
       "name": "Falken Stammhaus 0.0%",
-      "style": "Alkoholfreies naturtrübes Lager",
+      "style": "Alkoholfreies Bier",
       "abv": 0.0,
       "ibu": null,
       "is_alcohol_free": true,
@@ -269,13 +305,16 @@
       "id": "ch-chopfab-draft",
       "brewery_id": "ch-chopfab",
       "name": "Chopfab Draft",
-      "style": "Naturtrübes Helles / Pale Ale",
+      "style": "Pale Ale",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
         "7640156956924"
       ],
+      "barcode_volumes": {
+        "7640156956924": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/764/015/695/6924/front_de.3.400.jpg",
       "description_manufacturer": "Das Flaggschiff in der schwarzen Dose, das Chopfab ab 2012 schweizweit bekannt machte; süffiges, naturtrübes Bier.",
       "description_community": "Machte die schwarze Dose zum Statement – eingängig, eher massentauglich als extravagant.",
@@ -285,15 +324,19 @@
       "id": "ch-chopfab-amber",
       "brewery_id": "ch-chopfab",
       "name": "Chopfab Amber",
-      "style": "Amber",
+      "style": "Amber Ale",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "7640156950366",
+        "7610614200531",
         "7610614200586",
-        "7610614200531"
+        "7640156950366"
       ],
+      "barcode_volumes": {
+        "7610614200531": 330,
+        "7610614200586": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/764/015/695/0366/front_de.3.400.jpg",
       "description_manufacturer": "Bernsteinfarbenes, malzbetontes Bier aus dem Chopfab-Kernsortiment.",
       "description_community": "Runder, malziger als das Draft – für viele das bessere Chopfab.",
@@ -304,11 +347,19 @@
       "brewery_id": "ch-chopfab",
       "name": "Chopfab Bleifrei",
       "style": "Alkoholfreies Bier",
-      "abv": null,
+      "abv": 0.0,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "7610614200838",
+        "7640156950656"
+      ],
+      "barcode_volumes": {
+        "7640156950656": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/761/061/420/0838/front_fr.3.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/7610614200838",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Alkoholfreies Bier aus Winterthur, das als eines der ersten Schweizer Craft-Alkoholfreien breite Verteilung fand.",
       "description_community": "Mit dem cleveren Namen ein Wegbereiter für alkoholfreies Craft in der Schweiz.",
       "community_rating": 3.1
@@ -321,8 +372,15 @@
       "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "7610614021006"
+      ],
+      "barcode_volumes": {
+        "7610614021006": 250
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/761/061/402/1006/front_fr.8.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/7610614021006",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Das traditionsreiche Hauptlager der Boxer-Brauerei, seit den 1960er-Jahren gebraut und 1983 in Rom mit Gold ausgezeichnet.",
       "description_community": "Waadtländer Klassiker mit Hundekopf-Logo – kerniger als das übliche Standard-Lager.",
       "community_rating": 3.1
@@ -331,7 +389,7 @@
       "id": "ch-boxer-blonde",
       "brewery_id": "ch-boxer",
       "name": "Boxer Blonde",
-      "style": "Unfiltriertes Lager",
+      "style": "Zwickl",
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
@@ -345,7 +403,7 @@
       "id": "ch-bfm-la-meule",
       "brewery_id": "ch-bfm",
       "name": "La Meule",
-      "style": "Golden Ale (mit Salbei)",
+      "style": "Golden Ale",
       "abv": 6.0,
       "ibu": null,
       "is_alcohol_free": false,
@@ -363,8 +421,15 @@
       "abv": 5.5,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "7640117630016"
+      ],
+      "barcode_volumes": {
+        "7640117630016": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/764/011/763/0016/front_fr.19.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/7640117630016",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Witbier der Brasserie des Franches-Montagnes, hell und erfrischend.",
       "description_community": "Zugänglichster Einstieg in die BFM-Welt, sauber gemachtes Wit.",
       "community_rating": 3.6
@@ -373,7 +438,7 @@
       "id": "ch-bfm-bon-chien",
       "brewery_id": "ch-bfm",
       "name": "Abbaye de Saint Bon-Chien",
-      "style": "Barrel-aged Sour Ale",
+      "style": "Sauerbier",
       "abv": 11.0,
       "ibu": null,
       "is_alcohol_free": false,
@@ -401,7 +466,7 @@
       "id": "ch-mueller-braeu-spez",
       "brewery_id": "ch-mueller-braeu",
       "name": "Müller Bräu Spez",
-      "style": "Spezialbier hell",
+      "style": "Spezialbier",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
@@ -415,7 +480,7 @@
       "id": "ch-turbinenbraeu-goldsprint",
       "brewery_id": "ch-turbinenbraeu",
       "name": "Goldsprint",
-      "style": "Helles Spezialbier",
+      "style": "Spezialbier",
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
@@ -429,7 +494,7 @@
       "id": "ch-turbinenbraeu-rekord",
       "brewery_id": "ch-turbinenbraeu",
       "name": "Rekord",
-      "style": "Amber (obergärig, naturtrüb)",
+      "style": "Amber Ale",
       "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
@@ -443,7 +508,7 @@
       "id": "ch-turbinenbraeu-pause",
       "brewery_id": "ch-turbinenbraeu",
       "name": "Pause",
-      "style": "Alkoholfreies Lager",
+      "style": "Alkoholfreies Bier",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
@@ -457,7 +522,7 @@
       "id": "ch-unser-bier-amber",
       "brewery_id": "ch-unser-bier",
       "name": "Unser Bier Amber",
-      "style": "Amber",
+      "style": "Amber Ale",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
@@ -471,7 +536,7 @@
       "id": "ch-unser-bier-blond",
       "brewery_id": "ch-unser-bier",
       "name": "Unser Bier Blond",
-      "style": "Helles / Blond",
+      "style": "Helles",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
@@ -485,7 +550,7 @@
       "id": "ch-san-martino-bionda",
       "brewery_id": "ch-san-martino",
       "name": "San Martino Bionda",
-      "style": "Helles / Blonde",
+      "style": "Helles",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
@@ -513,7 +578,7 @@
       "id": "ch-docteur-gabs-pepite",
       "brewery_id": "ch-docteur-gabs",
       "name": "Pépite",
-      "style": "Pale Ale (glutenfrei)",
+      "style": "Pale Ale",
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
@@ -534,6 +599,9 @@
       "barcodes": [
         "7640159760344"
       ],
+      "barcode_volumes": {
+        "7640159760344": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/764/015/976/0344/front_fr.7.400.jpg",
       "description_manufacturer": "Fruchtiges IPA aus Puidoux mit deutlicher, aber nicht ruppiger Bitterkeit.",
       "description_community": "Solides Alltags-IPA, das den Craft-Einstieg in der Westschweiz geprägt hat.",
@@ -543,12 +611,19 @@
       "id": "ch-docteur-gabs-tempete",
       "brewery_id": "ch-docteur-gabs",
       "name": "Tempête",
-      "style": "Belgian Tripel",
+      "style": "Tripel",
       "abv": 8.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "7640159760030"
+      ],
+      "barcode_volumes": {
+        "7640159760030": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/764/015/976/0030/front_fr.15.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/7640159760030",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Kräftiges, helles Tripel nach belgischer Art mit 8 % Alkohol.",
       "description_community": "Wuchtiger Klassiker im Gab's-Sortiment – gefährlich süffig für seine Stärke.",
       "community_rating": 3.8
@@ -557,7 +632,7 @@
       "id": "ch-felsenau-baerner-muentschi",
       "brewery_id": "ch-felsenau",
       "name": "Bärner Müntschi",
-      "style": "Naturtrübes Helles",
+      "style": "Zwickl",
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
@@ -571,7 +646,7 @@
       "id": "ch-felsenau-baerner-junker",
       "brewery_id": "ch-felsenau",
       "name": "Bärner Junker",
-      "style": "Spezialbier hell",
+      "style": "Spezialbier",
       "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
@@ -613,7 +688,7 @@
       "id": "ch-sonnenbraeu-eisbier",
       "brewery_id": "ch-sonnenbraeu",
       "name": "Sonnenbräu Eisbier",
-      "style": "Eisbier",
+      "style": "Lager",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
@@ -627,12 +702,19 @@
       "id": "ch-whitefrontier-la-petite",
       "brewery_id": "ch-whitefrontier",
       "name": "La Petite",
-      "style": "Session Ale",
-      "abv": null,
+      "style": "Pale Ale",
+      "abv": 4.7,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "7640166620327"
+      ],
+      "barcode_volumes": {
+        "7640166620327": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/764/016/662/0327/front_fr.11.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/7640166620327",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Leichtes, helles Ale aus dem ersten WhiteFrontier-Jahrgang von 2016; bis heute im Kernsortiment.",
       "description_community": "Das unkomplizierte Einstiegsbier der Walliser Freeride-Brauerei.",
       "community_rating": 3.4
@@ -641,13 +723,16 @@
       "id": "ch-whitefrontier-pillows",
       "brewery_id": "ch-whitefrontier",
       "name": "Pillows",
-      "style": "IPA (trüb)",
+      "style": "NEIPA",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
         "7640166620358"
       ],
+      "barcode_volumes": {
+        "7640166620358": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/764/016/662/0358/front_fr.3.400.jpg",
       "description_manufacturer": "Hopfenbetontes, trübes IPA aus dem Kernsortiment von WhiteFrontier, seit 2016 gebraut.",
       "description_community": "Weiches, fruchtiges IPA – für viele das beste Argument für Craft aus dem Wallis.",
