@@ -28,6 +28,7 @@ import 'location_service.dart';
 import 'restore.dart';
 import 'venue_sync.dart';
 import 'online/online_service.dart';
+import 'push/push_service.dart';
 import 'online/remote_mapping.dart';
 
 // Aufgeteilt nach Themen (Backlog B-4). Reihenfolge alphabetisch.
@@ -37,6 +38,7 @@ part 'providers/entdecken.dart';
 part 'providers/feed.dart';
 part 'providers/glocke.dart';
 part 'providers/online.dart';
+part 'providers/push.dart';
 part 'providers/sessions.dart';
 part 'providers/venues.dart';
 part 'providers/wartung.dart';

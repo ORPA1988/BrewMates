@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/supabase_config.dart';
 
 import 'api/checkins_api.dart';
+import 'api/devices_api.dart';
 import 'api/online_api.dart';
 import 'api/friends_api.dart';
 import 'api/notifications_api.dart';
@@ -15,6 +16,7 @@ import 'api/venues_api.dart';
 import 'models.dart';
 
 export 'api/checkins_api.dart';
+export 'api/devices_api.dart';
 export 'api/notifications_api.dart';
 export 'api/online_api.dart';
 export 'api/friends_api.dart';
@@ -32,7 +34,8 @@ class OnlineService {
         checkins = CheckinsApi(_client, () => _client.auth.currentUser),
         venues = VenuesApi(_client, () => _client.auth.currentUser),
         notifications =
-            NotificationsApi(_client, () => _client.auth.currentUser);
+            NotificationsApi(_client, () => _client.auth.currentUser),
+        devices = DevicesApi(_client, () => _client.auth.currentUser);
 
   final SupabaseClient _client;
 
@@ -48,6 +51,9 @@ class OnlineService {
 
   /// Die Glocke: Benachrichtigungen lesen, live und als Bestand.
   final NotificationsApi notifications;
+
+  /// Geraetetoken fuer Push (Tabelle `devices`).
+  final DevicesApi devices;
 
   /// Live-Beacons: starten, spiegeln, verlängern, beenden.
   final SessionsApi sessions;

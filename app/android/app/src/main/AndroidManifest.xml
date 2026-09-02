@@ -2,6 +2,10 @@
     <!-- Internetzugriff wird ausschließlich zum Laden der
          OpenStreetMap-Kartenkacheln benötigt. -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Push: ab Android 13 muss die App um Erlaubnis fragen, bevor sie
+         Benachrichtigungen zeigen darf. Ohne diesen Eintrag gibt es die
+         Abfrage nicht — und damit stumm keine Meldung. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <!-- Barcode-Scanner (Hero-Funktion „Bier scannen") -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:name="android.hardware.camera" android:required="false"/>

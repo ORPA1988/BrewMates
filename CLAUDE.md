@@ -113,6 +113,12 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   (`JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64`; JDK 21 bricht mit
   AGP 8.1/jlink). `app/android/build.gradle` enthält bewusst eine
   `ext.flutter`-Map + AGP-8.1-Classpath — nicht „aufräumen".
+- **Push/Firebase** (0.10.4): `firebase_core ^4.7`, `firebase_messaging
+  ^16.2`, `minSdk` 23, `google-services.json` liegt bewusst im Repo
+  (`app/android/app/`), der Dienstkonto-Schlüssel NIE. Lokale
+  `flutter build apk` scheitern auf OneDrive oft an Dateisperren
+  (`Unable to delete directory`) — kein Codefehler; verbindlich ist
+  der Release-Build in der CI.
 - Gepinnte Pakete (Flutter-3.24-Toolchain): `mobile_scanner ^5.2.3`,
   `geolocator ^13.0.2` — nicht ohne Toolchain-Upgrade anheben.
   `qr_flutter ^4.1.0` (reines Dart) kam mit den Freundes-QR-Codes dazu.
