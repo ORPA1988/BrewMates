@@ -13,7 +13,7 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0031` sind LIVE, lückenlos; `0032` wartet auf 0.10.4** — `0020–0024` am 2026-08-15 eingespielt und
+  **`0001–0035` sind LIVE, lückenlos** (Stand 2026-09-02) — `0020–0024` am 2026-08-15 eingespielt und
   gegengeprüft (Spalten, Constraints, Enum, Index, vier neue Funktionen,
   Policy; `friendships` unverändert alle auf `freund`, also keine
   Sichtbarkeitsänderung am Rollout-Tag). Kein Schema-Drift.
@@ -86,6 +86,21 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   entzogen und pro Funktion gezielt gewährt — neue Funktionen brauchen in
   ihrer Migration ein explizites `grant execute … to authenticated`
   (bzw. die jeweils passende Rolle).
+- **Security-Check 2026-09-02** (0035 `security_hardening_2`): `anon` hat
+  auf keiner eigenen Tabelle mehr INSERT/UPDATE/DELETE (auch nicht auf
+  künftigen — Default-Privileges angepasst); Bucket `beer-photos` auf
+  5 MB und Bildtypen begrenzt, eigene Fotos löschbar; `app_config`
+  mit je einer Policy pro Befehl. Repo: Secret-Scanning + Push-Schutz
+  aktiv, Dependabot-Alerts/-Updates eingeschaltet (0 offen), **`main`
+  ohne Branch-Schutz** (Entscheidung des Menschen). Keine Geheimnisse
+  im Repo (geprüft: Schlüssel, service_role, .jks, .env, Dienstkonto).
+  **Nicht behebbar** (live verifiziert, REVOKE als `postgres` ohne
+  Wirkung): alles, was PostGIS/`supabase_admin` gehört —
+  `spatial_ref_sys` ohne RLS, `st_estimatedextent` SECURITY DEFINER für
+  anon, 9 anon-Schreibrechte auf `spatial_ref_sys`/`geometry_columns`/
+  `geography_columns`. Öffentliche Referenzdaten, keine Nutzerdaten.
+  Dashboard-seitig offen: Leaked-Password-Protection (Auth → Providers
+  → Email), E-Mail-Bestätigung bewusst aus.
 - **Security-Advisor-Baseline** (bekannt, bewusst offen; zuletzt geprüft
   2026-08-15 nach dem Rollout von 0020–0024, keine echten Neubefunde —
   die vier neuen RPCs schränken ihre Argumente selbst ein: `tier_for`
