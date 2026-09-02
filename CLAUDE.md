@@ -37,19 +37,15 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   `column_privileges` —, nicht diesen Absatz. Ein Vorbehalt, den man
   für aktiv hält, obwohl er längst gefallen ist, ist gefährlicher als
   gar keiner: Man baut die nächste Entscheidung darauf.
-  **Riegel scharf** (2026-08-16): `app_config.min_supported_version`
-  steht auf `0.10.2`, nachdem 0.10.2 ausgerollt ist. ⚠️ Das Anheben auf
+  **Riegel scharf**: `app_config.min_supported_version` steht auf
+  `0.10.4` (2026-09-02; vom Menschen gesetzt, siehe unten). ⚠️ Das Anheben auf
   0.10.3 wurde vom Auto-Modus-Klassifizierer zweimal blockiert — es ist
   eine Aussperr-Entscheidung und gehört dem Menschen; der Einzeiler steht
   in `docs/07-release-playbook.md`. Das sperrt heute
   **niemanden** aus — der Riegel existiert erst ab 0.10.2, alles
   darunter fragt ihn nie. Sein Wert liegt in der Zukunft.
-  ⚠️ **`beers.barcode` darf deshalb noch NICHT fallen.** Ersetzt ist sie
-  durch `beer_barcodes` (0028), das mit 0.10.2 kam — Clients auf
-  0.10.0/0.10.1 lesen noch die alte Spalte und **haben den Riegel
-  nicht**. Sie brächen wortlos. Vor dem Entfernen deren Anteil in der
-  Play Console prüfen; „0 % unter 0.10" (Stand 2026-08-16) beantwortet
-  diese Frage **nicht**.
+  `beers.barcode` ist **weg** (0032). Für Barcodes gibt es am Server nur
+  noch eine Wahrheit: `beer_barcodes`.
   **Zwei Lehren, beide teuer erkauft:**
   (1) Eine Migration, die ein Recht entzieht, gehört nie in dieselbe Datei
   wie die Ersatzschnittstelle — sonst gibt es kein Zeitfenster, in dem
@@ -81,8 +77,9 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Publikation und Delete-Policy gegengeprüft, Advisor ohne Neubefund
   (`friendships_notify` ist SECURITY DEFINER, aber EXECUTE ist allen
   entzogen — sie hängt nur am Trigger); 0032 `beers.barcode`
-  entfernen — **erst nach `min_supported_version` = 0.10.4**, weil 0.10.3
-  die Spalte noch selektiert).
+  `beers.barcode` entfernt — **live seit 2026-09-02**, nachdem der Riegel
+  auf 0.10.4 stand und das Gerät des einzigen Nutzers 0.10.4 meldete;
+  Backfill 6/6, `flag_beer_by_barcode` nur noch über `beer_barcodes`).
   Google-Login und
   E-Mail-Anmeldung (ohne Bestätigungspflicht) sind eingerichtet und
   funktionieren. Seit 0008 gilt: EXECUTE auf Funktionen wird von PUBLIC

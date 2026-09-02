@@ -1,7 +1,7 @@
 # 29 Push-Benachrichtigungen
 
-> **Status:** 🟡 gebaut und ausgerollt — wartet auf das FCM-Secret im
-> Supabase-Dashboard. · **Seit:** 0.10.4 · **Zuletzt geprüft:** 2026-08-16
+> **Status:** 🟢 live und Ende-zu-Ende verifiziert (2026-09-02).
+> · **Seit:** 0.10.4 · **Zuletzt geprüft:** 2026-09-02
 
 ## Zielsetzung
 
@@ -99,13 +99,14 @@ Roadmap (nur beim Start, Mindestabstand).
 ## Umsetzungsstatus
 
 Gebaut, getestet (4 Dart-Tests zur Registrierung, 4 pgTAP zur Webhook-
-Härte), Migrationen 0033/0034 und Function live. **Offen:** das Secret
-`FCM_SERVICE_ACCOUNT` muss von Hand ins Dashboard — der Schlüssel darf
-weder ins Repo noch in eine Sitzung.
+Härte), Migrationen 0033/0034 und Function live. Secret vom Menschen im
+Dashboard gesetzt. **Ende-zu-Ende-Nachweis** (2026-09-02): Testzeile in
+`notifications` → pg_net-Antwort 200 `{sent:1, pruned:0}` → Meldung am
+Telefon bestätigt. Testzeile danach gelöscht.
 
 ## Umsetzungsplan
 
 1. ~~Registrierung, Trigger, Function~~ — erledigt
-2. FCM-Secret setzen, dann Ende-zu-Ende-Test mit zwei Konten
+2. ~~FCM-Secret setzen, Ende-zu-Ende-Test~~ — erledigt
 3. Beacon-Push mit Spam-Bremse
 4. iOS über APNs, wenn es eine iOS-Fassung gibt
