@@ -1,6 +1,6 @@
 # 04 Bier- & Brauerei-Datenbank
 
-> **Status:** 🟢 fertig — 654 Biere und 137 Brauereien aus dem DACH-Raum,
+> **Status:** 🟢 fertig — 659 Biere und 137 Brauereien aus dem DACH-Raum,
 > kuratiert im Repository, per GitHub aktualisiert.
 > **Seit:** 0.4.0 (AT), DACH seit 0.9.13 · **Zuletzt geprüft:** 2026-09-02
 
@@ -68,11 +68,11 @@ Bereinigt wurde in einem Zug:
   Wieselburg) und **Edelweiss** (Hofbräu Kaltenhausen) — sie hingen an
   einer gemeinsamen Sammel-ID, obwohl es zwei Marken zweier Standorte
   sind.
-- **Biere 487 → 442.** 41 Dubletten zusammengeführt (Barcodes, Bilder und
+- **Biere 487 → 447.** 41 Dubletten zusammengeführt (Barcodes, Bilder und
   Beschreibungen wandern dabei auf den Gewinner), vier Einträge
   gestrichen, die keine Biere sind: ein Bieressig, zwei
-  Sortiments-Sammelposten und ein Bierabo. Vier belegte Sorten kamen neu
-  dazu.
+  Sortiments-Sammelposten und ein Bierabo. Neun belegte Sorten kamen neu
+  dazu — vier aus der EAN-Recherche, fünf aus dem Frastanzer Sortiment.
 - **IDs entschärft.** `at-brauerei-pils`, `at-brauerei-maerzen`,
   `at-brauhaus-red-ale` — solche IDs gehören keiner Brauerei und
   kollidieren mit dem nächsten Import. Sie heißen jetzt
@@ -82,11 +82,12 @@ Bereinigt wurde in einem Zug:
   Suchliste wertlos. Rund 130 Namen tragen jetzt ihre Marke vorn.
 - **Stile vereinheitlicht.** 162 freie Schreibweisen („Vollbier“,
   „Klassiker“, „Bierspezialität“, halbe Zutatenlisten) auf 49 Stile
-  gezogen; wo der Name den Stil eindeutig nennt, wurde er abgeleitet. 83
+  gezogen; wo der Name den Stil eindeutig nennt, wurde er abgeleitet. 60
   Einträge stehen weiter auf „Bier“ — dort veröffentlicht die Brauerei
   nichts, und Raten wäre schlechter als Schweigen.
-- **Bilder.** Alle 352 Bild-URLs einzeln abgerufen; acht tote von Murauer
-  ersetzt, 30 fehlende aus Open Food Facts ergänzt. Kein Bild ohne
+- **Bilder.** Jede Bild-URL einzeln abgerufen; acht tote von Murauer
+  ersetzt, 30 aus Open Food Facts und 65 von den Herstellerseiten
+  ergänzt — von 336 auf 394 Biere mit Bild. Kein Bild ohne
   `image_source`.
 
 Die EAN-Zuordnung war der eigentliche Anlass — siehe
@@ -104,7 +105,7 @@ ein Aufräumschritt im Abgleich wäre die saubere Lösung und steht offen.
 - **Daten:** `app/assets/data/` — acht Dateien
   (`beers|breweries` × `at|by|de|ch`), verknüpft über `brewery_id`.
   Bestand (gezählt 2026-09-02, nach der Österreich-Überarbeitung):
-  654 Biere (AT 442, BY 72, DE 95, CH 45) und 137 Brauereien
+  659 Biere (AT 447, BY 72, DE 95, CH 45) und 137 Brauereien
   (AT 46, BY 33, DE 40, CH 18)
 - **Abgleich:** `data/community_sync.dart` — gebündelt beim ersten Start,
   danach von `raw.githubusercontent.com`; fehlende Dateien werden
@@ -133,7 +134,7 @@ Alle. Reine Daten.
 ## Skalierung
 
 Acht JSON-Dateien werden beim Start **vollständig** gelesen und in die
-lokale DB geschrieben; die Assets sind zusammen rund 480 KB (654 Biere,
+lokale DB geschrieben; die Assets sind zusammen rund 490 KB (659 Biere,
 137 Brauereien). Das trägt gut bis etwa zum Dreifachen. Darüber hinaus — oder mit
 [Hintergrundgeschichten](21-hintergrundgeschichten.md) — gehört der
 Bestand serverseitig durchsucht statt vollständig mitgeliefert.
@@ -159,7 +160,8 @@ Saisonbiers.
 
 - Aufräumschritt im Abgleich: zusammengeführte IDs auf bestehenden
   Installationen entfernen statt liegen lassen
-- Alkoholgehalt für die 115 Biere ohne Angabe — die Brauereien
-  veröffentlichen ihn größtenteils nicht auf der Webseite
+- Alkoholgehalt für die 97 Biere ohne Angabe — vor allem Huber Bräu,
+  Zillertal, Bevog und Raschhofer veröffentlichen ihn nicht in
+  maschinenlesbarer Form
 - Weitere Regionen (Tschechien, Belgien) — erst, wenn DACH gepflegt bleibt
 - Saisonbiere und Sondersude, wenn es eine Pflege-Community gibt
