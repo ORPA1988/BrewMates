@@ -35,6 +35,7 @@ part 'providers/beers.dart';
 part 'providers/challenges.dart';
 part 'providers/entdecken.dart';
 part 'providers/feed.dart';
+part 'providers/glocke.dart';
 part 'providers/online.dart';
 part 'providers/sessions.dart';
 part 'providers/venues.dart';

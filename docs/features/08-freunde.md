@@ -106,12 +106,31 @@ Eine Zahl am Profil-Tab. Vorher standen Anfragen nur auf der Startseite;
 wer die App auf einem anderen Tab offen hatte, sah nie, dass jemand auf
 eine Antwort wartet.
 
+### Die Glocke: Benachrichtigungen aus der Datenbank (0031, 2026-08-16)
+
+`notifications` gab es seit 0001 als „Quelle der Wahrheit für die
+In-App-Glocke" — beschrieben hat sie nie jemand. Jetzt füllt ein
+**Trigger** auf `friendships` sie: Anfrage → `friend_request` an den
+Empfänger; Annahme → `friend_accepted` an den Absender, die offene
+Anfrage verschwindet; Zeile gelöscht (Ablehnen, Zurücknehmen) → alles
+dazu verschwindet. In der Datenbank und nicht im Client, weil ein Client
+vergessen, abstürzen oder alt sein kann.
+
+Der Client **liest** nur (`NotificationsApi`): live über Realtime
+(`incoming()`, Tabelle ist in der Publikation, RLS gilt) und als Bestand
+(`unread()`). Kommt eine Zeile an, entwertet `incomingNotificationsProvider`
+die betroffenen Listen und die Shell zeigt ein Banner mit „Ansehen" —
+auf **jedem** Tab. Fällt Realtime aus, lädt der 30-Sekunden-Takt weiter;
+nichts hängt am Live-Kanal. pgTAP prüft: Absender bekommt nichts,
+Unbeteiligte sehen nichts, direktes Einfügen ist gesperrt, Zurücknehmen
+räumt die Glocke.
+
 ### Was weiterhin fehlt: eine Meldung bei geschlossener App
 
-Es gibt **keinen** Benachrichtigungsweg — kein FCM, kein Realtime. Die
-Anfrageliste wird alle 30 Sekunden neu geladen, das wirkt also nur,
-solange die App läuft. Wer sie geschlossen hat, erfährt nichts, bis er
-sie öffnet.
+Realtime wirkt nur, solange die App läuft. Wer sie geschlossen hat,
+erfährt nichts, bis er sie öffnet. Der Push hängt an genau dieser
+Tabelle — jede neue Zeile ist ein Anlass —, braucht aber Firebase Cloud
+Messaging.
 
 Echte Meldungen brauchen Firebase Cloud Messaging: ein Firebase-Projekt,
 `google-services.json`, ein Gerätetoken je Installation und eine
