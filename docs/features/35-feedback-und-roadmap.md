@@ -64,7 +64,8 @@ und verschwinden nach der Testphase ohne Release.
   Die zwölf vorbefüllten Punkte aus 0037 wurden über den normalisierten
   Titel adoptiert (Anführungszeichen und Leerraum zählen nicht).
 - **Secrets:** `GITHUB_TOKEN` (feingranular, nur Issues lesen/schreiben in
-  diesem Repo) als Edge-Function-Secret. Sonst nichts — der Workflow
+  diesem Repo) als Edge-Function-Secret; ersatzweise wird
+  `GITHUB_FEEDBACK_TOKEN` gelesen. Sonst nichts — der Workflow
   braucht kein Supabase-Geheimnis.
 
 ### So wird verwaltet (kein SQL mehr)

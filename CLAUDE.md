@@ -124,6 +124,14 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Einrichtung nach dem Merge: 0038 einspielen, beide Functions deployen
   (verify_jwt false), Secret `GITHUB_TOKEN` setzen, dann
   `scratchpad/seed_roadmap_issues.py` bzw. `gh workflow run feedback-sync.yml`.
+- **Kollision 2026-09-03:** Während PR #54 entstand, hat eine zweite
+  Sitzung live eine eigene Variante eingespielt (`github_issue_number`/
+  `github_issue_url`, Trigger `feedback_github_issue`, Function
+  `feedback-to-github`, Secret `GITHUB_FEEDBACK_TOKEN`, Test-Issue #55).
+  0038 räumt sie idempotent ab; die Functions lesen beide Secret-Namen.
+  **Vor jedem Live-Eingriff:** `list_migrations`/`list_edge_functions`
+  ansehen — nicht nur das Repo. Zwei Sitzungen auf einer Datenbank
+  brauchen einen Menschen, der sagt, welche weitermacht.
 - **Paralleles Arbeiten:** Am 2026-09-03 stand das Haupt-Arbeitsverzeichnis
   auf `data/oesterreich-ueberarbeitung` (zweite Sitzung, Datenpflege).
   Wer das vorfindet: **nicht** darauf committen, nicht stashen, nicht

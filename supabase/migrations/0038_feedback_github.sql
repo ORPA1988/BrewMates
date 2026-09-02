@@ -34,6 +34,23 @@
 -- mit der Service-Rolle. Die Policies bleiben unangetastet.
 -- ============================================================================
 
+-- ----------------------------------------------------------------------------
+-- Aufräumen eines parallelen, nie veröffentlichten Versuchs (2026-09-03):
+-- Eine zweite Sitzung hatte live `github_issue_number`/`github_issue_url`
+-- plus Trigger `feedback_github_issue` → Function `feedback-to-github`
+-- angelegt (nur Hinweg, keine Roadmap, kein Rückweg). Zwei Trigger hätten
+-- pro Meldung zwei Issues erzeugt. Auf einem frischen Aufbau tut dieser
+-- Block nichts.
+drop trigger if exists feedback_github_issue on public.feedback;
+drop trigger if exists feedback_clear_github_columns on public.feedback;
+drop function if exists public.feedback_github_issue();
+drop function if exists public.feedback_clear_github_columns();
+drop index if exists public.feedback_github_issue_idx;
+alter table public.feedback
+  drop column if exists github_issue_number,
+  drop column if exists github_issue_url;
+-- ----------------------------------------------------------------------------
+
 alter table public.feedback add column github_issue integer;
 alter table public.roadmap_items add column github_issue integer unique;
 

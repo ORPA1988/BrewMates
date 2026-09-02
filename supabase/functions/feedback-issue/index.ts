@@ -123,7 +123,10 @@ Deno.serve(async (req) => {
     return new Response("forbidden", { status: 403 });
   }
 
-  const token = Deno.env.get("GITHUB_TOKEN");
+  // Beide Namen gelten — je nachdem, unter welchem der Schlüssel eingetragen
+  // wurde (ein paralleler Versuch nannte ihn GITHUB_FEEDBACK_TOKEN).
+  const token = Deno.env.get("GITHUB_TOKEN") ??
+    Deno.env.get("GITHUB_FEEDBACK_TOKEN");
   if (!token) {
     return new Response(
       "GITHUB_TOKEN ist nicht gesetzt – kein GitHub-Issue möglich. " +
