@@ -115,6 +115,17 @@ class FakeOnlineService extends OnlineService {
   NotificationsApi get notifications => _notifications;
 
   late final _checkins = _FakeCheckinsApi(this);
+  late final _feedback = _FakeFeedbackApi(this);
+
+  @override
+  FeedbackApi get feedback => _feedback;
+
+  /// Testphasen-Schalter, Meldungen und Roadmap des „Servers".
+  bool feedbackAn = true;
+  List<FeedbackItem> meineMeldungen = const [];
+  List<RoadmapItem> roadmap = const [];
+  /// Reaktionen anderer auf eigene Sessions: sessionId -> Teilnehmer.
+  Map<String, List<RemoteParticipant>> teilnehmer = const {};
 
   @override
   CheckinsApi get checkins => _checkins;
@@ -145,6 +156,44 @@ class FakeOnlineService extends OnlineService {
 
   @override
   FriendsApi get friends => _friends;
+}
+
+class _FakeFeedbackApi extends FeedbackApi {
+  _FakeFeedbackApi(this._fake)
+      : super(_fake.client, (() => _fake.currentUser));
+
+  final FakeOnlineService _fake;
+
+  @override
+  Future<bool> enabled() async => _fake.feedbackAn;
+
+  @override
+  Future<String?> submit({
+    required FeedbackKind kind,
+    required String body,
+    required String appVersion,
+    required String platform,
+  }) async {
+    _fake.aufrufe.add('feedback.submit:${kind.name}:$body:$appVersion:$platform');
+    if (_fake.schlaegtFehl) return 'Konnte nicht gesendet werden.';
+    _fake.meineMeldungen = [
+      FeedbackItem(
+        id: 'fb-${_fake.meineMeldungen.length + 1}',
+        kind: kind,
+        body: body,
+        status: FeedbackStatus.open,
+        createdAt: DateTime(2026, 9, 3),
+      ),
+      ..._fake.meineMeldungen,
+    ];
+    return null;
+  }
+
+  @override
+  Future<List<FeedbackItem>> mine() async => _fake.meineMeldungen;
+
+  @override
+  Future<List<RoadmapItem>> roadmap() async => _fake.roadmap;
 }
 
 class _FakeCheckinsApi extends CheckinsApi {
@@ -232,6 +281,12 @@ class _FakeSessionsApi extends SessionsApi {
   Future<bool> joinSession(String sessionId, {required bool joined}) async {
     _fake.aufrufe.add('joinSession:$sessionId:$joined');
     return !_fake.schlaegtFehl;
+  }
+
+  @override
+  Future<List<RemoteParticipant>> participantsOf(String sessionId) async {
+    _fake.aufrufe.add('participantsOf:$sessionId');
+    return _fake.teilnehmer[sessionId] ?? const [];
   }
 }
 

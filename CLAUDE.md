@@ -7,13 +7,23 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
 
 - **Branch**: PRs #2–#4 sind in `main` gemerged; neue Arbeit startet auf
   frischen Branches von `main`.
-  Version `0.10.7-beta+25` (Beta 0.x bis
+  Version `0.10.9-beta+27` (Beta 0.x bis
   zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch; die
   frühen Alpha-Releases wurden von 1.1/1.2 auf 0.1.0/0.2.0 umbenannt).
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0036` sind LIVE, lückenlos** (Stand 2026-09-02) — `0020–0024` am 2026-08-15 eingespielt und
+  **`0001–0038` sind LIVE, lückenlos** (Stand 2026-09-03, 0038 gegen
+  `information_schema` geprüft, Hin- und Rückweg live getestet: Issue #68).
+  In `supabase_migrations.schema_migrations` stehen zusätzlich zwei
+  **verwaiste Einträge** des parallelen Versuchs (`20260902223553
+  feedback_github_issue`, `20260902224114 feedback_clear_github_columns_
+  search_path`) — ihre Objekte sind weg, die Zeilen blieben, weil der
+  Auto-Modus das Löschen blockiert hat. Einzeiler für den Menschen:
+  `delete from supabase_migrations.schema_migrations where version in
+  ('20260902223553','20260902224114');`. Ebenso ist die fremde Function
+  `feedback-to-github` noch deployt, aber ohne Trigger tot — löschbar im
+  Dashboard (Edge Functions). — `0020–0024` am 2026-08-15 eingespielt und
   gegengeprüft (Spalten, Constraints, Enum, Index, vier neue Funktionen,
   Policy; `friendships` unverändert alle auf `freund`, also keine
   Sichtbarkeitsänderung am Rollout-Tag). Kein Schema-Drift.
@@ -104,6 +114,35 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   **`main` ist seit 2026-09-02 geschützt** (PR + grüne CI Pflicht, auch
   für Admins): kein `git push origin main` mehr — Merges über
   `gh api -X PUT repos/ORPA1988/BrewMates/pulls/<n>/merge` (Merge-Commit).
+- **0037 (2026-09-03):** Trigger `session_participants_notify` (Prost/„Bin
+  dabei“ erreichen den Gastgeber als `session_toast`/`session_joined`);
+  Tabellen `feedback` (Absender + Admin) und `roadmap_items` (alle lesen,
+  Admins schreiben), Schalter `app_config.feedback_enabled`. Auswertung
+  per SQL, siehe `docs/features/35-feedback-und-roadmap.md`. **Web ist
+  Zweitgerät mit vollem Funktionsumfang** (iPhone-Tester) — Parität ist
+  Anforderung, kein Nice-to-have.
+- **0038 (2026-09-03):** Feedback und Roadmap werden **in GitHub verwaltet**
+  (Issues + Labels `feedback`/`bug`/`wunsch`/`roadmap`/`status:*`), siehe
+  `docs/features/35-feedback-und-roadmap.md`. Edge Functions
+  `feedback-issue` (Trigger → anonymes Issue) und `github-sync` (Workflow
+  `feedback-sync.yml` → liest Issue nach, schreibt Supabase). Secret
+  `GITHUB_TOKEN` (feingranular, nur Issues) bei den Edge Functions.
+  Meldungen auslesen: `gh issue list --label feedback --state open`.
+  Einrichtung nach dem Merge: 0038 einspielen, beide Functions deployen
+  (verify_jwt false), Secret `GITHUB_TOKEN` setzen, dann
+  `scratchpad/seed_roadmap_issues.py` bzw. `gh workflow run feedback-sync.yml`.
+- **Kollision 2026-09-03:** Während PR #54 entstand, hat eine zweite
+  Sitzung live eine eigene Variante eingespielt (`github_issue_number`/
+  `github_issue_url`, Trigger `feedback_github_issue`, Function
+  `feedback-to-github`, Secret `GITHUB_FEEDBACK_TOKEN`, Test-Issue #55).
+  0038 räumt sie idempotent ab; die Functions lesen beide Secret-Namen.
+  **Vor jedem Live-Eingriff:** `list_migrations`/`list_edge_functions`
+  ansehen — nicht nur das Repo. Zwei Sitzungen auf einer Datenbank
+  brauchen einen Menschen, der sagt, welche weitermacht.
+- **Paralleles Arbeiten:** Am 2026-09-03 stand das Haupt-Arbeitsverzeichnis
+  auf `data/oesterreich-ueberarbeitung` (zweite Sitzung, Datenpflege).
+  Wer das vorfindet: **nicht** darauf committen, nicht stashen, nicht
+  wechseln — eigenen Klon/Worktree von `origin/main` benutzen.
 - **Performance (0036, 2026-09-02):** alle 77 RLS-Policies in `public`
   werten `auth.uid()` als `(select auth.uid())` aus (einmal pro Abfrage
   statt pro Zeile), 21 Fremdschlüssel haben Indizes. Beides wird zur

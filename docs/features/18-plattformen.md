@@ -43,6 +43,14 @@ einer App ohne Text und einem Scanner, der schweigend nichts erkannte.
 Jeder dieser Fälle kostete eine eigene Fehlersuche. Heute liegt alles im
 Bundle, versionsgepinnt.
 
+### Web ist Zweitgerät, nicht Testumgebung (Entscheidung 2026-09-03)
+
+Wer kein Android hat — in der Testphase alle iPhone-Nutzer — nutzt
+BrewMates im Browser. Deshalb gilt: **Alles, was die App kann, muss auch
+im Browser gehen**, und beides muss denselben Stand zeigen (siehe
+Session-Abgleich in 07). Bekannte Lücke: Push im Browser (Firebase Web
++ Service Worker) — steht in der Roadmap.
+
 ## Modularität
 
 - **Hängt ab von:** nichts
