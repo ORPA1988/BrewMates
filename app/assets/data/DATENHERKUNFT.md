@@ -1,6 +1,6 @@
 # Datenherkunft
 
-Die Community-Datenbank umfasst acht Dateien: `beers-at.json` und `breweries-at.json` (Österreich, 442 Biere / 46 Brauereien), `beers-by.json` und `breweries-by.json` (Bayern, 72 Biere / 33 Brauereien), `beers-de.json` und `breweries-de.json` (Deutschland ohne Bayern, 95 Biere / 40 Brauereien) sowie `beers-ch.json` und `breweries-ch.json` (Schweiz, 45 Biere / 18 Brauereien). Biere und Brauereien sind über das Feld `brewery_id` miteinander verknüpft.
+Die Community-Datenbank umfasst acht Dateien: `beers-at.json` und `breweries-at.json` (Österreich, 447 Biere / 46 Brauereien), `beers-by.json` und `breweries-by.json` (Bayern, 72 Biere / 33 Brauereien), `beers-de.json` und `breweries-de.json` (Deutschland ohne Bayern, 95 Biere / 40 Brauereien) sowie `beers-ch.json` und `breweries-ch.json` (Schweiz, 45 Biere / 18 Brauereien). Biere und Brauereien sind über das Feld `brewery_id` miteinander verknüpft.
 
 Die Bier- und Brauereidaten stammen aus dem Trainingswissen eines KI-Modells (Stand ca. 2025) und wurden redaktionell zusammengestellt — ohne Gewähr auf Vollständigkeit oder Richtigkeit einzelner Angaben (z. B. Alkoholgehalt oder Sortimentsstand). Das Feld `community_rating` ist eine konservative redaktionelle Schätzung auf Basis des allgemeinen Rufs der Biere und kein gemessener oder von einer Plattform übernommener Wert. Beschreibungstexte sind Paraphrasen und keine wörtlichen Zitate der Brauereien. Korrekturen und Ergänzungen sind ausdrücklich willkommen — bitte per GitHub-Issue melden.
 
@@ -92,20 +92,32 @@ Markenheimat — mit dem Hinweis im `notes`-Feld, dass der Braubetrieb dort
 
 ### Bilder
 
-Alle 352 Bild-URLs des österreichischen Bestands wurden abgerufen. Acht
+Jede Bild-URL des österreichischen Bestands wurde einzeln abgerufen. Acht
 tote Links der Brauerei Murau (Seite umgebaut) sind durch die aktuellen
-ersetzt, 30 fehlende Bilder aus Open Food Facts ergänzt (CC-BY-SA, mit
-`image_source` auf die Produktseite). Kein Bild einer fremden Seite steht
-ohne Quellenangabe — das erzwingen `tools/validate_data.dart` und
+ersetzt; 30 fehlende Bilder kamen aus Open Food Facts (CC-BY-SA), 65
+weitere von den Produktseiten der Brauereien selbst — Hirter, Schloss
+Eggenberg, Starkenberger, Mohrenbräu, Villacher, Zillertal, Frastanzer
+und Schnaitl. Damit haben 394 der 447 österreichischen Biere ein Bild
+(vorher 336).
+
+Jedes einzelne trägt seine Quelle: `image_source` zeigt auf die Seite, von
+der es stammt. Kein Bild einer fremden Seite steht ohne Quellenangabe —
+das erzwingen `tools/validate_data.dart` und
 `test/bild_herkunft_test.dart`.
 
 ### Was **nicht** aus der Recherche kam
 
-Der **Alkoholgehalt** von 115 der 442 österreichischen Biere fehlt
-weiterhin. Die meisten Brauereien veröffentlichen ihn nicht auf der
-Produktseite, und aus dem Stil zu raten wäre eine Zahl ohne Deckung. Aus
-demselben Grund stehen 83 Biere weiter auf dem Stil „Bier“: Was die
-Brauerei nicht sagt, sagen wir auch nicht.
+Der **Alkoholgehalt** von 97 der 447 österreichischen Biere fehlt
+weiterhin, und 60 stehen auf dem Stil „Bier“. Wo die Brauerei ihn
+veröffentlicht, steht er jetzt drin — Frastanzer, Schnaitl, Villacher,
+Baumgartner, Wieselburger und die Kaiser-Spezialitäten wurden Seite für
+Seite abgeglichen. Bei Huber Bräu (TYPO3-Seite ohne Produktdaten),
+Zillertal, Raschhofer und Bevog steht die Zahl schlicht nirgends
+maschinenlesbar. Aus dem Stil zu raten wäre eine Zahl ohne Deckung: Was
+die Brauerei nicht sagt, sagen wir auch nicht.
+
+Aus den Herstellerseiten kamen dabei fünf Biere neu dazu, die im Bestand
+fehlten (Frastanzer Gold, Kellerbier, s'bio, Natur Radler, Radler sauer).
 
 ## Produktfotos der Brauereien (seit 2026-08-15)
 
