@@ -260,3 +260,23 @@ update app_config set value = '0.10.3', updated_at = now()
 Das sperrt jede Fassung **unter** dem Wert aus, die den Riegel kennt
 (ab 0.10.2). Es ist eine Aussperr-Entscheidung, deshalb bewusst kein
 Automatismus.
+
+## Vor der ersten öffentlichen Veröffentlichung (Play Store)
+
+Entscheidungen vom 2026-09-02, bewusst **noch nicht** umgesetzt:
+
+- **E-Mail-Bestätigung einschalten** (Supabase → Authentication →
+  Providers → Email → „Confirm email"). In der privaten Beta aus, damit
+  Testkonten ohne Postfach gehen. Öffentlich muss jede Adresse belegt sein.
+- **Leaked-Password-Protection** braucht den Pro-Tarif. Beim Wechsel auf
+  Pro einschalten (gleiche Seite, „Prevent use of leaked passwords").
+
+## Branch-Schutz auf `main` (seit 2026-09-02)
+
+Nur noch per PR mit grünen Checks „Analyze & Test (Flutter)" und
+„RLS & Migrationen (Supabase)"; kein Force-Push, kein Löschen; gilt auch
+für Admins. Praktisch: `git push origin main` wird abgelehnt — Merges
+laufen über die GitHub-API (`gh api -X PUT repos/…/pulls/<n>/merge`)
+oder den Merge-Knopf im Browser. Der Release-Workflow ist nicht
+betroffen (er pusht nicht auf `main`), der Bier-Vorschlag-Workflow
+legt ohnehin Branch + PR an.
