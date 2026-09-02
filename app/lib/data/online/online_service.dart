@@ -263,6 +263,45 @@ class OnlineService {
     });
   }
 
+  /// Anzeigename und Avatar am Server aendern (nur eigene Zeile, RLS).
+  Future<bool> updateMyProfile({String? displayName, String? avatarEmoji}) async {
+    final me = currentUser;
+    if (me == null) return false;
+    final patch = <String, dynamic>{
+      if (displayName != null && displayName.trim().isNotEmpty)
+        'display_name': displayName.trim(),
+      if (avatarEmoji != null && avatarEmoji.isNotEmpty)
+        'avatar_emoji': avatarEmoji,
+    };
+    if (patch.isEmpty) return true;
+    try {
+      await _client.from('profiles').update(patch).eq('id', me.id);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// „Passwort vergessen": Supabase schickt einen Link an die Adresse.
+  ///
+  /// Gab es bis 2026-09-02 nicht. Mit dem Beta-Gate hiess ein vergessenes
+  /// Passwort: ausgesperrt, neues Konto, alle Freundschaften weg.
+  Future<String?> resetPassword(String email) async {
+    final adresse = email.trim();
+    if (adresse.isEmpty || !adresse.contains('@')) {
+      return 'Bitte zuerst deine E-Mail-Adresse eintragen.';
+    }
+    try {
+      await _client.auth.resetPasswordForEmail(adresse,
+          redirectTo: kIsWeb ? Uri.base.origin + Uri.base.path : oauthRedirect);
+      return null;
+    } on AuthException catch (e) {
+      return _authMessage(e);
+    } catch (_) {
+      return 'Keine Verbindung – bitte später erneut versuchen.';
+    }
+  }
+
   Future<RemoteProfile?> myProfile() async {
     final user = currentUser;
     if (user == null) return null;

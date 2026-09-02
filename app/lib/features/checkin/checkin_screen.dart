@@ -109,7 +109,7 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
         photoFailed = photoUrl == null;
       }
       final venue = _venueController.text.trim();
-      final earned = await ref.read(actionsProvider).createCheckin(
+      final ergebnis = await ref.read(actionsProvider).createCheckin(
             beerId: selected.beer.id,
             rating: _rating,
             note: _noteController.text,
@@ -127,13 +127,19 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
                 'Check-in wurde ohne Bild gespeichert.')));
       }
       final messenger = ScaffoldMessenger.of(context);
-      if (earned.isNotEmpty) {
-        await showCelebration(context, earned);
+      if (ergebnis.celebrations.isNotEmpty) {
+        await showCelebration(context, ergebnis.celebrations);
         if (!mounted) return;
       }
-      messenger.showSnackBar(
-        const SnackBar(content: Text('Check-in gespeichert 🍺')),
-      );
+      // Angemeldet, aber nicht übertragen? Das sagt die App jetzt, statt
+      // „gespeichert" zu melden und die Nachlieferung im Konto-Bildschirm
+      // zu verstecken.
+      messenger.showSnackBar(SnackBar(
+        content: Text(ergebnis.synced
+            ? 'Check-in gespeichert 🍺'
+            : 'Check-in gespeichert – wird übertragen, sobald du online bist ⏳'),
+        duration: Duration(seconds: ergebnis.synced ? 4 : 6),
+      ));
       context.pop();
     } finally {
       if (mounted) setState(() => _saving = false);

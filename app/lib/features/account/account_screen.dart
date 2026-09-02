@@ -290,13 +290,32 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         TextField(
           controller: _passwordController,
           enabled: !_busy,
-          obscureText: true,
-          decoration: const InputDecoration(
+          obscureText: !_passwortSichtbar,
+          decoration: InputDecoration(
             labelText: 'Passwort',
             helperText: 'Mindestens 6 Zeichen',
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
+            suffixIcon: IconButton(
+              tooltip: _passwortSichtbar ? 'Verbergen' : 'Anzeigen',
+              icon: Icon(_passwortSichtbar
+                  ? Icons.visibility_off
+                  : Icons.visibility),
+              onPressed: () =>
+                  setState(() => _passwortSichtbar = !_passwortSichtbar),
+            ),
           ),
         ),
+        if (!isSignUp)
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              // Gab es bis 2026-09-02 nicht. Mit dem Beta-Gate hiess ein
+              // vergessenes Passwort: ausgesperrt, neues Konto, alle
+              // Freundschaften weg.
+              onPressed: _busy ? null : () async => _passwortVergessen(online),
+              child: const Text('Passwort vergessen?'),
+            ),
+          ),
         if (isSignUp) ...[
           const SizedBox(height: 12),
           TextField(
@@ -428,6 +447,22 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         ),
       ),
     );
+  }
+
+  bool _passwortSichtbar = false;
+
+  Future<void> _passwortVergessen(OnlineService online) async {
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _busy = true);
+    final fehler = await online.resetPassword(_emailController.text);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    messenger.showSnackBar(SnackBar(
+      content: Text(fehler ??
+          'Wenn es ein Konto mit dieser Adresse gibt, ist eine E-Mail zum '
+              'Zurücksetzen unterwegs. Schau auch im Spam-Ordner nach.'),
+      duration: const Duration(seconds: 7),
+    ));
   }
 
   Future<void> _syncNow(OnlineService online) async {

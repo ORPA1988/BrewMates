@@ -34,6 +34,15 @@ Wirtshaus drei Minuten braucht, macht ihn beim nächsten Mal nicht mehr.
   Brauereinamen, damit der Feed ohne Verknüpfungen auskommt
 - **Fotos:** Bucket `beer-photos`, Pfad je Nutzer
 
+### „Gespeichert" heißt nicht „angekommen" (2026-09-02)
+
+Der Check-in wurde lokal gespeichert, der Upload `unawaited` abgesetzt,
+und die App meldete „Check-in gespeichert". Ob Freunde ihn sehen, stand
+nur tief im Konto-Bildschirm („x Check-ins warten"). `createCheckin`
+wartet den Upload jetzt ab und liefert `synced`; offline sagt die
+Snackbar „wird übertragen, sobald du online bist ⏳" — der Wortlaut aus
+der Gasthaus-Pflege, die das schon immer richtig machte.
+
 ## Modularität
 
 - **Hängt ab von:** Bierdatenbank (04), Konto (01) für den Abgleich

@@ -30,6 +30,14 @@ Check-ins lebendig.
 - **Toasts/Kommentare:** `toasts` und `comments` (0001) — der Server ist
   die Wahrheit, sobald ein Check-in hochgeladen wurde
 
+### Toast nur, wenn der Server ihn hat (2026-09-02)
+
+Der Toast auf einen hochgeladenen Check-in wurde lokal umgeschaltet,
+egal was der Server sagte; beim nächsten Laden sprang er zurück.
+`toggleServerToast` gibt jetzt `null` zurück, wenn der Server ablehnt —
+dann wird nichts gespiegelt und die Karte sagt „Konnte nicht gesendet
+werden".
+
 ## Modularität
 
 - **Hängt ab von:** Check-ins (02), Freunde (08)

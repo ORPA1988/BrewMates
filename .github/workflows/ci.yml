@@ -43,6 +43,11 @@ jobs:
       - uses: supabase/setup-cli@v1
         with:
           version: latest
+          # Ohne Token fragt die Action anonym bei der GitHub-API nach der
+          # neuesten Version — und laeuft in das Ratenlimit (2026-09-02:
+          # „Failed to resolve latest Supabase CLI release: rate limit
+          # exceeded", ein roter Lauf ohne Codeaenderung).
+          token: ${{ secrets.GITHUB_TOKEN }}
       # Baut die Datenbank ALLEIN aus supabase/migrations/ auf. Das prüft
       # zweierlei auf einmal: dass die Migrationen from scratch
       # durchlaufen, und dass sie den Live-Stand vollständig beschreiben.

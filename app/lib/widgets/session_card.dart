@@ -6,6 +6,7 @@ import '../core/format.dart';
 import '../data/db/database.dart';
 import '../data/providers.dart';
 import 'badge_celebration.dart';
+import 'beacon_messages.dart';
 
 /// Kompakte Karte einer aktiven Session („Gerade unterwegs"-Leiste,
 /// genutzt auf Home und überall, wo Sessions beworben werden).
@@ -80,15 +81,13 @@ class SessionCard extends ConsumerWidget {
                       children: [
                         FilledButton.tonal(
                           onPressed: () async {
-                            await ref
+                            final ok = await ref
                                 .read(actionsProvider)
                                 .toastSession(session.id);
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content:
-                                        Text('Prost rübergeschickt 🍻')),
-                              );
+                              ScaffoldMessenger.of(context).showSnackBar(ok
+                                  ? toastSentSnackBar
+                                  : reactionNotSentSnackBar);
                             }
                           },
                           style: FilledButton.styleFrom(
@@ -98,15 +97,16 @@ class SessionCard extends ConsumerWidget {
                         const SizedBox(width: 8),
                         TextButton(
                           onPressed: () async {
-                            final earned = await ref
+                            final ergebnis = await ref
                                 .read(actionsProvider)
                                 .joinSession(session.id);
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Du bist dabei!')),
-                              );
-                              await showBadgeCelebration(context, earned);
+                                  ergebnis.synced
+                                      ? joinedSnackBar
+                                      : reactionNotSentSnackBar);
+                              await showBadgeCelebration(
+                                  context, ergebnis.earned);
                             }
                           },
                           style: TextButton.styleFrom(

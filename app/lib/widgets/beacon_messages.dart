@@ -17,3 +17,22 @@ const beaconEndFailedSnackBar = SnackBar(
       'holt es beim nächsten Abgleich nach.'),
   duration: Duration(seconds: 6),
 );
+
+/// Der Beacon laeuft lokal, aber der Server hat ihn nicht — offline oder
+/// Fehler. Der Mensch muss das wissen, sonst sitzt er sichtbar-geglaubt
+/// und unsichtbar im Wirtshaus.
+const beaconStartNotSyncedText =
+    'Beacon läuft nur auf deinem Gerät – ohne Verbindung sehen dich deine '
+    'Freunde noch nicht.';
+
+/// Prost/„Bin dabei" ist beim Server nicht angekommen.
+const reactionNotSentSnackBar = SnackBar(
+  content: Text('Konnte nicht gesendet werden – keine Verbindung? '
+      'Der Gastgeber hat nichts davon mitbekommen.'),
+  duration: Duration(seconds: 5),
+);
+
+const toastSentSnackBar =
+    SnackBar(content: Text('Prost geschickt! 🍻'));
+const joinedSnackBar =
+    SnackBar(content: Text('Du bist dabei! 🍻'));

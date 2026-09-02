@@ -25,21 +25,19 @@ class SessionDetailScreen extends ConsumerWidget {
   }
 
   Future<void> _toast(BuildContext context, WidgetRef ref) async {
-    await ref.read(actionsProvider).toastSession(sessionId);
+    final ok = await ref.read(actionsProvider).toastSession(sessionId);
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Prost geschickt! 🍻')),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(ok ? toastSentSnackBar : reactionNotSentSnackBar);
   }
 
   Future<void> _join(BuildContext context, WidgetRef ref) async {
-    final earned = await ref.read(actionsProvider).joinSession(sessionId);
+    final ergebnis = await ref.read(actionsProvider).joinSession(sessionId);
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Du bist dabei! 🍻')),
-    );
-    if (earned.isNotEmpty && context.mounted) {
-      await showBadgeCelebration(context, earned);
+        ergebnis.synced ? joinedSnackBar : reactionNotSentSnackBar);
+    if (ergebnis.earned.isNotEmpty && context.mounted) {
+      await showBadgeCelebration(context, ergebnis.earned);
     }
   }
 
