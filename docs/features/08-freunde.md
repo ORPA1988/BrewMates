@@ -106,6 +106,27 @@ Eine Zahl am Profil-Tab. Vorher standen Anfragen nur auf der Startseite;
 wer die App auf einem anderen Tab offen hatte, sah nie, dass jemand auf
 eine Antwort wartet.
 
+### Eingehende Anfragen waren zweieinhalb Wochen unsichtbar (2026-09-02)
+
+Vom 2026-08-15 bis zum 2026-09-02 zeigte die App **keine einzige**
+eingehende Anfrage, keine Freundesliste und keine Blockierliste — obwohl
+Senden funktionierte und die Pushes ankamen. Ursache: sechs
+Select-Strings interpolierten `$OnlineApi.profileCols` statt
+`${OnlineApi.profileCols}`. Dart setzt dann den **Klassennamen** ein und
+hängt `.profileCols` als Text an; der Server bekam wörtlich
+`OnlineApi.profileCols` als Spaltenliste und antwortete 400. Der Client
+fing den Fehler mit `catch (_) => []` und zeigte „keine Anfragen".
+
+Gefunden über die API-Logs (400 auf `/rest/v1/friendships`), nicht über
+Tests: Die Widget-Tests laufen gegen eine Attrappe, die die Zeichenkette
+nie an einen Server schickt. Deshalb jetzt `select_interpolation_test.dart`
+— er liest die Quelltexte und lehnt `'…$Klasse.feld…'` in Zeichenketten
+ab (Köder-Datei geprüft: wird erkannt). Und `incomingRequests` loggt
+seinen Fehler, statt ihn zu schlucken.
+
+Das ist der vierte Fall des immer gleichen Musters in diesem Projekt: eine
+Sache, die aussieht, als wirke sie, und nichts tut.
+
 ### Die Glocke: Benachrichtigungen aus der Datenbank (0031, 2026-08-16)
 
 `notifications` gab es seit 0001 als „Quelle der Wahrheit für die
