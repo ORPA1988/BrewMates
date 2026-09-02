@@ -99,8 +99,11 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   `spatial_ref_sys` ohne RLS, `st_estimatedextent` SECURITY DEFINER für
   anon, 9 anon-Schreibrechte auf `spatial_ref_sys`/`geometry_columns`/
   `geography_columns`. Öffentliche Referenzdaten, keine Nutzerdaten.
-  Dashboard-seitig offen: Leaked-Password-Protection (Auth → Providers
-  → Email), E-Mail-Bestätigung bewusst aus.
+  Leaked-Password-Protection braucht **Pro** (geprüft 2026-09-02);
+  E-Mail-Bestätigung bewusst aus bis zur Play-Store-Veröffentlichung.
+  **`main` ist seit 2026-09-02 geschützt** (PR + grüne CI Pflicht, auch
+  für Admins): kein `git push origin main` mehr — Merges über
+  `gh api -X PUT repos/ORPA1988/BrewMates/pulls/<n>/merge` (Merge-Commit).
 - **Security-Advisor-Baseline** (bekannt, bewusst offen; zuletzt geprüft
   2026-08-15 nach dem Rollout von 0020–0024, keine echten Neubefunde —
   die vier neuen RPCs schränken ihre Argumente selbst ein: `tier_for`
