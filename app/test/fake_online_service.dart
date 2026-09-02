@@ -151,6 +151,28 @@ class _FakeSessionsApi extends SessionsApi {
   }
 
   @override
+  Future<List<Map<String, dynamic>>> myActiveSessions() async {
+    _fake.aufrufe.add('myActiveSessions');
+    final now = DateTime.now().toUtc();
+    return [
+      for (final id in _fake.aktiveSessionIds)
+        {
+          'id': id,
+          'venue_id': null,
+          'venue_name': 'Serverwirt',
+          'message': null,
+          'visibility': 'friends',
+          'status': 'active',
+          'started_at': now.subtract(const Duration(minutes: 10)).toIso8601String(),
+          'expires_at': now.add(const Duration(hours: 2)).toIso8601String(),
+          'ended_at': null,
+          'latitude': null,
+          'longitude': null,
+        },
+    ];
+  }
+
+  @override
   Future<bool> upsertSession(local.Session session, {String? crewId}) async {
     _fake.aufrufe.add('upsertSession:${session.id}');
     _fake.aktiveSessionIds.add(session.id);

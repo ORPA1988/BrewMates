@@ -91,27 +91,33 @@ void main() {
         reason: 'Sonst glaubt der Nutzer, Freunde sähen das neue Ende.');
   });
 
-  test('Die Aufräumroutine verschont den eigenen laufenden Beacon', () async {
+  test('Die Abgleichroutine verschont den eigenen laufenden Beacon — und '
+      'beendet Unbekanntes nicht', () async {
     final id = await starteBeacon();
-    // Ein Beacon von früher, der serverseitig hängen geblieben ist.
-    online.aktiveSessionIds.add('alte-session-die-haengen-blieb');
+    // Eine Session, die dieses Geraet nicht kennt. Frueher galt sie als
+    // „haengen geblieben" und wurde beendet. Sie kann aber genauso gut vom
+    // anderen Geraet desselben Menschen stammen — dann waere Beenden eine
+    // Loeschung. Unbekanntes wird jetzt uebernommen, nie beendet.
+    online.aktiveSessionIds.add('vom-anderen-geraet');
 
-    final beendet = await container.read(sessionReconcileProvider.future);
+    final geaendert = await container.read(sessionReconcileProvider.future);
 
-    expect(beendet, 1);
-    expect(online.aufrufe,
-        contains('endSession:alte-session-die-haengen-blieb'));
-    expect(online.aufrufe, isNot(contains('endSession:$id')),
-        reason: 'Der laufende eigene Beacon darf nicht abgeräumt werden.');
+    expect(geaendert, 1, reason: 'Die fremde Zeile wurde uebernommen.');
+    expect(online.aufrufe.where((a) => a.startsWith('endSession')), isEmpty,
+        reason: 'Weder der eigene Beacon noch die unbekannte Session '
+            'duerfen abgeraeumt werden.');
+    expect(online.aufrufe, isNot(contains('endSession:$id')));
   });
 
-  test('Ohne lokalen Beacon räumt die Routine alles Offene ab', () async {
+  test('Ohne lokalen Beacon werden Server-Sessions uebernommen, nicht '
+      'abgeraeumt', () async {
     online.aktiveSessionIds.addAll(['a', 'b']);
 
-    final beendet = await container.read(sessionReconcileProvider.future);
+    final geaendert = await container.read(sessionReconcileProvider.future);
 
-    expect(beendet, 2,
-        reason: 'Läuft lokal nichts, darf serverseitig nichts sichtbar '
-            'bleiben.');
+    expect(geaendert, 2);
+    expect(online.aufrufe.where((a) => a.startsWith('endSession')), isEmpty,
+        reason: 'Ein leeres Geraet ist kein Beweis, dass nichts laeuft — '
+            'es ist nur ein zweites Geraet.');
   });
 }

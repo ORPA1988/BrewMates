@@ -107,6 +107,27 @@ class SessionsApi extends OnlineApi {
     }
   }
 
+  /// Eigene aktive Sessions mit allen Feldern — für den Abgleich zwischen
+  /// Geräten. Ein Beacon, der am Telefon gestartet wurde, muss im Browser
+  /// als der eigene erscheinen, nicht als fremder und schon gar nicht als
+  /// „laeuft nichts".
+  Future<List<Map<String, dynamic>>> myActiveSessions() async {
+    final me = currentUser;
+    if (me == null) return const [];
+    try {
+      final rows = await client
+          .from('sessions')
+          .select('id, venue_id, venue_name, message, visibility, status, '
+              'started_at, expires_at, ended_at, latitude, longitude')
+          .eq('host_id', me.id)
+          .eq('status', 'active')
+          .gt('expires_at', DateTime.now().toUtc().toIso8601String());
+      return [for (final r in rows) Map<String, dynamic>.from(r as Map)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
   /// Beendet serverseitig alles, was lokal nicht (mehr) läuft.
   ///
   /// Das ist die Reparatur für ein fehlgeschlagenes [endSession]: Ein

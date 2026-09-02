@@ -779,6 +779,14 @@ class AppDatabase extends _$AppDatabase {
     return rows.map((r) => r.readTable(profiles)).toList();
   }
 
+  /// Eigene Session aus dem Server-Abgleich übernehmen (gleiche ID wie am
+  /// Server — `upsertSession` überträgt sie unverändert).
+  Future<void> upsertSession(SessionsCompanion row) =>
+      into(sessions).insertOnConflictUpdate(row);
+
+  Future<Session?> getSession(String id) =>
+      (select(sessions)..where((t) => t.id.equals(id))).getSingleOrNull();
+
   Stream<Session?> watchMyActiveSession(String myId, DateTime now) =>
       (select(sessions)
             ..where((t) =>
