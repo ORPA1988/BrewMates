@@ -13,7 +13,7 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0035` sind LIVE, lückenlos** (Stand 2026-09-02) — `0020–0024` am 2026-08-15 eingespielt und
+  **`0001–0036` sind LIVE, lückenlos** (Stand 2026-09-02) — `0020–0024` am 2026-08-15 eingespielt und
   gegengeprüft (Spalten, Constraints, Enum, Index, vier neue Funktionen,
   Policy; `friendships` unverändert alle auf `freund`, also keine
   Sichtbarkeitsänderung am Rollout-Tag). Kein Schema-Drift.
@@ -104,6 +104,13 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   **`main` ist seit 2026-09-02 geschützt** (PR + grüne CI Pflicht, auch
   für Admins): kein `git push origin main` mehr — Merges über
   `gh api -X PUT repos/ORPA1988/BrewMates/pulls/<n>/merge` (Merge-Commit).
+- **Performance (0036, 2026-09-02):** alle 77 RLS-Policies in `public`
+  werten `auth.uid()` als `(select auth.uid())` aus (einmal pro Abfrage
+  statt pro Zeile), 21 Fremdschlüssel haben Indizes. Beides wird zur
+  Laufzeit aus dem Katalog erzeugt, nicht abgetippt — neue Policies
+  mit nacktem `auth.uid()` fängt `performance_0036.test.sql`. Der
+  Performance-Advisor meldet danach nur noch `unused_index` (INFO) —
+  erwartbar bei leerer Datenbank, kein Handlungsbedarf.
 - **Security-Advisor-Baseline** (bekannt, bewusst offen; zuletzt geprüft
   2026-08-15 nach dem Rollout von 0020–0024, keine echten Neubefunde —
   die vier neuen RPCs schränken ihre Argumente selbst ein: `tier_for`
