@@ -107,6 +107,19 @@ Außerdem behauptete der Ein-Tap-Beacon „3 Stunden" im Text, während er
 längst die zuletzt gewählte Laufzeit nahm — auch 30 Minuten. Der Text
 nennt jetzt die echte Dauer.
 
+### Prost und „Bin dabei“ kommen jetzt an (2026-09-03)
+
+Beide landeten in `session_participants` — und der Gastgeber erfuhr
+nichts davon: keine Benachrichtigung, und seine Session-Ansicht zeigte
+nur **lokale** Teilnehmer. Der Tester sagte zu Recht „hat keine Funktion“.
+
+Jetzt: Trigger `session_participants_notify` (0037) schreibt
+`session_toast` / `session_joined` an den Gastgeber → Glocke, Banner,
+Push greifen von selbst; zieht jemand zurück, verschwindet die Zeile.
+Die Session-Ansicht lädt bei eigenen Sessions die Reaktionen vom Server
+(`participantsOf`, `remoteParticipantsProvider`) und zeigt „Mit dabei“
+und „🍻 Zugeprostet: …“.
+
 ## Modularität
 
 - **Hängt ab von:** Konto (01), Freunde (08), Gasthäuser (05, optional),

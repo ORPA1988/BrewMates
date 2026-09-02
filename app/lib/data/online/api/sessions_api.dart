@@ -221,6 +221,30 @@ class SessionsApi extends OnlineApi {
     }
   }
 
+  /// Wer auf dem Server zu dieser Session „Prost" oder „Bin dabei" gesagt
+  /// hat. Fuer den Gastgeber: Seine lokale Datenbank kennt nur lokale
+  /// Teilnehmer — bis 2026-09-03 sah er deshalb nie, dass jemand reagiert
+  /// hatte, und beide Knoepfe wirkten funktionslos.
+  Future<List<RemoteParticipant>> participantsOf(String sessionId) async {
+    if (currentUser == null) return const [];
+    try {
+      final rows = await client
+          .from('session_participants')
+          .select('kind, profile:profiles!session_participants_profile_id_fkey('
+              '${OnlineApi.profileCols})')
+          .eq('session_id', sessionId);
+      return [
+        for (final r in rows)
+          RemoteParticipant(
+            profile: RemoteProfile.fromRow(r['profile'] as Map<String, dynamic>),
+            joined: r['kind'] == 'joined',
+          ),
+      ];
+    } catch (_) {
+      return const [];
+    }
+  }
+
   /// „Bin dabei" bzw. Zuprosten spiegeln.
   ///
   /// Fehler bleiben still, und das ist hier vertretbar: Lokal ist die

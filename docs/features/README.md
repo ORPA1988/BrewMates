@@ -56,6 +56,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [32](32-bierpreise-und-preis-radar.md) | Bierpreise & Preis-Radar | 🟢 | 0,5/0,3 l am Gasthaus, Preis am Kartenschild |
 | [33](33-orts-schnellansicht.md) | Orts-Schnellansicht | 🟢 | Bottom-Sheet für Gasthaus und Brauerei |
 | [34](34-entdecken.md) | Entdecken | 🟢 | Biere, Brauereien, Gasthäuser mit Suche, Sortierung, Anlegen |
+| [35](35-feedback-und-roadmap.md) | Fehler, Wünsche, Roadmap | 🟢 | Testphase: melden mit zwei Tipps, Status sehen, Roadmap in Alltagssprache |
 
 ## Geplante Funktionen
 

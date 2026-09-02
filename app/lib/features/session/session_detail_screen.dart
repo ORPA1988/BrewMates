@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/format.dart';
 import '../../data/db/database.dart';
+import '../../data/online/online_service.dart' show RemoteParticipant;
 import '../../data/providers.dart';
 import '../../widgets/badge_celebration.dart';
 import '../../widgets/checkin_card.dart';
@@ -181,14 +182,24 @@ class _HeaderCard extends StatelessWidget {
   }
 }
 
-class _ParticipantsRow extends StatelessWidget {
+class _ParticipantsRow extends ConsumerWidget {
   const _ParticipantsRow({required this.details});
 
   final SessionDetails details;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Eigene Session: Reaktionen kommen vom Server. Die lokale Datenbank
+    // kennt nur lokale Teilnehmer — bis 2026-09-03 sah der Gastgeber
+    // deshalb nie, wer zugeprostet hatte.
+    final remote = details.host.isMe
+        ? (ref.watch(remoteParticipantsProvider(details.session.id)).valueOrNull ??
+            const <RemoteParticipant>[])
+        : const <RemoteParticipant>[];
+    final lokalIds = {for (final p in details.participants) p.id};
     final people = [details.host, ...details.participants];
+    final dabei = [for (final r in remote) if (r.joined && !lokalIds.contains(r.profile.id)) r];
+    final prosts = [for (final r in remote) if (!r.joined) r];
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       child: Column(
@@ -205,8 +216,21 @@ class _ParticipantsRow extends StatelessWidget {
                   avatar: Text(p.avatarEmoji),
                   label: Text(p.displayName),
                 ),
+              for (final r in dabei)
+                Chip(
+                  avatar: Text(r.profile.avatarEmoji),
+                  label: Text(r.profile.displayName),
+                ),
             ],
           ),
+          if (prosts.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              '🍻 Zugeprostet: '
+              '${prosts.map((r) => r.profile.displayName).join(', ')}',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
         ],
       ),
     );

@@ -10,6 +10,9 @@ import '../features/admin/challenge_editor_screen.dart';
 import '../features/beers/add_beer_screen.dart';
 import '../features/beers/beer_edit_screen.dart';
 import '../features/beers/brewery_edit_screen.dart';
+import '../data/online/online_service.dart' show FeedbackKind;
+import '../features/feedback/feedback_screen.dart';
+import '../features/feedback/roadmap_screen.dart';
 import '../features/venues/venue_edit_screen.dart';
 import '../features/discover/discover_screen.dart';
 import '../features/beers/beer_detail_screen.dart';
@@ -195,6 +198,18 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile/challenges',
         builder: (_, __) => const ChallengesScreen(),
+      ),
+      GoRoute(
+        path: '/feedback',
+        builder: (_, state) => FeedbackScreen(
+          initialKind: state.uri.queryParameters['art'] == 'wish'
+              ? FeedbackKind.wish
+              : FeedbackKind.bug,
+        ),
+      ),
+      GoRoute(
+        path: '/roadmap',
+        builder: (_, __) => const RoadmapScreen(),
       ),
       GoRoute(
         path: '/profile/leaderboard',
