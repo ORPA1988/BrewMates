@@ -13,10 +13,17 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0037` sind LIVE, lückenlos** (Stand 2026-09-03); **0038 liegt im
-  Repo und muss VOR dem Release 0.10.9 eingespielt sein** — die App
-  selektiert seither `github_issue`, ohne die Spalte bleiben Meldungen und
-  Roadmap leer (Fehler wird geschluckt). Prüfen: `information_schema.columns` — `0020–0024` am 2026-08-15 eingespielt und
+  **`0001–0038` sind LIVE, lückenlos** (Stand 2026-09-03, 0038 gegen
+  `information_schema` geprüft, Hin- und Rückweg live getestet: Issue #68).
+  In `supabase_migrations.schema_migrations` stehen zusätzlich zwei
+  **verwaiste Einträge** des parallelen Versuchs (`20260902223553
+  feedback_github_issue`, `20260902224114 feedback_clear_github_columns_
+  search_path`) — ihre Objekte sind weg, die Zeilen blieben, weil der
+  Auto-Modus das Löschen blockiert hat. Einzeiler für den Menschen:
+  `delete from supabase_migrations.schema_migrations where version in
+  ('20260902223553','20260902224114');`. Ebenso ist die fremde Function
+  `feedback-to-github` noch deployt, aber ohne Trigger tot — löschbar im
+  Dashboard (Edge Functions). — `0020–0024` am 2026-08-15 eingespielt und
   gegengeprüft (Spalten, Constraints, Enum, Index, vier neue Funktionen,
   Policy; `friendships` unverändert alle auf `freund`, also keine
   Sichtbarkeitsänderung am Rollout-Tag). Kein Schema-Drift.
