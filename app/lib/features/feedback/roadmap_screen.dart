@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/external_links.dart';
 import '../../data/online/online_service.dart';
 import '../../data/providers.dart';
 
@@ -58,6 +60,15 @@ class RoadmapScreen extends ConsumerWidget {
                     title: Text(i.title),
                     subtitle: Text(i.summary),
                     isThreeLine: true,
+                    // Details und Diskussion liegen auf GitHub — lesen geht
+                    // ohne Konto.
+                    trailing: i.githubIssue == null
+                        ? null
+                        : const Icon(Icons.open_in_new, size: 18),
+                    onTap: i.githubIssue == null
+                        ? null
+                        : () => launchUrl(githubIssueUri(i.githubIssue!),
+                            mode: LaunchMode.externalApplication),
                   ),
               ],
             );
@@ -78,6 +89,15 @@ class RoadmapScreen extends ConsumerWidget {
                   'Gerade nichts in Arbeit.'),
               gruppe('🗓️ Geplant', RoadmapStatus.planned, 'Nichts geplant.'),
               gruppe('✅ Fertig', RoadmapStatus.done, 'Noch nichts fertig.'),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: OutlinedButton.icon(
+                  onPressed: () => launchUrl(githubRoadmapUri(),
+                      mode: LaunchMode.externalApplication),
+                  icon: const Icon(Icons.open_in_new, size: 18),
+                  label: const Text('Alle Details und Diskussion auf GitHub'),
+                ),
+              ),
               const SizedBox(height: 24),
             ],
           );

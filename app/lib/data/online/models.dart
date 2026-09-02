@@ -315,6 +315,7 @@ class FeedbackItem {
     required this.createdAt,
     this.reply,
     this.roadmapTitle,
+    this.githubIssue,
   });
 
   factory FeedbackItem.fromRow(Map<String, dynamic> r) {
@@ -329,6 +330,7 @@ class FeedbackItem {
       createdAt: DateTime.parse(r['created_at'] as String).toLocal(),
       reply: r['reply'] as String?,
       roadmapTitle: rm is Map ? rm['title'] as String? : null,
+      githubIssue: r['github_issue'] as int?,
     );
   }
 
@@ -339,6 +341,10 @@ class FeedbackItem {
   final DateTime createdAt;
   final String? reply;
   final String? roadmapTitle;
+
+  /// Nummer des anonymen GitHub-Issues — dort läuft die Verwaltung.
+  /// null, solange die Edge Function es noch nicht angelegt hat.
+  final int? githubIssue;
 
   String get statusLabel => switch (status) {
         FeedbackStatus.open => 'Eingegangen',
@@ -357,6 +363,7 @@ class RoadmapItem {
     required this.title,
     required this.summary,
     required this.status,
+    this.githubIssue,
   });
 
   factory RoadmapItem.fromRow(Map<String, dynamic> r) => RoadmapItem(
@@ -368,12 +375,16 @@ class RoadmapItem {
           'done' => RoadmapStatus.done,
           _ => RoadmapStatus.planned,
         },
+        githubIssue: r['github_issue'] as int?,
       );
 
   final String id;
   final String title;
   final String summary;
   final RoadmapStatus status;
+
+  /// GitHub-Issue, aus dem der Punkt gespiegelt wird (Details, Diskussion).
+  final int? githubIssue;
 
   String get statusEmoji => switch (status) {
         RoadmapStatus.inProgress => '🔧',

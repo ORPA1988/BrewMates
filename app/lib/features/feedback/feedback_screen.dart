@@ -2,8 +2,10 @@ import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/config.dart';
+import '../../core/external_links.dart';
 import '../../data/online/online_service.dart';
 import '../../data/providers.dart';
 
@@ -112,7 +114,9 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
           const SizedBox(height: 4),
           Text(
             'Version ${AppConfig.appVersion} · $_platform werden automatisch '
-            'mitgeschickt. Deine Meldung sehen nur du und das Team.',
+            'mitgeschickt. Deine Meldung erscheint anonym als öffentliches '
+            'GitHub-Issue – ohne Namen und E-Mail. Bitte nichts Privates '
+            'hineinschreiben.',
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: theme.colorScheme.outline),
           ),
@@ -198,6 +202,18 @@ class _FeedbackTile extends StatelessWidget {
               Text('→ Roadmap: ${item.roadmapTitle}',
                   style: theme.textTheme.bodySmall),
             ],
+            if (item.githubIssue != null)
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact),
+                  onPressed: () => launchUrl(githubIssueUri(item.githubIssue!),
+                      mode: LaunchMode.externalApplication),
+                  icon: const Icon(Icons.open_in_new, size: 16),
+                  label: Text('Auf GitHub ansehen (#${item.githubIssue})'),
+                ),
+              ),
           ],
         ),
       ),

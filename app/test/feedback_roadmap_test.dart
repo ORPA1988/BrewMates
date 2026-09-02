@@ -140,7 +140,8 @@ void main() {
   testWidgets('Roadmap zeigt drei Gruppen in Alltagssprache', (tester) async {
     online.roadmap = const [
       RoadmapItem(id: 'r1', title: 'Push, wenn ein Freund losgeht',
-          summary: 'Dein Telefon meldet sich.', status: RoadmapStatus.planned),
+          summary: 'Dein Telefon meldet sich.', status: RoadmapStatus.planned,
+          githubIssue: 61),
       RoadmapItem(id: 'r2', title: 'Beacon auf zwei Geräten',
           summary: 'Telefon und Browser zeigen dasselbe.', status: RoadmapStatus.done),
     ];
@@ -150,6 +151,42 @@ void main() {
     expect(find.text('✅ Fertig'), findsOneWidget);
     expect(find.text('Push, wenn ein Freund losgeht'), findsOneWidget);
     expect(find.text('Beacon auf zwei Geräten'), findsOneWidget);
+    // Nur der Punkt mit Issue ist antippbar (Details auf GitHub); der
+    // Sammel-Link steht immer unten.
+    expect(find.byIcon(Icons.open_in_new), findsNWidgets(2));
+    final mitIssue = tester.widget<ListTile>(find.widgetWithText(
+        ListTile, 'Push, wenn ein Freund losgeht'));
+    expect(mitIssue.onTap, isNotNull);
+    final ohneIssue = tester.widget<ListTile>(
+        find.widgetWithText(ListTile, 'Beacon auf zwei Geräten'));
+    expect(ohneIssue.onTap, isNull);
+    await abbauen(tester);
+  });
+
+  testWidgets('Eine Meldung mit GitHub-Issue verlinkt dorthin; der Hinweis '
+      'sagt, dass sie öffentlich und anonym ist', (tester) async {
+    online.meineMeldungen = [
+      FeedbackItem(
+        id: 'fb-9', kind: FeedbackKind.wish, body: 'Crews per QR-Code',
+        status: FeedbackStatus.planned, createdAt: DateTime(2026, 9, 3),
+        reply: 'Kommt mit 0.10.9.', githubIssue: 57,
+      ),
+      FeedbackItem(
+        id: 'fb-8', kind: FeedbackKind.bug, body: 'Noch ohne Issue',
+        status: FeedbackStatus.open, createdAt: DateTime(2026, 9, 3),
+      ),
+    ];
+    await tester.pumpWidget(umgebung(const FeedbackScreen()));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('anonym als öffentliches GitHub-Issue'),
+        findsOneWidget);
+    await tester.scrollUntilVisible(
+        find.text('Auf GitHub ansehen (#57)'), 200,
+        scrollable: find.byType(Scrollable).first);
+    expect(find.text('Auf GitHub ansehen (#57)'), findsOneWidget);
+    expect(find.textContaining('Auf GitHub ansehen'), findsOneWidget,
+        reason: 'Ohne Issue-Nummer gibt es keinen Link ins Leere.');
+    expect(find.text('Antwort: Kommt mit 0.10.9.'), findsOneWidget);
     await abbauen(tester);
   });
 
