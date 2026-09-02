@@ -61,7 +61,7 @@ class FeedbackApi extends OnlineApi {
       final rows = await client
           .from('feedback')
           .select('id, kind, body, status, reply, created_at, updated_at, '
-              'roadmap:roadmap_items(title)')
+              'github_issue, roadmap:roadmap_items(title)')
           .eq('profile_id', me.id)
           .order('created_at', ascending: false);
       return [for (final r in rows) FeedbackItem.fromRow(r)];
@@ -76,7 +76,8 @@ class FeedbackApi extends OnlineApi {
     try {
       final rows = await client
           .from('roadmap_items')
-          .select('id, title, summary, status, sort_order, updated_at')
+          .select('id, title, summary, status, sort_order, updated_at, '
+              'github_issue')
           .order('sort_order');
       return [for (final r in rows) RoadmapItem.fromRow(r)];
     } catch (e) {

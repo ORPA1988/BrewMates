@@ -1,6 +1,6 @@
 # 35 Fehler melden, Wünsche, Roadmap (Testphase)
 
-> **Status:** 🟢 fertig · **Seit:** 0.10.8 ·
+> **Status:** 🟢 fertig · **Seit:** 0.10.8 (GitHub-Anbindung 0.10.9) ·
 > **Zuletzt geprüft:** 2026-09-03
 
 ## Zielsetzung
@@ -42,20 +42,44 @@ und verschwinden nach der Testphase ohne Release.
   alles; Roadmap liest jeder (`using (true)`), schreiben nur Admins.
   pgTAP prüft Fremdzugriff, Schalter und dass ein Absender seinen Status
   nicht selbst setzen kann.
-- **Auswertung:** Das Team liest `feedback` direkt (SQL, siehe unten),
-  setzt `status`/`reply`, verknüpft `roadmap_id`. Der Tester sieht das
-  beim nächsten Öffnen.
+- **Verwaltung in GitHub (0038, 0.10.9):** Jede Meldung wird automatisch
+  ein **anonymes** Issue im öffentlichen Repo (Art, Version, Plattform,
+  Text — kein Name, keine E-Mail; die App sagt das vor dem Tippen).
+  Trigger `feedback_issue` → Edge Function `feedback-issue` (pg_net,
+  Geheimnis wie beim Push) → Issue mit Labels `feedback` + `bug`/`wunsch`,
+  Nummer zurück nach `feedback.github_issue`. Zieht der Absender zurück,
+  wird das Issue geschlossen. `github_issue` kann ein Absender nicht selbst
+  setzen (BEFORE-Trigger nullt).
+- **Zurück in die App:** Workflow `feedback-sync.yml` ruft bei jeder
+  Issue-Änderung die Edge Function `github-sync` mit der Nummer; die liest
+  das Issue **selbst bei GitHub nach** (vertraut dem Aufrufer nichts, braucht
+  deshalb kein Geheimnis; Bremse: Vollabgleich höchstens jede Minute,
+  Einzelabgleiche 60/min) und schreibt `feedback.status/reply/roadmap_id`
+  und `roadmap_items`. `{ "all": true }` synchronisiert alles (Run
+  workflow ohne Nummer).
+- **Roadmap = Issues mit Label `roadmap`:** Titel und erster Absatz
+  erscheinen in der App; Status aus `status:in-arbeit` / geschlossen =
+  fertig / sonst geplant. **Label weg → Punkt weg** (bewusst; der Text
+  bleibt im Issue, erneutes Labeln stellt ihn aus dem Issue wieder her).
+  Die zwölf vorbefüllten Punkte aus 0037 wurden über den normalisierten
+  Titel adoptiert (Anführungszeichen und Leerraum zählen nicht).
+- **Secrets:** `GITHUB_TOKEN` (feingranular, nur Issues lesen/schreiben in
+  diesem Repo) als Edge-Function-Secret. Sonst nichts — der Workflow
+  braucht kein Supabase-Geheimnis.
 
-```sql
--- Offene Meldungen, neueste zuerst
-select f.created_at, p.username, f.kind, f.app_version, f.platform, f.body
-  from feedback f join profiles p on p.id = f.profile_id
- where f.status = 'open' order by f.created_at desc;
+### So wird verwaltet (kein SQL mehr)
 
--- Antworten und in die Roadmap übernehmen
-update feedback set status = 'planned', reply = 'Kommt mit 0.10.9.',
-       roadmap_id = (select id from roadmap_items where title = '…')
- where id = '…';
+| Aktion | In GitHub |
+|---|---|
+| Status setzen | Label `status:geplant`, `status:in-arbeit`, `status:erledigt`, `status:nicht-geplant` — oder Issue schließen („completed“ = Erledigt, „not planned“ = Nicht geplant) |
+| Dem Tester antworten | Kommentar, der mit **„Antwort:“** beginnt (nur Owner/Collaborator zählen) |
+| In die Roadmap übernehmen | Label `roadmap` auf das Issue; Titel in Alltagssprache umschreiben, erster Absatz = Erklärung |
+| Meldung mit bestehendem Roadmap-Punkt verknüpfen | Kommentar **„Roadmap: #123“** |
+| Auslesen (Claude) | `gh issue list --label feedback --state open` |
+
+```sh
+# Alles neu spiegeln (nach Störung oder Ersteinrichtung)
+gh workflow run feedback-sync.yml
 ```
 
 ## UX-Hinweise
@@ -64,7 +88,10 @@ update feedback set status = 'planned', reply = 'Kommt mit 0.10.9.',
   Plattform, Zeit kommen von selbst. Wer im Wirtshaus einen Fehler sieht,
   tippt zwei Sätze, kein Ticket.
 - Die Rückmeldung nach dem Senden verweist auf die Liste darunter — dort
-  liegt die Nachvollziehbarkeit, nicht in einer E-Mail.
+  liegt die Nachvollziehbarkeit, nicht in einer E-Mail. Jede Meldung mit
+  Issue hat „Auf GitHub ansehen“; jeder Roadmap-Punkt ist antippbar.
+- **Öffentlich, anonym** steht vor dem Tippen da, nicht danach. Wer etwas
+  Privates meldet, soll das wissen, bevor er es abschickt.
 - Scheitert das Senden (offline), gibt es **keinen** Dank, sondern den
   Grund. Regel A-8.
 - Die Roadmap spricht vom Nutzen, nie von Technik: „Push, wenn ein Freund
@@ -72,7 +99,9 @@ update feedback set status = 'planned', reply = 'Kommt mit 0.10.9.',
 
 ## Modularität
 
-- **Hängt ab von:** Konto (01) fürs Melden; Roadmap ohne Konto
+- **Hängt ab von:** Konto (01) fürs Melden; Roadmap ohne Konto; GitHub
+  (Issues-API) für die Verwaltung — fällt GitHub aus, bleibt alles in
+  Supabase lesbar, nur der Spiegel steht
 - **Wird gebraucht von:** nichts
 - **Ausbauen:** Schalter auf `false` — Knöpfe weg, Tabellen bleiben als
   Archiv. Vollständig entfernen: zwei Screens, eine API, zwei Tabellen.
@@ -90,8 +119,8 @@ Oberfläche statt SQL — dann ist die Testphase vorbei.
 
 ## Umsetzungsstatus
 
-Vollständig. Roadmap mit zwölf Einträgen in Alltagssprache vorbefüllt,
-Stand 2026-09-03.
+Vollständig, inkl. GitHub-Spiegel in beide Richtungen (0.10.9). Roadmap
+lebt als Issues mit Label `roadmap`; Stand 2026-09-03.
 
 ## Umsetzungsplan
 

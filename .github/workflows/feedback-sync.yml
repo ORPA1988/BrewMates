@@ -1,0 +1,44 @@
+name: Feedback & Roadmap in die App spiegeln
+
+# Jede Änderung an einem Issue mit Label `feedback` oder `roadmap` (Label,
+# Status, Titel, Text, Kommentar) landet in Supabase — von dort liest die
+# App Status, Antwort und Roadmap. Die Edge Function liest das Issue selbst
+# bei GitHub nach; hier wird nur die Nummer übergeben.
+#
+# Manuell: „Run workflow" ohne Nummer synchronisiert alle Issues.
+
+on:
+  issues:
+    types: [opened, edited, deleted, closed, reopened, labeled, unlabeled]
+  issue_comment:
+    types: [created, edited, deleted]
+  workflow_dispatch:
+    inputs:
+      number:
+        description: "Issue-Nummer (leer = alle Feedback-/Roadmap-Issues)"
+        required: false
+
+permissions: {}
+
+jobs:
+  sync:
+    name: Nach Supabase spiegeln
+    runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      contains(join(github.event.issue.labels.*.name, ','), 'feedback') ||
+      contains(join(github.event.issue.labels.*.name, ','), 'roadmap') ||
+      github.event.label.name == 'feedback' ||
+      github.event.label.name == 'roadmap'
+    steps:
+      - name: Edge Function github-sync aufrufen
+        env:
+          NUMBER: ${{ github.event.issue.number || inputs.number }}
+        run: |
+          if [ -z "$NUMBER" ]; then BODY='{"all":true}'; else BODY="{\"number\":$NUMBER}"; fi
+          echo "→ $BODY"
+          curl --silent --show-error --fail-with-body -X POST \
+            "https://swlqkwlpnxwthbneblww.supabase.co/functions/v1/github-sync" \
+            -H "Content-Type: application/json" \
+            -d "$BODY"
+          echo

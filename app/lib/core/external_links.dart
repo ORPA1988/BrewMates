@@ -20,3 +20,12 @@ Uri communityIssueUri({required String subject, required String body}) =>
       'title': 'Korrektur: $subject',
       'body': body,
     });
+
+/// Ein GitHub-Issue — Fehler, Wunsch oder Roadmap-Punkt. Lesen geht ohne
+/// Konto; das Repo ist öffentlich.
+Uri githubIssueUri(int number) =>
+    Uri.https('github.com', '/ORPA1988/BrewMates/issues/$number');
+
+/// Alle Roadmap-Punkte auf GitHub (Label `roadmap`), offene zuerst.
+Uri githubRoadmapUri() => Uri.https('github.com', '/ORPA1988/BrewMates/issues',
+    {'q': 'is:issue label:roadmap sort:updated-desc'});
