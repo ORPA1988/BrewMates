@@ -69,6 +69,24 @@ Beides ist in `test/session_server_calls_test.dart` festgehalten, das
 prüft. Dass es den vorher nicht gab, ist der Grund, warum diese Klasse
 von Fehlern zweimal unbemerkt blieb.
 
+### Ein Beacon, zwei Geräte (2026-09-02)
+
+Ein am Telefon gestarteter Beacon war im Browser nicht zu sehen — und
+umgekehrt. Das war kein Synchronisationsfehler, sondern eine
+**Löschung**: Der Abgleich beim App-Start beendete serverseitig jede
+eigene Session, die das Gerät lokal nicht kannte. Jedes Gerät hat aber
+seine eigene lokale Datenbank; das zweite räumte damit den Beacon des
+ersten ab.
+
+Jetzt gilt die Umkehrung: Was am Server läuft und lokal fehlt, wird
+**übernommen** (`myActiveSessions()` liefert die vollen Zeilen, die
+lokale ID ist die Server-ID). Beendet wird am Server nur, was lokal
+nachweislich beendet oder abgelaufen ist. Unbekanntes bleibt
+unangetastet — es könnte das andere Gerät sein. Drei Tests in
+`session_reconcile_test.dart` halten das fest; der erste ist der, der
+vorher gefehlt hat: „unbekannt am Server → übernehmen, **nicht**
+beenden".
+
 ## Modularität
 
 - **Hängt ab von:** Konto (01), Freunde (08), Gasthäuser (05, optional),

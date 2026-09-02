@@ -122,20 +122,53 @@ final sessionReconcileProvider = FutureProvider<int>((ref) async {
   ref.watch(_syncTickProvider);
   final online = await ref.watch(onlineServiceProvider.future);
   if (online == null || online.currentUser == null) return 0;
-  // Bewusst direkt aus der Datenbank statt über `myActiveSessionProvider`:
-  // Der liefert `null`, solange `meProvider` noch lädt — beim App-Start
-  // also genau dann, wenn diese Routine zum ersten Mal läuft. Ein `null`
-  // aus „noch nicht geladen" ist hier nicht von „es läuft nichts" zu
-  // unterscheiden, und die Verwechslung würde den laufenden eigenen
-  // Beacon abräumen.
-  //
-  // Die eigene lokale ID IST die Server-ID (`upsertSession` überträgt sie
-  // unverändert), deshalb taugt sie unmittelbar als Ausnahme.
+  final db = ref.watch(databaseProvider);
   final me = await ref.watch(meProvider.future);
-  final mine = await ref
-      .watch(databaseProvider)
-      .getMyActiveSession(me.id, DateTime.now());
-  return online.sessions.endStaleSessions(keepSessionId: mine?.id);
+  final now = DateTime.now();
+
+  // Bis 2026-09-02 stand hier: „Beende am Server alles, was lokal nicht
+  // laeuft." Das klang nach Aufraeumen und war eine Falle: Jedes Geraet
+  // hat seine eigene lokale Datenbank. Ein im Browser geoeffnetes
+  // BrewMates kannte den am Telefon gestarteten Beacon nicht — und
+  // beendete ihn. Der Mensch sah auf keinem Geraet mehr etwas und hielt
+  // es fuer einen Synchronisationsfehler. Es war eine Loeschung.
+  //
+  // Jetzt gilt die Umkehrung:
+  //   1. Was am Server laeuft und hier fehlt, wird UEBERNOMMEN.
+  //   2. Beendet wird am Server nur, was hier nachweislich BEENDET ist —
+  //      also eine lokale Zeile mit Status `ended`. Unbekanntes bleibt
+  //      unangetastet: Es koennte das andere Geraet sein.
+  var geaendert = 0;
+  final remote = await online.sessions.myActiveSessions();
+  for (final r in remote) {
+    final id = r['id'] as String;
+    final lokal = await db.getSession(id);
+    if (lokal == null) {
+      await db.upsertSession(SessionsCompanion.insert(
+        id: id,
+        hostId: me.id,
+        venueId: Value(r['venue_id'] as String?),
+        venueName: Value(r['venue_name'] as String?),
+        message: Value(r['message'] as String?),
+        visibility: r['visibility'] == 'crew'
+            ? SessionVisibility.crew
+            : SessionVisibility.friends,
+        status: SessionStatus.active,
+        startedAt: DateTime.parse(r['started_at'] as String).toLocal(),
+        expiresAt: DateTime.parse(r['expires_at'] as String).toLocal(),
+        latitude: Value((r['latitude'] as num?)?.toDouble()),
+        longitude: Value((r['longitude'] as num?)?.toDouble()),
+      ));
+      geaendert++;
+    } else if (lokal.status == SessionStatus.ended ||
+        !lokal.expiresAt.isAfter(now)) {
+      // Lokal beendet oder abgelaufen, am Server noch aktiv: Das ist der
+      // Fall eines fehlgeschlagenen endSession — nachziehen ist gefahrlos,
+      // es verringert Sichtbarkeit, erhoeht sie nie.
+      if (await online.sessions.endSession(id)) geaendert++;
+    }
+  }
+  return geaendert;
 });
 
 /// 👥 Eigene Crews (Beitritt per Einladungscode = Crew-UUID).
