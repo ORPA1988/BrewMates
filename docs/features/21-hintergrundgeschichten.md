@@ -1,8 +1,8 @@
 # 21 Hintergrundgeschichten
 
 > **Status:** 🟡 teilweise — Feld, Anzeige und Erst-Scan-Hinweis stehen;
-> 30 von 125 Brauereien haben bislang eine Geschichte.
-> **Seit:** 0.9.16-beta · **Zuletzt geprüft:** 2026-08-15
+> 30 von 162 Brauereien haben bislang eine Geschichte.
+> **Seit:** 0.9.16-beta · **Zuletzt geprüft:** 2026-09-02
 
 ## Zielsetzung
 
@@ -31,7 +31,7 @@ eine gute Anekdote, kein Werbetext und kein Wikipedia-Auszug.
 
 **Bei Brauereien** steht die Geschichte fest im Detailbereich. Das Ziel
 ist, dass jede Brauerei Hintergrund bekommt, nicht nur die berühmten —
-erreicht ist das noch nicht (Stand: 30 von 125).
+erreicht ist das noch nicht (Stand 2026-09-02: 30 von 162).
 
 **Bearbeiten** dürfen Vertrauensstufe 3 und höher (Bierkenner, Moderator,
 Admin), wie bei den übrigen Community-Daten. Änderungen laufen über das
@@ -96,8 +96,8 @@ Alle. Nur Text.
 ## Skalierung
 
 Ein Textfeld je Bier und Brauerei erhöht die gebündelten JSON-Dateien
-spürbar — bei 280 Bieren und 125 Brauereien und je 400 Zeichen sind das
-rund 160 KB zusätzlich. Vertretbar. Ab etwa dem Dreifachen sollten die
+spürbar — bei 699 Bieren und 162 Brauereien und je 400 Zeichen wären das
+rund 340 KB zusätzlich, wenn alle eine hätten. Vertretbar. Ab etwa dem Dreifachen sollten die
 Geschichten aus den gebündelten Dateien heraus und bei Bedarf nachgeladen
 werden; dann trägt der Bundle nur noch, was ohne Netz nötig ist.
 
@@ -118,7 +118,8 @@ fremder Check-in macht ein Bier nicht bekannt.
 ## Umsetzungsplan
 
 1. **Restliche Brauereien** — Deutschland (40) und Schweiz (18) haben noch
-   keine Geschichte; dazu die 21 übrigen aus Österreich und Bayern.
+   keine Geschichte; dazu die 74 übrigen aus Österreich (58 von 71) und
+   Bayern (16 von 33).
    Fortlaufend bei jedem Entwicklungslauf, im selben Zug wie die
    Datenpflege.
 2. **Biergeschichten** für die Klassiker, wo es mehr zu erzählen gibt als

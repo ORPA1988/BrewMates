@@ -1,8 +1,8 @@
 # 04 Bier- & Brauerei-Datenbank
 
-> **Status:** 🟢 fertig — 280 Biere und 125 Brauereien aus dem DACH-Raum,
+> **Status:** 🟢 fertig — 699 Biere und 162 Brauereien aus dem DACH-Raum,
 > kuratiert im Repository, per GitHub aktualisiert.
-> **Seit:** 0.4.0 (AT), DACH seit 0.9.13 · **Zuletzt geprüft:** 2026-08-15
+> **Seit:** 0.4.0 (AT), DACH seit 0.9.13 · **Zuletzt geprüft:** 2026-09-02
 
 ## Zielsetzung
 
@@ -54,7 +54,9 @@ erscheinen beim Tippen von selbst unter der Zeile — siehe
 ## Technische Umsetzung
 
 - **Daten:** `app/assets/data/` — acht Dateien
-  (`beers|breweries` × `at|by|de|ch`), verknüpft über `brewery_id`
+  (`beers|breweries` × `at|by|de|ch`), verknüpft über `brewery_id`.
+  Bestand (gezählt 2026-09-02): 699 Biere (AT 487, BY 72, DE 95, CH 45)
+  und 162 Brauereien (AT 71, BY 33, DE 40, CH 18)
 - **Abgleich:** `data/community_sync.dart` — gebündelt beim ersten Start,
   danach von `raw.githubusercontent.com`; fehlende Dateien werden
   übersprungen, nicht als Fehler behandelt
@@ -82,8 +84,8 @@ Alle. Reine Daten.
 ## Skalierung
 
 Acht JSON-Dateien werden beim Start **vollständig** gelesen und in die
-lokale DB geschrieben; die Assets sind zusammen rund 280 KB. Das trägt
-gut bis etwa zum Dreifachen. Darüber hinaus — oder mit
+lokale DB geschrieben; die Assets sind zusammen rund 500 KB (699 Biere,
+162 Brauereien). Das trägt gut bis etwa zum Dreifachen. Darüber hinaus — oder mit
 [Hintergrundgeschichten](21-hintergrundgeschichten.md) — gehört der
 Bestand serverseitig durchsucht statt vollständig mitgeliefert.
 

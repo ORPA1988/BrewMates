@@ -1,8 +1,9 @@
 # 02 Check-ins
 
 > **Status:** 🟢 fertig — löschbar seit 0.9.14
-> ([Funktion 19](19-feed-eintraege-loeschen.md)); Bearbeiten fehlt noch.
-> **Seit:** 0.1.0 · **Zuletzt geprüft:** 2026-08-15
+> ([Funktion 19](19-feed-eintraege-loeschen.md)), bearbeitbar seit 0.10.1
+> ([Funktion 27](27-check-ins-bearbeiten.md)).
+> **Seit:** 0.1.0 · **Zuletzt geprüft:** 2026-09-02
 
 ## Zielsetzung
 
@@ -24,6 +25,7 @@ Wirtshaus drei Minuten braucht, macht ihn beim nächsten Mal nicht mehr.
 
 - **Dateien:** `features/checkin/checkin_screen.dart`,
   `widgets/checkin_card.dart`, `widgets/rating_stars.dart`,
+  `widgets/checkin_edit_sheet.dart` (Bearbeiten, siehe Funktion 27),
   `data/providers.dart` (`BrewActions`)
 - **Lokal:** Drift-Tabelle `Checkins` — Bewertung, Notiz, `flavorTags`
   (kommagetrennt), `servingStyle`, `venueId`/`venueName`, `photoUrl`,
@@ -56,13 +58,15 @@ Feed schnell, bedeutet aber, dass Umbenennungen nachgezogen werden müssen
 
 ## Umsetzungsstatus
 
-Vollständig bis auf eine Lücke: **Bearbeiten**. Löschen gibt es seit
-0.9.14.
+Vollständig. Löschen gibt es seit 0.9.14, Bearbeiten seit 0.10.1 — das
+Menü der Check-in-Karte öffnet `checkin_edit_sheet.dart`
+(Einzelheiten in [Funktion 27](27-check-ins-bearbeiten.md)).
 
 ## Umsetzungsplan
 
 1. ~~[Löschen](19-feed-eintraege-loeschen.md)~~ — erledigt
-2. Bearbeiten (Bewertung, Notiz, Tags nachträglich ändern)
+2. ~~Bearbeiten (Bewertung, Notiz, Tags nachträglich ändern)~~ —
+   erledigt ([Funktion 27](27-check-ins-bearbeiten.md))
 3. Füllmenge erfassen für [Statistiken](20-feed-statistiken.md)
 4. ~~Listen auf faules Bauen umstellen, Feed seitenweise laden~~ —
    erledigt

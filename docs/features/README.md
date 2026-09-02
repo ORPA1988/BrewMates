@@ -27,29 +27,35 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [01](01-konto-und-anmeldung.md) | Konto & Anmeldung | 🟢 | Google + E-Mail, Kontolöschung, Cloud-Wiederherstellung |
 | [02](02-check-ins.md) | Check-ins | 🟢 | Bewertung, Tags, Foto, Notiz, Gasthaus |
 | [03](03-barcode-scanner.md) | Barcode-Scanner | 🟢 | EAN-Scan, Lookup-Kette, Neuanlage mit Foto |
-| [04](04-bier-und-brauerei-datenbank.md) | Bier- & Brauerei-DB | 🟢 | 280 Biere / 125 Brauereien DACH, GitHub-Sync |
+| [04](04-bier-und-brauerei-datenbank.md) | Bier- & Brauerei-DB | 🟢 | 699 Biere / 162 Brauereien DACH, GitHub-Sync |
 | [05](05-gasthaeuser.md) | Gasthäuser | 🟢 | Gemeinsame DB, Öffnungszeiten, Offline-Queue |
 | [06](06-karte.md) | Karte | 🟢 | Freunde, Brauereien, Gasthäuser, Zähler |
-| [07](07-sessions-und-beacons.md) | Sessions & Beacons | 🟡 | Ein-Tap-Beacon; feste Laufzeit |
-| [08](08-freunde.md) | Freunde | 🟡 | Anfragen, Suche, Blockieren; keine Abstufung |
+| [07](07-sessions-und-beacons.md) | Sessions & Beacons | 🟡 | Ein-Tap-Beacon, Laufzeit wählbar; kein Push für Beacons |
+| [08](08-freunde.md) | Freunde | 🟢 | Anfragen, Suche, QR-Code, Blockieren, Freundeskreise |
 | [09](09-crews.md) | Crews | 🟢 | Gruppen mit Einladungscode |
-| [10](10-feed.md) | Feed | 🟡 | Check-in-Strom, Toasts, Kommentare; kein Löschen |
-| [11](11-abzeichen.md) | Abzeichen | 🟢 | 22 Abzeichen, Vielfalt statt Menge |
+| [10](10-feed.md) | Feed | 🟢 | Check-in-Strom, Toasts, Kommentare, Löschen, Seitenladen |
+| [11](11-abzeichen.md) | Abzeichen | 🟢 | 23 Abzeichen, Vielfalt statt Menge |
 | [12](12-challenges.md) | Challenges | 🟢 | Serverseitig validiert |
-| [13](13-statistiken-und-tagebuch.md) | Statistiken & Tagebuch | 🟡 | Profilzahlen, Suche; wenig Auswertung |
+| [13](13-statistiken-und-tagebuch.md) | Statistiken & Tagebuch | 🟢 | Tagebuch mit Suche und Seitenladen; Auswertung in 20 |
 | [14](14-wunschliste.md) | Wunschliste | 🟢 | Merken, Cloud-Sync |
-| [15](15-vertrauensstufen-und-moderation.md) | Vertrauensstufen | 🟢 | 5 Stufen, Melden, Admin-Bereich |
+| [15](15-vertrauensstufen-und-moderation.md) | Vertrauensstufen | 🟡 | 5 Stufen, Admin-Bereich; Meldungen ohne Bearbeitungsoberfläche |
 | [16](16-datensynchronisation.md) | Datensynchronisation | 🟡 | Local-first, Cloud-Restore; kein Delta-Sync |
 | [17](17-app-update.md) | App-Update | 🟢 | Prüfung gegen GitHub-Releases |
 | [18](18-plattformen.md) | Plattformen | 🟡 | Android + Web live, Windows baubar |
 | [19](19-feed-eintraege-loeschen.md) | Feed-Einträge löschen | 🟢 | Eigene Check-ins entfernen, offlinefähig, Rückgängig |
 | [20](20-feed-statistiken.md) | Statistiken | 🟢 | Menge, Land, Stil, Gebinde, Zeitraum, Filter |
-| [21](21-hintergrundgeschichten.md) | Hintergrundgeschichten | 🟡 | Technik fertig, 30 von 125 Brauereien erzählt |
+| [21](21-hintergrundgeschichten.md) | Hintergrundgeschichten | 🟡 | Technik fertig, 30 von 162 Brauereien erzählt |
 | [22](22-freunde-per-qr-code.md) | Freunde per QR-Code | 🟢 | Anzeigen und scannen statt tippen |
 | [23](23-beacon-laufzeit.md) | Beacon-Laufzeit | 🟢 | 30 min – 12 h, verlängerbar, serverseitig begrenzt |
 | [24](24-freundeskreise.md) | Freundeskreise | 🟢 | Bekannte / Freunde / Best Buddys, RLS-durchgesetzt |
+| [27](27-check-ins-bearbeiten.md) | Check-ins bearbeiten | 🟢 | Bewertung, Notiz, Tags, Gebinde, Ort nachträglich ändern; offlinefähig |
 | [28](28-live-vorschlaege.md) | Live-Vorschläge | 🟢 | Beim Tippen passende Biere/Gasthäuser zum Antippen |
 | [29](29-push-benachrichtigungen.md) | Push-Benachrichtigungen | 🟢 | FCM, inhaltsleer, Ende-zu-Ende verifiziert |
+| [30](30-bierlaune.md) | Bierlaune | 🟢 | „Hätte Lust“ für 4 h, nur Kreis Freund |
+| [31](31-datenpflege-bestenliste.md) | Datenpflege-Bestenliste | 🟢 | Top 20 nach Vertrauenspunkten |
+| [32](32-bierpreise-und-preis-radar.md) | Bierpreise & Preis-Radar | 🟢 | 0,5/0,3 l am Gasthaus, Preis am Kartenschild |
+| [33](33-orts-schnellansicht.md) | Orts-Schnellansicht | 🟢 | Bottom-Sheet für Gasthaus und Brauerei |
+| [34](34-entdecken.md) | Entdecken | 🟢 | Biere, Brauereien, Gasthäuser mit Suche, Sortierung, Anlegen |
 
 ## Geplante Funktionen
 

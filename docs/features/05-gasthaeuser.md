@@ -31,7 +31,7 @@ statt es zu verhindern.
 
 ## Technische Umsetzung
 
-- **Dateien:** `features/venues/venues_list_screen.dart`,
+- **Dateien:** `features/discover/discover_screen.dart` (Liste, seit 0.10.3; die alte `venues_list_screen.dart` fiel am 2026-09-02),
   `venue_edit_screen.dart`, `widgets/venue_picker.dart`,
   `widgets/place_quick_sheet.dart`, `data/venue_sync.dart`,
   `data/venue_queue.dart`, `domain/opening_hours.dart`
