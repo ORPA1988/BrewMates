@@ -7,6 +7,7 @@ library;
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models.dart';
@@ -136,7 +137,7 @@ class FriendsApi extends OnlineApi {
     try {
       final rows = await client
           .from('friendships')
-          .select('id, requester:profiles!friendships_requester_id_fkey($OnlineApi.profileCols)')
+          .select('id, requester:profiles!friendships_requester_id_fkey(${OnlineApi.profileCols})')
           .eq('addressee_id', me.id)
           .eq('status', 'pending');
       return [
@@ -147,7 +148,11 @@ class FriendsApi extends OnlineApi {
                 r['requester'] as Map<String, dynamic>),
           ),
       ];
-    } catch (_) {
+    } catch (e) {
+      // Nicht stumm: Genau hier lag vom 2026-08-15 bis 2026-09-02 ein
+      // 400 vom Server (kaputte Spaltenliste), und die App zeigte einfach
+      // „keine Anfragen". Ein Fehler, den man nicht sieht, ist keiner.
+      debugPrint('incomingRequests: $e');
       return const [];
     }
   }
@@ -248,8 +253,8 @@ class FriendsApi extends OnlineApi {
       final rows = await client
           .from('friendships')
           .select('requester_id, requester_tier, addressee_tier, '
-              'requester:profiles!friendships_requester_id_fkey($OnlineApi.profileCols), '
-              'addressee:profiles!friendships_addressee_id_fkey($OnlineApi.profileCols)')
+              'requester:profiles!friendships_requester_id_fkey(${OnlineApi.profileCols}), '
+              'addressee:profiles!friendships_addressee_id_fkey(${OnlineApi.profileCols})')
           .eq('status', 'accepted')
           .or('requester_id.eq.${me.id},addressee_id.eq.${me.id}');
       return [
@@ -323,7 +328,7 @@ class FriendsApi extends OnlineApi {
     try {
       final rows = await client
           .from('blocks')
-          .select('blocked:profiles!blocks_blocked_id_fkey($OnlineApi.profileCols)')
+          .select('blocked:profiles!blocks_blocked_id_fkey(${OnlineApi.profileCols})')
           .eq('blocker_id', me.id);
       return [
         for (final r in rows)

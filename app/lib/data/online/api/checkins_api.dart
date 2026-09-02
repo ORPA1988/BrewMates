@@ -343,7 +343,7 @@ class CheckinsApi extends OnlineApi {
           .from('checkins')
           .select('id, beer_name, brewery_name, beer_style, is_alcohol_free, '
               'rating, note, venue_name, session_id, photo_url, created_at, '
-              'author:profiles!checkins_profile_id_fkey($OnlineApi.profileCols)')
+              'author:profiles!checkins_profile_id_fkey(${OnlineApi.profileCols})')
           .neq('profile_id', me.id)
           .order('created_at', ascending: false)
           .limit(limit);
@@ -430,7 +430,7 @@ class CheckinsApi extends OnlineApi {
       final rows = await client
           .from('comments')
           .select('body, created_at, '
-              'author:profiles!comments_profile_id_fkey($OnlineApi.profileCols)')
+              'author:profiles!comments_profile_id_fkey(${OnlineApi.profileCols})')
           .eq('checkin_id', checkinId)
           .order('created_at', ascending: true);
       return [
