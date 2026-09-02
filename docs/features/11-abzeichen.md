@@ -1,8 +1,8 @@
 # 11 Abzeichen
 
-> **Status:** 🟢 fertig — 22 Abzeichen, mit Zwischenstufen und
+> **Status:** 🟢 fertig — 23 Abzeichen, mit Zwischenstufen und
 > Cloud-Sicherung.
-> **Seit:** 0.2.0, Stufen seit 0.9.12 · **Zuletzt geprüft:** 2026-08-15
+> **Seit:** 0.2.0, Stufen seit 0.9.12 · **Zuletzt geprüft:** 2026-09-02
 
 ## Zielsetzung
 
@@ -63,7 +63,7 @@ Alle.
 ## Skalierung
 
 `BadgeContext.load` holt **alle** eigenen Check-ins in den Speicher und
-wertet 22 Abzeichen darüber aus. Bei einigen tausend Check-ins wird das
+wertet 23 Abzeichen darüber aus. Bei einigen tausend Check-ins wird das
 träge; dann gehören die Zähler in SQL-Aggregate. Die Trennung ist bereits
 richtig geschnitten: Nur `BadgeContext` müsste sich ändern.
 

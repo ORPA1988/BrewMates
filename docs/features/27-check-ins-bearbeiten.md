@@ -1,6 +1,8 @@
-# 27 · Check-ins bearbeiten
+# 27 Check-ins bearbeiten
 
-> **Status:** gebaut · **Seit:** 0.10.1-beta · **Zuletzt geprüft:** 2026-08-15
+> **Status:** 🟢 fertig — Bewertung, Notiz, Tags, Gebinde, Menge und Ort
+> nachträglich ändern; offlinefähig über `dirty`-Flag.
+> **Seit:** 0.10.1-beta · **Zuletzt geprüft:** 2026-09-02
 
 ## Zielsetzung
 

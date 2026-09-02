@@ -7,7 +7,7 @@ import '../../data/db/database.dart';
 import '../../data/location_service.dart';
 import '../../data/providers.dart';
 import '../../data/venue_open.dart';
-import '../../data/venue_sync.dart' show venueCategoryEmoji;
+import '../../data/venue_sync.dart' show venueCategoryEmoji, venueCategoryLabel;
 import '../../widgets/venue_tile.dart';
 
 /// Entdecken: **ein** Ort für Biere, Brauereien und Gasthäuser.
@@ -37,6 +37,10 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
   /// Gasthaus-Filter, übernommen aus der abgelösten Liste.
   String? _kategorie;
   bool _nurGeoeffnet = false;
+
+  /// Sortierung der Gasthäuser. Preis und Aktualität gab es nur in der
+  /// alten Liste, die nach dem Umbau von keiner Stelle mehr erreichbar war.
+  VenueSort _sortierung = VenueSort.distance;
 
   LatLng? _hier;
 
@@ -71,7 +75,21 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Entdecken')),
+      appBar: AppBar(
+        title: const Text('Entdecken'),
+        actions: [
+          // Anlegen war nach dem Umbau auf Entdecken unerreichbar: Der
+          // Knopf lag im alten Bierbildschirm, den keine Route mehr zeigte.
+          if (_bereich != _Bereich.brauereien)
+            IconButton(
+              tooltip: _bereich == _Bereich.biere
+                  ? 'Bier anlegen'
+                  : 'Gasthaus anlegen',
+              icon: const Icon(Icons.add),
+              onPressed: _anlegen,
+            ),
+        ],
+      ),
       body: Column(
         children: [
           Padding(
@@ -129,6 +147,22 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           children: [
+            for (final s in VenueSort.values)
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: ChoiceChip(
+                  label: Text(venueSortLabel(s)),
+                  selected: _sortierung == s,
+                  // Nähe ohne Standort wäre eine leere Zusage.
+                  onSelected: (s == VenueSort.distance && _hier == null)
+                      ? null
+                      : (_) => setState(() => _sortierung = s),
+                  tooltip: (s == VenueSort.distance && _hier == null)
+                      ? 'Braucht deinen Standort'
+                      : null,
+                ),
+              ),
+            const SizedBox(width: 8),
             FilterChip(
               label: const Text('● jetzt geöffnet'),
               selected: _nurGeoeffnet,
@@ -139,7 +173,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
               Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: FilterChip(
-                  label: Text('${venueCategoryEmoji(k)} $k'),
+                  label: Text('${venueCategoryEmoji(k)} ${venueCategoryLabel(k)}'),
                   selected: _kategorie == k,
                   onSelected: (v) =>
                       setState(() => _kategorie = v ? k : null),
@@ -160,11 +194,30 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
     }
   }
 
+  void _anlegen() {
+    final name = Uri.encodeQueryComponent(_suche.trim());
+    final q = name.isEmpty ? '' : '?name=$name';
+    context.push(_bereich == _Bereich.biere ? '/beers/add$q' : '/venues/add$q');
+  }
+
   Widget _biere() {
-    final treffer =
-        ref.watch(beersProvider((search: _suche, style: null))).valueOrNull ??
-            const <BeerWithBrewery>[];
-    if (treffer.isEmpty) return const _Leer(text: 'Kein Bier gefunden.');
+    final async = ref.watch(beersProvider((search: _suche, style: null)));
+    // Laden und „leer" auseinanderhalten: Vorher stand während des Ladens
+    // „Kein Bier gefunden", und die Liste sprang danach hinein.
+    if (async.isLoading && !async.hasValue) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    final treffer = async.valueOrNull ?? const <BeerWithBrewery>[];
+    if (treffer.isEmpty) {
+      final begriff = _suche.trim();
+      return _Leer(
+        text: begriff.isEmpty
+            ? 'Noch keine Biere geladen.'
+            : 'Kein Bier zu „$begriff" gefunden.',
+        aktion: 'Bier anlegen',
+        onAktion: _anlegen,
+      );
+    }
     return ListView.builder(
       itemCount: treffer.length,
       itemBuilder: (_, i) {
@@ -224,8 +277,11 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
   }
 
   Widget _gasthaeuser() {
-    var alle = ref.watch(venuesWithLocationProvider).valueOrNull ??
-        const <Venue>[];
+    final async = ref.watch(allVenuesProvider);
+    if (async.isLoading && !async.hasValue) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    var alle = async.valueOrNull ?? const <Venue>[];
 
     final suche = _suche.trim().toLowerCase();
     if (suche.isNotEmpty) {
@@ -241,18 +297,22 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
     }
     if (_nurGeoeffnet) alle = openNow(alle, DateTime.now());
 
-    final sortiert = [...alle];
-    sortiert.sort((a, b) {
-      final da = _entfernung(a.latitude, a.longitude);
-      final db = _entfernung(b.latitude, b.longitude);
-      if (da == null && db == null) return a.name.compareTo(b.name);
-      if (da == null) return 1;
-      if (db == null) return -1;
-      return da.compareTo(db);
-    });
+    final sortiert = sortVenues(
+        alle,
+        _hier == null && _sortierung == VenueSort.distance
+            ? VenueSort.alphabetical
+            : _sortierung,
+        here: _hier);
 
     if (sortiert.isEmpty) {
-      return const _Leer(text: 'Kein Gasthaus gefunden.');
+      final begriff = _suche.trim();
+      return _Leer(
+        text: begriff.isEmpty
+            ? 'Hier ist noch kein Gasthaus eingetragen.'
+            : 'Kein Gasthaus zu „$begriff" gefunden.',
+        aktion: 'Gasthaus anlegen',
+        onAktion: _anlegen,
+      );
     }
     return ListView.builder(
       itemCount: sortiert.length,
@@ -267,16 +327,34 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
   }
 }
 
+/// Leerer Zustand mit nächster Handlung. Ein „nichts gefunden" ohne
+/// Ausweg ist eine Sackgasse — genau dort entstehen die Biere, die der
+/// Community-Datenbank fehlen.
 class _Leer extends StatelessWidget {
-  const _Leer({required this.text});
+  const _Leer({required this.text, this.aktion, this.onAktion});
 
   final String text;
+  final String? aktion;
+  final VoidCallback? onAktion;
 
   @override
   Widget build(BuildContext context) => Center(
         child: Padding(
           padding: const EdgeInsets.all(32),
-          child: Text(text, textAlign: TextAlign.center),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(text, textAlign: TextAlign.center),
+              if (aktion != null) ...[
+                const SizedBox(height: 12),
+                FilledButton.icon(
+                  onPressed: onAktion,
+                  icon: const Icon(Icons.add),
+                  label: Text(aktion!),
+                ),
+              ],
+            ],
+          ),
         ),
       );
 }
