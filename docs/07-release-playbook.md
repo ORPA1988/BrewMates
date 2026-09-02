@@ -246,3 +246,17 @@ Checkboxen ☐ markiert.
 4. ☐ Artefakte herunterladen und wie in den Abschnitten 2–4 beschrieben in
    die Stores hochladen (kein automatischer Store-Upload konfiguriert —
    dafür fehlen bewusst die Secrets; für v1 reichen die Artefakte).
+
+## Riegel anheben (`min_supported_version`)
+
+Nach einem Rollout, sobald die alte Fassung nicht mehr bedient werden
+soll — im Supabase-SQL-Editor, ein Einzeiler:
+
+```sql
+update app_config set value = '0.10.3', updated_at = now()
+ where key = 'min_supported_version';
+```
+
+Das sperrt jede Fassung **unter** dem Wert aus, die den Riegel kennt
+(ab 0.10.2). Es ist eine Aussperr-Entscheidung, deshalb bewusst kein
+Automatismus.

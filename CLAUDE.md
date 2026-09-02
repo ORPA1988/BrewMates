@@ -13,7 +13,7 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0030` sind LIVE, lückenlos; `0031` wartet auf Einspielen, `0032` auf 0.10.4** — `0020–0024` am 2026-08-15 eingespielt und
+  **`0001–0031` sind LIVE, lückenlos; `0032` wartet auf 0.10.4** — `0020–0024` am 2026-08-15 eingespielt und
   gegengeprüft (Spalten, Constraints, Enum, Index, vier neue Funktionen,
   Policy; `friendships` unverändert alle auf `freund`, also keine
   Sichtbarkeitsänderung am Rollout-Tag). Kein Schema-Drift.
@@ -38,7 +38,10 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   für aktiv hält, obwohl er längst gefallen ist, ist gefährlicher als
   gar keiner: Man baut die nächste Entscheidung darauf.
   **Riegel scharf** (2026-08-16): `app_config.min_supported_version`
-  steht auf `0.10.2`, nachdem 0.10.2 ausgerollt ist. Das sperrt heute
+  steht auf `0.10.2`, nachdem 0.10.2 ausgerollt ist. ⚠️ Das Anheben auf
+  0.10.3 wurde vom Auto-Modus-Klassifizierer zweimal blockiert — es ist
+  eine Aussperr-Entscheidung und gehört dem Menschen; der Einzeiler steht
+  in `docs/07-release-playbook.md`. Das sperrt heute
   **niemanden** aus — der Riegel existiert erst ab 0.10.2, alles
   darunter fragt ihn nie. Sein Wert liegt in der Zukunft.
   ⚠️ **`beers.barcode` darf deshalb noch NICHT fallen.** Ersetzt ist sie
@@ -74,8 +77,10 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Backfill — 0028 hatte die Tabelle angelegt, aber die Lesestelle nie
   umgestellt, sodass nachgetragene Codes gespeichert und beim Suchen
   ignoriert wurden; 0031 Benachrichtigungen per Trigger auf `friendships`
-  + `notifications` in Realtime — **geschrieben, CI-geprüft, noch nicht
-  live** (Supabase-Zugang fehlte in der Session); 0032 `beers.barcode`
+  + `notifications` in Realtime — **live seit 2026-08-16**, Trigger,
+  Publikation und Delete-Policy gegengeprüft, Advisor ohne Neubefund
+  (`friendships_notify` ist SECURITY DEFINER, aber EXECUTE ist allen
+  entzogen — sie hängt nur am Trigger); 0032 `beers.barcode`
   entfernen — **erst nach `min_supported_version` = 0.10.4**, weil 0.10.3
   die Spalte noch selektiert).
   Google-Login und
