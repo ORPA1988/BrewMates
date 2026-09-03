@@ -3,19 +3,21 @@
 BrewMates: Android-Bier-App (Untappd × Beer with Me), Flutter, deutschsprachig,
 Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
 
-## Aktueller Stand (2026-08-15)
+## Aktueller Stand (2026-09-03)
 
 - **Branch**: PRs #2–#4 sind in `main` gemerged; neue Arbeit startet auf
   frischen Branches von `main`.
-  Version `0.10.11-beta` in Arbeit (`pubspec.yaml` steht auf
-  `0.10.10-beta+28`; der Bump auf 0.10.11 gehört zum nächsten Release —
-  Funktion 37 nennt sie bereits). (Beta 0.x bis
+  Version `0.10.12-beta+30` — `pubspec.yaml` und `AppConfig.appVersion`
+  stehen darauf. Sie bringt die Crews
+  vollständig (Feed, Bilanz, Kurzcode, Einladungen), Vorschaubilder
+  der Biere, Sterne ohne Standardwert und die eigene Lizenz.
+  (Beta 0.x bis
   zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch; die
   frühen Alpha-Releases wurden von 1.1/1.2 auf 0.1.0/0.2.0 umbenannt).
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0044` sind LIVE, lückenlos** (Stand 2026-09-03; 0039 und 0040
+  **`0001–0045` sind LIVE, lückenlos** (Stand 2026-09-03; 0039 und 0040
   am selben Tag eingespielt und gegengeprüft: Trigger, Index, Rechte und
   Policies über `information_schema`/`pg_catalog` bestätigt, Advisor ohne
   Neubefund — nur die bekannte Baseline plus `unused_index` (INFO), was
@@ -45,6 +47,20 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   hängt, prüft sie in der Rolle, die sie betrifft (`set local role
   authenticated` + `request.jwt.claims`); auch die MCP-Probe läuft als
   `postgres`.
+  **0045 TRUNCATE entzogen:** `anon` und `authenticated` hatten auf
+  jeder Tabelle in `public` noch `TRUNCATE, REFERENCES, TRIGGER` — Erbe
+  der Supabase-Vorgaben, das 0035 nicht mitgenommen hat. **TRUNCATE
+  umgeht RLS**, deshalb ist es weg (SELECT bleibt, begrenzt wird über
+  RLS). Offen war es nie: PostgREST bietet kein TRUNCATE, und keine der
+  beiden Rollen hat einen Datenbankzugang — genau darum ist es durch
+  zwei Sicherheits-Checks gerutscht. **Neu in der Baseline:** Die
+  Default-Privileges gibt es zweimal, von `postgres` und von
+  `supabase_admin`; welche greift, entscheidet, **wer die Tabelle
+  anlegt**. Die von `supabase_admin` gewährt `anon` weiterhin INSERT,
+  UPDATE, DELETE und ist als `postgres` nicht änderbar. Folgenlos,
+  solange niemand als `supabase_admin` Tabellen in `public` anlegt —
+  aber 0035s Satz „auch nicht auf künftigen“ gilt nur für Tabellen,
+  die `postgres` anlegt.
   **0043 `crews_select` auch für den Eigentümer:** `insert … returning`
   braucht **auch die SELECT-Policy**, und die verlangte eine
   Mitgliedschaft, die es beim Anlegen noch nicht geben kann. Folge:
