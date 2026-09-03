@@ -36,6 +36,10 @@ class PagedCheckinList extends ConsumerWidget {
     final headerCount = header != null ? 1 : 0;
 
     return ListView.builder(
+      // Immer ziehbar, auch wenn die Liste kürzer als der Bildschirm ist:
+      // Sonst nimmt ein Feed mit drei Einträgen die Auffrisch-Geste nicht
+      // an, und das sieht aus, als täte die App nichts.
+      physics: const AlwaysScrollableScrollPhysics(),
       itemCount: headerCount + items.length + 1,
       itemBuilder: (context, index) {
         if (headerCount == 1 && index == 0) return header!;
