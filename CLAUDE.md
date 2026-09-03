@@ -15,7 +15,7 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0041` sind LIVE, lückenlos** (Stand 2026-09-03; 0039 und 0040
+  **`0001–0042` sind LIVE, lückenlos** (Stand 2026-09-03; 0039 und 0040
   am selben Tag eingespielt und gegengeprüft: Trigger, Index, Rechte und
   Policies über `information_schema`/`pg_catalog` bestätigt, Advisor ohne
   Neubefund — nur die bekannte Baseline plus `unused_index` (INFO), was
@@ -30,6 +30,21 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   bewusst NICHT `are_friends`/`is_crew_member`: Die verlangen seit 0009
   eine Beteiligung von `auth.uid()` und lieferten bei einem Insert ohne
   Sitzung still `false`.
+  ⚠️ **0042 repariert einen Fehler aus 0041 — und die Lehre daraus ist
+  wichtiger als der Fehler.** Der Code entstand per Spaltenvorgabe
+  (`default neuer_crew_code()`); eine Spaltenvorgabe wird aber **mit den
+  Rechten des Einfügenden** ausgewertet, nicht mit denen des Besitzers.
+  Die Funktion war für `authenticated` gesperrt, also scheiterte „Crew
+  gründen" für alle mit `permission denied for function
+  neuer_crew_code` — auch in der veröffentlichten 0.10.11. Jetzt ein
+  `before insert`-Trigger als SECURITY DEFINER (Muster:
+  `friendships_notify`). **Warum es durchrutschte:** Die Live-Probe legte
+  die Wegwerf-Crew als `postgres` an, und der darf die Funktion rufen —
+  geprüft war, dass der Code richtig aussieht, nicht dass ihn der
+  richtige Rolleninhaber bekommt. Wer eine Regel prüft, die an Rechten
+  hängt, prüft sie in der Rolle, die sie betrifft (`set local role
+  authenticated` + `request.jwt.claims`); auch die MCP-Probe läuft als
+  `postgres`.
   **0041 Crew-Code zum Vorlesen:** `crews.join_code` (6 Zeichen aus
   einem Alphabet ohne Zwillinge — kein 0/O, kein 1/I/L), erzeugt per
   Spaltenvorgabe, eindeutiger Index; Beitritt über
