@@ -178,8 +178,9 @@ ist ein Aufruf ohne Logik.
 
 - Ein Hinweis beim ersten Anmelden im Browser, dass es den Knopf gibt —
   heute muss man ihn im Konto finden
-- Die Glocke hat weiterhin keinen eigenen Bildschirm
+- ~~Die Glocke hat keinen eigenen Bildschirm~~ — erledigt in 0.10.12
   ([Funktion 29](29-push-benachrichtigungen.md)). Für den Fall „Tab war
-  zu" wäre sie die eigentliche Antwort, nicht Push
+  zu" ist sie die eigentliche Antwort, nicht Push: Was währenddessen
+  ankam, steht beim nächsten Öffnen in der Liste
 - „Zum Home-Bildschirm hinzufügen" gehört ins iOS-Onboarding — nützlich
   auch unabhängig von Meldungen

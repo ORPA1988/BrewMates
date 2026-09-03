@@ -119,10 +119,18 @@ Telefon bestätigt. Testzeile danach gelöscht.
    sie alle wieder an
 5. iOS über APNs, wenn es eine iOS-Fassung gibt
 
-**Noch offen und bewusst so:** Die Glocke hat keinen eigenen Bildschirm.
-`unreadNotificationsProvider` liefert den ungelesenen Bestand, angezeigt
-wird davon nichts — nur das Live-Banner, wenn die App gerade offen ist,
-und der Zähler für offene Freundschaftsanfragen. Wer den Beacon-Push
-verpasst, findet die Runde über „Gerade unterwegs" auf der Startseite.
-Das trägt, solange es drei Benachrichtigungsarten gibt; mit der vierten
-wird eine Liste fällig.
+**Die Glocke gibt es seit 0.10.12** (`widgets/glocke.dart`): ein
+Symbol mit Zahl in der Titelzeile der Startseite, dahinter die Liste
+dessen, was seit dem letzten Hinsehen ankam. Vorher holte
+`unreadNotificationsProvider` den Bestand seit jeher, und **keine
+einzige Stelle zeigte ihn an** — ein Weckruf ohne Nachlese ist eine
+halbe Funktion: Man weiß, dass etwas war, und nicht was.
+
+Angesehen ist gelesen, aber nur die angetippte; „Alle gelesen" räumt den
+Stapel. Wo es kein sinnvolles Ziel gibt, steht auch kein Pfeil.
+
+**Freundschaftsanfragen stehen mit darin**, obwohl sie schon eine Karte
+auf der Startseite und eine Zahl am Profil-Tab haben. Die Doppelung ist
+der kleinere Fehler: Eine Liste, die „nichts verpasst" sagt, obwohl eine
+Anfrage kam, wäre schlicht falsch. Die Zahl am Tab bleibt der
+Handlungsaufruf, die Glocke ist das Gedächtnis.

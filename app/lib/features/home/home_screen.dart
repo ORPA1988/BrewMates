@@ -6,6 +6,7 @@ import '../../core/format.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
 import '../../widgets/badge_celebration.dart';
+import '../../widgets/glocke.dart';
 import '../../widgets/checkin_card.dart';
 import '../../widgets/session_card.dart';
 import '../../widgets/update_dialog.dart';
@@ -34,7 +35,12 @@ class HomeScreen extends ConsumerWidget {
         : 'Servus, ${profile.displayName}! ${profile.avatarEmoji}';
 
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(
+        title: Text(title),
+        // Die Nachlese zu allem, was geweckt hat. Ohne sie weiß man nach
+        // einem Push, DASS etwas war, aber nicht was.
+        actions: const [Glocke()],
+      ),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
