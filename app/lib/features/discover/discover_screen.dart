@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import '../../data/db/database.dart';
 import '../../data/location_service.dart';
 import '../../data/providers.dart';
+import '../../widgets/beer_thumbnail.dart';
 import '../../data/venue_open.dart';
 import '../../data/venue_sync.dart' show venueCategoryEmoji, venueCategoryLabel;
 import '../../widgets/venue_tile.dart';
@@ -223,8 +224,10 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
       itemBuilder: (_, i) {
         final t = treffer[i];
         return ListTile(
-          leading: Text(t.beer.isAlcoholFree ? '💧' : '🍺',
-              style: const TextStyle(fontSize: 24)),
+          leading: BeerThumbnail(
+            imageUrl: t.beer.imageUrl,
+            isAlcoholFree: t.beer.isAlcoholFree,
+          ),
           title: Text(t.beer.name),
           subtitle: Text('${t.brewery.name} · ${t.beer.style}'),
           onTap: () => context.push('/beer/${t.beer.id}'),

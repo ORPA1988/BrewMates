@@ -7,6 +7,7 @@ class SuggestEntry {
     required this.onTap,
     this.untertitel,
     this.fuehrend,
+    this.bild,
     this.vomServer = false,
   });
 
@@ -15,6 +16,11 @@ class SuggestEntry {
 
   /// Emoji oder Symbol links — rein zur Orientierung.
   final String? fuehrend;
+
+  /// Bild links, wenn es eines gibt (Etikett eines Biers). Hat Vorrang
+  /// vor [fuehrend]: Wo ein Etikett steht, sagt es mehr als ein Emoji,
+  /// das bei allen gleich ist.
+  final Widget? bild;
 
   /// Kommt der Vorschlag aus der Nachladung vom Server?
   ///
@@ -72,9 +78,11 @@ class SuggestList extends StatelessWidget {
             ListTile(
               dense: true,
               visualDensity: VisualDensity.compact,
-              leading: e.fuehrend == null
-                  ? null
-                  : Text(e.fuehrend!, style: const TextStyle(fontSize: 20)),
+              leading: e.bild ??
+                  (e.fuehrend == null
+                      ? null
+                      : Text(e.fuehrend!,
+                          style: const TextStyle(fontSize: 20))),
               title: Text(e.titel),
               subtitle: e.untertitel == null ? null : Text(e.untertitel!),
               trailing: e.vomServer

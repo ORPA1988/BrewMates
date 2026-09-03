@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/providers.dart';
+import '../../widgets/beer_thumbnail.dart';
 
 /// Wunschliste: vorgemerkte Biere, direkt eincheckbar oder entfernbar.
 class WishlistScreen extends ConsumerWidget {
@@ -48,9 +49,9 @@ class WishlistScreen extends ConsumerWidget {
               final item = items[index];
               final beer = item.beer;
               return ListTile(
-                leading: Text(
-                  beer.isAlcoholFree ? '💧' : '🍺',
-                  style: const TextStyle(fontSize: 24),
+                leading: BeerThumbnail(
+                  imageUrl: beer.imageUrl,
+                  isAlcoholFree: beer.isAlcoholFree,
                 ),
                 title: Text(beer.name),
                 subtitle: Text('${item.brewery.name} · ${beer.style}'),

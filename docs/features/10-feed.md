@@ -3,7 +3,13 @@
 > **Status:** 🟢 fertig — Strom, Löschen, Seitenladen und Einstieg in die
 > Statistik.
 > **Seit:** 0.2.0, Toasts/Kommentare online seit 0.9.9 ·
-> **Zuletzt geprüft:** 2026-08-15
+> **Zuletzt geprüft:** 2026-09-03
+>
+> **Seit 0.10.12 steht das Etikett links neben dem Namen** — vorher stand
+> dort gar nichts, und in allen übrigen Listen dasselbe 🍺 vor jedem
+> Eintrag. Ein Zeichen, das bei allen gleich ist, trägt keine Information;
+> ein Etikett erkennt man schneller, als man einen Namen liest. Das Bild
+> ist tippbar wie der Name (`widgets/beer_thumbnail.dart`).
 
 ## Zielsetzung
 

@@ -8,6 +8,7 @@ import '../../core/external_links.dart';
 import '../../core/format.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
+import '../../widgets/beer_thumbnail.dart';
 import '../../widgets/story_sheet.dart';
 
 /// Brauerei-Detailseite: Standort, Eigentümer, Kennzahlen und alle Biere
@@ -176,8 +177,11 @@ class _BreweryDetails extends ConsumerWidget {
         for (final item in beers)
           Card(
             child: ListTile(
-              leading: Text(item.beer.isAlcoholFree ? '💧' : '🍺',
-                  style: const TextStyle(fontSize: 26)),
+              leading: BeerThumbnail(
+                imageUrl: item.beer.imageUrl,
+                isAlcoholFree: item.beer.isAlcoholFree,
+                size: 44,
+              ),
               title: Text(item.beer.name),
               subtitle: Text('${item.beer.style}'
                   '${item.beer.abv != null ? ' · ${item.beer.abv} %' : ''}'),
