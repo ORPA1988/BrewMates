@@ -156,6 +156,13 @@ Vorschaugröße (`cacheWidth`) statt in voller Auflösung; ein
 1000×1000-Etikett belegt sonst 4 MB Speicher für 40 Bildpunkte auf dem
 Schirm.
 
+**Nur die Breite wird vorgegeben.** Die erste Fassung setzte auch
+`cacheHeight` — das entschlüsselt auf ein Quadrat und staucht jedes
+Etikett, das keins ist. Flaschen sind hoch, also praktisch alle.
+Angezeigt wird mit `BoxFit.contain`: lieber das ganze Etikett etwas
+kleiner als ein zurechtgeschnittener Ausschnitt, bei dem der Namenszug
+fehlt.
+
 Das ist nicht nur eine Größenfrage. Die Bilder gehören anderen: Sie
 dürfen verlinkt, aber nicht mitgeliefert werden, und sie können
 jederzeit verschwinden. Deshalb endet jeder Fehlschlag beim vertrauten

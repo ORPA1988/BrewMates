@@ -67,6 +67,36 @@ void main() {
     expect(find.text('🍺'), findsOneWidget);
   });
 
+  testWidgets('Das Seitenverhältnis wird nicht gestaucht', (tester) async {
+    // Der Fehler der ersten Fassung: `cacheWidth` UND `cacheHeight` auf
+    // denselben Wert. Das entschlüsselt auf ein Quadrat — und staucht
+    // jedes Etikett, das keins ist. Flaschen sind hoch, also praktisch
+    // alle.
+    //
+    // Prüfbar ist das ohne echtes Bild: `Image.network` mit
+    // Cache-Vorgaben baut einen `ResizeImage`, und dessen Felder sagen,
+    // worauf entschlüsselt wird.
+    await zeige(
+      tester,
+      const BeerThumbnail(
+        imageUrl: 'https://example.invalid/etikett.jpg',
+        isAlcoholFree: false,
+      ),
+    );
+    final bild = tester.widget<Image>(find.byType(Image));
+    final quelle = bild.image;
+    expect(quelle, isA<ResizeImage>());
+    final skaliert = quelle as ResizeImage;
+    expect(skaliert.width, isNotNull, reason: 'Die Breite begrenzt den '
+        'Speicher — ein 1000er Etikett für 40 Punkte wäre Verschwendung.');
+    expect(skaliert.height, isNull,
+        reason: 'Wird auch die Höhe vorgegeben, entsteht ein Quadrat und '
+            'das Bild wird gestaucht.');
+    expect(bild.fit, BoxFit.contain,
+        reason: 'Lieber das ganze Etikett kleiner als ein Ausschnitt, '
+            'bei dem der Namenszug fehlt.');
+  });
+
   testWidgets('Die Größe wird eingehalten', (tester) async {
     await zeige(
       tester,
