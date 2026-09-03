@@ -39,6 +39,7 @@ part 'providers/entdecken.dart';
 part 'providers/feed.dart';
 part 'providers/feedback.dart';
 part 'providers/glocke.dart';
+part 'providers/moderation.dart';
 part 'providers/online.dart';
 part 'providers/push.dart';
 part 'providers/sessions.dart';

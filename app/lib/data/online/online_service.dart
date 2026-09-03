@@ -11,6 +11,7 @@ import 'api/devices_api.dart';
 import 'api/feedback_api.dart';
 import 'api/online_api.dart';
 import 'api/friends_api.dart';
+import 'api/moderation_api.dart';
 import 'api/notifications_api.dart';
 import 'api/sessions_api.dart';
 import 'api/venues_api.dart';
@@ -22,6 +23,7 @@ export 'api/feedback_api.dart';
 export 'api/notifications_api.dart';
 export 'api/online_api.dart';
 export 'api/friends_api.dart';
+export 'api/moderation_api.dart';
 export 'api/sessions_api.dart';
 export 'api/venues_api.dart';
 
@@ -38,7 +40,9 @@ class OnlineService {
         notifications =
             NotificationsApi(_client, () => _client.auth.currentUser),
         devices = DevicesApi(_client, () => _client.auth.currentUser),
-        feedback = FeedbackApi(_client, () => _client.auth.currentUser);
+        feedback = FeedbackApi(_client, () => _client.auth.currentUser),
+        moderation =
+            ModerationApi(_client, () => _client.auth.currentUser);
 
   final SupabaseClient _client;
 
@@ -60,6 +64,9 @@ class OnlineService {
 
   /// Fehler melden, Wuensche, Roadmap (Testphase).
   final FeedbackApi feedback;
+
+  /// Gemeldete Profile ansehen und abschliessen (Moderatoren, Admins).
+  final ModerationApi moderation;
 
   /// Live-Beacons: starten, spiegeln, verlängern, beenden.
   final SessionsApi sessions;

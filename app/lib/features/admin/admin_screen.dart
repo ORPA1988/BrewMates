@@ -276,6 +276,20 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
                 onTap: () => context.push('/admin/challenges'),
               ),
             ),
+            Card(
+              child: ListTile(
+                leading: const Text('🛡', style: TextStyle(fontSize: 24)),
+                title: const Text('Meldungen bearbeiten'),
+                subtitle: Text(switch (ref.watch(offeneMeldungenProvider)) {
+                  AsyncData(value: final n) when n > 0 =>
+                    n == 1 ? '1 offene Meldung' : '$n offene Meldungen',
+                  AsyncData() => 'Nichts offen',
+                  _ => 'Gemeldete Profile ansehen und abschließen',
+                }),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/moderation'),
+              ),
+            ),
             const SizedBox(height: 16),
 
             // ------------------------------------------------------------------

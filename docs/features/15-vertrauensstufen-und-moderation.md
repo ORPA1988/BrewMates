@@ -1,9 +1,15 @@
 # 15 Vertrauensstufen & Moderation
 
-> **Status:** 🟡 teilweise — fünf Stufen, serverseitig durchgesetzt,
-> Änderungsprotokoll und Admin-Bereich; Meldungen werden gespeichert, aber
-> in der App nicht bearbeitet.
-> **Seit:** 0.9.0 (0013) · **Zuletzt geprüft:** 2026-09-02
+> **Status:** 🟢 fertig — fünf Stufen, serverseitig durchgesetzt,
+> Änderungsprotokoll, Admin-Bereich und seit 0.10.11 eine
+> Bearbeitungsoberfläche für Meldungen.
+> **Seit:** 0.9.0 (0013) · **Zuletzt geprüft:** 2026-09-03
+>
+> **Die Lücke ist geschlossen** (Issue #66): Meldungen landeten bis 0040
+> in `reports` und blieben dort liegen — lesen durfte sie nur ein Admin,
+> und auch der hatte keine Oberfläche. Moderatoren (Stufe 4) haben jetzt
+> eine eigene Arbeitsliste unter `/moderation`; die Einzelheiten stehen in
+> [Funktion 37](37-meldungen-bearbeiten.md).
 
 ## Zielsetzung
 

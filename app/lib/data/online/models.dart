@@ -392,3 +392,81 @@ class RoadmapItem {
         RoadmapStatus.done => '✅',
       };
 }
+
+/// Eine Meldung aus Sicht der Moderation (Migration 0040, RPC
+/// `moderation_reports`).
+///
+/// Die Namen stehen mit drin, weil `profiles_select` sie nicht hergibt:
+/// Ein privates Profil bleibt auch für Moderatoren unsichtbar, und das
+/// soll so bleiben. Die RPC gibt genau die Namen heraus, die an einer
+/// Meldung hängen — nicht mehr.
+class ModerationReport {
+  const ModerationReport({
+    required this.id,
+    required this.subjectType,
+    required this.reason,
+    required this.status,
+    required this.createdAt,
+    required this.reporterId,
+    required this.reporterName,
+    required this.reportedId,
+    required this.reportedName,
+    this.subjectId,
+    this.note,
+    this.handledAt,
+    this.handledByName,
+  });
+
+  factory ModerationReport.fromRow(Map<String, dynamic> r) => ModerationReport(
+        id: r['id'] as String,
+        subjectType: (r['subject_type'] as String?) ?? 'profile',
+        subjectId: r['subject_id'] as String?,
+        reason: (r['reason'] as String?) ?? '',
+        status: (r['status'] as String?) ?? 'open',
+        createdAt: DateTime.parse(r['created_at'] as String).toLocal(),
+        reporterId: r['reporter_id'] as String,
+        reporterName: (r['reporter_name'] as String?) ?? 'Jemand',
+        reportedId: r['reported_id'] as String,
+        reportedName: (r['reported_name'] as String?) ?? 'Jemand',
+        note: r['note'] as String?,
+        handledAt: r['handled_at'] == null
+            ? null
+            : DateTime.parse(r['handled_at'] as String).toLocal(),
+        handledByName: r['handled_by_name'] as String?,
+      );
+
+  final String id;
+
+  /// `profile`, `checkin`, `comment` oder `session`.
+  final String subjectType;
+  final String? subjectId;
+  final String reason;
+
+  /// `open`, `resolved` oder `dismissed`.
+  final String status;
+  final DateTime createdAt;
+  final String reporterId;
+  final String reporterName;
+  final String reportedId;
+  final String reportedName;
+
+  /// Befund des Moderators — nur für Moderatoren sichtbar.
+  final String? note;
+  final DateTime? handledAt;
+  final String? handledByName;
+
+  bool get isOpen => status == 'open';
+
+  String get statusLabel => switch (status) {
+        'resolved' => 'Erledigt',
+        'dismissed' => 'Verworfen',
+        _ => 'Offen',
+      };
+
+  String get subjectLabel => switch (subjectType) {
+        'checkin' => 'Check-in',
+        'comment' => 'Kommentar',
+        'session' => 'Runde',
+        _ => 'Profil',
+      };
+}

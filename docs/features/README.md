@@ -38,7 +38,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [12](12-challenges.md) | Challenges | 🟢 | Serverseitig validiert |
 | [13](13-statistiken-und-tagebuch.md) | Statistiken & Tagebuch | 🟢 | Tagebuch mit Suche und Seitenladen; Auswertung in 20 |
 | [14](14-wunschliste.md) | Wunschliste | 🟢 | Merken, Cloud-Sync |
-| [15](15-vertrauensstufen-und-moderation.md) | Vertrauensstufen | 🟡 | 5 Stufen, Admin-Bereich; Meldungen ohne Bearbeitungsoberfläche |
+| [15](15-vertrauensstufen-und-moderation.md) | Vertrauensstufen | 🟢 | 5 Stufen, Admin-Bereich, Moderation (siehe 37) |
 | [16](16-datensynchronisation.md) | Datensynchronisation | 🟡 | Local-first, Cloud-Restore; kein Delta-Sync |
 | [17](17-app-update.md) | App-Update | 🟢 | Prüfung gegen GitHub-Releases |
 | [18](18-plattformen.md) | Plattformen | 🟡 | Android + Web live, Windows baubar |
@@ -58,6 +58,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [34](34-entdecken.md) | Entdecken | 🟢 | Biere, Brauereien, Gasthäuser mit Suche, Sortierung, Anlegen |
 | [35](35-feedback-und-roadmap.md) | Fehler, Wünsche, Roadmap | 🟢 | Testphase: melden mit zwei Tipps, Status sehen, Roadmap in Alltagssprache |
 | [36](36-rueckgaengig-statt-rueckfrage.md) | Rückgängig statt Rückfrage | 🟡 | Beacon, Anfrage, Wunschliste: Fehltipp fünf Sekunden lang zurücknehmbar |
+| [37](37-meldungen-bearbeiten.md) | Meldungen bearbeiten | 🟢 | Moderatoren sehen gemeldete Profile und schließen sie mit Befund ab |
 
 ## Geplante Funktionen
 

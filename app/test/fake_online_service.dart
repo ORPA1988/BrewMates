@@ -151,6 +151,23 @@ class FakeOnlineService extends OnlineService {
   /// Crews, denen der Testnutzer beigetreten ist.
   final List<String> beigetreteneCrews = [];
 
+  /// Vertrauensstufe des Testnutzers (4 = Moderator, 5 = Admin).
+  ({int level, int points})? stufe = (level: 1, points: 0);
+
+  @override
+  Future<({int level, int points})?> myAccountLevelInfo() async {
+    aufrufe.add('myAccountLevelInfo');
+    return stufe;
+  }
+
+  /// Meldungen, die der „Server" fuer die Moderation fuehrt.
+  List<ModerationReport> meldungen = const [];
+
+  late final _moderation = _FakeModerationApi(this);
+
+  @override
+  ModerationApi get moderation => _moderation;
+
   @override
   Future<String?> joinCrew(String code) async {
     aufrufe.add('joinCrew:$code');
@@ -410,5 +427,51 @@ class _FakeFriendsApi extends FriendsApi {
   Future<bool> unblockProfile(String profileId) async {
     _fake.aufrufe.add('unblockProfile:$profileId');
     return !_fake.schlaegtFehl;
+  }
+}
+
+
+class _FakeModerationApi extends ModerationApi {
+  _FakeModerationApi(this._fake)
+      : super(_fake.client, (() => _fake.currentUser));
+
+  final FakeOnlineService _fake;
+
+  @override
+  Future<List<ModerationReport>> reports({String? status = 'open'}) async {
+    _fake.aufrufe.add('moderation.reports:$status');
+    if (status == null) return _fake.meldungen;
+    return [
+      for (final m in _fake.meldungen)
+        if (m.status == status) m,
+    ];
+  }
+
+  @override
+  Future<bool> resolve(String reportId,
+      {required String status, String? note}) async {
+    _fake.aufrufe.add('moderation.resolve:$reportId:$status:${note ?? ''}');
+    if (_fake.schlaegtFehl) return false;
+    _fake.meldungen = [
+      for (final m in _fake.meldungen)
+        if (m.id == reportId)
+          ModerationReport(
+            id: m.id,
+            subjectType: m.subjectType,
+            reason: m.reason,
+            status: status,
+            createdAt: m.createdAt,
+            reporterId: m.reporterId,
+            reporterName: m.reporterName,
+            reportedId: m.reportedId,
+            reportedName: m.reportedName,
+            note: note,
+            handledAt: status == 'open' ? null : DateTime(2026, 9, 3),
+            handledByName: status == 'open' ? null : 'mod',
+          )
+        else
+          m,
+    ];
+    return true;
   }
 }
