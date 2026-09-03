@@ -245,8 +245,7 @@ class HomeScreen extends ConsumerWidget {
 
           // Freunde mit Bierlaune — der sanfte Anstoß zum Zusammenkommen.
           ...() {
-            final thirsty =
-                ref.watch(thirstyFriendsProvider).valueOrNull ?? const [];
+            final thirsty = ref.watch(thirstyFriendsProvider);
             if (thirsty.isEmpty) return const <Widget>[];
             return [
               Padding(

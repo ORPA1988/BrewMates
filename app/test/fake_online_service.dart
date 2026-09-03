@@ -151,6 +151,15 @@ class FakeOnlineService extends OnlineService {
   /// Crews, denen der Testnutzer beigetreten ist.
   final List<String> beigetreteneCrews = [];
 
+  /// 🍺 Eigene Bierlaune, wie der „Server" sie kennt.
+  DateTime? thirstyBis;
+
+  /// Freunde mit Bierlaune (inkl. `thirstyUntil`).
+  List<RemoteProfile> thirstyFreunde = const [];
+
+  /// Laufende Beacons von Freunden, wie Realtime sie zuletzt schickte.
+  List<RemoteSession> freundesSessions = const [];
+
   /// Vertrauensstufe des Testnutzers (4 = Moderator, 5 = Admin).
   ({int level, int points})? stufe = (level: 1, points: 0);
 
@@ -268,6 +277,10 @@ class _FakeSessionsApi extends SessionsApi {
     _fake.aufrufe.add('updateSessionExpiry:$sessionId');
     return !_fake.schlaegtFehl;
   }
+
+  @override
+  Stream<List<RemoteSession>> friendSessionsStream() =>
+      Stream.value(_fake.freundesSessions);
 
   @override
   Future<List<String>> myActiveSessionIds() async {
@@ -400,6 +413,18 @@ class _FakeFriendsApi extends FriendsApi {
 
   @override
   Future<List<RemoteProfile>> friends() async => _fake.freunde;
+
+  @override
+  Future<DateTime?> myThirstyUntil() async {
+    _fake.aufrufe.add('myThirstyUntil');
+    return _fake.thirstyBis;
+  }
+
+  @override
+  Future<List<RemoteProfile>> thirstyFriends() async {
+    _fake.aufrufe.add('thirstyFriends');
+    return _fake.thirstyFreunde;
+  }
 
   @override
   Future<List<FriendRequest>> incomingRequests() async {

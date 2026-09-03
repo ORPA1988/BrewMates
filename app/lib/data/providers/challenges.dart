@@ -188,9 +188,8 @@ final crewMembersProvider = FutureProvider.autoDispose
   return online.crewMembers(crewId);
 });
 
-/// 🍺 Freunde mit aktiver Bierlaune (0018) — „X hätte jetzt Lust auf ein
-/// Bier". Aktualisiert sich im 5-Minuten-Takt und nach eigenen Aktionen.
-final thirstyFriendsProvider =
+/// 🍺 Freunde mit Bierlaune, wie der Server sie zuletzt kannte.
+final _thirstyFriendsRohProvider =
     FutureProvider<List<RemoteProfile>>((ref) async {
   ref.watch(_syncTickProvider);
   final online = await ref.watch(onlineServiceProvider.future);
@@ -202,6 +201,23 @@ final thirstyFriendsProvider =
   return online.friends.thirstyFriends();
 });
 
+/// 🍺 Freunde, die **jetzt** Bierlaune haben — „X hätte Lust auf ein Bier".
+///
+/// Der Server filtert beim Abruf, aber abgerufen wird nur alle fünf
+/// Minuten. Eine abgelaufene Bierlaune blieb deshalb bis zu fünf Minuten
+/// stehen — und das ist die eine Angabe, bei der „schon vorbei" das
+/// Gegenteil von hilfreich ist: Man macht sich auf den Weg zu jemandem,
+/// der längst zu Hause ist. Der Zeitfilter hängt hier am
+/// 30-Sekunden-Takt.
+final thirstyFriendsProvider = Provider<List<RemoteProfile>>((ref) {
+  final jetzt = _now(ref);
+  final roh = ref.watch(_thirstyFriendsRohProvider).valueOrNull ?? const [];
+  return [
+    for (final f in roh)
+      if (f.thirstyUntil != null && f.thirstyUntil!.isAfter(jetzt)) f,
+  ];
+});
+
 /// Eigene Bierlaune (kommt seit 0024 über eine Funktion, weil das
 /// Spaltenrecht auf `thirsty_until` entzogen ist).
 final myThirstyUntilProvider = FutureProvider<DateTime?>((ref) async {
@@ -209,6 +225,18 @@ final myThirstyUntilProvider = FutureProvider<DateTime?>((ref) async {
   ref.watch(onlineUserProvider);
   final online = await ref.watch(onlineServiceProvider.future);
   return online?.friends.myThirstyUntil();
+});
+
+/// Läuft meine Bierlaune gerade noch?
+///
+/// Getrennt vom Abrufen, weil beides verschiedene Takte hat: Der Wert
+/// kommt alle fünf Minuten vom Server, die Frage „gilt er noch" stellt
+/// sich jede halbe Minute. Ohne diese Trennung zeigte der Knopf auf der
+/// Startseite bis zu fünf Minuten lang „Bierlaune bis 18:30", obwohl es
+/// längst 18:32 war.
+final bierlauneAktivProvider = Provider<bool>((ref) {
+  final bis = ref.watch(myThirstyUntilProvider).valueOrNull;
+  return bis != null && bis.isAfter(_now(ref));
 });
 
 /// Merker, für welches Konto der Cloud-Restore diese App-Sitzung schon

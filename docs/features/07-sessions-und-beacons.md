@@ -4,6 +4,14 @@
 > dürfen (0039, seit 0.10.10).
 > **Seit:** 0.2.0 · **Zuletzt geprüft:** 2026-09-03
 >
+> **Fremde Beacons laufen seit 0.10.12 zuverlässig ab.** Der Zeitfilter
+> lag im Realtime-Stream — und Realtime schickt nur, wenn sich eine
+> **Zeile** ändert. Eine ablaufende Laufzeit ändert keine Zeile; der
+> Server beendet sie erst per Cron. Ein längst beendeter Beacon stand
+> deshalb weiter auf der Karte, **mit Ort**, bis zufällig irgendwer
+> anders etwas tat. Der Filter sitzt jetzt in `remoteSessionsProvider`
+> und hängt am 30-Sekunden-Takt.
+>
 > **Ein neuer Beacon weckt seit 0.10.10 die Freunde** (Issue #60). Wer
 > etwas bekommt, ist wortwörtlich die Bedingung aus `sessions_select`:
 > Freunde ab dem Kreis „Freund" bzw. die Crew, niemand sonst. Eine

@@ -40,7 +40,8 @@ final myRemoteProfileProvider = FutureProvider<RemoteProfile?>((ref) async {
 });
 
 /// Aktive Sessions echter Freunde (Realtime).
-final remoteSessionsProvider =
+/// Was der Server über die Beacons der Freunde geschickt hat — roh.
+final _remoteSessionsRohProvider =
     StreamProvider<List<RemoteSession>>((ref) async* {
   final online = await ref.watch(onlineServiceProvider.future);
   final user = ref.watch(onlineUserProvider).valueOrNull;
@@ -49,6 +50,26 @@ final remoteSessionsProvider =
     return;
   }
   yield* online.sessions.friendSessionsStream();
+});
+
+/// Beacons von Freunden, die **jetzt** noch laufen.
+///
+/// **Warum der Zeitfilter hier steht und nicht im Stream:** Realtime
+/// schickt nur, wenn sich eine Zeile ändert. Ein Beacon, dessen Laufzeit
+/// abläuft, ändert keine Zeile — der Server beendet ihn erst per Cron,
+/// und das kann dauern. Der Filter im Stream griff deshalb nur zufällig:
+/// nämlich dann, wenn irgendwer anders in der Zwischenzeit etwas tat.
+/// Bis dahin stand ein längst beendeter Beacon weiter auf der Karte und
+/// auf der Startseite — mit Ort.
+///
+/// Hier hängt er am 30-Sekunden-Takt und verschwindet von selbst.
+final remoteSessionsProvider = Provider<List<RemoteSession>>((ref) {
+  final jetzt = _now(ref);
+  final roh = ref.watch(_remoteSessionsRohProvider).valueOrNull ?? const [];
+  return [
+    for (final s in roh)
+      if (s.expiresAt.isAfter(jetzt)) s,
+  ];
 });
 
 /// Check-ins echter Freunde (Abruf beim Start + alle 30 s über die Clock).
