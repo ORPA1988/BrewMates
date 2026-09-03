@@ -2,7 +2,7 @@
 
 > **Status:** 🟢 fertig — Kamera auf Android/iOS/Web, manuelle Eingabe
 > überall.
-> **Seit:** 0.3.0 · **Zuletzt geprüft:** 2026-09-02
+> **Seit:** 0.3.0 · **Zuletzt geprüft:** 2026-09-03
 
 ## Zielsetzung
 

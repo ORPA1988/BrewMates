@@ -2,7 +2,7 @@
 
 > **Status:** 🟢 fertig — 659 Biere und 137 Brauereien aus dem DACH-Raum,
 > kuratiert im Repository, per GitHub aktualisiert.
-> **Seit:** 0.4.0 (AT), DACH seit 0.9.13 · **Zuletzt geprüft:** 2026-09-02
+> **Seit:** 0.4.0 (AT), DACH seit 0.9.13 · **Zuletzt geprüft:** 2026-09-03
 
 ## Zielsetzung
 
@@ -99,6 +99,36 @@ umbenannte Einträge bleiben auf dem Gerät also als verwaiste Zeilen
 liegen — vorhandene Check-ins zeigen weiter auf ihr Bier, aber die Suche
 kann eine alte Dublette noch anzeigen. Ein Neuinstallieren räumt das auf;
 ein Aufräumschritt im Abgleich wäre die saubere Lösung und steht offen.
+
+## Bayern, Deutschland und die Schweiz (2026-09-03)
+
+Dieselbe Prüfung, anderer Befund: Die drei Datensätze sind durchgängig
+gepflegt — keine Dubletten, jedes Bier mit Beschreibung und Stil. Zu tun
+war trotzdem einiges.
+
+- **322 Gebindegrößen statt 136.** Bayern, Deutschland und die Schweiz
+  führten bis dahin **keine einzige**. Ohne sie erbt jeder Scan die
+  Vorbelegung 0,5 l — wer eine 0,33er scannte, bekam einen halben Liter
+  gutgeschrieben.
+- **Sechs EANs am falschen Produkt** entfernt (ein Warsteiner Radler am
+  Warsteiner Alkoholfrei, ein Diebels Alt Radler am Diebels Alt, ein
+  Berliner Natur Radler am Berliner Pilsner, ein Licher Colabier am Licher
+  Pilsner, zwei isotonische Sonderlinien).
+- **65 neue EANs und 45 neue Bilder** aus der Markensuche — nur dort, wo
+  Open Food Facts dieselbe Sorte nennt. In dreizehn Fällen stimmte die
+  Marke, aber nicht die Sorte; dort steht weiterhin nichts.
+- **13 Alkoholwerte** dazu. Mehr waren nicht zu holen, ohne zu raten:
+  Open Food Facts speichert `alcohol_value` teils in Volumenprozent, teils
+  in Gramm je 100 ml (Gaffel Wiess steht dort mit 3,866 — das ist 4,9 %
+  vol mal 0,789). Übernommen wird nur, was eindeutig ist.
+- **79 Stil-Schreibweisen** auf das österreichische Vokabular gezogen,
+  damit ein Filter „Weißbier“ in allen vier Regionen dasselbe findet.
+  Kölsch, Altbier und Rauchbier bleiben stehen — das sind Stile, keine
+  Schreibweisen.
+
+Offen: 44 Biere ohne Alkoholgehalt, 81 ohne Bild, 75 ohne Barcode, vor
+allem in der Schweiz. Die dortigen Brauereiseiten veröffentlichen kaum
+technische Daten, und die OFF-Abdeckung ist dünn.
 
 ## Technische Umsetzung
 

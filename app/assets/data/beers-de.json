@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "updated": "2026-08-15",
+  "version": 2,
+  "updated": "2026-09-03",
   "beers": [
     {
       "id": "de-krombacher-pils",
@@ -11,9 +11,13 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "4008287056020",
-        "4008287054026"
+        "4008287054026",
+        "4008287056020"
       ],
+      "barcode_volumes": {
+        "4008287054026": 500,
+        "4008287056020": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/400/828/705/6020/front_de.34.400.jpg",
       "description_manufacturer": "Klassisches Premium-Pils, gebraut mit Felsquellwasser aus dem Siegerland. Feinherb-frisch mit milder Hopfennote.",
       "description_community": "Solides, überall verfügbares Fernseh-Pils – für viele der Inbegriff des deutschen Standard-Pils, ohne Ecken und Kanten.",
@@ -28,11 +32,14 @@
       "ibu": null,
       "is_alcohol_free": true,
       "barcodes": [
-        "4008287052527",
-        "4008287914498",
+        "0048201052022",
         "4008287052022",
-        "0048201052022"
+        "4008287052527"
       ],
+      "barcode_volumes": {
+        "4008287052022": 500,
+        "4008287052527": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/400/828/705/2527/front_de.7.400.jpg",
       "description_manufacturer": "Alkoholfreies Pils mit garantiert 0,0 % Alkohol. Frisch-herber Pilsgeschmack, isotonisch und kalorienarm.",
       "description_community": "Eines der meistverkauften Alkoholfreien in Deutschland; gilt als überdurchschnittlich nah am Original.",
@@ -46,8 +53,15 @@
       "abv": 2.5,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4008287910582"
+      ],
+      "barcode_volumes": {
+        "4008287910582": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/400/828/791/0582/front_de.4.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4008287910582",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Naturtrübes Radler aus Krombacher Pils und Zitronenlimonade mit natürlichem Zitronensaft.",
       "description_community": "Süffiger Sommer-Durstlöscher, im Radler-Segment einer der Marktführer.",
       "community_rating": 3.0
@@ -61,10 +75,14 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "4000856005309",
         "4000856005101",
+        "4000856005309",
         "4000856255834"
       ],
+      "barcode_volumes": {
+        "4000856005101": 300,
+        "4000856005309": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/400/085/600/5309/front_fr.5.400.jpg",
       "description_manufacturer": "Mild-elegantes Premium-Pilsener aus dem Arnsberger Wald, gebraut mit weichem Waldquellwasser.",
       "description_community": "In den 1990ern die Nummer 1 in Deutschland; heute ein eher mildes, unaufgeregtes Standard-Pils.",
@@ -75,14 +93,18 @@
       "brewery_id": "de-warsteiner",
       "name": "Warsteiner Herb",
       "style": "Pils",
-      "abv": null,
+      "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "4000856008447",
         "4000856008423",
+        "4000856008447",
         "4000856108963"
       ],
+      "barcode_volumes": {
+        "4000856008423": 330,
+        "4000856008447": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/400/085/600/8447/front_de.11.400.jpg",
       "description_manufacturer": "Kräftig gehopfte, herbe Variante des Warsteiner Pilseners für Freunde betonter Bittere.",
       "description_community": "Wird von Hopfenfans als die charaktervollere Warsteiner-Variante geschätzt.",
@@ -97,11 +119,15 @@
       "ibu": null,
       "is_alcohol_free": true,
       "barcodes": [
-        "4000856007129",
         "4000856005958",
         "4000856008966",
         "4000856094990"
       ],
+      "barcode_volumes": {
+        "4000856005958": 330,
+        "4000856008966": 330,
+        "4000856094990": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/400/085/600/7129/front_de.13.400.jpg",
       "description_manufacturer": "Alkoholfreies Pilsener mit frisch-hopfigem Geschmack, isotonisch und kalorienreduziert.",
       "description_community": "Unauffälliger, sauberer Alkoholfrei-Klassiker im Handel.",
@@ -115,8 +141,17 @@
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4005249005102",
+        "42025931"
+      ],
+      "barcode_volumes": {
+        "4005249005102": 330,
+        "42025931": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/400/524/900/5102/front_en.15.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4005249005102",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Frisch-hopfiges Premium-Pilsener, gebraut mit weichem Quellwasser aus dem Sauerland.",
       "description_community": "Gilt vielen als eines der besseren TV-Pilsener – frisch und ausgewogen, besonders vom Fass.",
       "community_rating": 3.1
@@ -129,8 +164,15 @@
       "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4005249061702"
+      ],
+      "barcode_volumes": {
+        "4005249061702": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/400/524/906/1702/front_de.15.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4005249061702",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Mild-süffiges Helles im Retro-Stil, benannt nach dem rheinisch-westfälischen Kosewort für die kleine Flasche Bier.",
       "description_community": "Erfolgsgeschichte der letzten Jahre: das meistverkaufte Helle in NRW, süffig und massentauglich.",
       "community_rating": 3.2
@@ -158,9 +200,13 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "4102430015206",
-        "41024300"
+        "41024300",
+        "4102430015206"
       ],
+      "barcode_volumes": {
+        "41024300": 500,
+        "4102430015206": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/410/243/001/5206/front_de.26.400.jpg",
       "description_manufacturer": "Feinherbes Premium-Pils aus der Eifel mit Siegelhopfen aus dem eigenen Anbaugebiet – seit Generationen nach gleicher Rezeptur gebraut.",
       "description_community": "Deutschlands Fassbier Nummer 1 ('Bitte ein Bit'); verlässliches, herbes Standard-Pils.",
@@ -175,11 +221,17 @@
       "ibu": null,
       "is_alcohol_free": true,
       "barcodes": [
-        "4102430315207",
-        "4102430315009",
         "4102430083540",
-        "4102430083571"
+        "4102430083571",
+        "4102430315009",
+        "4102430315207"
       ],
+      "barcode_volumes": {
+        "4102430083540": 500,
+        "4102430083571": 330,
+        "4102430315009": 500,
+        "4102430315207": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/410/243/031/5207/front_de.29.400.jpg",
       "description_manufacturer": "Alkoholfreies Pils mit 0,0 % Alkohol und typisch feinherbem Bitburger Geschmack.",
       "description_community": "Sehr präsent im Sport-Sponsoring; gehört zu den beliebteren alkoholfreien Pilsenern.",
@@ -194,11 +246,16 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "41001318",
         "41001301",
-        "42178170",
-        "42040613"
+        "41001318",
+        "42040613",
+        "42178170"
       ],
+      "barcode_volumes": {
+        "41001301": 330,
+        "41001318": 500,
+        "42178170": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/000/004/100/1318/front_en.36.400.jpg",
       "description_manufacturer": "Herb-frisches Pilsener nach Bremer Brautradition seit 1873, weltweit in der grünen Flasche mit Schlüssel-Logo bekannt.",
       "description_community": "International erfolgreichstes deutsches Bier; im Inland als eher kantiges, herbes Massen-Pils bewertet.",
@@ -213,11 +270,17 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "42111719",
-        "42077442",
         "4100130900563",
+        "42077442",
+        "42111719",
         "42141334"
       ],
+      "barcode_volumes": {
+        "4100130900563": 330,
+        "42077442": 330,
+        "42111719": 500,
+        "42141334": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/000/004/211/1719/front_de.24.400.jpg",
       "description_manufacturer": "Mildes, helles Lager in der Klarglasflasche – die weichere Alternative zum klassischen Beck's.",
       "description_community": "Erfolgreiche Lifestyle-Variante der 2000er; Kritikern zu glatt, Fans mögen die Milde.",
@@ -246,10 +309,15 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
+        "4103080050517",
         "41030806",
-        "41030837",
-        "4103080050517"
+        "41030837"
       ],
+      "barcode_volumes": {
+        "4103080050517": 500,
+        "41030806": 330,
+        "41030837": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/000/004/103/0806/front_de.44.400.jpg",
       "description_manufacturer": "Norddeutsch-herbes Pilsener aus Flensburg, traditionell in der Bügelverschlussflasche mit dem typischen 'Plopp'.",
       "description_community": "Kultbier des Nordens mit treuer Fangemeinde; knackig-herb und erfrischend.",
@@ -264,9 +332,12 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "42095071",
-        "4103080063746"
+        "4103080063746",
+        "42095071"
       ],
+      "barcode_volumes": {
+        "42095071": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/000/004/209/5071/front_de.5.400.jpg",
       "description_manufacturer": "Mild gehopftes, goldgelbes Bier für alle, denen das Pilsener zu herb ist.",
       "description_community": "Süffige, mildere Flens-Variante mit solidem Ruf.",
@@ -277,12 +348,15 @@
       "brewery_id": "de-flensburger",
       "name": "Flensburger Frei",
       "style": "Pils",
-      "abv": null,
+      "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
       "barcodes": [
         "41030844"
       ],
+      "barcode_volumes": {
+        "41030844": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/000/004/103/0844/front_de.41.400.jpg",
       "description_manufacturer": "Alkoholfreies Pilsener mit typisch frisch-herbem Flensburger Charakter.",
       "description_community": "Gehört für viele Nordlichter zu den besseren Alkoholfreien.",
@@ -296,8 +370,17 @@
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4008948023019",
+        "4008948027000"
+      ],
+      "barcode_volumes": {
+        "4008948023019": 330,
+        "4008948027000": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/400/894/802/3019/front_en.11.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4008948023019",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Friesisch-herbes Pilsener mit betonter Hopfenbittere, gebraut mit besonders weichem Wasser aus dem eigenen Tiefbrunnen.",
       "description_community": "Das herbste unter den großen deutschen Pilsenern – polarisiert, wird von Bitter-Fans geliebt.",
       "community_rating": 3.3
@@ -307,11 +390,15 @@
       "brewery_id": "de-jever",
       "name": "Jever Fun",
       "style": "Pils",
-      "abv": null,
+      "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4008948192012"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/400/894/819/2012/front_de.5.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4008948192012",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Alkoholfreies Pilsener mit friesisch-herbem Geschmack, kalorienarm und isotonisch.",
       "description_community": "Einer der Pioniere und Dauerbrenner im Alkoholfrei-Segment; angenehm herb statt süßlich.",
       "community_rating": 3.2
@@ -326,9 +413,14 @@
       "is_alcohol_free": false,
       "barcodes": [
         "40678085",
-        "42140832",
-        "40678146"
+        "40678146",
+        "42140832"
       ],
+      "barcode_volumes": {
+        "40678085": 330,
+        "40678146": 500,
+        "42140832": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/000/004/067/8085/front_de.5.400.jpg",
       "description_manufacturer": "Hanseatisch-herbes Pilsener aus Hamburg, gebraut seit 1879 ('Holsten knallt am dollsten').",
       "description_community": "Ehrliches norddeutsches Alltags-Pils ohne Prämienanspruch.",
@@ -356,8 +448,16 @@
       "abv": 0.0,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "42431220",
+        "42431237"
+      ],
+      "barcode_volumes": {
+        "42431220": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/000/004/243/1220/front_de.5.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/42431220",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Alkoholfreie Variante des Holsten Pilseners mit 0,0 % Alkohol.",
       "description_community": "Zweckmäßiges Alkoholfrei-Angebot der Hamburger Traditionsmarke.",
       "community_rating": 2.8
@@ -370,8 +470,15 @@
       "abv": 6.5,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4004078004409"
+      ],
+      "barcode_volumes": {
+        "4004078004409": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/400/407/800/4409/front_en.4.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4004078004409",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Dunkler Bock nach jahrhundertealter Einbecker Tradition – kräftig, malzaromatisch mit feiner Hopfennote. Aus Einbeck stammt das Bockbier.",
       "description_community": "Der Klassiker der deutschen Bockbierkultur; bei Kennern hoch angesehen.",
       "community_rating": 3.6
@@ -385,9 +492,13 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "4004078004201",
-        "4004078001392"
+        "4004078001392",
+        "4004078004201"
       ],
+      "barcode_volumes": {
+        "4004078001392": 500,
+        "4004078004201": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/400/407/800/4201/front_de.3.400.jpg",
       "description_manufacturer": "Feinherbes Premium-Pils aus Einbeck, benannt nach den historischen 700 Brauherren der Stadt.",
       "description_community": "Regional geschätztes, ordentliches Pils aus Südniedersachsen.",
@@ -429,8 +540,15 @@
       "abv": 0.0,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "41007716"
+      ],
+      "barcode_volumes": {
+        "41007716": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/000/004/100/7716/front_de.19.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/41007716",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Alkoholfreies Premium-Pilsener mit dem typischen feinherben KöPi-Geschmack.",
       "description_community": "Ordentlicher Alkoholfrei-Vertreter der Bitburger-Gruppe.",
       "community_rating": 3.0
@@ -444,11 +562,13 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "4001479565058",
-        "4001479000498",
         "4001479285512",
-        "4001479285529"
+        "4001479285529",
+        "4001479565058"
       ],
+      "barcode_volumes": {
+        "4001479565058": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/400/147/956/5058/front_de.3.400.jpg",
       "description_manufacturer": "Obergäriges, kupferfarbenes Altbier vom Niederrhein – malzig-mild mit dezenter Röstnote und feiner Hopfenbittere.",
       "description_community": "Das bekannteste Altbier Deutschlands und für viele der Einstieg in den Stil; Puristen greifen eher zu Hausbrauereien.",
@@ -465,6 +585,9 @@
       "barcodes": [
         "4001479277012"
       ],
+      "barcode_volumes": {
+        "4001479277012": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/400/147/927/7012/front_de.13.400.jpg",
       "description_manufacturer": "Alkoholfreies Altbier in der Tradition des 1987 eingeführten ersten alkoholfreien Alt.",
       "description_community": "Seltene alkoholfreie Interpretation des Altbier-Stils.",
@@ -506,8 +629,18 @@
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4002208001038",
+        "4002208001052",
+        "4002208017404"
+      ],
+      "barcode_volumes": {
+        "4002208001052": 500,
+        "4002208017404": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/400/220/800/1038/front_en.23.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4002208001038",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Obergäriges Kölsch mit frisch-hopfiger Note, gebraut nach der Kölsch-Konvention.",
       "description_community": "Das meistgezapfte Kölsch in der Kölner Gastronomie; etwas hopfiger als die Konkurrenz.",
       "community_rating": 3.2
@@ -516,14 +649,18 @@
       "id": "de-gaffel-wiess",
       "brewery_id": "de-gaffel",
       "name": "Gaffel Wiess",
-      "style": "Wiess",
+      "style": "Kölsch",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "4002208036214",
-        "06401177"
+        "06401177",
+        "4002208036214"
       ],
+      "barcode_volumes": {
+        "06401177": 330,
+        "4002208036214": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/400/220/803/6214/front_de.3.400.jpg",
       "description_manufacturer": "Naturtrübes, unfiltriertes obergäriges Bier nach Art des historischen Kölner 'Wiess', des Vorläufers des Kölsch.",
       "description_community": "Charmante Wiederbelebung der alten Kölner Bierkultur, süffig und rund.",
@@ -551,8 +688,17 @@
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4003227020109",
+        "4003227021106"
+      ],
+      "barcode_volumes": {
+        "4003227020109": 500,
+        "4003227021106": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/400/322/702/0109/front_de.10.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4003227020109",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Klassisches Kölsch der Familienbrauerei Früh – mild, süffig und ausgewogen, seit 1904 gebraut.",
       "description_community": "Der Touristen- und Brauhaus-Klassiker am Dom; mild-zugängliches Kölsch mit großem Namen.",
       "community_rating": 3.3
@@ -562,11 +708,18 @@
       "brewery_id": "de-frueh",
       "name": "Früh Kölsch Alkoholfrei",
       "style": "Kölsch",
-      "abv": null,
+      "abv": 0.0,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4003227023100"
+      ],
+      "barcode_volumes": {
+        "4003227023100": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/400/322/702/3100/front_de.4.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4003227023100",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Alkoholfreie Variante des Früh Kölsch mit mild-frischem Geschmack.",
       "description_community": "Solides alkoholfreies Kölsch für den Brauhausbesuch ohne Alkohol.",
       "community_rating": 3.0
@@ -579,8 +732,16 @@
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4013060003306",
+        "4013060005003"
+      ],
+      "barcode_volumes": {
+        "4013060005003": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/401/306/000/3306/front_de.23.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4013060003306",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Obergäriges Kölsch mit feinem Hopfenaroma und vollmundig-süffigem Geschmack, seit 1894 in Köln gebraut.",
       "description_community": "Marktführer und für viele Kölner das beste Kölsch – weich, rund und extrem süffig.",
       "community_rating": 3.4
@@ -594,10 +755,12 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "42007555",
-        "42080732",
-        "4002798001043"
+        "4002798001043",
+        "42007555"
       ],
+      "barcode_volumes": {
+        "4002798001043": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/000/004/200/7555/front_de.11.400.jpg",
       "description_manufacturer": "Frisch-herbes Pilsner aus dem hessischen Lich, gebraut mit Wasser aus eigenen Tiefbrunnen.",
       "description_community": "Hessens Bier-Platzhirsch; sauberes, unauffälliges Premium-Pils.",
@@ -612,9 +775,11 @@
       "ibu": null,
       "is_alcohol_free": true,
       "barcodes": [
-        "4002798015125",
         "42012771"
       ],
+      "barcode_volumes": {
+        "42012771": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/000/004/201/2771/front_de.12.400.jpg",
       "description_manufacturer": "Isotonisches, alkoholfreies Pilsner – als Durstlöscher für Sport und Freizeit positioniert.",
       "description_community": "In Hessen beliebtes Sportler-Alkoholfrei.",
@@ -628,8 +793,15 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4053400256818"
+      ],
+      "barcode_volumes": {
+        "4053400256818": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/405/340/025/6818/front_de.4.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4053400256818",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Frankfurter Traditions-Pils, benannt nach dem Frankfurter Rathaus Römer – mild-herb und süffig.",
       "description_community": "Frankfurter Lokalklassiker mit nostalgischem Wert, seit der Standortschließung auswärts gebraut.",
       "community_rating": 2.8
@@ -638,7 +810,7 @@
       "id": "de-binding-clausthaler-original",
       "brewery_id": "de-binding",
       "name": "Clausthaler Original",
-      "style": "Alkoholfrei",
+      "style": "Alkoholfreies Bier",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
@@ -652,7 +824,7 @@
       "id": "de-binding-schoefferhofer-hefeweizen",
       "brewery_id": "de-binding",
       "name": "Schöfferhofer Hefeweizen",
-      "style": "Weizen",
+      "style": "Weißbier",
       "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
@@ -670,8 +842,17 @@
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4104390011335",
+        "4104390017238"
+      ],
+      "barcode_volumes": {
+        "4104390011335": 330,
+        "4104390017238": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/410/439/001/1335/front_fr.7.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4104390011335",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Traditionsreiches Pils aus Koblenz mit über 300-jähriger Markengeschichte, heute in der Bitburger Braugruppe gebraut.",
       "description_community": "Lokalpatriotisches Koblenzer Traditionsbier, im Umland weiterhin fest verankert.",
       "community_rating": 3.0
@@ -685,10 +866,14 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "4002631015084",
         "4002631015077",
+        "4002631015084",
         "4002631023041"
       ],
+      "barcode_volumes": {
+        "4002631015077": 330,
+        "4002631023041": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/400/263/101/5084/front_fr.3.400.jpg",
       "description_manufacturer": "Das saarländische Traditions-Pils – feinherb und süffig; 2024 bei den World Beer Awards als bestes Pils Deutschlands ausgezeichnet.",
       "description_community": "Im Saarland Kult ('Ur-Pils'), außerhalb wenig bekannt, aber solide bewertet.",
@@ -714,14 +899,18 @@
       "id": "de-karlsberg-mixery",
       "brewery_id": "de-karlsberg",
       "name": "MiXery Cola",
-      "style": "Biermischgetränk",
+      "style": "Radler",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "4002631028039",
-        "4002631015909"
+        "4002631015909",
+        "4002631028039"
       ],
+      "barcode_volumes": {
+        "4002631015909": 500,
+        "4002631028039": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/400/263/102/8039/front_en.33.400.jpg",
       "description_manufacturer": "Biermischgetränk aus Bier, Cola und Energy-Kick – Deutschlands bekannteste Bier-Cola-Marke.",
       "description_community": "Party-Klassiker der 2000er mit junger Zielgruppe; geschmacklich Geschmackssache.",
@@ -735,8 +924,15 @@
       "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4001982097763"
+      ],
+      "barcode_volumes": {
+        "4001982097763": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/400/198/209/7763/front_en.8.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4001982097763",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Dortmunder Export-Lager in der Tradition der großen Ruhrgebiets-Brauereien – mild, malzig und süffig.",
       "description_community": "Ehrliches Arbeiterbier und Erbe der Dortmunder Export-Ära; in Italien überraschend populär.",
       "community_rating": 2.9
@@ -824,10 +1020,14 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "4014388001036",
+        "0042572055019",
         "4014388001012",
-        "0042572055019"
+        "4014388001036"
       ],
+      "barcode_volumes": {
+        "4014388001012": 330,
+        "4014388001036": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/401/438/800/1036/front_de.32.400.jpg",
       "description_manufacturer": "Klassisches, hopfenbetont-trockenes Pilsner, seit 1872 ausschließlich nach Pilsner Brauart in Radeberg gebraut.",
       "description_community": "Der ostdeutsche Pils-Standard: zuverlässig herb und überall verfügbar, aber ohne Überraschungen.",
@@ -837,13 +1037,16 @@
       "id": "de-radeberger-alkoholfrei",
       "brewery_id": "de-radeberger",
       "name": "Radeberger Pilsner Alkoholfrei",
-      "style": "Pils alkoholfrei",
+      "style": "Alkoholfreies Bier",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
       "barcodes": [
         "4053400208527"
       ],
+      "barcode_volumes": {
+        "4053400208527": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/405/340/020/8527/front_de.12.400.jpg",
       "description_manufacturer": "Alkoholfreie Variante des Radeberger Pilsners mit der gleichen herben Grundausrichtung.",
       "description_community": "Solides alkoholfreies Pils, das dem Original erstaunlich nahe kommt.",
@@ -857,8 +1060,15 @@
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4250594200010"
+      ],
+      "barcode_volumes": {
+        "4250594200010": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/425/059/420/0010/front_de.11.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4250594200010",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Dresdner Pilsner mit milder Hopfennote, das Hauptprodukt der Brauerei seit der Neuausrichtung 1991.",
       "description_community": "Ehrliches, günstiges Sachsen-Pils für den Alltag — mehr Dresden-Lokalpatriotismus als Geschmackserlebnis.",
       "community_rating": 2.9
@@ -885,8 +1095,17 @@
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4015444000017",
+        "4015444000024"
+      ],
+      "barcode_volumes": {
+        "4015444000017": 500,
+        "4015444000024": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/401/544/400/0017/front_de.18.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4015444000017",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Feinherbes Pilsner aus dem Vogtland, das schon zu DDR-Zeiten als Exportbier einen besonderen Ruf hatte.",
       "description_community": "Die \"Bierlegende\" lebt vor allem vom Mythos; ein sauberes, mildherbes Pils mit weichem Antrunk.",
       "community_rating": 3.1
@@ -895,12 +1114,21 @@
       "id": "de-wernesgruener-alkoholfrei",
       "brewery_id": "de-wernesgruener",
       "name": "Wernesgrüner Alkoholfrei",
-      "style": "Pils alkoholfrei",
-      "abv": null,
+      "style": "Alkoholfreies Bier",
+      "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4015444000307",
+        "4015444108997"
+      ],
+      "barcode_volumes": {
+        "4015444000307": 500,
+        "4015444108997": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/401/544/400/0307/front_de.17.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4015444000307",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Alkoholfreies Pilsner nach Wernesgrüner Art mit feinherbem Charakter.",
       "description_community": "Unauffälliger, ordentlicher Alkoholfrei-Vertreter aus dem Vogtland.",
       "community_rating": 2.9
@@ -913,8 +1141,15 @@
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "41058145"
+      ],
+      "barcode_volumes": {
+        "41058145": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/000/004/105/8145/front_de.33.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/41058145",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Feinherbes Pilsner aus Krostitz bei Leipzig, gebraut in einer Tradition, die bis 1534 zurückreicht.",
       "description_community": "Im Raum Leipzig das Standardbier schlechthin — ausgewogen herb und sehr süffig für ein Konzern-Pils.",
       "community_rating": 3.3
@@ -937,12 +1172,19 @@
       "id": "de-ur-krostitzer-alkoholfrei",
       "brewery_id": "de-ur-krostitzer",
       "name": "Ur-Krostitzer Alkoholfrei",
-      "style": "Pils alkoholfrei",
-      "abv": null,
+      "style": "Alkoholfreies Bier",
+      "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4053400206707"
+      ],
+      "barcode_volumes": {
+        "4053400206707": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/405/340/020/6707/front_de.14.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4053400206707",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Alkoholfreies feinherbes Pilsner aus Krostitz.",
       "description_community": "Brauchbare alkoholfreie Alternative mit der typischen feinherben Linie der Marke.",
       "community_rating": 3.0
@@ -955,8 +1197,15 @@
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "42011859"
+      ],
+      "barcode_volumes": {
+        "42011859": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/000/004/201/1859/front_de.26.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/42011859",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Pilsner aus der Silberstadt Freiberg, wo 1863 das erste sächsische Bier nach Pilsner Art gebraut wurde.",
       "description_community": "In Sachsen allgegenwärtiges, preiswertes Alltagspils — solide, aber austauschbar.",
       "community_rating": 2.9
@@ -965,12 +1214,19 @@
       "id": "de-freiberger-pils-alkoholfrei",
       "brewery_id": "de-freiberger",
       "name": "Freiberger Pils Alkoholfrei",
-      "style": "Pils alkoholfrei",
-      "abv": null,
+      "style": "Alkoholfreies Bier",
+      "abv": 0.0,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4013246205470"
+      ],
+      "barcode_volumes": {
+        "4013246205470": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/401/324/620/5470/front_de.14.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4013246205470",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Alkoholfreie Variante des Freiberger Pils.",
       "description_community": "Unspektakulär, aber sauber gemacht — tut, was es soll.",
       "community_rating": 2.8
@@ -983,8 +1239,17 @@
       "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4014964111524",
+        "4014964111555"
+      ],
+      "barcode_volumes": {
+        "4014964111524": 330,
+        "4014964111555": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/401/496/411/1524/front_de.3.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4014964111524",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Untergäriges Schwarzbier mit Röstmalzaromen nach einer seit 1543 gepflegten Brautradition; deutscher Marktführer im Segment.",
       "description_community": "Der Schwarzbier-Klassiker schlechthin: mild, leicht schokoladig und deutlich zugänglicher, als die Farbe vermuten lässt.",
       "community_rating": 3.7
@@ -1011,8 +1276,15 @@
       "abv": 5.4,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4014964018519"
+      ],
+      "barcode_volumes": {
+        "4014964018519": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/401/496/401/8519/front_de.6.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4014964018519",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Naturtrübes, unfiltriertes dunkles Kellerbier nach historischem Vorbild.",
       "description_community": "Malzig-rundes Kellerbier und für viele die spannendste Sorte im Köstritzer-Sortiment.",
       "community_rating": 3.6
@@ -1025,8 +1297,17 @@
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4014558322961",
+        "4014558326839"
+      ],
+      "barcode_volumes": {
+        "4014558322961": 330,
+        "4014558326839": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/401/455/832/2961/front_de.20.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4014558322961",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Herbes Pilsner aus Wernigerode im Harz, bekannt durch die charakteristische Sechskant-Flasche.",
       "description_community": "In den 90ern Kult, heute ein einfaches Fernseh-Pils — kräftig herb, aber eindimensional.",
       "community_rating": 2.8
@@ -1039,7 +1320,12 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
+      "barcodes": [
+        "4014558313587"
+      ],
+      "barcode_volumes": {
+        "4014558313587": 500
+      },
       "image_url": null,
       "description_manufacturer": "Malzbetontes, kräftigeres Exportbier als zweite Hauptsorte der Harzer Brauerei.",
       "description_community": "Süffiger und runder als das Pils; solides Export ohne Anspruch.",
@@ -1053,8 +1339,12 @@
       "abv": 5.1,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4053400257754"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/405/340/025/7754/front_en.3.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4053400257754",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Klassisches Berliner Pilsener, 1963 zum 90-jährigen Jubiläum der Brauerei eingeführt.",
       "description_community": "Das Berliner Eckkneipen-Bier: mild-herb, süffig, ein Stück Hauptstadt-Alltag.",
       "community_rating": 3.0
@@ -1069,10 +1359,14 @@
       "is_alcohol_free": false,
       "barcodes": [
         "4004160005338",
-        "4053400257624",
-        "4053400209975",
-        "4004160019410"
+        "4004160019410",
+        "4053400257624"
       ],
+      "barcode_volumes": {
+        "4004160005338": 500,
+        "4004160019410": 330,
+        "4053400257624": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/400/416/000/5338/front_fr.5.400.jpg",
       "description_manufacturer": "Ehemalige Ost-Berliner Traditionsmarke, heute aus der Braustätte Hohenschönhausen der Berliner-Kindl-Schultheiss-Brauerei.",
       "description_community": "Für viele Ost-Berliner die Herzensmarke; geschmacklich ein unaufgeregtes, mildes Pils.",
@@ -1082,16 +1376,22 @@
       "id": "de-berliner-kindl-weisse",
       "brewery_id": "de-berliner-kindl-schultheiss",
       "name": "Berliner Kindl Weisse",
-      "style": "Berliner Weisse",
+      "style": "Sauerbier",
       "abv": 3.0,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "4053400263663",
         "4053400257372",
-        "4100080000979",
-        "4053400257389"
+        "4053400257389",
+        "4053400263663",
+        "4100080000979"
       ],
+      "barcode_volumes": {
+        "4053400257372": 330,
+        "4053400257389": 330,
+        "4053400263663": 330,
+        "4100080000979": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/405/340/026/3663/front_fr.6.400.jpg",
       "description_manufacturer": "Obergärige, milchsauer vergorene Berliner Weisse mit niedrigem Alkoholgehalt, traditionell pur oder mit Schuss getrunken.",
       "description_community": "Der letzte industrielle Vertreter des historischen Berliner Sauerbier-Stils — mit Sirup Touristenklassiker, pur ein spannend-säuerliches Unikat.",
@@ -1106,9 +1406,13 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "4260402630014",
-        "11245865"
+        "11245865",
+        "4260402630014"
       ],
+      "barcode_volumes": {
+        "11245865": 330,
+        "4260402630014": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/426/040/263/0014/front_fr.9.400.jpg",
       "description_manufacturer": "Modern interpretiertes Helles der Berliner Craft-Brauerei, unfiltriert und hopfenaromatischer als bayerische Vorbilder.",
       "description_community": "Zugänglichster BRLO-Einstieg: frisch und sauber, wenn auch mit Craft-Preisschild.",
@@ -1119,7 +1423,7 @@
       "brewery_id": "de-brlo",
       "name": "BRLO Pale Ale",
       "style": "Pale Ale",
-      "abv": null,
+      "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
@@ -1134,13 +1438,16 @@
       "id": "de-brlo-naked",
       "brewery_id": "de-brlo",
       "name": "BRLO Naked",
-      "style": "Pale Ale alkoholfrei",
+      "style": "Alkoholfreies Bier",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
       "barcodes": [
         "4260402630588"
       ],
+      "barcode_volumes": {
+        "4260402630588": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/426/040/263/0588/front_en.14.400.jpg",
       "description_manufacturer": "Alkoholfreies, hopfengestopftes Bier von BRLO mit fruchtigem Aroma.",
       "description_community": "Eines der besseren alkoholfreien Craft-Biere Deutschlands, aromatisch erstaunlich präsent.",
@@ -1182,8 +1489,17 @@
       "abv": 5.1,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4014807204789",
+        "4014807204840"
+      ],
+      "barcode_volumes": {
+        "4014807204789": 330,
+        "4014807204840": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/401/480/720/4789/front_de.15.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4014807204789",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Helles, trocken gehopftes Ale mit Zitrusnoten, eine der erfolgreichsten Eigenkreationen der Braumanufaktur.",
       "description_community": "Der Supermarkt-Craft-Klassiker: frisch, fruchtig und der ideale Einstieg in die Störtebeker-Welt.",
       "community_rating": 3.8
@@ -1196,8 +1512,17 @@
       "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4014807264028",
+        "4014807364025"
+      ],
+      "barcode_volumes": {
+        "4014807264028": 500,
+        "4014807364025": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/401/480/736/4025/front_de.21.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4014807364025",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Mehrfach ausgezeichnetes Schwarzbier mit kräftigen Röstmalz- und Kaffeearomen in norddeutscher Brautradition.",
       "description_community": "Für viele das beste industriell verfügbare Schwarzbier Deutschlands — röstig, vollmundig, preiswert.",
       "community_rating": 3.9
@@ -1206,12 +1531,19 @@
       "id": "de-stoertebeker-frei-bier",
       "brewery_id": "de-stoertebeker",
       "name": "Störtebeker Frei-Bier",
-      "style": "Alkoholfrei",
-      "abv": null,
+      "style": "Alkoholfreies Bier",
+      "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4014807203461"
+      ],
+      "barcode_volumes": {
+        "4014807203461": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/401/480/720/3461/front_de.12.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4014807203461",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Alkoholfreie Brauspezialität; die alkoholfreien Sorten machen rund ein Zehntel des Störtebeker-Absatzes aus.",
       "description_community": "Vollmundiger als die meisten alkoholfreien Biere und ein Beleg, dass Störtebeker das Segment ernst nimmt.",
       "community_rating": 3.4
@@ -1224,8 +1556,15 @@
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "40678337"
+      ],
+      "barcode_volumes": {
+        "40678337": 500
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/000/004/067/8337/front_en.13.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/40678337",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Mildes norddeutsches Pilsner aus Mecklenburg, gebraut mit Wasser aus eigenem Tiefbrunnen.",
       "description_community": "Das Bier des Nordostens: unaufgeregt, mild und am Ostseestrand einfach passend.",
       "community_rating": 3.0
@@ -1234,7 +1573,7 @@
       "id": "de-luebzer-alkoholfrei",
       "brewery_id": "de-luebzer",
       "name": "Lübzer Alkoholfrei",
-      "style": "Pils alkoholfrei",
+      "style": "Alkoholfreies Bier",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
@@ -1262,12 +1601,16 @@
       "id": "de-rothaus-hefeweizen",
       "brewery_id": "de-rothaus",
       "name": "Rothaus Hefeweizen",
-      "style": "Hefeweizen",
+      "style": "Weißbier",
       "abv": 5.4,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "41051849"
+      ],
+      "image_url": "https://images.openfoodfacts.org/images/products/000/004/105/1849/front_en.7.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/41051849",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Obergäriges, naturtrübes Weizenbier der Staatsbrauerei mit fruchtiger Hefenote.",
       "description_community": "Solides badisches Weizen, das aber im Schatten des übermächtigen Tannenzäpfle steht.",
       "community_rating": 3.4
@@ -1276,12 +1619,19 @@
       "id": "de-rothaus-tannenzaepfle-alkoholfrei",
       "brewery_id": "de-rothaus",
       "name": "Rothaus Tannenzäpfle Alkoholfrei",
-      "style": "Pils alkoholfrei",
-      "abv": null,
+      "style": "Alkoholfreies Bier",
+      "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "41051801"
+      ],
+      "barcode_volumes": {
+        "41051801": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/000/004/105/1801/front_de.31.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/41051801",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Alkoholfreie Version des Tannenzäpfle im gleichen 0,33-l-Format.",
       "description_community": "Eines der beliebtesten alkoholfreien Pilsner Süddeutschlands — nah am Original.",
       "community_rating": 3.5
@@ -1304,7 +1654,7 @@
       "id": "de-fuerstenberg-alkoholfrei",
       "brewery_id": "de-fuerstenberg",
       "name": "Fürstenberg Premium Alkoholfrei",
-      "style": "Pils alkoholfrei",
+      "style": "Alkoholfreies Bier",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": true,
@@ -1346,13 +1696,16 @@
       "id": "de-dinkelacker-alkoholfrei-00",
       "brewery_id": "de-dinkelacker-schwaben-braeu",
       "name": "Dinkelacker Alkoholfrei 0,0%",
-      "style": "Pils alkoholfrei",
+      "style": "Alkoholfreies Bier",
       "abv": 0.0,
       "ibu": null,
       "is_alcohol_free": true,
       "barcodes": [
         "40617435"
       ],
+      "barcode_volumes": {
+        "40617435": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/000/004/061/7435/front_de.9.400.jpg",
       "description_manufacturer": "Komplett alkoholfreies Pils (0,0 % vol.) der Stuttgarter Familienbrauerei.",
       "description_community": "Echtes 0,0-Prozent-Bier mit akzeptablem Pils-Charakter.",
@@ -1366,8 +1719,17 @@
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4100460011106",
+        "4100460011151"
+      ],
+      "barcode_volumes": {
+        "4100460011106": 500,
+        "4100460011151": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/410/046/001/1106/front_de.15.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4100460011106",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Mildes Pilsner der ehemaligen königlich-württembergischen Hofbrauerei, heute ohne Aluminium-Kopffolie abgefüllt.",
       "description_community": "Das zweite Stuttgarter Standardbier: weich, süffig, im Kessel allgegenwärtig.",
       "community_rating": 3.0
@@ -1398,6 +1760,9 @@
         "40477114",
         "40477121"
       ],
+      "barcode_volumes": {
+        "40477114": 500
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/000/004/047/7114/front_fr.14.400.jpg",
       "description_manufacturer": "Goldgelbes, kräftiges Spezialbier, gebraut mit weichem Quellwasser aus dem hauseigenen Naturschutzgebiet Glaswaldwiesen.",
       "description_community": "Der Schwarzwälder Stammtisch-Klassiker: malzig-rund und ehrlich.",
@@ -1428,9 +1793,12 @@
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
-        "4015345530002",
-        "4015345120104"
+        "4015345120104",
+        "4015345530002"
       ],
+      "barcode_volumes": {
+        "4015345530002": 330
+      },
       "image_url": "https://images.openfoodfacts.org/images/products/401/534/553/0002/front_de.18.400.jpg",
       "description_manufacturer": "Mit Doldenhopfen gebrautes, lang gereiftes Pilsner; mit über 120 Auszeichnungen, darunter mehrfach \"World's Best Pilsner\" bei den World Beer Awards (zuletzt 2025).",
       "description_community": "Für viele das beste Pils Deutschlands: elegant hopfig, trocken und mit echter Doldenhopfen-Blume.",
@@ -1444,8 +1812,15 @@
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
-      "image_url": null,
+      "barcodes": [
+        "4015345930000"
+      ],
+      "barcode_volumes": {
+        "4015345930000": 330
+      },
+      "image_url": "https://images.openfoodfacts.org/images/products/401/534/593/0000/front_de.4.400.jpg",
+      "image_source": "https://world.openfoodfacts.org/product/4015345930000",
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Unfiltriertes, naturtrübes helles Bier als zweite bekannte Produktlinie der Privatbrauerei.",
       "description_community": "Süffig-hefiges Unfiltriertes mit treuer Fangemeinde im Südwesten.",
       "community_rating": 3.7

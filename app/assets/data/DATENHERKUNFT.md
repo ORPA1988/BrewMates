@@ -1,6 +1,6 @@
 # Datenherkunft
 
-Die Community-Datenbank umfasst acht Dateien: `beers-at.json` und `breweries-at.json` (Österreich, 447 Biere / 46 Brauereien), `beers-by.json` und `breweries-by.json` (Bayern, 72 Biere / 33 Brauereien), `beers-de.json` und `breweries-de.json` (Deutschland ohne Bayern, 95 Biere / 40 Brauereien) sowie `beers-ch.json` und `breweries-ch.json` (Schweiz, 45 Biere / 18 Brauereien). Biere und Brauereien sind über das Feld `brewery_id` miteinander verknüpft.
+Die Community-Datenbank umfasst acht Dateien: `beers-at.json` und `breweries-at.json` (Österreich, 447 Biere / 46 Brauereien), `beers-by.json` und `breweries-by.json` (Bayern, 72 Biere / 33 Brauereien), `beers-de.json` und `breweries-de.json` (Deutschland ohne Bayern, 95 Biere / 40 Brauereien) sowie `beers-ch.json` und `breweries-ch.json` (Schweiz, 45 Biere / 18 Brauereien) — zusammen 659 Biere und 137 Brauereien. Biere und Brauereien sind über das Feld `brewery_id` miteinander verknüpft.
 
 Die Bier- und Brauereidaten stammen aus dem Trainingswissen eines KI-Modells (Stand ca. 2025) und wurden redaktionell zusammengestellt — ohne Gewähr auf Vollständigkeit oder Richtigkeit einzelner Angaben (z. B. Alkoholgehalt oder Sortimentsstand). Das Feld `community_rating` ist eine konservative redaktionelle Schätzung auf Basis des allgemeinen Rufs der Biere und kein gemessener oder von einer Plattform übernommener Wert. Beschreibungstexte sind Paraphrasen und keine wörtlichen Zitate der Brauereien. Korrekturen und Ergänzungen sind ausdrücklich willkommen — bitte per GitHub-Issue melden.
 
@@ -118,6 +118,77 @@ die Brauerei nicht sagt, sagen wir auch nicht.
 
 Aus den Herstellerseiten kamen dabei fünf Biere neu dazu, die im Bestand
 fehlten (Frastanzer Gold, Kellerbier, s'bio, Natur Radler, Radler sauer).
+
+## Bayern, Deutschland und die Schweiz, 2026-09-03
+
+Dieselbe Prüfung wie zuvor für Österreich, angewandt auf die übrigen drei
+Regionen — mit einem anderen Befund. Die drei Datensätze sind
+durchgängig redaktionell gepflegt: keine doppelten Brauereien, keine
+doppelten Biere, jedes Bier mit Beschreibung und Stil. Die
+Zusammenführungsarbeit, die Österreich brauchte, entfällt hier.
+
+### Was gefehlt hat: die Gebindegröße
+
+Alle drei Dateien führten **keine einzige** `barcode_volumes`-Angabe. Das
+ist kein Schönheitsfehler: Die Größe ist genau das, was zwei EANs
+desselben Biers unterscheidet, und ohne sie erbt jeder Scan die
+Vorbelegung 0,5 l. Wer eine 0,33er scannt, bekam eine halbe Liter
+gutgeschrieben.
+
+Jeder hinterlegte Code wurde gegen die Produkt-API von Open Food Facts
+geprüft und die Menge übernommen, wo OFF eine plausible Handelsgröße
+nennt: **322 Gebindegrößen** im DACH-Bestand, davon 186 neu in Bayern,
+Deutschland und der Schweiz.
+
+### Sechs EANs am falschen Produkt
+
+Der Abgleich förderte dieselbe Fehlerart zutage wie in Österreich, nur
+seltener: sechs Codes, unter denen OFF ein anderes Getränk führt als das
+Bier, an dem sie hingen — ein Warsteiner Radler alkoholfrei am Warsteiner
+Alkoholfrei, ein Diebels Alt Radler am Diebels Alt, ein Berliner Natur
+Radler am Berliner Pilsner, ein Licher Colabier am Licher Pilsner sowie
+zwei isotonische Sonderlinien. Sie sind entfernt.
+
+### 65 neue EANs, 45 neue Bilder
+
+Aus der Markensuche kamen 65 belegte Codes dazu (u. a. Veltins, Jever,
+Gaffel, Früh, Reissdorf, Köstritzer, Hasseröder, Störtebeker, Rothaus,
+Chopfab, BFM). Übernommen wurde nur, wo OFF **dieselbe Sorte** nennt: kein
+alkoholfreier Treffer landet am normalen Bier, kein Radler am Pils. Wo die
+Marke stimmte, die Sorte aber nicht eindeutig war — dreizehn Fälle — steht
+weiterhin nichts. Genau diese Abkürzung hatte in Österreich den Gösser
+NaturRadler an die Starkenberger Brauerei gehängt.
+
+### Alkoholgehalt: warum nur dreizehn Werte dazukamen
+
+Open Food Facts führt zu vielen Produkten ein Feld `alcohol_value`. Es ist
+**nicht einheitlich**: teils Volumenprozent, teils Gramm je 100 ml.
+Beispiel Gaffel Wiess — OFF sagt 3,866, und das ist 4,9 % vol mal 0,789,
+also die Masseangabe. Wer den Wert blind übernimmt, schreibt ein Kölsch
+auf Schankbier-Stärke.
+
+Übernommen wurde daher nur, was eindeutig ist: höchstens 0,5 bei einem
+Bier, das sich alkoholfrei nennt, mindestens 4,2 bei einem normalen. Alles
+dazwischen und jeder Widerspruch zwischen zwei Codes desselben Biers
+bleibt leer. Die Regel hat drei Fälle aussortiert (Gaffel Wiess,
+WhiteFrontier Pillows und Edelweiss Hefetrüb mit zwei
+widersprechenden Angaben) und dreizehn bestätigt.
+
+### Stile
+
+Bayern, Deutschland und die Schweiz liegen jetzt auf demselben Vokabular
+wie Österreich — 79 Schreibweisen zusammengezogen, damit ein Filter
+„Weißbier“ in allen vier Regionen dasselbe findet. Regionale Eigennamen
+bleiben stehen: Kölsch, Altbier und Rauchbier sind der Stil, nicht eine
+Schreibweise von etwas anderem.
+
+### Was offen bleibt
+
+44 Biere ohne Alkoholgehalt, 81 ohne Bild, 75 ohne Barcode. Die
+Schweizer Brauereiseiten veröffentlichen kaum technische Daten, und die
+OFF-Abdeckung ist für die Schweiz dünn (16 der 45 Biere haben einen
+Code). Brauereigeschichten (`story`) gibt es für Deutschland und die
+Schweiz noch keine.
 
 ## Produktfotos der Brauereien (seit 2026-08-15)
 
