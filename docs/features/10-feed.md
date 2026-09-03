@@ -10,6 +10,13 @@
 > Eintrag. Ein Zeichen, das bei allen gleich ist, trägt keine Information;
 > ein Etikett erkennt man schneller, als man einen Namen liest. Das Bild
 > ist tippbar wie der Name (`widgets/beer_thumbnail.dart`).
+>
+> **Ebenfalls seit 0.10.12:** Nach unten ziehen lädt neu — das fehlte
+> ausgerechnet auf dem einen Bildschirm, bei dem man wissen will, ob
+> gerade jemand etwas getrunken hat. Und ein Check-in-Foto lässt sich
+> antippen und groß ansehen (`widgets/foto_ansicht.dart`); im Feed ist es
+> 200 Punkte hoch und beschnitten, was auf dem Etikett steht, sah man
+> dort nicht.
 
 ## Zielsetzung
 

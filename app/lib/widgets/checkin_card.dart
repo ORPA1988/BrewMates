@@ -10,6 +10,7 @@ import 'beacon_messages.dart';
 import 'beer_thumbnail.dart';
 import 'rating_stars.dart';
 import 'checkin_edit_sheet.dart';
+import 'foto_ansicht.dart';
 
 /// Die zentrale Feed-Karte: ein Check-in mit Bier, Bewertung, Notiz,
 /// Geschmacks-Tags sowie Toast- und Kommentar-Aktionen.
@@ -27,36 +28,36 @@ class CheckinCard extends ConsumerWidget {
       };
 
   /// Menü für eigene Check-ins. Fremde Karten bekommen es nie.
-  Widget _ownerMenu(BuildContext context, WidgetRef ref) => PopupMenuButton<
-          String>(
-      icon: const Icon(Icons.more_horiz, size: 20),
-      tooltip: 'Optionen',
-      padding: EdgeInsets.zero,
-      onSelected: (value) {
-        if (value == 'delete') _confirmDelete(context, ref);
-        if (value == 'edit') showCheckinEditSheet(context, details);
-      },
-      itemBuilder: (_) => const [
-        PopupMenuItem(
-          value: 'edit',
-          child: ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-            leading: Icon(Icons.edit_outlined),
-            title: Text('Check-in bearbeiten'),
+  Widget _ownerMenu(BuildContext context, WidgetRef ref) =>
+      PopupMenuButton<String>(
+        icon: const Icon(Icons.more_horiz, size: 20),
+        tooltip: 'Optionen',
+        padding: EdgeInsets.zero,
+        onSelected: (value) {
+          if (value == 'delete') _confirmDelete(context, ref);
+          if (value == 'edit') showCheckinEditSheet(context, details);
+        },
+        itemBuilder: (_) => const [
+          PopupMenuItem(
+            value: 'edit',
+            child: ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: Icon(Icons.edit_outlined),
+              title: Text('Check-in bearbeiten'),
+            ),
           ),
-        ),
-        PopupMenuItem(
-          value: 'delete',
-          child: ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-            leading: Icon(Icons.delete_outline),
-            title: Text('Check-in löschen'),
+          PopupMenuItem(
+            value: 'delete',
+            child: ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: Icon(Icons.delete_outline),
+              title: Text('Check-in löschen'),
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
 
   /// Löschen mit Rückfrage und „Rückgängig".
   ///
@@ -101,8 +102,7 @@ class CheckinCard extends ConsumerWidget {
     );
   }
 
-  Future<void> _openComments(BuildContext context,
-      {String? serverId}) async {
+  Future<void> _openComments(BuildContext context, {String? serverId}) async {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -228,8 +228,8 @@ class CheckinCard extends ConsumerWidget {
                 if (beer.isAlcoholFree) ...[
                   const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 3),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       color: scheme.secondaryContainer,
                       borderRadius: BorderRadius.circular(12),
@@ -268,23 +268,26 @@ class CheckinCard extends ConsumerWidget {
             // Foto (öffentliche URL aus dem beer-photos-Bucket).
             if (checkin.photoUrl != null) ...[
               const SizedBox(height: 8),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  checkin.photoUrl!,
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, progress) =>
-                      progress == null
-                          ? child
-                          : Container(
-                              height: 200,
-                              alignment: Alignment.center,
-                              color: scheme.surfaceContainerHighest,
-                              child: const CircularProgressIndicator(),
-                            ),
-                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+              InkWell(
+                onTap: () => zeigeFotoGross(context, checkin.photoUrl!),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    checkin.photoUrl!,
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, progress) =>
+                        progress == null
+                            ? child
+                            : Container(
+                                height: 200,
+                                alignment: Alignment.center,
+                                color: scheme.surfaceContainerHighest,
+                                child: const CircularProgressIndicator(),
+                              ),
+                    errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                  ),
                 ),
               ),
             ],
@@ -307,8 +310,7 @@ class CheckinCard extends ConsumerWidget {
                       label: Text(tag),
                       labelStyle: theme.textTheme.labelSmall,
                       visualDensity: VisualDensity.compact,
-                      materialTapTargetSize:
-                          MaterialTapTargetSize.shrinkWrap,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                 ],
               ),
@@ -332,55 +334,55 @@ class CheckinCard extends ConsumerWidget {
             // Remote-Einträge ohne Server-Stand (offline) bleiben ohne
             // Fußzeile.
             if (serverEntry != null || !checkin.id.startsWith('remote-'))
-            Row(
-              children: [
-                TextButton.icon(
-                  onPressed: () async {
-                    final actions = ref.read(actionsProvider);
-                    final earned = serverEntry != null
-                        ? await actions.toggleServerToast(
-                            checkin.id, serverId!, on: !toasted)
-                        : await actions.toggleToast(checkin.id);
-                    if (!context.mounted) return;
-                    if (earned == null) {
-                      // Server hat den Toast nicht — dann zeigen wir ihn
-                      // auch nicht. Vorher sprang er beim nächsten Laden
-                      // wieder zurück.
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(reactionNotSentSnackBar);
-                      return;
-                    }
-                    await showBadgeCelebration(context, earned);
-                  },
-                  style: TextButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    foregroundColor:
-                        toasted ? scheme.primary : scheme.onSurfaceVariant,
-                    backgroundColor:
-                        toasted ? scheme.primaryContainer : null,
-                  ),
-                  icon: const Text('🍻', style: TextStyle(fontSize: 16)),
-                  label: Text(
-                    '$toastCount',
-                    style: TextStyle(
-                      fontWeight:
-                          toasted ? FontWeight.bold : FontWeight.normal,
+              Row(
+                children: [
+                  TextButton.icon(
+                    onPressed: () async {
+                      final actions = ref.read(actionsProvider);
+                      final earned = serverEntry != null
+                          ? await actions.toggleServerToast(
+                              checkin.id, serverId!,
+                              on: !toasted)
+                          : await actions.toggleToast(checkin.id);
+                      if (!context.mounted) return;
+                      if (earned == null) {
+                        // Server hat den Toast nicht — dann zeigen wir ihn
+                        // auch nicht. Vorher sprang er beim nächsten Laden
+                        // wieder zurück.
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(reactionNotSentSnackBar);
+                        return;
+                      }
+                      await showBadgeCelebration(context, earned);
+                    },
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      foregroundColor:
+                          toasted ? scheme.primary : scheme.onSurfaceVariant,
+                      backgroundColor: toasted ? scheme.primaryContainer : null,
+                    ),
+                    icon: const Text('🍻', style: TextStyle(fontSize: 16)),
+                    label: Text(
+                      '$toastCount',
+                      style: TextStyle(
+                        fontWeight:
+                            toasted ? FontWeight.bold : FontWeight.normal,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 4),
-                TextButton.icon(
-                  onPressed: () async => _openComments(context,
-                      serverId: serverEntry != null ? serverId : null),
-                  style: TextButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    foregroundColor: scheme.onSurfaceVariant,
+                  const SizedBox(width: 4),
+                  TextButton.icon(
+                    onPressed: () async => _openComments(context,
+                        serverId: serverEntry != null ? serverId : null),
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      foregroundColor: scheme.onSurfaceVariant,
+                    ),
+                    icon: const Text('💬', style: TextStyle(fontSize: 16)),
+                    label: Text('$commentCount'),
                   ),
-                  icon: const Text('💬', style: TextStyle(fontSize: 16)),
-                  label: Text('$commentCount'),
-                ),
-              ],
-            ),
+                ],
+              ),
           ],
         ),
       ),
@@ -414,9 +416,8 @@ class _RemoteCommentsSheetState extends ConsumerState<_RemoteCommentsSheet> {
     final text = _controller.text.trim();
     if (text.isEmpty || _sending) return;
     setState(() => _sending = true);
-    final error = await ref
-        .read(actionsProvider)
-        .addServerComment(widget.serverId, text);
+    final error =
+        await ref.read(actionsProvider).addServerComment(widget.serverId, text);
     if (!mounted) return;
     setState(() => _sending = false);
     if (error != null) {
@@ -433,8 +434,7 @@ class _RemoteCommentsSheetState extends ConsumerState<_RemoteCommentsSheet> {
     final comments = ref.watch(remoteCommentsProvider(widget.serverId));
 
     return Padding(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -488,8 +488,8 @@ class _RemoteCommentsSheetState extends ConsumerState<_RemoteCommentsSheet> {
                                 Text(
                                   timeAgo(entry.createdAt),
                                   style: theme.textTheme.bodySmall?.copyWith(
-                                      color: theme
-                                          .colorScheme.onSurfaceVariant),
+                                      color:
+                                          theme.colorScheme.onSurfaceVariant),
                                 ),
                               ],
                             ),
@@ -563,8 +563,7 @@ class _CommentsSheetState extends ConsumerState<_CommentsSheet> {
 
     return Padding(
       // Hebt das Sheet über die Tastatur.
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
