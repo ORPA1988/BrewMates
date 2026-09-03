@@ -1172,6 +1172,7 @@ class AppDatabase extends _$AppDatabase {
   Future<void> updateCheckinLocal(
     String checkinId, {
     double? rating,
+    bool clearRating = false,
     String? note,
     bool clearNote = false,
     String? flavorTags,
@@ -1185,7 +1186,13 @@ class AppDatabase extends _$AppDatabase {
   }) async {
     await (update(checkins)..where((t) => t.id.equals(checkinId))).write(
       CheckinsCompanion(
-        rating: rating == null ? const Value.absent() : Value(rating),
+        // Wie bei Notiz und Gebinde: `null` heißt „nicht anfassen",
+        // gelöscht wird nur auf ausdrückliche Ansage. Ohne diese
+        // Unterscheidung ließe sich eine versehentliche Bewertung nie
+        // wieder zurücknehmen.
+        rating: clearRating
+            ? const Value(null)
+            : (rating == null ? const Value.absent() : Value(rating)),
         note: clearNote
             ? const Value(null)
             : (note == null ? const Value.absent() : Value(note)),

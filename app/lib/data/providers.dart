@@ -248,6 +248,7 @@ class BrewActions {
   Future<bool> editCheckin(
     String checkinId, {
     double? rating,
+    bool clearRating = false,
     String? note,
     bool clearNote = false,
     List<String>? flavorTags,
@@ -265,6 +266,7 @@ class BrewActions {
     await _db.updateCheckinLocal(
       checkinId,
       rating: rating,
+      clearRating: clearRating,
       note: note,
       clearNote: clearNote,
       flavorTags: flavorTags?.join(','),
