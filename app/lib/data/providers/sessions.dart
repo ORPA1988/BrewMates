@@ -18,7 +18,7 @@ final activeSessionsProvider = StreamProvider<List<SessionDetails>>((ref) {
   final localStream =
       ref.watch(databaseProvider).watchActiveSessions(_now(ref));
   if (!ref.watch(isSignedInProvider)) return localStream;
-  final remote = ref.watch(remoteSessionsProvider).valueOrNull ?? const [];
+  final remote = ref.watch(remoteSessionsProvider);
   return localStream.map((locals) => [
         ...locals.where((s) => s.host.isMe),
         ...remote.map(remoteSessionToDetails),
@@ -34,7 +34,7 @@ final myActiveSessionProvider = StreamProvider<Session?>((ref) {
 final sessionProvider =
     StreamProvider.family<SessionDetails?, String>((ref, id) {
   if (isRemoteId(id)) {
-    final remote = ref.watch(remoteSessionsProvider).valueOrNull ?? const [];
+    final remote = ref.watch(remoteSessionsProvider);
     RemoteSession? match;
     for (final s in remote) {
       if ('$remotePrefix${s.id}' == id) match = s;

@@ -1,7 +1,17 @@
 # 30 Bierlaune
 
 > **Status:** 🟢 fertig · **Seit:** 0.9.x (Migration 0018) ·
-> **Zuletzt geprüft:** 2026-09-02
+> **Zuletzt geprüft:** 2026-09-03
+>
+> **Sie läuft seit 0.10.12 von selbst ab.** Vorher wurde die Zeit nur
+> beim **Abrufen** geprüft, und abgerufen wird alle fünf Minuten: Der
+> Knopf zeigte deshalb bis zu fünf Minuten lang „Bierlaune bis 20:02",
+> obwohl es 20:03 war, und eine abgelaufene Bierlaune eines Freundes
+> stand genauso lange in der Liste. Der Zeitfilter hängt jetzt am
+> 30-Sekunden-Takt (`bierlauneAktivProvider`, `thirstyFriendsProvider`).
+> Das ist die eine Angabe, bei der „schon vorbei" das Gegenteil von
+> hilfreich ist — man macht sich sonst auf den Weg zu jemandem, der
+> längst zu Hause ist.
 
 ## Zielsetzung
 
