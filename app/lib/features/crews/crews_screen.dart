@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../data/online/online_service.dart' show OnlineApi;
 import '../../data/providers.dart';
 
 /// 👥 Crews: feste Gruppen (Stammtisch, Verein, WG …) — der größte
@@ -87,9 +88,11 @@ class CrewsScreen extends ConsumerWidget {
         content: TextField(
           controller: codeController,
           autofocus: true,
+          textCapitalization: TextCapitalization.characters,
           decoration: const InputDecoration(
             labelText: 'Einladungscode',
-            hintText: 'Code von einem Crew-Mitglied einfügen',
+            hintText: 'z. B. B3KM7Q',
+            helperText: 'Sechs Zeichen — oder die lange Kennung',
             border: OutlineInputBorder(),
           ),
         ),
@@ -108,7 +111,18 @@ class CrewsScreen extends ConsumerWidget {
     if (ok != true) return;
     final online = await ref.read(onlineServiceProvider.future);
     if (online == null) return;
-    final error = await online.joinCrew(codeController.text);
+
+    // Zwei Schreibweisen, ein Feld: der sechsstellige Code zum Vorlesen
+    // (0041) und die lange Kennung, die es seit dem ersten Tag gibt.
+    // Welche davon jemand einfügt, ist seine Sache — nicht seine
+    // Entscheidung.
+    final eingabe = codeController.text.trim();
+    final error = OnlineApi.uuidPattern.hasMatch(eingabe)
+        ? await online.joinCrew(eingabe)
+        : await online.crews.joinByCode(eingabe) == null
+            ? 'Diesen Einladungscode gibt es nicht.'
+            : null;
+
     ref.invalidate(myCrewsProvider);
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(

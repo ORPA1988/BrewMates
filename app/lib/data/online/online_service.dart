@@ -10,6 +10,7 @@ import 'api/checkins_api.dart';
 import 'api/devices_api.dart';
 import 'api/feedback_api.dart';
 import 'api/online_api.dart';
+import 'api/crews_api.dart';
 import 'api/friends_api.dart';
 import 'api/moderation_api.dart';
 import 'api/notifications_api.dart';
@@ -22,6 +23,7 @@ export 'api/devices_api.dart';
 export 'api/feedback_api.dart';
 export 'api/notifications_api.dart';
 export 'api/online_api.dart';
+export 'api/crews_api.dart';
 export 'api/friends_api.dart';
 export 'api/moderation_api.dart';
 export 'api/sessions_api.dart';
@@ -42,7 +44,8 @@ class OnlineService {
         devices = DevicesApi(_client, () => _client.auth.currentUser),
         feedback = FeedbackApi(_client, () => _client.auth.currentUser),
         moderation =
-            ModerationApi(_client, () => _client.auth.currentUser);
+            ModerationApi(_client, () => _client.auth.currentUser),
+        crews = CrewsApi(_client, () => _client.auth.currentUser);
 
   final SupabaseClient _client;
 
@@ -67,6 +70,9 @@ class OnlineService {
 
   /// Gemeldete Profile ansehen und abschliessen (Moderatoren, Admins).
   final ModerationApi moderation;
+
+  /// Crew-Feed und Beitritt per sprechbarem Code.
+  final CrewsApi crews;
 
   /// Live-Beacons: starten, spiegeln, verlängern, beenden.
   final SessionsApi sessions;
@@ -430,7 +436,7 @@ class OnlineService {
     try {
       final rows = await _client
           .from('crews')
-          .select('id, name, emoji, owner_id, crew_members(count)')
+          .select('id, name, emoji, owner_id, join_code, crew_members(count)')
           .order('created_at', ascending: true);
       return [
         for (final r in rows)
@@ -440,6 +446,7 @@ class OnlineService {
             emoji: (r['emoji'] as String?) ?? '👥',
             ownerId: r['owner_id'] as String,
             memberCount: _embeddedCount(r['crew_members']),
+            joinCode: r['join_code'] as String?,
           ),
       ];
     } catch (_) {

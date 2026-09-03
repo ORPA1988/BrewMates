@@ -256,6 +256,27 @@ class RemoteCheckin {
     required this.createdAt,
   });
 
+  /// Eine Zeile aus `checkins` samt eingebettetem Autor.
+  ///
+  /// Lag als private Methode in `CheckinsApi`, bis der Crew-Feed
+  /// dieselbe Zuordnung brauchte. Zwei Kopien einer Spaltenzuordnung
+  /// laufen auseinander, sobald eine Spalte dazukommt — und dann fehlt
+  /// sie an genau einer Stelle, die niemand prüft.
+  factory RemoteCheckin.fromRow(Map<String, dynamic> r) => RemoteCheckin(
+        id: r['id'] as String,
+        author: RemoteProfile.fromRow(r['author'] as Map<String, dynamic>),
+        beerName: (r['beer_name'] as String?) ?? 'Unbekanntes Bier',
+        breweryName: r['brewery_name'] as String?,
+        beerStyle: r['beer_style'] as String?,
+        isAlcoholFree: (r['is_alcohol_free'] as bool?) ?? false,
+        rating: (r['rating'] as num?)?.toDouble(),
+        note: r['note'] as String?,
+        venueName: r['venue_name'] as String?,
+        sessionId: r['session_id'] as String?,
+        photoUrl: r['photo_url'] as String?,
+        createdAt: DateTime.parse(r['created_at'] as String).toLocal(),
+      );
+
   final String id;
   final RemoteProfile author;
   final String beerName;
@@ -270,7 +291,7 @@ class RemoteCheckin {
   final DateTime createdAt;
 }
 
-/// 👥 Crew (Gruppe) aus Supabase — Beitritt per Einladungscode (UUID).
+/// 👥 Crew (Gruppe) aus Supabase.
 class RemoteCrew {
   const RemoteCrew({
     required this.id,
@@ -278,6 +299,7 @@ class RemoteCrew {
     required this.emoji,
     required this.ownerId,
     required this.memberCount,
+    this.joinCode,
   });
 
   final String id;
@@ -285,6 +307,13 @@ class RemoteCrew {
   final String emoji;
   final String ownerId;
   final int memberCount;
+
+  /// Sechsstelliger Einladungscode zum Vorlesen (0041).
+  ///
+  /// Nullbar, weil ältere App-Fassungen ihn nicht mitlesen und eine
+  /// Crew ohne Code kein Fehler ist — nur einer, der sich nicht
+  /// diktieren lässt.
+  final String? joinCode;
 }
 
 /// Alle Supabase-Zugriffe der App. Grundsätze:

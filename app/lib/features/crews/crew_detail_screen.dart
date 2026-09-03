@@ -5,10 +5,12 @@ import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../core/brewmates_code.dart';
+import '../../core/format.dart' show timeAgo;
 import '../../data/online/online_service.dart';
 import '../../data/providers.dart';
+import '../../widgets/rating_stars.dart';
 
-/// Crew-Detail: Mitglieder, Einladungscode, Verlassen/Auflösen.
+/// Crew-Detail: Bilanz, Runden, Mitglieder, Einladung, Verlassen/Auflösen.
 class CrewDetailScreen extends ConsumerWidget {
   const CrewDetailScreen({super.key, required this.crewId});
 
@@ -88,6 +90,28 @@ class CrewDetailScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Einladung', style: theme.textTheme.titleSmall),
+                  if (crew?.joinCode != null) ...[
+                    const SizedBox(height: 4),
+                    // Der Code zum Vorlesen. Das ist der eine Fall, in
+                    // dem weder Kamera noch Zwischenablage hilft: am
+                    // Telefon, über den Tisch gerufen, auf einen
+                    // Bierdeckel geschrieben.
+                    Center(
+                      child: SelectableText(
+                        crew!.joinCode!,
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontFamily: 'monospace',
+                          letterSpacing: 4,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Center(
+                      child: Text('zum Vorlesen',
+                          style: theme.textTheme.labelSmall),
+                    ),
+                  ],
                   const SizedBox(height: 8),
                   Center(
                     child: Container(
@@ -117,7 +141,7 @@ class CrewDetailScreen extends ConsumerWidget {
                     ),
                   ),
                   const Divider(height: 24),
-                  Text('Oder den Code schicken',
+                  Text('Oder die lange Kennung schicken',
                       style: theme.textTheme.labelMedium),
                   const SizedBox(height: 4),
                   SelectableText(crewId,
@@ -140,6 +164,8 @@ class CrewDetailScreen extends ConsumerWidget {
               ),
             ),
           ),
+          const SizedBox(height: 16),
+          _Bilanz(crewId: crewId),
           const SizedBox(height: 16),
           Text('Mitglieder', style: theme.textTheme.titleSmall),
           const SizedBox(height: 4),
@@ -174,6 +200,8 @@ class CrewDetailScreen extends ConsumerWidget {
                     ],
                   ),
           ),
+          const SizedBox(height: 16),
+          _CrewFeed(crewId: crewId),
           const SizedBox(height: 24),
           TextButton.icon(
             style: TextButton.styleFrom(foregroundColor: scheme.error),
@@ -194,6 +222,149 @@ class CrewDetailScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Was in den Runden der Crew zusammengekommen ist.
+///
+/// Bewusst schmal: Biername, Stil, Bewertung und Autor sind alles, was
+/// eine Feed-Zeile vom Server trägt. Füllmenge, Gebinde und Land fehlen
+/// dort — sie zu schätzen wäre eine Zahl, die nach Messung aussieht.
+/// Warum das so ist, steht in `domain/crew_stats.dart`.
+class _Bilanz extends ConsumerWidget {
+  const _Bilanz({required this.crewId});
+
+  final String crewId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final bilanz = ref.watch(crewBilanzProvider(crewId));
+    if (bilanz.leer) return const SizedBox.shrink();
+
+    Widget zahl(String wert, String was) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(wert,
+                style: theme.textTheme.titleLarge
+                    ?.copyWith(fontWeight: FontWeight.bold)),
+            Text(was, style: theme.textTheme.labelSmall),
+          ],
+        );
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('📊 Bilanz der Crew', style: theme.textTheme.titleSmall),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                zahl('${bilanz.checkins}', 'Check-ins'),
+                // Vielfalt vor Menge — dieselbe Haltung wie bei den
+                // Abzeichen.
+                zahl('${bilanz.biere}', 'Biere'),
+                zahl('${bilanz.aktiveMitglieder}', 'dabei'),
+                if (bilanz.schnitt != null)
+                  zahl(
+                    bilanz.schnitt!.toStringAsFixed(1).replaceAll('.', ','),
+                    'Schnitt',
+                  ),
+              ],
+            ),
+            if (bilanz.topBier != null) ...[
+              const SizedBox(height: 12),
+              Text('Meistgetrunken: ${bilanz.topBier}',
+                  style: theme.textTheme.bodySmall),
+            ],
+            if (bilanz.topStile.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Wrap(
+                spacing: 6,
+                runSpacing: 4,
+                children: [
+                  for (final s in bilanz.topStile)
+                    Chip(
+                      label: Text('${s.stil} · ${s.anzahl}'),
+                      labelStyle: theme.textTheme.labelSmall,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Die Runden der Crew: was ihre Mitglieder gemeinsam getrunken haben.
+///
+/// **Was hier drinsteht und was nicht.** Nur Check-ins aus Crew-Runden —
+/// also solche, die während eines Beacons mit Sichtbarkeit „nur meine
+/// Crew" entstanden sind. Das ist keine Entscheidung der Anzeige,
+/// sondern die Regel des Servers (`checkins_select`, seit 0001): Was
+/// jemand außerhalb einer Crew-Runde trinkt, geht die Crew nichts an.
+class _CrewFeed extends ConsumerWidget {
+  const _CrewFeed({required this.crewId});
+
+  final String crewId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final feed = ref.watch(crewCheckinsProvider(crewId));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('🍻 Aus euren Runden', style: theme.textTheme.titleSmall),
+        const SizedBox(height: 4),
+        feed.when(
+          loading: () => const Padding(
+            padding: EdgeInsets.all(24),
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          error: (e, _) => Text('Fehler: $e'),
+          data: (rows) => rows.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Text(
+                    'Noch nichts. Startet beim Zusammenkommen einen Beacon '
+                    'mit Sichtbarkeit „nur meine Crew" — was ihr dabei '
+                    'trinkt, landet hier.',
+                    style: theme.textTheme.bodySmall,
+                  ),
+                )
+              : Column(
+                  children: [
+                    for (final c in rows)
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: CircleAvatar(
+                          radius: 16,
+                          child: Text(c.author.avatarEmoji,
+                              style: const TextStyle(fontSize: 16)),
+                        ),
+                        title: Text(c.beerName),
+                        subtitle: Text([
+                          c.author.displayName,
+                          if (c.breweryName != null) c.breweryName!,
+                          timeAgo(c.createdAt),
+                        ].join(' · ')),
+                        trailing: c.rating == null
+                            ? null
+                            : RatingStars(rating: c.rating!, size: 14),
+                      ),
+                  ],
+                ),
+        ),
+      ],
     );
   }
 }
