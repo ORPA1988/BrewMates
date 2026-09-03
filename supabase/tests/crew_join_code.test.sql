@@ -6,7 +6,7 @@
 -- eintragen und sonst nichts verraten.
 
 begin;
-select plan(10);
+select plan(12);
 
 create or replace function pg_temp.mkuser(p_id uuid, p_name text)
 returns void language plpgsql as $$
@@ -32,6 +32,12 @@ values ('c0000000-0000-0000-0000-000000000001',
 
 -- ============================================================================
 -- Der Code selbst
+--
+-- Der wichtigste Test steht weiter unten: dass eine Crew sich auch als
+-- `authenticated` anlegen laesst. 0041 hatte den Code per Spaltenvorgabe
+-- erzeugt — und die wird mit den Rechten des Einfuegenden ausgewertet,
+-- nicht mit denen des Besitzers. „Crew gruenden" scheiterte deshalb in
+-- der App, waehrend jede Pruefung als `postgres` gruen war.
 -- ============================================================================
 
 select is(
@@ -130,6 +136,28 @@ select is(
   public.join_crew_by_code(null),
   null::uuid,
   'Und nichts ist auch kein Code'
+);
+
+-- ============================================================================
+-- Eine Crew anlegen — in der Rolle, die es tatsaechlich tut
+--
+-- Das ist der Test, der 0041 gefunden haette. Er prueft nicht, dass der
+-- Code richtig AUSSIEHT, sondern dass ihn der richtige Rolleninhaber
+-- ueberhaupt bekommt.
+-- ============================================================================
+
+select lives_ok(
+  $$insert into public.crews (id, name, owner_id)
+    values ('c0000000-0000-0000-0000-000000000009', 'Aus der App',
+            '11111111-1111-1111-1111-111111111111')$$,
+  'Ein angemeldeter Nutzer kann eine Crew anlegen'
+);
+
+set local role postgres;
+select ok(
+  (select join_code ~ '^[A-Z2-9]{6}$' from public.crews
+    where id = 'c0000000-0000-0000-0000-000000000009'),
+  'Und sie bekommt dabei ihren Code'
 );
 
 select * from finish();
