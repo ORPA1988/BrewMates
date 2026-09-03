@@ -4,6 +4,14 @@
 > abgestufte Sichtbarkeit.
 > **Seit:** 0.9.2 · **Zuletzt geprüft:** 2026-09-03
 >
+> **„Später" ist seit 0.10.12 weg.** Die Karte auf der Startseite hatte
+> drei Schaltflächen; die dritte blendete die Anfrage für die Sitzung
+> aus. Ihr Grund war, dass eine Antwort endgültig ist — und der ist
+> weggefallen, seit das Ablehnen zurückgenommen werden kann. Was bleibt,
+> ist der ehrlichere Zustand: Wer nicht antworten will, antwortet nicht,
+> und die Karte bleibt stehen. Sie steht dort, weil ein Mensch auf eine
+> Antwort wartet; ihn wegzuwischen half nur dem, der wegwischt.
+>
 > **Ablehnen ist seit 0.10.10 fünf Sekunden lang zurücknehmbar.** Nicht
 > als Rückgängig, sondern als Aufschub: Die gelöschte
 > `friendships`-Zeile dürfte nur der Anfragende wieder anlegen, also

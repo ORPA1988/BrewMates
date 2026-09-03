@@ -415,6 +415,14 @@ class _FakeFriendsApi extends FriendsApi {
   Future<List<RemoteProfile>> friends() async => _fake.freunde;
 
   @override
+  Future<bool> setBierlaune(DateTime? until) async {
+    _fake.aufrufe.add('setBierlaune:${until?.toIso8601String() ?? 'null'}');
+    if (_fake.schlaegtFehl) return false;
+    _fake.thirstyBis = until;
+    return true;
+  }
+
+  @override
   Future<DateTime?> myThirstyUntil() async {
     _fake.aufrufe.add('myThirstyUntil');
     return _fake.thirstyBis;

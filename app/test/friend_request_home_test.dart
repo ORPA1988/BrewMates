@@ -19,9 +19,12 @@ import 'fake_online_service.dart';
 /// liess jemanden wochenlang warten — und eine Anfrage ist die einzige
 /// Stelle der App, an der ein anderer Mensch auf eine Antwort wartet.
 ///
-/// Die drei Antworten sind nicht gleichwertig: „Annehmen" und „Ablehnen"
-/// sind endgültig, „Später" ist es ausdrücklich **nicht**. Genau das
-/// prüfen die Tests hier.
+/// Es gibt zwei Antworten, und beide sind Antworten. „Später" gab es bis
+/// 0.10.12 als dritte Schaltfläche — sie blendete die Anfrage für die
+/// Sitzung aus. Sie ist weg, seit das Ablehnen fünf Sekunden lang
+/// zurücknehmbar ist: Der Grund für „Später" war, dass eine Antwort
+/// endgültig war. Was bleibt, ist der ehrlichere Zustand — wer nicht
+/// antworten will, antwortet nicht, und die Karte bleibt stehen.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late AppDatabase db;
@@ -72,9 +75,12 @@ void main() {
 
     expect(find.byType(FriendRequestCard), findsOneWidget);
     expect(find.textContaining('Clara'), findsWidgets);
-    for (final knopf in ['Annehmen', 'Ablehnen', 'Später']) {
+    for (final knopf in ['Annehmen', 'Ablehnen']) {
       expect(find.text(knopf), findsOneWidget, reason: '$knopf fehlt');
     }
+    expect(find.text('Später'), findsNothing,
+        reason: 'Eine Anfrage wegzuwischen half nur dem, der sie '
+            'wegwischt — dem Wartenden nicht.');
     await abbauen(tester);
   });
 
@@ -104,18 +110,16 @@ void main() {
     await abbauen(tester);
   });
 
-  testWidgets('„Später" räumt nur die Startseite, nicht die Anfrage',
+  testWidgets('Die Karte bleibt stehen, bis geantwortet ist',
       (tester) async {
+    // Sie steht dort, weil ein Mensch auf eine Antwort wartet. Ohne
+    // Antwort verschwindet sie nicht — das war der ganze Sinn, „Später"
+    // zu streichen.
     await tester.pumpWidget(umgebung(const HomeScreen()));
     await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
 
-    await tester.tap(find.text('Später'));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(FriendRequestCard), findsNothing);
-    // Entscheidend: Es wurde NICHT geantwortet. „Später" heißt „nicht
-    // jetzt", nicht „abgelehnt" — sonst wäre es die gefährlichste der
-    // drei Schaltflächen.
+    expect(find.byType(FriendRequestCard), findsOneWidget);
     expect(online.aufrufe.where((a) => a.startsWith('respondRequest')),
         isEmpty);
     await abbauen(tester);
@@ -173,8 +177,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Clara'), findsWidgets,
-        reason: '„Später" gilt nur für die Startseite — hier hat der '
-            'Mensch die Anfragen ja gesucht.');
+        reason: 'Der Freunde-Bildschirm zeigt sie ebenfalls — dort hat '
+            'der Mensch sie ja gesucht.');
     await abbauen(tester);
   });
 }

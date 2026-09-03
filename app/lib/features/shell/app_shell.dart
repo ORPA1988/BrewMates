@@ -38,21 +38,26 @@ class AppShell extends ConsumerWidget {
       context: context,
       showDragHandle: true,
       builder: (sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: Text('Beacon verlängern',
-                  style: Theme.of(sheetContext).textTheme.titleMedium),
-              subtitle: const Text('Ab jetzt gerechnet'),
-            ),
-            for (final d in sessionDurationChoices)
+        // Sieben Laufzeiten plus Kopfzeile sind höher als ein kleines
+        // Gerät im Querformat — eine Spalte schneidet dann ab, ohne es
+        // zu sagen.
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
               ListTile(
-                leading: const Icon(Icons.timer_outlined),
-                title: Text('noch ${formatDuration(d)}'),
-                onTap: () => Navigator.pop(sheetContext, d),
+                title: Text('Beacon verlängern',
+                    style: Theme.of(sheetContext).textTheme.titleMedium),
+                subtitle: const Text('Ab jetzt gerechnet'),
               ),
-          ],
+              for (final d in sessionDurationChoices)
+                ListTile(
+                  leading: const Icon(Icons.timer_outlined),
+                  title: Text('noch ${formatDuration(d)}'),
+                  onTap: () => Navigator.pop(sheetContext, d),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -104,8 +109,7 @@ class AppShell extends ConsumerWidget {
                   '${mySession.venueName != null ? ' im ${mySession.venueName}' : ''}',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                subtitle:
-                    Text('Endet in ${remaining(mySession.expiresAt)}'),
+                subtitle: Text('Endet in ${remaining(mySession.expiresAt)}'),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

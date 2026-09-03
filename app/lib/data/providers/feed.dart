@@ -44,6 +44,27 @@ const sessionDurationChoices = <Duration>[
 final preferredSessionDurationProvider =
     StateProvider<Duration>((ref) => const Duration(hours: 3));
 
+/// Laufzeiten der Bierlaune.
+///
+/// Kürzer gestaffelt als beim Beacon: „Ich hätte Lust" ist eine Aussage
+/// über den Abend, nicht über die Nacht. Zwölf Stunden Lust auf ein Bier
+/// zu behaupten wäre eine Angabe, der man nicht mehr glaubt.
+const bierlauneDauerChoices = <Duration>[
+  Duration(hours: 1),
+  Duration(hours: 2),
+  Duration(hours: 4),
+  Duration(hours: 6),
+];
+
+/// Zuletzt gewählte Laufzeit der Bierlaune — Vorgabe für den einen Tipp.
+///
+/// Dasselbe Muster wie beim Beacon: Der Ein-Tap-Weg fragt nicht, er
+/// nimmt, was zuletzt gewählt wurde. Damit ist die Laufzeit einstellbar,
+/// ohne dass das Signalisieren einen Schritt mehr kostet — und genau das
+/// war der Sinn der Bierlaune.
+final preferredBierlauneDurationProvider =
+    StateProvider<Duration>((ref) => const Duration(hours: 4));
+
 /// Seitengröße für Feed und Tagebuch. Beide laden zunächst eine Seite und
 /// erweitern das Fenster, sobald der Mensch ans Ende scrollt — ohne
 /// Obergrenze würde jeder Check-in eines ganzen Bierlebens auf einmal
