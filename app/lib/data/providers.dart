@@ -482,11 +482,16 @@ class BrewActions {
   /// Rückgabe: ob es beim Server angekommen ist. Eine Bierlaune, die
   /// niemand sieht, ist keine — darum wird ein Fehlschlag gemeldet
   /// statt stillschweigend als Erfolg dargestellt.
-  Future<bool> setBierlaune({required bool on}) async {
+  /// 🍺 Bierlaune setzen oder beenden.
+  ///
+  /// [fuer] `null` beendet sie. Die Laufzeit war bis 0.10.12 fest auf
+  /// vier Stunden verdrahtet — als einziger Zeitwert der App, den man
+  /// nicht wählen konnte, während der Beacon es längst erlaubte.
+  Future<bool> setBierlaune({Duration? fuer}) async {
     final online = await _online();
     if (online == null) return false;
-    final ok = await online.friends.setBierlaune(
-        on ? DateTime.now().add(const Duration(hours: 4)) : null);
+    final ok = await online.friends
+        .setBierlaune(fuer == null ? null : DateTime.now().add(fuer));
     _ref.invalidate(myRemoteProfileProvider);
     _ref.invalidate(myThirstyUntilProvider);
     // Den Abruf entwerten, nicht die abgeleitete Liste: Die holt von

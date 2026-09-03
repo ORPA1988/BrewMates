@@ -19,6 +19,84 @@ import '../../widgets/friend_request_card.dart';
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
+  /// Bierlaune setzen — mit Laufzeit, ab jetzt gerechnet.
+  ///
+  /// Meldet ehrlich, wenn der Server sie nicht übernommen hat: Eine
+  /// Bierlaune, die niemand sieht, ist keine.
+  Future<void> _bierlauneSetzen(
+    BuildContext context,
+    WidgetRef ref,
+    Duration dauer,
+  ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    ref.read(preferredBierlauneDurationProvider.notifier).state = dauer;
+    final ok = await ref.read(actionsProvider).setBierlaune(fuer: dauer);
+    if (!ok) {
+      messenger.showSnackBar(const SnackBar(
+        content: Text('Bierlaune konnte nicht gespeichert werden — keine '
+            'Verbindung? Deine Freunde sehen sie nicht.'),
+      ));
+    }
+  }
+
+  /// Der Zettel zur laufenden Bierlaune: verlängern oder beenden.
+  Future<void> _bierlauneZettel(
+    BuildContext context,
+    WidgetRef ref,
+    DateTime bis,
+  ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final gewaehlt = await showModalBottomSheet<Duration?>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        // Scrollbar, nicht nur `min`: Auf einem kleinen Gerät — oder quer
+        // gehalten — ist die Liste höher als der Platz, und eine Spalte
+        // schneidet dann einfach ab.
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text('🍺 Bierlaune läuft bis ${formatTime(bis)}',
+                    style: Theme.of(sheetContext).textTheme.titleMedium),
+                subtitle: const Text('Neue Laufzeit ab jetzt gerechnet'),
+              ),
+              for (final d in bierlauneDauerChoices)
+                ListTile(
+                  leading: const Icon(Icons.timer_outlined),
+                  title: Text('noch ${formatDuration(d)}'),
+                  onTap: () => Navigator.pop(sheetContext, d),
+                ),
+              const Divider(),
+              ListTile(
+                leading: Icon(Icons.close,
+                    color: Theme.of(sheetContext).colorScheme.error),
+                title: const Text('Bierlaune beenden'),
+                // `Duration.zero` steht für „beenden" — `null` bedeutet
+                // hier schon „Zettel weggewischt, nichts tun".
+                onTap: () => Navigator.pop(sheetContext, Duration.zero),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (gewaehlt == null) return;
+    if (gewaehlt == Duration.zero) {
+      final ok = await ref.read(actionsProvider).setBierlaune();
+      if (!ok) {
+        messenger.showSnackBar(const SnackBar(
+          content: Text('Beenden hat nicht geklappt — keine Verbindung? '
+              'Deine Freunde sehen die Bierlaune noch.'),
+        ));
+      }
+      return;
+    }
+    if (!context.mounted) return;
+    await _bierlauneSetzen(context, ref, gewaehlt);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -52,22 +130,19 @@ class HomeScreen extends ConsumerWidget {
           // die einzige Stelle, an der ein anderer Mensch auf eine
           // Antwort wartet; sie gehoert dorthin, wo man ohnehin hinschaut.
           //
-          // „Spaeter" blendet sie nur fuer diese Sitzung aus. Im
-          // Freunde-Bildschirm bleibt sie sichtbar und aenderbar.
+          // Sie bleibt stehen, bis geantwortet ist. „Spaeter" gab es bis
+          // 0.10.12 und ist weg: Seit das Ablehnen zurueckgenommen werden
+          // kann, kostet die Entscheidung nichts mehr — und eine Karte
+          // wegzuwischen half nur dem, der sie wegwischt.
           // ------------------------------------------------------------------
           ...() {
-            final anfragen = ref.watch(offeneAnfragenProvider);
-            final spaeter = ref.watch(anfrageSpaeterProvider);
-            final offen = [
-              for (final a in anfragen)
-                if (!spaeter.contains(a.friendshipId)) a,
-            ];
+            final offen = ref.watch(offeneAnfragenProvider);
             if (offen.isEmpty) return const <Widget>[];
             return [
               for (final a in offen)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                  child: FriendRequestCard(request: a, zeigeSpaeter: true),
+                  child: FriendRequestCard(request: a),
                 ),
             ];
           }(),
@@ -183,14 +258,16 @@ class HomeScreen extends ConsumerWidget {
           // zwei Sekunden + „Bierlaune" signalisieren, ohne zu trinken.
           // ------------------------------------------------------------------
           ...() {
-            final diary =
-                ref.watch(myDiaryProvider).valueOrNull ?? const <CheckinDetails>[];
+            final diary = ref.watch(myDiaryProvider).valueOrNull ??
+                const <CheckinDetails>[];
             final signedIn = ref.watch(onlineUserProvider).valueOrNull != null;
             // Eigene Bierlaune kommt seit 0024 über my_thirsty_until()
             // statt aus der Profilzeile (Spaltenrecht entzogen).
             final bierlauneBis = ref.watch(myThirstyUntilProvider).valueOrNull;
-            final bierlaune =
-                bierlauneBis != null && bierlauneBis.isAfter(DateTime.now());
+            // Ob sie noch gilt, entscheidet der 30-Sekunden-Takt und nicht
+            // der Zeitpunkt des letzten Abrufs — sonst steht hier
+            // „Bierlaune bis 20:02", wenn es längst 20:03 ist.
+            final bierlaune = ref.watch(bierlauneAktivProvider);
             if (diary.isEmpty && !signedIn) return const <Widget>[];
             return [
               Padding(
@@ -225,23 +302,25 @@ class HomeScreen extends ConsumerWidget {
                     if (signedIn)
                       FilterChip(
                         label: Text(bierlaune
-                            ? '🍺 Bierlaune bis '
-                                '${bierlauneBis.hour}:${bierlauneBis.minute.toString().padLeft(2, '0')}'
+                            ? '🍺 Bierlaune bis ${formatTime(bierlauneBis!)}'
                             : '🍺 Bierlaune!'),
                         selected: bierlaune,
-                        onSelected: (on) async {
-                          final messenger = ScaffoldMessenger.of(context);
-                          final ok = await ref
-                              .read(actionsProvider)
-                              .setBierlaune(on: on);
-                          if (!ok) {
-                            messenger.showSnackBar(const SnackBar(
-                              content: Text('Bierlaune konnte nicht '
-                                  'gespeichert werden — keine Verbindung? '
-                                  'Deine Freunde sehen sie nicht.'),
-                            ));
-                          }
-                        },
+                        // Aus heißt: ein Tipp, fertig — mit der zuletzt
+                        // gewählten Laufzeit. An heißt: der Zettel, auf
+                        // dem man sie ändert oder beendet.
+                        //
+                        // Damit ist die Zeit einstellbar, ohne dass das
+                        // Signalisieren einen Schritt mehr kostet. Und
+                        // das versehentliche Beenden ist weg: Ein Tipp
+                        // auf den aktiven Chip löschte die Bierlaune
+                        // vorher sofort und ersatzlos.
+                        onSelected: (_) => bierlaune
+                            ? _bierlauneZettel(context, ref, bierlauneBis!)
+                            : _bierlauneSetzen(
+                                context,
+                                ref,
+                                ref.read(preferredBierlauneDurationProvider),
+                              ),
                       ),
                   ],
                 ),
@@ -480,8 +559,7 @@ class _ActiveBeaconCard extends ConsumerWidget {
                 ),
               ),
               TextButton(
-                onPressed: () =>
-                    beaconBeendenMitRueckgaengig(context, ref),
+                onPressed: () => beaconBeendenMitRueckgaengig(context, ref),
                 child: const Text('Beenden'),
               ),
             ],

@@ -6,31 +6,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/online/online_service.dart';
 import '../data/providers.dart';
 
-/// „Später" — Anfragen, die auf der Startseite gerade nicht stören sollen.
-///
-/// Bewusst nur für diese Sitzung und bewusst **nur für die Startseite**:
-/// Im Freunde-Bildschirm bleibt jede Anfrage sichtbar. „Später" heißt
-/// „nicht jetzt", nicht „weg" — eine Anfrage still verschwinden zu lassen
-/// wäre die schlechteste der drei Antworten.
-final anfrageSpaeterProvider = StateProvider<Set<String>>((ref) => {});
-
-/// Eine offene Freundschaftsanfrage mit den drei möglichen Antworten.
+/// Eine offene Freundschaftsanfrage mit ihren zwei Antworten.
 ///
 /// Liegt in `widgets/`, weil Startseite und Freunde-Bildschirm sie beide
 /// zeigen und Features einander nicht importieren dürfen.
+///
+/// **„Später" gab es bis 0.10.12 als dritte Schaltfläche.** Sie blendete
+/// die Anfrage für die laufende Sitzung von der Startseite aus. Der Grund
+/// dafür ist weggefallen: Sie existierte, weil eine Antwort endgültig war
+/// und man sich nicht festlegen wollte — seit das Ablehnen fünf Sekunden
+/// lang zurücknehmbar ist, kostet die Entscheidung nichts mehr.
+///
+/// Was bleibt, ist der ehrlichere Zustand: Wer nicht antworten will,
+/// antwortet nicht, und die Karte bleibt stehen. Sie steht dort, weil ein
+/// Mensch auf eine Antwort wartet; ihn wegzuwischen war die eine
+/// Schaltfläche, die dem Wartenden nichts nützte und dem Tippenden ein
+/// gutes Gefühl gab.
 class FriendRequestCard extends ConsumerStatefulWidget {
-  const FriendRequestCard({
-    super.key,
-    required this.request,
-    this.zeigeSpaeter = false,
-  });
+  const FriendRequestCard({super.key, required this.request});
 
   final FriendRequest request;
-
-  /// „Später" gibt es nur dort, wo die Anfrage ungefragt erscheint — also
-  /// auf der Startseite. Wer den Freunde-Bildschirm öffnet, hat sie
-  /// bereits gesucht.
-  final bool zeigeSpaeter;
 
   @override
   ConsumerState<FriendRequestCard> createState() => _FriendRequestCardState();
@@ -132,16 +127,6 @@ class _FriendRequestCardState extends ConsumerState<FriendRequestCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (widget.zeigeSpaeter)
-                  TextButton(
-                    onPressed: _laeuft
-                        ? null
-                        : () => ref
-                            .read(anfrageSpaeterProvider.notifier)
-                            .update((s) =>
-                                {...s, widget.request.friendshipId}),
-                    child: const Text('Später'),
-                  ),
                 TextButton(
                   onPressed: _laeuft ? null : _ablehnen,
                   child: const Text('Ablehnen'),

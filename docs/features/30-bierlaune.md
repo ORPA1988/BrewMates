@@ -12,6 +12,23 @@
 > Das ist die eine Angabe, bei der „schon vorbei" das Gegenteil von
 > hilfreich ist — man macht sich sonst auf den Weg zu jemandem, der
 > längst zu Hause ist.
+>
+> ⚠️ **Nachtrag 0.10.12:** Die Startseite benutzte den neuen Provider
+> zunächst gar nicht — eine Ersetzung im Werkzeug war abgebrochen, bevor
+> die Datei geschrieben wurde, und der Test dazu prüfte den Provider und
+> nicht den Bildschirm. Behoben, und `test/bierlaune_chip_test.dart`
+> sieht jetzt auf den Bildschirm. **Die Lehre:** Ein Provider, den
+> niemand ansieht, ändert nichts — ein Test, der nur ihn prüft, sagt
+> nichts über die App.
+>
+> **Die Laufzeit ist seit 0.10.12 einstellbar** (1, 2, 4 oder 6 Stunden).
+> Sie war der einzige Zeitwert der App, den man nicht wählen konnte,
+> während der Beacon es längst erlaubte. Der eine Tipp bleibt trotzdem
+> ein Tipp: Er nimmt, was zuletzt gewählt wurde — dasselbe Muster wie
+> beim Ein-Tap-Beacon. Ein Tipp auf die **laufende** Bierlaune öffnet
+> jetzt einen Zettel (verlängern oder beenden), statt sie sofort und
+> ersatzlos zu löschen; das war dieselbe Fehltipp-Falle, die beim Beacon
+> längst geschlossen ist.
 
 ## Zielsetzung
 
