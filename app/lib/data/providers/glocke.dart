@@ -41,3 +41,52 @@ final unreadNotificationsProvider =
   if (online == null) return const [];
   return online.notifications.unread();
 });
+
+// ============================================================================
+// Im Browser sichtbar werden, solange die Web-App offen ist
+// ============================================================================
+
+/// Das Fenster, in dem die App läuft. Im Browser die echte Fassung,
+/// überall sonst (und in Tests) die stumme.
+final browserfensterProvider =
+    Provider<Browserfenster>((ref) => Browserfenster());
+
+/// Liegt die App gerade vorn? Außerhalb des Browsers immer `true`.
+final seiteSichtbarProvider = StreamProvider<bool>((ref) async* {
+  final fenster = ref.watch(browserfensterProvider);
+  // Der erste Wert muss sofort kommen: Wer erst auf den nächsten Wechsel
+  // wartet, weiß beim ersten Eintreffen einer Meldung noch nichts.
+  yield fenster.sichtbar;
+  yield* fenster.sichtbarkeit;
+});
+
+/// Meldungen, die eintrafen, während die Seite im Hintergrund lag — und
+/// die der Browser nicht als Systemmeldung zeigen durfte.
+///
+/// **Wozu das nötig ist.** Der Fall trifft genau die Leute, um die es
+/// geht: Auf dem iPhone gibt es außerhalb einer installierten Web-App gar
+/// keine Systemmeldungen, und wer die Erlaubnis nicht erteilt hat, hat
+/// auch keine. Ohne diese Liste wäre die Meldung dann einfach weg — die
+/// Snackbar lief ins Leere, während der Tab hinten lag.
+///
+/// Bewusst nur im Speicher und bewusst ohne Obergrenze in der Zeit: Es
+/// geht um „was habe ich verpasst, während ich weg war", nicht um eine
+/// Glocke mit Verlauf. Ein Neuladen der Seite leert sie; der Bestand
+/// steht dann in [unreadNotificationsProvider].
+class VerpassteMeldungen extends Notifier<List<RemoteNotification>> {
+  @override
+  List<RemoteNotification> build() => const [];
+
+  void merken(RemoteNotification n) => state = [...state, n];
+
+  /// Gibt das Gemerkte zurück und leert es — der Aufrufer zeigt es an.
+  List<RemoteNotification> abholen() {
+    final alle = state;
+    state = const [];
+    return alle;
+  }
+}
+
+final verpassteMeldungenProvider =
+    NotifierProvider<VerpassteMeldungen, List<RemoteNotification>>(
+        VerpassteMeldungen.new);

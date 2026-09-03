@@ -16,7 +16,7 @@ Die Grundlagen und Regeln stehen in
 | Plattform | Stand | Einschränkungen |
 |---|---|---|
 | **Android** | ✅ im Einsatz | keine — die Leitplattform |
-| **Web** | ✅ im Einsatz | Kamera braucht Freigabe; Browserdaten löschen löscht die lokale DB; **keine Benachrichtigungen** (siehe 38) |
+| **Web** | ✅ im Einsatz | Kamera braucht Freigabe; Browserdaten löschen löscht die lokale DB; Meldungen nur bei offenem Tab (38) |
 | **Windows** | 🟡 baut | kein Scanner, keine Ortung, kein Foto |
 | **iOS** | 🟡 Projekt vorhanden | nie gebaut, keine Signierung, Apple-Anmeldung fehlt |
 | **macOS / Linux** | 🔴 fehlt | Projektordner nicht angelegt |
@@ -50,19 +50,18 @@ BrewMates im Browser. Deshalb gilt: **Alles, was die App kann, muss auch
 im Browser gehen**, und beides muss denselben Stand zeigen (siehe
 Session-Abgleich in 07).
 
-**Bekannte Lücke: Benachrichtigungen.** Und zwar aus einem Grund, der
-nicht in der App steckt: Das Firebase-JS-SDK registriert seinen Service
-Worker fest unter `/firebase-messaging-sw.js` — im Wurzelverzeichnis der
-Domain. BrewMates liegt unter `…github.io/BrewMates/`, einer
-Projektseite; dort ist die Wurzel nicht erreichbar. Der Dart-Aufsatz
-reicht keine eigene Registrierung durch (`serviceWorkerRegistration` ist
-in `firebase_messaging_web 4.1.5` auskommentiert).
+**Benachrichtigungen: seit 0.10.11 da, mit einer klaren Grenze.** Sie
+erreichen dich, solange BrewMates in einem Tab offen ist — als
+Systemmeldung, wenn der Tab hinten liegt, und sonst nachgereicht, sobald
+du zurückkommst. Ist der Tab **zu**, kommt nichts.
 
-Das ist ein **Hosting**-Problem, kein Konfigurationsproblem — ein
-Firebase-Web-Schlüssel würde daran nichts ändern. Untersuchung, drei
-Wege und eine Empfehlung stehen in
-[Funktion 38](38-benachrichtigungen-im-browser.md); die Entscheidung
-liegt beim Menschen.
+Das ist eine Festlegung, keine Lücke: Der Weg über Firebase ist an dieser
+Adresse verschlossen (das SDK verlangt seinen Service Worker im
+Wurzelverzeichnis der Domain, BrewMates liegt unter
+`…github.io/BrewMates/`), und die Festlegung „nur bei geöffneter Web-App"
+macht Service Worker, VAPID-Schlüssel und eine Migration allesamt
+überflüssig. Die Einzelheiten samt Kosten des anderen Wegs stehen in
+[Funktion 38](38-benachrichtigungen-im-browser.md).
 
 ## Modularität
 

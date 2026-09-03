@@ -28,6 +28,8 @@ import 'location_service.dart';
 import 'restore.dart';
 import 'venue_sync.dart';
 import 'online/online_service.dart';
+import 'push/browserfenster.dart';
+export 'push/browserfenster.dart' show Browserfenster;
 import 'push/push_service.dart';
 import 'online/remote_mapping.dart';
 
