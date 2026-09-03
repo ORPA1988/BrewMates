@@ -104,6 +104,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                 suffixIcon: _suche.isEmpty
                     ? null
                     : IconButton(
+                        tooltip: 'Suche leeren',
                         icon: const Icon(Icons.clear),
                         onPressed: () {
                           _sucheController.clear();

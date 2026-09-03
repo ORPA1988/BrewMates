@@ -234,6 +234,7 @@ class _ChallengeEditorScreenState
               Text('Ziel:', style: theme.textTheme.bodyLarge),
               const SizedBox(width: 12),
               IconButton(
+                tooltip: 'Ziel verringern',
                 onPressed: _threshold > 1
                     ? () => setState(() => _threshold--)
                     : null,
@@ -241,6 +242,7 @@ class _ChallengeEditorScreenState
               ),
               Text('$_threshold', style: theme.textTheme.titleMedium),
               IconButton(
+                tooltip: 'Ziel erhöhen',
                 onPressed: () => setState(() => _threshold++),
                 icon: const Icon(Icons.add_circle_outline),
               ),
