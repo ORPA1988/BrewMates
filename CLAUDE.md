@@ -7,14 +7,38 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
 
 - **Branch**: PRs #2–#4 sind in `main` gemerged; neue Arbeit startet auf
   frischen Branches von `main`.
-  Version `0.10.9-beta+27` (Beta 0.x bis
+  Version `0.10.11-beta` in Arbeit (`pubspec.yaml` steht auf
+  `0.10.10-beta+28`; der Bump auf 0.10.11 gehört zum nächsten Release —
+  Funktion 37 nennt sie bereits). (Beta 0.x bis
   zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch; die
   frühen Alpha-Releases wurden von 1.1/1.2 auf 0.1.0/0.2.0 umbenannt).
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0038` sind LIVE, lückenlos** (Stand 2026-09-03, 0038 gegen
-  `information_schema` geprüft, Hin- und Rückweg live getestet: Issue #68).
+  **`0001–0040` sind LIVE, lückenlos** (Stand 2026-09-03; 0039 und 0040
+  am selben Tag eingespielt und gegengeprüft: Trigger, Index, Rechte und
+  Policies über `information_schema`/`pg_catalog` bestätigt, Advisor ohne
+  Neubefund — nur die bekannte Baseline plus `unused_index` (INFO), was
+  bei leerer Datenbank erwartbar ist).
+  **0039 Beacon-Benachrichtigungen:** Trigger `sessions_notify` schreibt
+  beim Start eines Beacons `notifications`-Zeilen an genau die, die ihn
+  auch sehen dürfen (Freunde ab Kreis „Freund", bzw. die Crew) —
+  wortwörtlich die Bedingung aus `sessions_select`. Spam-Bremse: ein
+  Wecken je Gastgeber und Stunde, **gemessen an `sessions`**, nicht an
+  `notifications` (die verschwinden beim Beenden, sonst setzte
+  „starten, beenden, starten" die Bremse zurück). Der Trigger benutzt
+  bewusst NICHT `are_friends`/`is_crew_member`: Die verlangen seit 0009
+  eine Beteiligung von `auth.uid()` und lieferten bei einem Insert ohne
+  Sitzung still `false`.
+  **0040 Moderation:** `is_moderator(uid)`, `reports.handled_by/
+  handled_at/note`, `reports_select`/`reports_update` für Moderatoren,
+  RPCs `moderation_reports(status)` und `resolve_report(id, status,
+  note)`. **`profiles_select` wurde ausdrücklich NICHT geöffnet** — die
+  Namen kommen aus der RPC, sonst hätte jeder Moderator ein Dauerrecht
+  auf jedes private Profil. Nachtrag darin: fester `search_path` für
+  `feedback_issue_reset` (0038), rein kosmetisch.
+  (Stand davor: 0038 gegen `information_schema` geprüft, Hin- und
+  Rückweg live getestet: Issue #68).
   In `supabase_migrations.schema_migrations` stehen zusätzlich zwei
   **verwaiste Einträge** des parallelen Versuchs (`20260902223553
   feedback_github_issue`, `20260902224114 feedback_clear_github_columns_
@@ -131,6 +155,18 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Einrichtung nach dem Merge: 0038 einspielen, beide Functions deployen
   (verify_jwt false), Secret `GITHUB_TOKEN` setzen, dann
   `scratchpad/seed_roadmap_issues.py` bzw. `gh workflow run feedback-sync.yml`.
+- **Web-Push ist am Hosting blockiert (2026-09-03, untersucht):** Das
+  Firebase-JS-SDK registriert seinen Service Worker fest unter
+  `/firebase-messaging-sw.js` — im **Wurzelverzeichnis der Domain**; der
+  Dart-Aufsatz reicht keine eigene Registrierung durch
+  (`serviceWorkerRegistration` ist in `firebase_messaging_web 4.1.5`
+  auskommentiert). BrewMates liegt unter `…github.io/BrewMates/`. Ein
+  Firebase-Web-Schlüssel ändert daran nichts — **nicht beschaffen, bevor
+  der Weg entschieden ist.** Drei Wege und eine Empfehlung (eigenes
+  Web-Push ohne Nutzlast, damit die Verschlüsselung entfällt) stehen in
+  `docs/features/38-benachrichtigungen-im-browser.md`. Offen: Entscheidung
+  des Menschen, und die Frage, wer es nach der Veröffentlichung testet —
+  Web-Push ist hier nicht prüfbar.
 - **Kollision 2026-09-03:** Während PR #54 entstand, hat eine zweite
   Sitzung live eine eigene Variante eingespielt (`github_issue_number`/
   `github_issue_url`, Trigger `feedback_github_issue`, Function

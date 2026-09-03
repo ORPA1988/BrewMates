@@ -41,7 +41,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [15](15-vertrauensstufen-und-moderation.md) | Vertrauensstufen | 🟢 | 5 Stufen, Admin-Bereich, Moderation (siehe 37) |
 | [16](16-datensynchronisation.md) | Datensynchronisation | 🟡 | Local-first, Cloud-Restore; kein Delta-Sync |
 | [17](17-app-update.md) | App-Update | 🟢 | Prüfung gegen GitHub-Releases |
-| [18](18-plattformen.md) | Plattformen | 🟡 | Android + Web live, Windows baubar |
+| [18](18-plattformen.md) | Plattformen | 🟡 | Android + Web live, Windows baubar; kein Push im Browser (38) |
 | [19](19-feed-eintraege-loeschen.md) | Feed-Einträge löschen | 🟢 | Eigene Check-ins entfernen, offlinefähig, Rückgängig |
 | [20](20-feed-statistiken.md) | Statistiken | 🟢 | Menge, Land, Stil, Gebinde, Zeitraum, Filter |
 | [21](21-hintergrundgeschichten.md) | Hintergrundgeschichten | 🟡 | Technik fertig, 30 von 162 Brauereien erzählt |
@@ -66,6 +66,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 |---|---|---|---|
 | [25](25-brauerei-besitz.md) | Brauerei-Besitz | 🔴 | Verifizierte Inhaber pflegen ihre Daten |
 | [26](26-bier-angebote.md) | Bier-Angebote | 🔴 | Sehr späte Ausbaustufe |
+| [38](38-benachrichtigungen-im-browser.md) | Benachrichtigungen im Browser | 🔴 | Untersucht: Firebase scheitert am Hosting-Pfad; Entscheidung offen |
 
 ## Querschnitt
 

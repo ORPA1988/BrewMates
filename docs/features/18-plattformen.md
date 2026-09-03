@@ -2,7 +2,7 @@
 
 > **Status:** 🟡 teilweise — Android und Web laufen im Einsatz, Windows
 > baut, iOS ist ungetestet, macOS und Linux fehlen.
-> **Seit:** Web seit 0.9.10 · **Zuletzt geprüft:** 2026-08-15
+> **Seit:** Web seit 0.9.10 · **Zuletzt geprüft:** 2026-09-03
 
 ## Zielsetzung
 
@@ -16,7 +16,7 @@ Die Grundlagen und Regeln stehen in
 | Plattform | Stand | Einschränkungen |
 |---|---|---|
 | **Android** | ✅ im Einsatz | keine — die Leitplattform |
-| **Web** | ✅ im Einsatz | Kamera braucht Freigabe; Browserdaten löschen löscht die lokale DB |
+| **Web** | ✅ im Einsatz | Kamera braucht Freigabe; Browserdaten löschen löscht die lokale DB; **keine Benachrichtigungen** (siehe 38) |
 | **Windows** | 🟡 baut | kein Scanner, keine Ortung, kein Foto |
 | **iOS** | 🟡 Projekt vorhanden | nie gebaut, keine Signierung, Apple-Anmeldung fehlt |
 | **macOS / Linux** | 🔴 fehlt | Projektordner nicht angelegt |
@@ -48,8 +48,21 @@ Bundle, versionsgepinnt.
 Wer kein Android hat — in der Testphase alle iPhone-Nutzer — nutzt
 BrewMates im Browser. Deshalb gilt: **Alles, was die App kann, muss auch
 im Browser gehen**, und beides muss denselben Stand zeigen (siehe
-Session-Abgleich in 07). Bekannte Lücke: Push im Browser (Firebase Web
-+ Service Worker) — steht in der Roadmap.
+Session-Abgleich in 07).
+
+**Bekannte Lücke: Benachrichtigungen.** Und zwar aus einem Grund, der
+nicht in der App steckt: Das Firebase-JS-SDK registriert seinen Service
+Worker fest unter `/firebase-messaging-sw.js` — im Wurzelverzeichnis der
+Domain. BrewMates liegt unter `…github.io/BrewMates/`, einer
+Projektseite; dort ist die Wurzel nicht erreichbar. Der Dart-Aufsatz
+reicht keine eigene Registrierung durch (`serviceWorkerRegistration` ist
+in `firebase_messaging_web 4.1.5` auskommentiert).
+
+Das ist ein **Hosting**-Problem, kein Konfigurationsproblem — ein
+Firebase-Web-Schlüssel würde daran nichts ändern. Untersuchung, drei
+Wege und eine Empfehlung stehen in
+[Funktion 38](38-benachrichtigungen-im-browser.md); die Entscheidung
+liegt beim Menschen.
 
 ## Modularität
 
