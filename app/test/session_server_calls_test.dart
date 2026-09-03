@@ -52,9 +52,11 @@ void main() {
     final id = await starteBeacon();
     online.aufrufe.clear();
 
-    final synced = await container.read(actionsProvider).endMySession();
+    final ergebnis = await container.read(actionsProvider).endMySession();
 
-    expect(synced, isTrue);
+    expect(ergebnis?.synced, isTrue);
+    expect(ergebnis?.beendet.id, id,
+        reason: 'Ohne die beendete Zeile gäbe es kein „Rückgängig".');
     expect(online.aufrufe, contains('endSession:$id'),
         reason: 'Ohne diesen Aufruf bleibt der Beacon für Freunde stehen.');
   });
@@ -63,7 +65,9 @@ void main() {
     await starteBeacon();
     online.schlaegtFehl = true;
 
-    expect(await container.read(actionsProvider).endMySession(), isFalse);
+    expect(
+        (await container.read(actionsProvider).endMySession())?.synced,
+        isFalse);
   });
 
   test('Verlängern ruft den Server mit der eigenen Session-ID', () async {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,12 +39,46 @@ class FriendRequestCard extends ConsumerStatefulWidget {
 class _FriendRequestCardState extends ConsumerState<FriendRequestCard> {
   bool _laeuft = false;
 
-  Future<void> _antworten({required bool annehmen}) async {
+  /// Ablehnen mit Rückgängig-Frist.
+  ///
+  /// Der Serveraufruf wartet fünf Sekunden — er wird nicht rückgängig
+  /// gemacht, sondern findet gar nicht erst statt. Warum das die einzige
+  /// ehrliche Bauart ist, steht bei [AbgelehnteAnfragen]: Ein gelöschtes
+  /// `friendships` wiederherstellen dürfte nur der Anfragende selbst.
+  void _ablehnen() {
+    final messenger = ScaffoldMessenger.of(context);
+    final id = widget.request.friendshipId;
+    final name = widget.request.from.displayName;
+    final notifier = ref.read(abgelehnteAnfragenProvider.notifier);
+
+    // Kein await: Die Karte verschwindet sofort aus der Liste, weil
+    // `offeneAnfragenProvider` sie ab jetzt herausfiltert. Was danach
+    // passiert, meldet die Snackbar.
+    unawaited(notifier.ablehnen(id).then((ok) {
+      if (ok == false) {
+        messenger.showSnackBar(const SnackBar(
+          content: Text('Hat nicht geklappt — keine Verbindung? '
+              'Die Anfrage ist weiterhin offen.'),
+        ));
+      }
+    }));
+
+    messenger.showSnackBar(SnackBar(
+      content: Text('Anfrage von $name abgelehnt.'),
+      duration: rueckgaengigFrist,
+      action: SnackBarAction(
+        label: 'Rückgängig',
+        onPressed: () => notifier.zuruecknehmen(id),
+      ),
+    ));
+  }
+
+  Future<void> _annehmen() async {
     setState(() => _laeuft = true);
     final messenger = ScaffoldMessenger.of(context);
     final online = await ref.read(onlineServiceProvider.future);
     final ok = await online?.friends
-            .respondRequest(widget.request.friendshipId, accept: annehmen) ??
+            .respondRequest(widget.request.friendshipId, accept: true) ??
         false;
     if (!mounted) return;
     setState(() => _laeuft = false);
@@ -58,10 +94,8 @@ class _FriendRequestCardState extends ConsumerState<FriendRequestCard> {
     }
     ref.invalidate(friendRequestsProvider);
     ref.invalidate(onlineFriendsProvider);
-    messenger.showSnackBar(SnackBar(
-      content: Text(annehmen
-          ? 'Ihr seid jetzt Freunde! 🍻'
-          : 'Anfrage abgelehnt.'),
+    messenger.showSnackBar(const SnackBar(
+      content: Text('Ihr seid jetzt Freunde! 🍻'),
     ));
   }
 
@@ -109,14 +143,12 @@ class _FriendRequestCardState extends ConsumerState<FriendRequestCard> {
                     child: const Text('Später'),
                   ),
                 TextButton(
-                  onPressed:
-                      _laeuft ? null : () => _antworten(annehmen: false),
+                  onPressed: _laeuft ? null : _ablehnen,
                   child: const Text('Ablehnen'),
                 ),
                 const SizedBox(width: 4),
                 FilledButton(
-                  onPressed:
-                      _laeuft ? null : () => _antworten(annehmen: true),
+                  onPressed: _laeuft ? null : _annehmen,
                   child: const Text('Annehmen'),
                 ),
               ],

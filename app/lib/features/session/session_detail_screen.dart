@@ -18,10 +18,10 @@ class SessionDetailScreen extends ConsumerWidget {
   final String sessionId;
 
   Future<void> _endSession(BuildContext context, WidgetRef ref) async {
-    final messenger = ScaffoldMessenger.of(context);
-    final synced = await ref.read(actionsProvider).endMySession();
+    // Erst die Meldung samt „Rückgängig", dann zurück: Die Snackbar hängt
+    // am Messenger der Hülle und überlebt das Schließen dieser Seite.
+    await beaconBeendenMitRueckgaengig(context, ref);
     if (!context.mounted) return;
-    if (synced == false) messenger.showSnackBar(beaconEndFailedSnackBar);
     context.pop();
   }
 

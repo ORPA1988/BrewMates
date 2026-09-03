@@ -113,14 +113,8 @@ class AppShell extends ConsumerWidget {
                       child: const Text('Verlängern'),
                     ),
                     TextButton(
-                      onPressed: () async {
-                        final messenger = ScaffoldMessenger.of(context);
-                        final synced =
-                            await ref.read(actionsProvider).endMySession();
-                        if (synced == false) {
-                          messenger.showSnackBar(beaconEndFailedSnackBar);
-                        }
-                      },
+                      onPressed: () =>
+                          beaconBeendenMitRueckgaengig(context, ref),
                       child: const Text('Beenden'),
                     ),
                   ],
@@ -140,8 +134,7 @@ class AppShell extends ConsumerWidget {
     // einzuchecken —, sah nie, dass jemand auf eine Antwort wartet.
     // Ein Mensch, der wartet, gehoert an eine Stelle, die man von ueberall
     // sieht.
-    final offeneAnfragen =
-        ref.watch(friendRequestsProvider).valueOrNull?.length ?? 0;
+    final offeneAnfragen = ref.watch(offeneAnfragenProvider).length;
 
     // Live-Banner: Kommt eine Benachrichtigung an, waehrend die App offen
     // ist, sagt sie es — auf jedem Tab. Der Provider entwertet nebenbei

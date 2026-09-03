@@ -57,6 +57,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [33](33-orts-schnellansicht.md) | Orts-Schnellansicht | 🟢 | Bottom-Sheet für Gasthaus und Brauerei |
 | [34](34-entdecken.md) | Entdecken | 🟢 | Biere, Brauereien, Gasthäuser mit Suche, Sortierung, Anlegen |
 | [35](35-feedback-und-roadmap.md) | Fehler, Wünsche, Roadmap | 🟢 | Testphase: melden mit zwei Tipps, Status sehen, Roadmap in Alltagssprache |
+| [36](36-rueckgaengig-statt-rueckfrage.md) | Rückgängig statt Rückfrage | 🟡 | Beacon, Anfrage, Wunschliste: Fehltipp fünf Sekunden lang zurücknehmbar |
 
 ## Geplante Funktionen
 

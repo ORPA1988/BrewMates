@@ -50,8 +50,7 @@ class HomeScreen extends ConsumerWidget {
           // Freunde-Bildschirm bleibt sie sichtbar und aenderbar.
           // ------------------------------------------------------------------
           ...() {
-            final anfragen =
-                ref.watch(friendRequestsProvider).valueOrNull ?? const [];
+            final anfragen = ref.watch(offeneAnfragenProvider);
             final spaeter = ref.watch(anfrageSpaeterProvider);
             final offen = [
               for (final a in anfragen)
@@ -476,14 +475,8 @@ class _ActiveBeaconCard extends ConsumerWidget {
                 ),
               ),
               TextButton(
-                onPressed: () async {
-                  final messenger = ScaffoldMessenger.of(context);
-                  final synced =
-                      await ref.read(actionsProvider).endMySession();
-                  if (synced == false) {
-                    messenger.showSnackBar(beaconEndFailedSnackBar);
-                  }
-                },
+                onPressed: () =>
+                    beaconBeendenMitRueckgaengig(context, ref),
                 child: const Text('Beenden'),
               ),
             ],
