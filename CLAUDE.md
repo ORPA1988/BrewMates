@@ -15,7 +15,7 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0040` sind LIVE, lückenlos** (Stand 2026-09-03; 0039 und 0040
+  **`0001–0041` sind LIVE, lückenlos** (Stand 2026-09-03; 0039 und 0040
   am selben Tag eingespielt und gegengeprüft: Trigger, Index, Rechte und
   Policies über `information_schema`/`pg_catalog` bestätigt, Advisor ohne
   Neubefund — nur die bekannte Baseline plus `unused_index` (INFO), was
@@ -30,6 +30,15 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   bewusst NICHT `are_friends`/`is_crew_member`: Die verlangen seit 0009
   eine Beteiligung von `auth.uid()` und lieferten bei einem Insert ohne
   Sitzung still `false`.
+  **0041 Crew-Code zum Vorlesen:** `crews.join_code` (6 Zeichen aus
+  einem Alphabet ohne Zwillinge — kein 0/O, kein 1/I/L), erzeugt per
+  Spaltenvorgabe, eindeutiger Index; Beitritt über
+  `join_crew_by_code(text)`. Die Funktion ist nötig, weil `crews_select`
+  nur die eigenen Crews zeigt — der Client kann „welche Crew hat Code X?"
+  gar nicht fragen, und das bleibt so. Sie unterscheidet bewusst NICHT
+  zwischen „gibt es nicht" und „ging nicht". Live gegengeprüft:
+  Spaltenvorgabe erzeugt einen gültigen Code (Wegwerf-Crew angelegt,
+  geprüft, gelöscht), Index da, `anon` darf nicht.
   **0040 Moderation:** `is_moderator(uid)`, `reports.handled_by/
   handled_at/note`, `reports_select`/`reports_update` für Moderatoren,
   RPCs `moderation_reports(status)` und `resolve_report(id, status,
