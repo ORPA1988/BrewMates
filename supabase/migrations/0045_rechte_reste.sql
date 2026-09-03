@@ -32,13 +32,32 @@
 -- festgelegt.
 --
 -- ============================================================================
--- WAS DIESE MIGRATION NICHT KANN
+-- WAS DIESE MIGRATION NICHT KANN — und ein zweiter Befund
 --
 -- `spatial_ref_sys`, `geometry_columns`, `geography_columns` gehören
 -- PostGIS bzw. `supabase_admin`. Der Schleifendurchlauf unten fasst nur
 -- Tabellen an, die `current_user` gehören — dieselbe Einschränkung wie in
 -- 0025, aus demselben Grund: Ein REVOKE als `postgres` läuft dort durch
 -- und ändert nichts. Bleibt dokumentierte Baseline.
+--
+-- Dasselbe gilt für die Default-Privileges. Es gibt sie **zweimal**: einmal
+-- gesetzt von `postgres`, einmal von `supabase_admin`. Welche greift,
+-- entscheidet, **wer die Tabelle anlegt** — und das ist bei uns immer
+-- `postgres`, weil Migrationen so laufen. Der ALTER unten trifft also
+-- genau die Vorgabe, die für unsere Tabellen gilt.
+--
+-- Beim Nachsehen kam heraus: Die Vorgabe von `supabase_admin` gewährt
+-- `anon` weiterhin **INSERT, UPDATE und DELETE**. 0035 hatte sie nicht
+-- erreicht und behauptet trotzdem „auch nicht auf künftigen“ — das gilt
+-- nur für Tabellen, die `postgres` anlegt. Praktisch folgenlos, solange
+-- niemand als `supabase_admin` Tabellen in `public` anlegt (der SQL-Editor
+-- und die Migrationen tun es nicht). Aber es ist eine Aussage in einer
+-- Migration, die weiter reicht als ihre Wirkung, und die gehört
+-- richtiggestellt statt geerbt.
+--
+-- MAINTAIN (VACUUM, ANALYZE, REINDEX) bleibt bewusst stehen: Es kommt an
+-- keine Zeile heran und umgeht nichts — und ein REVOKE darauf würde auf
+-- älteren Postgres-Versionen scheitern.
 -- ============================================================================
 
 do $$
