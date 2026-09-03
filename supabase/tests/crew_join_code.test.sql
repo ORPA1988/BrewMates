@@ -6,7 +6,7 @@
 -- eintragen und sonst nichts verraten.
 
 begin;
-select plan(12);
+select plan(15);
 
 create or replace function pg_temp.mkuser(p_id uuid, p_name text)
 returns void language plpgsql as $$
@@ -151,6 +151,35 @@ select lives_ok(
     values ('c0000000-0000-0000-0000-000000000009', 'Aus der App',
             '11111111-1111-1111-1111-111111111111')$$,
   'Ein angemeldeter Nutzer kann eine Crew anlegen'
+);
+
+-- Der Test, der 0043 gefunden haette: Die App liest die neue ID mit
+-- `returning` zurueck. Das verlangt zusaetzlich die SELECT-Regel — und
+-- die verlangte eine Mitgliedschaft, die es in diesem Augenblick noch
+-- nicht geben kann. „Crew gruenden" scheiterte deshalb seit 0.9.12.
+select lives_ok(
+  $$insert into public.crews (id, name, owner_id)
+    values ('c0000000-0000-0000-0000-00000000000a', 'Mit Rueckgabe',
+            '11111111-1111-1111-1111-111111111111')
+    returning id$$,
+  'Und die neue ID gleich zurueckgelesen — Henne und Ei'
+);
+
+select is(
+  (select count(*) from public.crews
+    where id = 'c0000000-0000-0000-0000-00000000000a'),
+  1::bigint,
+  'Der Gruender sieht seine Crew, bevor er Mitglied ist'
+);
+
+-- Die Grenze bleibt: fremde Crews sind weiterhin unsichtbar.
+set local "request.jwt.claims" =
+  '{"sub":"22222222-2222-2222-2222-222222222222","role":"authenticated"}';
+select is(
+  (select count(*) from public.crews
+    where id = 'c0000000-0000-0000-0000-00000000000a'),
+  0::bigint,
+  'Ein Fremder sieht sie deshalb noch lange nicht'
 );
 
 set local role postgres;
