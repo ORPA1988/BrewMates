@@ -189,7 +189,11 @@ final crewMembersProvider = FutureProvider.autoDispose
 });
 
 /// 🍺 Freunde mit Bierlaune, wie der Server sie zuletzt kannte.
-final _thirstyFriendsRohProvider =
+///
+/// **Das ist der Provider zum Entwerten**, nicht [thirstyFriendsProvider]:
+/// Der ist abgeleitet und holt von sich aus nichts nach. Wer ihn
+/// entwertet, bewirkt nichts — und merkt es nicht.
+final thirstyFriendsAbrufProvider =
     FutureProvider<List<RemoteProfile>>((ref) async {
   ref.watch(_syncTickProvider);
   final online = await ref.watch(onlineServiceProvider.future);
@@ -209,9 +213,11 @@ final _thirstyFriendsRohProvider =
 /// Gegenteil von hilfreich ist: Man macht sich auf den Weg zu jemandem,
 /// der längst zu Hause ist. Der Zeitfilter hängt hier am
 /// 30-Sekunden-Takt.
+///
+/// **Diesen hier ansehen, [thirstyFriendsAbrufProvider] entwerten.**
 final thirstyFriendsProvider = Provider<List<RemoteProfile>>((ref) {
   final jetzt = _now(ref);
-  final roh = ref.watch(_thirstyFriendsRohProvider).valueOrNull ?? const [];
+  final roh = ref.watch(thirstyFriendsAbrufProvider).valueOrNull ?? const [];
   return [
     for (final f in roh)
       if (f.thirstyUntil != null && f.thirstyUntil!.isAfter(jetzt)) f,

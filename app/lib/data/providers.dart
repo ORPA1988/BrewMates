@@ -487,7 +487,9 @@ class BrewActions {
         on ? DateTime.now().add(const Duration(hours: 4)) : null);
     _ref.invalidate(myRemoteProfileProvider);
     _ref.invalidate(myThirstyUntilProvider);
-    _ref.invalidate(thirstyFriendsProvider);
+    // Den Abruf entwerten, nicht die abgeleitete Liste: Die holt von
+    // sich aus nichts nach.
+    _ref.invalidate(thirstyFriendsAbrufProvider);
     return ok;
   }
 
