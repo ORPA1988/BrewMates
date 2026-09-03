@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../data/online/online_service.dart' show OnlineApi;
+import '../../data/online/online_service.dart' show CrewInvite, OnlineApi;
 import '../../data/providers.dart';
 
 /// 👥 Crews: feste Gruppen (Stammtisch, Verein, WG …) — der größte
-/// Differenzierer gegenüber Beer With Me. Beitritt bewusst nur per
-/// Einladungscode (Crew-UUID), kein Kontakte-Import.
+/// Differenzierer gegenüber Beer With Me.
+///
+/// Drei Wege hinein, und der dritte unterscheidet sich grundsätzlich:
+/// Code scannen und Code tippen entscheidet der Beitretende selbst; eine
+/// **Einladung** (0044) entscheidet ein anderer und braucht deshalb eine
+/// Antwort. Kein Kontakte-Import.
 class CrewsScreen extends ConsumerWidget {
   const CrewsScreen({super.key});
 
@@ -161,43 +165,155 @@ class CrewsScreen extends ConsumerWidget {
       body: crewsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Fehler: $e')),
-        data: (crews) => crews.isEmpty
-            ? Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(32),
+        data: (crews) {
+          final einladungen = ref.watch(crewInvitesProvider).valueOrNull ??
+              const <CrewInvite>[];
+
+          // Auch ohne eigene Crew kann eine Einladung warten — der
+          // leere Zustand darf sie nicht verdecken.
+          if (crews.isEmpty && einladungen.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('👥', style: TextStyle(fontSize: 48)),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Noch keine Crew. Gründe deinen Stammtisch — '
+                      'Crew-Beacons sieht nur die Crew.',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyLarge,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          return ListView(
+            padding: const EdgeInsets.all(12),
+            children: [
+              // Einladungen zuerst: Dort wartet jemand auf eine Antwort.
+              for (final e in einladungen)
+                _EinladungsKarte(einladung: e),
+              for (final crew in crews)
+                Card(
+                  child: ListTile(
+                    leading: Text(crew.emoji,
+                        style: const TextStyle(fontSize: 28)),
+                    title: Text(crew.name),
+                    subtitle: Text(crew.memberCount == 1
+                        ? '1 Mitglied'
+                        : '${crew.memberCount} Mitglieder'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.push('/crew/${crew.id}'),
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Eine wartende Einladung — annehmen oder ablehnen.
+///
+/// Steht ganz oben in der Liste, weil dort jemand auf eine Antwort
+/// wartet. Dieselbe Haltung wie bei den Freundschaftsanfragen auf der
+/// Startseite: Ein Mensch, der wartet, gehört nach vorn.
+class _EinladungsKarte extends ConsumerStatefulWidget {
+  const _EinladungsKarte({required this.einladung});
+
+  final CrewInvite einladung;
+
+  @override
+  ConsumerState<_EinladungsKarte> createState() => _EinladungsKarteState();
+}
+
+class _EinladungsKarteState extends ConsumerState<_EinladungsKarte> {
+  bool _laeuft = false;
+
+  Future<void> _antworten({required bool annehmen}) async {
+    setState(() => _laeuft = true);
+    final messenger = ScaffoldMessenger.of(context);
+    final online = await ref.read(onlineServiceProvider.future);
+    final ok = online == null
+        ? false
+        : annehmen
+            ? await online.crews.acceptInvite(widget.einladung.crewId)
+            : await online.crews.declineInvite(widget.einladung.crewId);
+
+    ref.invalidate(crewInvitesProvider);
+    if (ok) ref.invalidate(myCrewsProvider);
+    if (!mounted) return;
+    setState(() => _laeuft = false);
+
+    // Regel A-8: kein Erfolg, den der Server nicht bestätigt hat.
+    messenger.showSnackBar(SnackBar(
+      content: Text(!ok
+          ? 'Hat nicht geklappt — keine Verbindung? Die Einladung steht '
+              'weiterhin.'
+          : annehmen
+              ? 'Willkommen in der Crew! 🍻'
+              : 'Einladung abgelehnt.'),
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final e = widget.einladung;
+
+    return Card(
+      color: theme.colorScheme.secondaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(e.crewEmoji, style: const TextStyle(fontSize: 28)),
+                const SizedBox(width: 12),
+                Expanded(
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('👥', style: TextStyle(fontSize: 48)),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Noch keine Crew. Gründe deinen Stammtisch — '
-                        'Crew-Beacons sieht nur die Crew.',
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.bodyLarge,
-                      ),
+                      Text(e.crewName, style: theme.textTheme.titleSmall),
+                      Text('${e.inviter.displayName} lädt dich ein',
+                          style: theme.textTheme.bodySmall),
                     ],
                   ),
                 ),
-              )
-            : ListView(
-                padding: const EdgeInsets.all(12),
-                children: [
-                  for (final crew in crews)
-                    Card(
-                      child: ListTile(
-                        leading: Text(crew.emoji,
-                            style: const TextStyle(fontSize: 28)),
-                        title: Text(crew.name),
-                        subtitle: Text(crew.memberCount == 1
-                            ? '1 Mitglied'
-                            : '${crew.memberCount} Mitglieder'),
-                        trailing: const Icon(Icons.chevron_right),
-                        onTap: () => context.push('/crew/${crew.id}'),
-                      ),
-                    ),
-                ],
-              ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            // Was der Beitritt bedeutet, steht dabei — nicht im Kleingedruckten.
+            Text(
+              'Als Mitglied siehst du die Runden der Crew — und sie deine, '
+              'inklusive Standort während eines Crew-Beacons.',
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: _laeuft ? null : () => _antworten(annehmen: false),
+                  child: const Text('Ablehnen'),
+                ),
+                const SizedBox(width: 4),
+                FilledButton(
+                  onPressed: _laeuft ? null : () => _antworten(annehmen: true),
+                  child: const Text('Beitreten'),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

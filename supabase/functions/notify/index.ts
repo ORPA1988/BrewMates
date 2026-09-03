@@ -46,6 +46,10 @@ const TEXTE: Record<string, { title: string; body: string }> = {
     title: "BrewMates",
     body: "Jemand ist bei deinem Beacon dabei 🍻",
   },
+  crew_invite: {
+    title: "BrewMates",
+    body: "Du bist in eine Crew eingeladen 👥",
+  },
 };
 
 // --- Google OAuth2 mit Dienstkonto (RS256-JWT, WebCrypto) -----------------

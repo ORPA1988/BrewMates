@@ -20,6 +20,9 @@ void Function()? benachrichtigungsZiel(
 ) =>
     switch (n.type) {
       'friend_request' => () => context.go('/friends'),
+      // Die Einladung wird in der Crew-Liste beantwortet, nicht in der
+      // Crew selbst — die sieht man ja erst als Mitglied.
+      'crew_invite' => () => context.push('/crews'),
       'beacon' || 'session_toast' || 'session_joined'
           when n.subjectId != null =>
         () => context.push('/session/${n.subjectId}'),
