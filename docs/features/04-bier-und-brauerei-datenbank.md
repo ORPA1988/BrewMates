@@ -146,6 +146,24 @@ technische Daten, und die OFF-Abdeckung ist dünn.
   ODbL), Koordinaten teils von Nominatim — dokumentiert in
   `DATENHERKUNFT.md`
 
+### Bilder liegen nicht in der App
+
+Im Bündel steckt **kein einziges Produktbild** — die Datensätze führen
+nur Adressen. Geladen wird erst, wenn ein Bild gebraucht wird: In einer
+`ListView.builder` also für die sichtbaren Zeilen, nicht für alle 659
+Biere. `widgets/beer_thumbnail.dart` entschlüsselt zusätzlich in
+Vorschaugröße (`cacheWidth`) statt in voller Auflösung; ein
+1000×1000-Etikett belegt sonst 4 MB Speicher für 40 Bildpunkte auf dem
+Schirm.
+
+Das ist nicht nur eine Größenfrage. Die Bilder gehören anderen: Sie
+dürfen verlinkt, aber nicht mitgeliefert werden, und sie können
+jederzeit verschwinden. Deshalb endet jeder Fehlschlag beim vertrauten
+Emoji statt bei einem grauen Kasten — und deshalb steht die
+Herkunftsangabe bei jedem Bier auf der Detailseite, einen Tipp von jeder
+Liste entfernt. In einer 40 Punkt großen Vorschau wäre sie unlesbar und
+damit auch keine Angabe.
+
 **Die Trennlinie:** Kuratierte Datensätze sind in der App **schreibgeschützt**
 — der GitHub-Abgleich überschreibt sie vollständig. Bearbeitbar sind nur
 Einträge aus Supabase. Wer das vermischt, verliert Nutzerkorrekturen beim

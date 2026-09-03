@@ -12,6 +12,7 @@ import '../../data/db/database.dart';
 import '../../data/online/online_service.dart' show RemoteBeer;
 import '../../data/providers.dart';
 import '../../widgets/beer_picker.dart';
+import '../../widgets/beer_thumbnail.dart';
 import '../../widgets/suggest_list.dart';
 
 /// Häufigste Stile als Schnellauswahl.
@@ -258,7 +259,11 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
         SuggestEntry(
           titel: t.beer.name,
           untertitel: '${t.brewery.name} · ${t.beer.style}',
-          fuehrend: t.beer.isAlcoholFree ? '💧' : '🍺',
+          bild: BeerThumbnail(
+            imageUrl: t.beer.imageUrl,
+            isAlcoholFree: t.beer.isAlcoholFree,
+            size: 32,
+          ),
           onTap: () => _uebernehmen(t),
         ),
       for (final t in _serverTreffer)
@@ -268,7 +273,14 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
             untertitel: [t.breweryName, t.style]
                 .where((e) => e != null && e.isNotEmpty)
                 .join(' · '),
-            fuehrend: t.isAlcoholFree ? '💧' : '🍺',
+            // `labelUrl` ist beim Server-Treffer das Etikettfoto des
+            // Nutzers, der das Bier angelegt hat — dieselbe Rolle wie
+            // `imageUrl` beim lokalen Datensatz.
+            bild: BeerThumbnail(
+              imageUrl: t.labelUrl,
+              isAlcoholFree: t.isAlcoholFree,
+              size: 32,
+            ),
             vomServer: true,
             onTap: () => _uebernehmenVomServer(t),
           ),

@@ -10,6 +10,7 @@ import '../../core/format.dart' show volumeChoicesMl, formatVolume;
 import '../../data/providers.dart';
 import '../../domain/statistics.dart' show estimatedVolumeMl;
 import '../../widgets/badge_celebration.dart';
+import '../../widgets/beer_thumbnail.dart';
 import '../../widgets/rating_stars.dart';
 import '../../widgets/venue_picker.dart';
 
@@ -175,24 +176,11 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
             Card(
               margin: EdgeInsets.zero,
               child: ListTile(
-                leading: selected.beer.imageUrl == null
-                    ? Text(
-                        selected.beer.isAlcoholFree ? '💧' : '🍺',
-                        style: const TextStyle(fontSize: 28),
-                      )
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
-                        child: Image.network(
-                          selected.beer.imageUrl!,
-                          width: 44,
-                          height: 44,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Text(
-                            selected.beer.isAlcoholFree ? '💧' : '🍺',
-                            style: const TextStyle(fontSize: 28),
-                          ),
-                        ),
-                      ),
+                leading: BeerThumbnail(
+                  imageUrl: selected.beer.imageUrl,
+                  isAlcoholFree: selected.beer.isAlcoholFree,
+                  size: 44,
+                ),
                 title: Text(selected.beer.name),
                 subtitle: Text(
                   '${selected.brewery.name} · ${selected.beer.style}'
@@ -400,7 +388,11 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
       for (final item in results.take(15))
         ListTile(
           dense: true,
-          leading: Text(item.beer.isAlcoholFree ? '💧' : '🍺'),
+          leading: BeerThumbnail(
+            imageUrl: item.beer.imageUrl,
+            isAlcoholFree: item.beer.isAlcoholFree,
+            size: 32,
+          ),
           title: Text(item.beer.name),
           subtitle: Text('${item.brewery.name} · ${item.beer.style}'),
           onTap: () => setState(() {

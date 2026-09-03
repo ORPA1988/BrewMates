@@ -7,6 +7,7 @@ import '../data/db/database.dart';
 import '../data/providers.dart';
 import 'badge_celebration.dart';
 import 'beacon_messages.dart';
+import 'beer_thumbnail.dart';
 import 'rating_stars.dart';
 import 'checkin_edit_sheet.dart';
 
@@ -191,6 +192,18 @@ class CheckinCard extends ConsumerWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Das Etikett erkennt man schneller, als man den Namen
+                // liest. Tippbar wie der Name selbst — wer auf ein Bild
+                // tippt, erwartet, dass etwas passiert.
+                InkWell(
+                  onTap: () => context.push('/beer/${beer.id}'),
+                  child: BeerThumbnail(
+                    imageUrl: beer.imageUrl,
+                    isAlcoholFree: beer.isAlcoholFree,
+                    size: 48,
+                  ),
+                ),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

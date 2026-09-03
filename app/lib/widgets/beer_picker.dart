@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/db/database.dart';
 import '../data/providers.dart';
+import 'beer_thumbnail.dart';
 
 /// Ein vorhandenes Bier aus der Datenbank auswählen.
 ///
@@ -92,8 +93,10 @@ class _BeerPickerState extends ConsumerState<_BeerPicker> {
                 itemBuilder: (_, i) {
                   final t = treffer[i];
                   return ListTile(
-                    leading: Text(t.beer.isAlcoholFree ? '💧' : '🍺',
-                        style: const TextStyle(fontSize: 24)),
+                    leading: BeerThumbnail(
+                      imageUrl: t.beer.imageUrl,
+                      isAlcoholFree: t.beer.isAlcoholFree,
+                    ),
                     title: Text(t.beer.name),
                     subtitle: Text('${t.brewery.name} · ${t.beer.style}'),
                     onTap: () => Navigator.pop(context, t),

@@ -8,6 +8,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
 import '../../widgets/kamera_hinweis.dart';
+import '../../widgets/beer_thumbnail.dart';
 import '../../widgets/rating_stars.dart';
 import '../../widgets/story_sheet.dart';
 import 'barcode_lookup.dart';
@@ -177,25 +178,11 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  if (beer.imageUrl != null)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        beer.imageUrl!,
-                        width: 64,
-                        height: 64,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Text(
-                          beer.isAlcoholFree ? '💧' : '🍺',
-                          style: const TextStyle(fontSize: 40),
-                        ),
-                      ),
-                    )
-                  else
-                    Text(
-                      beer.isAlcoholFree ? '💧' : '🍺',
-                      style: const TextStyle(fontSize: 40),
-                    ),
+                  BeerThumbnail(
+                    imageUrl: beer.imageUrl,
+                    isAlcoholFree: beer.isAlcoholFree,
+                    size: 64,
+                  ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
