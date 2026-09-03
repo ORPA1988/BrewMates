@@ -144,14 +144,21 @@ class AppShell extends ConsumerWidget {
         (_, next) {
       final n = next.valueOrNull;
       if (n == null) return;
+      // „Ansehen" führt dorthin, wo die Sache steht. Ohne das Ziel ist
+      // das Banner eine Meldung ohne Ausgang — beim Beacon besonders
+      // ärgerlich, weil genau dann jemand auf eine Antwort wartet.
+      final ziel = switch (n.type) {
+        'friend_request' => () => context.go('/friends'),
+        'beacon' || 'session_toast' || 'session_joined'
+            when n.subjectId != null =>
+          () => context.push('/session/${n.subjectId}'),
+        _ => null,
+      };
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(n.text),
-        action: n.type == 'friend_request'
-            ? SnackBarAction(
-                label: 'Ansehen',
-                onPressed: () => context.go('/friends'),
-              )
-            : null,
+        action: ziel == null
+            ? null
+            : SnackBarAction(label: 'Ansehen', onPressed: ziel),
       ));
     });
 
