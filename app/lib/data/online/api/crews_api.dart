@@ -1,3 +1,6 @@
+import 'package:supabase_flutter/supabase_flutter.dart'
+    show PostgrestException;
+
 import '../models.dart';
 import 'online_api.dart';
 
@@ -39,6 +42,112 @@ class CrewsApi extends OnlineApi {
       ];
     } catch (_) {
       return const [];
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // Einladungen (0044)
+  //
+  // Anders als der Code brauchen sie eine Antwort — die Begründung steht
+  // in der Migration und in [CrewInvite]. Hier steht nur, wie es geht.
+  // --------------------------------------------------------------------------
+
+  /// Einen Freund in eine Crew einladen.
+  ///
+  /// Rückgabe: `null` bei Erfolg, sonst ein Satz für den Menschen. Die
+  /// Regeln stehen am Server (nur Mitglieder, nur Freunde, nur im eigenen
+  /// Namen); hier wird nur übersetzt, was er sagt.
+  Future<String?> invite(String crewId, String profileId) async {
+    final me = currentUser;
+    if (me == null) return 'Dafür musst du angemeldet sein.';
+    try {
+      await client.from('crew_invites').insert({
+        'crew_id': crewId,
+        'invitee_id': profileId,
+        'inviter_id': me.id,
+      });
+      return null;
+    } on PostgrestException catch (e) {
+      // 23505 = schon eingeladen. Das ist kein Fehler, über den man
+      // stolpern muss — die Einladung steht ja bereits.
+      if (e.code == '23505') return 'Die Einladung steht schon.';
+      return 'Einladen hat nicht geklappt.';
+    } catch (_) {
+      return 'Keine Verbindung.';
+    }
+  }
+
+  /// Einladungen, die auf **meine** Antwort warten.
+  Future<List<CrewInvite>> myInvites() async {
+    final me = currentUser;
+    if (me == null) return const [];
+    try {
+      final rows = await client
+          .from('crew_invites')
+          .select('crew_id, created_at, '
+              'crew:crews!crew_invites_crew_id_fkey(name, emoji), '
+              'inviter:profiles!crew_invites_inviter_id_fkey('
+              '${OnlineApi.profileCols})')
+          .eq('invitee_id', me.id)
+          .order('created_at', ascending: false);
+      return [for (final r in rows) CrewInvite.fromRow(r)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Wer in dieser Crew noch aussteht — für die Mitgliederliste.
+  Future<List<RemoteProfile>> pendingFor(String crewId) async {
+    if (currentUser == null) return const [];
+    try {
+      final rows = await client
+          .from('crew_invites')
+          .select('invitee:profiles!crew_invites_invitee_id_fkey('
+              '${OnlineApi.profileCols})')
+          .eq('crew_id', crewId);
+      return [
+        for (final r in rows)
+          RemoteProfile.fromRow(r['invitee'] as Map<String, dynamic>),
+      ];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Einladung annehmen: eintragen **und** die Einladung wegräumen.
+  ///
+  /// Zwei Schritte, weil es zwei Dinge sind — und in dieser Reihenfolge:
+  /// Bliebe die Einladung nach einem Fehlschlag beim Eintragen liegen,
+  /// könnte man es erneut versuchen. Andersherum wäre sie weg und die
+  /// Mitgliedschaft nicht da.
+  Future<bool> acceptInvite(String crewId) async {
+    final me = currentUser;
+    if (me == null) return false;
+    try {
+      await client.from('crew_members').insert({
+        'crew_id': crewId,
+        'profile_id': me.id,
+      });
+      await declineInvite(crewId);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Einladung ablehnen — oder als Crew zurückziehen.
+  Future<bool> declineInvite(String crewId, {String? invitee}) async {
+    final me = currentUser;
+    if (me == null) return false;
+    try {
+      await client
+          .from('crew_invites')
+          .delete()
+          .eq('crew_id', crewId)
+          .eq('invitee_id', invitee ?? me.id);
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 

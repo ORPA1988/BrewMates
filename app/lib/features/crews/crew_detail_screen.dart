@@ -55,6 +55,19 @@ class CrewDetailScreen extends ConsumerWidget {
     context.pop();
   }
 
+  /// Freunde auswählen und einladen.
+  ///
+  /// Angeboten wird nur, wer noch nicht dabei ist und noch nicht wartet —
+  /// eine Liste, die Einträge zeigt, die nicht gehen, ist keine Auswahl.
+  Future<void> _freundeEinladen(BuildContext context, WidgetRef ref) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (_) => _EinladeListe(crewId: crewId),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -164,6 +177,15 @@ class CrewDetailScreen extends ConsumerWidget {
               ),
             ),
           ),
+          const SizedBox(height: 12),
+          // Der zweite Weg hinein: jemanden holen, statt ihm einen Code
+          // zu geben. Für den Stammtisch, dessen Leute man längst als
+          // Freunde hat.
+          OutlinedButton.icon(
+            icon: const Icon(Icons.person_add_alt, size: 18),
+            label: const Text('Freunde einladen'),
+            onPressed: () => _freundeEinladen(context, ref),
+          ),
           const SizedBox(height: 16),
           _Bilanz(crewId: crewId),
           const SizedBox(height: 16),
@@ -196,6 +218,34 @@ class CrewDetailScreen extends ConsumerWidget {
                                   visualDensity: VisualDensity.compact,
                                 )
                               : null,
+                        ),
+                      // Wer eingeladen ist, aber noch nicht geantwortet
+                      // hat. Ohne diese Zeile lädt man ihn dreimal ein
+                      // und wundert sich, warum nichts passiert.
+                      for (final p in ref.watch(crewPendingProvider(crewId))
+                              .valueOrNull ??
+                          const <RemoteProfile>[])
+                        ListTile(
+                          dense: true,
+                          leading: CircleAvatar(
+                            radius: 16,
+                            backgroundColor: scheme.surfaceContainerHighest,
+                            child: Text(p.avatarEmoji,
+                                style: const TextStyle(fontSize: 16)),
+                          ),
+                          title: Text(p.displayName,
+                              style: TextStyle(color: scheme.outline)),
+                          subtitle: const Text('eingeladen, wartet noch'),
+                          trailing: TextButton(
+                            onPressed: () async {
+                              final online = await ref
+                                  .read(onlineServiceProvider.future);
+                              await online?.crews.declineInvite(crewId,
+                                  invitee: p.id);
+                              ref.invalidate(crewPendingProvider(crewId));
+                            },
+                            child: const Text('Zurückziehen'),
+                          ),
                         ),
                     ],
                   ),
@@ -365,6 +415,115 @@ class _CrewFeed extends ConsumerWidget {
                 ),
         ),
       ],
+    );
+  }
+}
+
+/// Freunde auswählen und einladen.
+///
+/// Es gibt keinen „Alle einladen"-Knopf. Eine Crew ist eine Runde, keine
+/// Verteilerliste — und jede Einladung landet als Meldung bei einem
+/// Menschen, der antworten muss.
+class _EinladeListe extends ConsumerStatefulWidget {
+  const _EinladeListe({required this.crewId});
+
+  final String crewId;
+
+  @override
+  ConsumerState<_EinladeListe> createState() => _EinladeListeState();
+}
+
+class _EinladeListeState extends ConsumerState<_EinladeListe> {
+  /// Wen wir gerade fragen — sperrt genau diese Zeile, nicht die Liste.
+  final _laeuft = <String>{};
+
+  Future<void> _einladen(RemoteProfile freund) async {
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _laeuft.add(freund.id));
+    final online = await ref.read(onlineServiceProvider.future);
+    // `null` heißt hier „hat geklappt" — deshalb darf der abgemeldete
+    // Fall nicht über `??` hineinrutschen, sonst sähe er wie Erfolg aus.
+    final String? fehler = online == null
+        ? 'Dafür musst du angemeldet sein.'
+        : await online.crews.invite(widget.crewId, freund.id);
+    // Auffrischen, damit der Eingeladene sofort unter „wartet noch"
+    // steht und aus der Auswahl verschwindet.
+    ref.invalidate(crewPendingProvider(widget.crewId));
+    if (!mounted) return;
+    setState(() => _laeuft.remove(freund.id));
+    messenger.showSnackBar(SnackBar(
+      content: Text(fehler ?? '${freund.displayName} ist eingeladen 👥'),
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final einladbar = ref.watch(crewEinladbarProvider(widget.crewId));
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('👥 Freunde einladen', style: theme.textTheme.titleMedium),
+            const SizedBox(height: 4),
+            Text(
+              'Sie bekommen eine Einladung und entscheiden selbst. Wer '
+              'dazukommt, sieht eure Crew-Runden — inklusive Standort.',
+              style: theme.textTheme.bodySmall,
+            ),
+            const SizedBox(height: 8),
+            if (einladbar.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: Text(
+                  'Niemand übrig — entweder sind alle deine BrewMates schon '
+                  'dabei, oder sie wurden bereits eingeladen. Für alle '
+                  'anderen gibt es den Einladungscode.',
+                  style: theme.textTheme.bodyMedium,
+                ),
+              )
+            else
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.sizeOf(context).height * 0.5,
+                ),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: einladbar.length,
+                  itemBuilder: (_, i) {
+                    final f = einladbar[i];
+                    final laeuft = _laeuft.contains(f.id);
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(
+                        radius: 16,
+                        child: Text(f.avatarEmoji,
+                            style: const TextStyle(fontSize: 16)),
+                      ),
+                      title: Text(f.displayName),
+                      subtitle: Text('@${f.username}'),
+                      trailing: laeuft
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child:
+                                  CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : TextButton(
+                              onPressed: () => _einladen(f),
+                              child: const Text('Einladen'),
+                            ),
+                    );
+                  },
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

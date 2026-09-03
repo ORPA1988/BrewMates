@@ -1,9 +1,9 @@
 # 09 Crews
 
-> **Status:** 🟢 fertig — Gruppen mit drei Beitrittswegen, eigenem Feed
-> und Bilanz.
-> **Seit:** 0.9.12; QR-Beitritt 0.10.10, Feed/Bilanz/Kurzcode 0.10.12 ·
-> **Zuletzt geprüft:** 2026-09-03
+> **Status:** 🟢 fertig — vier Beitrittswege, eigener Runden-Feed und
+> Bilanz.
+> **Seit:** 0.9.12; QR-Beitritt 0.10.10; Feed, Bilanz, Kurzcode und
+> Einladungen 0.10.12 · **Zuletzt geprüft:** 2026-09-03
 
 ## Zielsetzung
 
@@ -17,9 +17,13 @@ sehen.
 - Crew anlegen; die Crew-Ansicht zeigt den **sechsstelligen Code zum
   Vorlesen**, darunter den **QR-Code** und zuletzt die lange Kennung zum
   Kopieren
-- Beitreten auf **drei Wegen**: scannen, den kurzen Code tippen, oder die
-  lange Kennung einfügen. Ein Feld nimmt beides entgegen — welche
-  Schreibweise jemand hat, ist seine Sache und nicht seine Entscheidung
+- Beitreten auf **vier Wegen**: scannen, den kurzen Code tippen, die
+  lange Kennung einfügen — oder **eingeladen werden**. Ein Feld nimmt
+  alle Schreibweisen entgegen; welche jemand hat, ist seine Sache und
+  nicht seine Entscheidung
+- **Freunde einladen** (in der Crew-Ansicht): Angeboten wird nur, wer
+  noch nicht dabei ist und noch nicht wartet. Die Einladung erscheint
+  beim anderen oben in der Crew-Liste, in der Glocke und als Push
 - **Bilanz der Crew**: Check-ins, verschiedene Biere, wie viele dabei
   waren, der Schnitt und die häufigsten Stile
 - **„Aus euren Runden"**: die Check-ins, die in Crew-Runden entstanden
@@ -32,6 +36,31 @@ der Weg am Tisch. Der sechsstellige Code ist der Weg am Telefon, über den
 Tisch gerufen oder auf einen Bierdeckel geschrieben — dafür hat er ein
 Alphabet ohne Zwillinge (kein 0/O, kein 1/I/L). Die lange Kennung bleibt
 für die Nachricht und den Rechner ohne Kamera.
+
+### Warum die Einladung eine Antwort braucht — der Code aber nicht
+
+Das sieht wie ein Widerspruch aus und ist der Kern von 0044.
+
+Beim Code entscheidet der **Eingeladene selbst**: Er hält ihn in der Hand
+und tippt ihn ein. Wer das tut, hat zugestimmt; ein Bestätigungsschritt
+wäre eine Rückfrage auf die eigene Handlung.
+
+Bei einer Einladung entscheidet ein **anderer**. Und in eine Crew zu
+kommen ist keine Kleinigkeit: Ein Crew-Beacon zeigt der Crew den
+**Aufenthaltsort**, und Check-ins während einer Crew-Runde werden für sie
+sichtbar. Das ist eine Änderung daran, wer was von einem sieht — und
+darüber entscheidet in dieser App niemand für jemand anderen. Aus
+demselben Grund braucht eine Freundschaft eine Annahme und entsteht nicht
+durch einen Scan.
+
+Die Karte sagt das auch: „Als Mitglied siehst du die Runden der Crew — und
+sie deine, inklusive Standort während eines Crew-Beacons." Nicht im
+Kleingedruckten.
+
+**Einladen darf man nur Freunde.** Sonst wäre die Einladung ein Weg,
+Fremden ungefragt etwas zu schicken — und die Profil-ID eines Fremden
+bekommt man über den QR-Code leicht genug. Es gibt auch keinen „alle
+einladen"-Knopf: Eine Crew ist eine Runde, keine Verteilerliste.
 
 **Wer den Code scannt, ist sofort drin** — es gibt keine Zustimmung des
 Gastgebers. Das ist keine Neuerung des QR-Wegs, sondern galt schon für den
@@ -50,7 +79,9 @@ Leseloch — die Bestätigung kommt deshalb hinterher.
   `data/online/api/crews_api.dart` (Feed + Kurzcode),
   `data/providers/crews.dart`, `domain/crew_stats.dart`,
   `data/online/online_service.dart` (Abschnitt „Crews")
-- **Server:** `crews.join_code` + `join_crew_by_code()` (0041)
+- **Server:** `crews.join_code` + `join_crew_by_code()` (0041),
+  `crew_invites` samt Glocken-Trigger (0044), `crews_select` auch für den
+  Eigentümer (0043)
 - **QR:** `qr_flutter` zum Erzeugen, `mobile_scanner` zum Lesen — beide
   waren schon für [Funktion 22](22-freunde-per-qr-code.md) an Bord, kein
   neues Paket
@@ -61,12 +92,15 @@ Leseloch — die Bestätigung kommt deshalb hinterher.
   eigenen Person; über den Kurzcode läuft es seit 0041 zusätzlich über
   eine Funktion (Begründung unten)
 
-**Fast alles ohne neue Migration gebaut:** Das Schema aus 0001 sah Crews
-vollständig vor — es fehlte nur die Bedienung. Ein Beleg dafür, dass sich
-sorgfältiges Datenmodellieren am Anfang auszahlt. Der QR-Beitritt brauchte
-nichts am Server, und auch der Feed nicht: Er fragt nur nach dem, was
-`checkins_select` ohnehin erlaubt. Die einzige Migration ist **0041** —
-und die auch nur, weil ein Code zum Vorlesen nirgends stand.
+**Vieles ging ohne neue Migration:** Das Schema aus 0001 sah Crews
+weitgehend vor — es fehlte die Bedienung. Der QR-Beitritt brauchte nichts
+am Server, und auch der Feed nicht: Er fragt nur nach dem, was
+`checkins_select` ohnehin erlaubt.
+
+Neu am Server sind vier Migrationen, und zwei davon sind Reparaturen:
+**0041** (Code zum Vorlesen), **0042** und **0043** (siehe
+Umsetzungsstatus — beide behoben, was das Anlegen einer Crew verhinderte)
+sowie **0044** (Einladungen).
 
 **Die QR-Sprache liegt in `core/`, nicht bei den Freunden.** Es gibt jetzt
 zwei Code-Arten (`brewmates:friend:<uuid>`, `brewmates:crew:<uuid>`) und
@@ -131,11 +165,26 @@ diese eine Frage und unterscheidet dabei bewusst nicht zwischen „gibt es
 nicht" und „ging nicht" — alles Feinere wäre ein Ratewerkzeug für fremde
 Gruppennamen.
 
+**Zwei Fehler, die dabei gefunden wurden** (beide in 09 dokumentiert,
+weil sie zur Funktion gehören): Der Code entstand per Spaltenvorgabe, und
+die läuft mit den Rechten des Einfügenden — „Crew gründen" scheiterte
+(0042). Und `crews_select` verlangte eine Mitgliedschaft, die es beim
+Anlegen noch nicht geben kann, weshalb das Zurücklesen der neuen ID
+scheiterte: **Crews ließen sich seit 0.9.12 überhaupt nicht anlegen**
+(0043). Beide waren unbemerkt geblieben, weil die Tests ihre Crews als
+`postgres` anlegten — der umgeht RLS. Seither prüfen sie in der Rolle
+`authenticated`.
+
 Abgesichert durch `test/brewmates_code_test.dart` (8 Tests),
 `test/crew_qr_test.dart` (4 Widget-Tests), `test/crew_stats_test.dart`
 (9 Tests zur Bilanz) und `supabase/tests/crew_join_code.test.sql`
-(10 Prüfungen: Codealphabet ohne Zwillinge, Eindeutigkeit, Beitritt,
-verziehene Schreibweise — und dass ein unbekannter Code nichts verrät).
+(15 Prüfungen: Codealphabet ohne Zwillinge, Eindeutigkeit, Beitritt,
+verziehene Schreibweise, Anlegen als `authenticated` inkl. `returning` —
+und dass ein unbekannter Code nichts verrät) sowie
+`supabase/tests/crew_invites.test.sql` (14 Prüfungen: nur Mitglieder
+laden ein, nur Freunde, nie in fremdem Namen; sehen dürfen es nur der
+Eingeladene und die Crew; annehmen, ablehnen, und dass die Meldung
+mitverschwindet) und `test/crew_einladungen_test.dart` (6 Widget-Tests).
 
 ## Umsetzungsplan
 
@@ -144,7 +193,8 @@ verziehene Schreibweise — und dass ein unbekannter Code nichts verrät).
 3. ~~Crew-Feed~~ — erledigt in 0.10.12
 4. ~~Crew-Bilanz~~ — erledigt in 0.10.12; **nicht** auf
    [Funktion 20](20-feed-statistiken.md) aufgebaut, siehe unten
-5. Offen: Crew-Challenges und Rollen neben dem Gründer — beides erst
+5. ~~Freunde einladen~~ — erledigt in 0.10.12 (0044)
+6. Offen: Crew-Challenges und Rollen neben dem Gründer — beides erst
    sinnvoll, wenn es mehr als eine aktive Crew gibt
 
 ## Offene Punkte / Ideen

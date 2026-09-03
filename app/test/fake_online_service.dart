@@ -169,6 +169,17 @@ class FakeOnlineService extends OnlineService {
     return stufe;
   }
 
+  /// Einladungen, die auf meine Antwort warten.
+  List<CrewInvite> einladungen = const [];
+
+  /// Crews, in die ich eingeladen wurde und zugesagt habe.
+  final List<String> angenommen = [];
+
+  late final _crews = _FakeCrewsApi(this);
+
+  @override
+  CrewsApi get crews => _crews;
+
   /// Meldungen, die der „Server" fuer die Moderation fuehrt.
   List<ModerationReport> meldungen = const [];
 
@@ -507,4 +518,54 @@ class _FakeModerationApi extends ModerationApi {
     ];
     return true;
   }
+}
+
+
+class _FakeCrewsApi extends CrewsApi {
+  _FakeCrewsApi(this._fake) : super(_fake.client, (() => _fake.currentUser));
+
+  final FakeOnlineService _fake;
+
+  @override
+  Future<List<CrewInvite>> myInvites() async {
+    _fake.aufrufe.add('myInvites');
+    return _fake.einladungen;
+  }
+
+  @override
+  Future<String?> invite(String crewId, String profileId) async {
+    _fake.aufrufe.add('invite:$crewId:$profileId');
+    return _fake.schlaegtFehl ? 'Einladen hat nicht geklappt.' : null;
+  }
+
+  @override
+  Future<bool> acceptInvite(String crewId) async {
+    _fake.aufrufe.add('acceptInvite:$crewId');
+    if (_fake.schlaegtFehl) return false;
+    _fake.angenommen.add(crewId);
+    _fake.einladungen = [
+      for (final e in _fake.einladungen)
+        if (e.crewId != crewId) e,
+    ];
+    return true;
+  }
+
+  @override
+  Future<bool> declineInvite(String crewId, {String? invitee}) async {
+    _fake.aufrufe.add('declineInvite:$crewId:${invitee ?? 'ich'}');
+    if (_fake.schlaegtFehl) return false;
+    _fake.einladungen = [
+      for (final e in _fake.einladungen)
+        if (e.crewId != crewId) e,
+    ];
+    return true;
+  }
+
+  @override
+  Future<List<RemoteProfile>> pendingFor(String crewId) async => const [];
+
+  @override
+  Future<List<RemoteCheckin>> crewCheckins(String crewId,
+          {int limit = 50}) async =>
+      const [];
 }

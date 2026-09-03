@@ -183,6 +183,8 @@ class RemoteNotification {
         return '$wer hat dir zugeprostet 🍻';
       case 'session_joined':
         return '$wer ist bei deinem Beacon dabei 🍻';
+      case 'crew_invite':
+        return '$wer möchte dich in eine Crew holen 👥';
       default:
         return wer;
     }
@@ -314,6 +316,41 @@ class RemoteCrew {
   /// Crew ohne Code kein Fehler ist — nur einer, der sich nicht
   /// diktieren lässt.
   final String? joinCode;
+}
+
+/// 👥 Eine wartende Crew-Einladung.
+///
+/// Anders als der Einladungscode braucht sie eine Antwort. Warum, steht
+/// in Migration 0044: Beim Code entscheidet der Eingeladene selbst — er
+/// tippt ihn ein. Bei einer Einladung entscheidet ein anderer, und in
+/// eine Crew zu kommen ändert, wer den eigenen Aufenthaltsort während
+/// einer Crew-Runde sieht. Darüber entscheidet in dieser App niemand für
+/// jemand anderen.
+class CrewInvite {
+  const CrewInvite({
+    required this.crewId,
+    required this.crewName,
+    required this.crewEmoji,
+    required this.inviter,
+    required this.createdAt,
+  });
+
+  factory CrewInvite.fromRow(Map<String, dynamic> r) {
+    final crew = (r['crew'] as Map<String, dynamic>?) ?? const {};
+    return CrewInvite(
+      crewId: r['crew_id'] as String,
+      crewName: (crew['name'] as String?) ?? 'Crew',
+      crewEmoji: (crew['emoji'] as String?) ?? '👥',
+      inviter: RemoteProfile.fromRow(r['inviter'] as Map<String, dynamic>),
+      createdAt: DateTime.parse(r['created_at'] as String).toLocal(),
+    );
+  }
+
+  final String crewId;
+  final String crewName;
+  final String crewEmoji;
+  final RemoteProfile inviter;
+  final DateTime createdAt;
 }
 
 /// Alle Supabase-Zugriffe der App. Grundsätze:
