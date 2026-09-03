@@ -2,7 +2,15 @@
 
 > **Status:** 🟢 fertig — Anfragen, Suche, QR-Codes, Blockieren und
 > abgestufte Sichtbarkeit.
-> **Seit:** 0.9.2 · **Zuletzt geprüft:** 2026-08-15
+> **Seit:** 0.9.2 · **Zuletzt geprüft:** 2026-09-03
+>
+> **Ablehnen ist seit 0.10.10 fünf Sekunden lang zurücknehmbar.** Nicht
+> als Rückgängig, sondern als Aufschub: Die gelöschte
+> `friendships`-Zeile dürfte nur der Anfragende wieder anlegen, also
+> unterbleibt der Aufruf, statt zurückgenommen zu werden. Alle fünf
+> Anzeigestellen lesen dafür `offeneAnfragenProvider` statt
+> `friendRequestsProvider` — siehe
+> [Funktion 36](36-rueckgaengig-statt-rueckfrage.md).
 
 ## Zielsetzung
 

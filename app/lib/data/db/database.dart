@@ -821,6 +821,20 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
+  /// Nimmt ein [endSession] zurück („Rückgängig" nach einem Fehltipp).
+  ///
+  /// Das Ablaufdatum bleibt unangetastet: Ein wiederbelebter Beacon läuft
+  /// genau so lange weiter, wie er ohne den Fehltipp gelaufen wäre. Alles
+  /// andere wäre eine heimliche Verlängerung.
+  Future<void> reviveSession(String id) async {
+    await (update(sessions)..where((t) => t.id.equals(id))).write(
+      const SessionsCompanion(
+        status: Value(SessionStatus.active),
+        endedAt: Value(null),
+      ),
+    );
+  }
+
   Future<void> joinSession(
       String sessionId, String profileId, ParticipantKind kind) async {
     await into(sessionParticipants).insert(

@@ -121,6 +121,53 @@ void main() {
     await abbauen(tester);
   });
 
+  testWidgets('Ablehnen räumt die Karte weg und bietet „Rückgängig" an',
+      (tester) async {
+    await tester.pumpWidget(umgebung(const HomeScreen()));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Ablehnen'));
+    // Einmal für den Neuaufbau, dann die Einblendung der Snackbar zu Ende
+    // laufen lassen — solange sie hereinfährt, liegt ihre Schaltfläche
+    // noch unterhalb des Bildschirms.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.byType(FriendRequestCard), findsNothing,
+        reason: 'Die Anfrage verschwindet sofort — sonst wäre die '
+            'Rückmeldung eine Lüge auf Zeit.');
+    expect(find.textContaining('abgelehnt'), findsOneWidget);
+    expect(find.text('Rückgängig'), findsOneWidget);
+    // In der Frist ist noch nichts passiert. Genau darauf beruht der
+    // Ausweg: Ein Aufruf, der nicht stattfand, muss nicht zurückgenommen
+    // werden — und könnte es auch nicht (nur der Anfragende dürfte die
+    // gelöschte `friendships`-Zeile wieder anlegen).
+    expect(online.aufrufe.where((a) => a.startsWith('respondRequest')),
+        isEmpty);
+
+    await tester.tap(find.text('Rückgängig'));
+    await tester.pumpAndSettle(const Duration(seconds: 8));
+
+    expect(online.aufrufe.where((a) => a.startsWith('respondRequest')),
+        isEmpty,
+        reason: 'Nach „Rückgängig" darf der Aufruf nie kommen.');
+    expect(find.byType(FriendRequestCard), findsOneWidget,
+        reason: 'Die Anfrage ist wieder da.');
+    await abbauen(tester);
+  });
+
+  testWidgets('Ohne „Rückgängig" geht die Ablehnung nach der Frist raus',
+      (tester) async {
+    await tester.pumpWidget(umgebung(const HomeScreen()));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Ablehnen'));
+    await tester.pumpAndSettle(const Duration(seconds: 8));
+
+    expect(online.aufrufe, contains('respondRequest:fs1:false'));
+    await abbauen(tester);
+  });
+
   testWidgets('Im Freunde-Bildschirm bleibt sie sichtbar', (tester) async {
     await tester.pumpWidget(umgebung(const FriendsScreen()));
     await tester.pumpAndSettle();

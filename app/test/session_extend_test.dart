@@ -104,7 +104,9 @@ void main() {
           autoEnd: const Duration(hours: 3),
         );
 
-    expect(await container.read(actionsProvider).endMySession(), isTrue);
+    expect(
+        (await container.read(actionsProvider).endMySession())?.synced,
+        isTrue);
 
     final me = await db.getMe();
     expect(await db.getMyActiveSession(me.id, DateTime.now()), isNull,

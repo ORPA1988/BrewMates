@@ -32,6 +32,7 @@ import 'push/push_service.dart';
 import 'online/remote_mapping.dart';
 
 // Aufgeteilt nach Themen (Backlog B-4). Reihenfolge alphabetisch.
+part 'providers/anfragen.dart';
 part 'providers/beers.dart';
 part 'providers/challenges.dart';
 part 'providers/entdecken.dart';
@@ -361,16 +362,47 @@ class BrewActions {
   /// serverseitige Cron ihn beim Ablaufdatum schließt. Das kann Stunden
   /// dauern, also darf die App darüber nicht schweigen.
   ///
-  /// null = es lief gar keine Session.
-  Future<bool?> endMySession() async {
+  /// null = es lief gar keine Session. Sonst die Zeile, wie sie **vor**
+  /// dem Beenden aussah — [undoEndMySession] holt sie damit zurück.
+  Future<({Session beendet, bool synced})?> endMySession() async {
     final me = await _me();
     final now = DateTime.now();
     final current = await _db.getMyActiveSession(me.id, now);
     if (current == null) return null;
     await _db.endSession(current.id, now);
     final online = await _online();
+    if (online == null) return (beendet: current, synced: true);
+    return (
+      beendet: current,
+      synced: await online.sessions.endSession(current.id),
+    );
+  }
+
+  /// Das Beenden zurücknehmen — der Ausweg aus dem Fehltipp.
+  ///
+  /// Anders als beim Ablehnen einer Freundschaftsanfrage wird hier
+  /// **nicht** aufgeschoben: Ein Beacon zeigt Freunden den Aufenthaltsort.
+  /// Wer „Beenden" tippt, will in dieser Sekunde unsichtbar sein, nicht in
+  /// fünf. Also erst wirklich beenden, dann anbieten, ihn neu zu starten.
+  ///
+  /// Rückgabe: `null`, wenn sich nichts mehr zurückholen ließ — der
+  /// Beacon wäre inzwischen ohnehin abgelaufen. Sonst, ob der Server den
+  /// wiederbelebten Beacon übernommen hat; ein `false` heißt, dass
+  /// Freunde ihn (noch) nicht wieder sehen.
+  Future<bool?> undoEndMySession(Session beendet) async {
+    final now = DateTime.now();
+    // Eine Session, deren Ende schon vorbei ist, wiederzubeleben hieße,
+    // die Laufzeitgrenze aus 0021 zu umgehen — der Server nähme sie
+    // ohnehin nicht als laufend an.
+    if (!beendet.expiresAt.isAfter(now)) return null;
+    await _db.reviveSession(beendet.id);
+    final online = await _online();
     if (online == null) return true;
-    return online.sessions.endSession(current.id);
+    final wieder = beendet.copyWith(
+      status: SessionStatus.active,
+      endedAt: const Value(null),
+    );
+    return online.sessions.upsertSession(wieder);
   }
 
   /// Laufende eigene Session verlängern.

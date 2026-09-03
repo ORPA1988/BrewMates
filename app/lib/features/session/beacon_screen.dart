@@ -75,10 +75,8 @@ class _BeaconScreenState extends ConsumerState<BeaconScreen> {
   }
 
   Future<void> _undo() async {
-    final messenger = ScaffoldMessenger.of(context);
-    final synced = await ref.read(actionsProvider).endMySession();
+    await beaconBeendenMitRueckgaengig(context, ref);
     if (!mounted) return;
-    if (synced == false) messenger.showSnackBar(beaconEndFailedSnackBar);
     context.pop();
   }
 

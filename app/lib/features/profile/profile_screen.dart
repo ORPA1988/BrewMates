@@ -358,9 +358,8 @@ class ProfileScreen extends ConsumerWidget {
             final friendCount = signedIn
                 ? ref.watch(onlineFriendsProvider).valueOrNull?.length
                 : null;
-            final requestCount = signedIn
-                ? (ref.watch(friendRequestsProvider).valueOrNull?.length ?? 0)
-                : 0;
+            final requestCount =
+                signedIn ? ref.watch(offeneAnfragenProvider).length : 0;
             return ListTile(
               leading: const Text('👥', style: TextStyle(fontSize: 24)),
               title: const Text('Freunde'),

@@ -2,7 +2,16 @@
 
 > **Status:** 🟡 teilweise — funktioniert vollständig; es fehlen
 > Benachrichtigungen, damit Beacons auch ungeöffnete Apps erreichen.
-> **Seit:** 0.2.0 · **Zuletzt geprüft:** 2026-08-15
+> **Seit:** 0.2.0 · **Zuletzt geprüft:** 2026-09-03
+>
+> **Beenden ist seit 0.10.10 zurücknehmbar** — fünf Sekunden lang, und
+> zwar auf allen vier Bildschirmen, die den Beacon beenden können
+> (`beaconBeendenMitRueckgaengig` in `widgets/beacon_messages.dart`).
+> Der Beacon wird dabei wirklich sofort beendet und danach wiederbelebt,
+> nicht aufgeschoben: Wer „Beenden" tippt, will in dieser Sekunde
+> unsichtbar sein. Die Restlaufzeit bleibt unangetastet, ein bereits
+> abgelaufener Beacon kommt nicht zurück — siehe
+> [Funktion 36](36-rueckgaengig-statt-rueckfrage.md).
 
 ## Zielsetzung
 

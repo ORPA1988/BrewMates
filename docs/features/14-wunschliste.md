@@ -2,7 +2,10 @@
 
 > **Status:** 🟢 fertig — merken, abhaken, über Geräte hinweg gesichert.
 > **Seit:** 0.3.0, Cloud-Sicherung seit 0.9.8 (0016) ·
-> **Zuletzt geprüft:** 2026-08-15
+> **Zuletzt geprüft:** 2026-09-03
+>
+> Ein versehentlich entferntes Bier lässt sich seit 0.10.10 direkt aus
+> der Meldung zurückholen ([Funktion 36](36-rueckgaengig-statt-rueckfrage.md)).
 
 ## Zielsetzung
 

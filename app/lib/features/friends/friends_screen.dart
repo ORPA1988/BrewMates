@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -83,10 +85,11 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
         const SnackBar(content: Text('Anfrage zurückgenommen.')));
   }
 
-  Future<void> _respond(FriendRequest request, {required bool accept}) async {
+  Future<void> _annehmen(FriendRequest request) async {
     final online = await ref.read(onlineServiceProvider.future);
     if (online == null) return;
-    final ok = await online.friends.respondRequest(request.friendshipId, accept: accept);
+    final ok =
+        await online.friends.respondRequest(request.friendshipId, accept: true);
     if (!mounted) return;
     if (!ok) {
       // Nicht invalidieren: Der Serverstand hat sich nicht geändert. Eine
@@ -100,10 +103,34 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
     }
     ref.invalidate(friendRequestsProvider);
     ref.invalidate(onlineFriendsProvider);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(accept
-          ? 'Ihr seid jetzt Freunde! 🍻'
-          : 'Anfrage abgelehnt.'),
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Ihr seid jetzt Freunde! 🍻'),
+    ));
+  }
+
+  /// Ablehnen mit Rückgängig-Frist — dieselbe Mechanik wie auf der
+  /// Startseite (siehe [AbgelehnteAnfragen]), nur ein anderer Knopf.
+  void _ablehnen(FriendRequest request) {
+    final messenger = ScaffoldMessenger.of(context);
+    final notifier = ref.read(abgelehnteAnfragenProvider.notifier);
+    final id = request.friendshipId;
+
+    unawaited(notifier.ablehnen(id).then((ok) {
+      if (ok == false) {
+        messenger.showSnackBar(const SnackBar(
+          content: Text('Hat nicht geklappt — keine Verbindung? '
+              'Die Anfrage ist weiterhin offen.'),
+        ));
+      }
+    }));
+
+    messenger.showSnackBar(SnackBar(
+      content: Text('Anfrage von ${request.from.displayName} abgelehnt.'),
+      duration: rueckgaengigFrist,
+      action: SnackBarAction(
+        label: 'Rückgängig',
+        onPressed: () => notifier.zuruecknehmen(id),
+      ),
     ));
   }
 
@@ -395,8 +422,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
       );
     }
 
-    final requests =
-        ref.watch(friendRequestsProvider).valueOrNull ?? const [];
+    final requests = ref.watch(offeneAnfragenProvider);
     final gestellt =
         ref.watch(outgoingRequestsProvider).valueOrNull ?? const [];
     final friends = ref.watch(onlineFriendsProvider).valueOrNull;
@@ -465,15 +491,13 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
                           tooltip: 'Annehmen',
                           icon: Icon(Icons.check_circle,
                               color: scheme.primary),
-                          onPressed: () async =>
-                              _respond(request, accept: true),
+                          onPressed: () => _annehmen(request),
                         ),
                         IconButton(
                           tooltip: 'Ablehnen',
                           icon: Icon(Icons.cancel_outlined,
                               color: scheme.error),
-                          onPressed: () async =>
-                              _respond(request, accept: false),
+                          onPressed: () => _ablehnen(request),
                         ),
                       ],
                     ),

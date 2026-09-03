@@ -67,17 +67,21 @@ class WishlistScreen extends ConsumerWidget {
                       icon: const Icon(Icons.delete_outline),
                       tooltip: 'Von der Wunschliste entfernen',
                       onPressed: () async {
-                        await ref
-                            .read(actionsProvider)
-                            .toggleWishlist(beer.id);
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content:
-                                  Text('Von der Wunschliste entfernt'),
-                            ),
-                          );
-                        }
+                        final messenger = ScaffoldMessenger.of(context);
+                        final actions = ref.read(actionsProvider);
+                        await actions.toggleWishlist(beer.id);
+                        // „Rückgängig" ist hier wörtlich zu nehmen: Das
+                        // Merken ist ein Umschalter, also legt derselbe
+                        // Aufruf das Bier wieder zurück. Kein Zustand,
+                        // den die Oberfläche zwischenlagern müsste.
+                        messenger.showSnackBar(SnackBar(
+                          content: Text('„${beer.name}" entfernt'),
+                          duration: const Duration(seconds: 5),
+                          action: SnackBarAction(
+                            label: 'Rückgängig',
+                            onPressed: () => actions.toggleWishlist(beer.id),
+                          ),
+                        ));
                       },
                     ),
                   ],
