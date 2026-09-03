@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/format.dart' show volumeChoicesMl, formatVolume;
+import '../../core/foto_verkleinern.dart';
 import '../../data/db/database.dart';
 import '../../data/online/online_service.dart' show RemoteBeer;
 import '../../data/providers.dart';
@@ -160,7 +162,10 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
         imageQuality: 80,
       );
       if (file == null) return;
-      final bytes = await file.readAsBytes();
+      // Siehe `core/foto_verkleinern.dart`: Was der Picker zusagt, hält
+      // er nicht überall. Nachgerechnet wird in einem eigenen Isolat.
+      final roh = await file.readAsBytes();
+      final bytes = await compute(verkleinereFoto, roh);
       if (mounted) setState(() => _photoBytes = bytes);
     } catch (_) {
       if (mounted) {
