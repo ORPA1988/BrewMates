@@ -1,0 +1,46 @@
+Copyright (c) 2026 Patrick Ortbauer. Alle Rechte vorbehalten.
+All rights reserved.
+
+BrewMates — proprietäre Software
+================================
+
+Dieser Quellcode ist öffentlich einsehbar, aber NICHT frei verwendbar.
+Es wird keine Lizenz erteilt.
+
+Ohne vorherige schriftliche Genehmigung des Rechteinhabers ist
+insbesondere untersagt:
+
+  * das Vervielfältigen, Verändern oder Zusammenführen des Codes,
+  * das Weitergeben, Veröffentlichen oder Unterlizenzieren,
+  * die Nutzung in eigenen Werken — auch in Teilen, auch verändert,
+    auch in abgeleiteten Werken,
+  * die kommerzielle wie die nicht-kommerzielle Nutzung,
+  * das Verwenden zum Trainieren von Modellen maschinellen Lernens.
+
+Erlaubt sind ausschließlich: das Lesen des Codes, das Anlegen von Forks
+zum Zweck von Beiträgen an dieses Projekt (Pull Requests) sowie das
+Zitieren einzelner Stellen zum Zweck von Kritik, Berichterstattung oder
+Fehlermeldungen.
+
+Die veröffentlichten Anwendungen (APK/AAB, Web-App) dürfen zum
+bestimmungsgemäßen Gebrauch installiert und benutzt werden.
+
+DIESE SOFTWARE WIRD OHNE JEDE GEWÄHR BEREITGESTELLT. Der Rechteinhaber
+haftet nicht für Schäden, die aus ihrer Nutzung entstehen.
+
+Anfragen zur Nutzung: über ein Issue in diesem Repository.
+
+--------------------------------------------------------------------------
+Fremde Bestandteile
+--------------------------------------------------------------------------
+
+Diese Bedingungen gelten für den Code DIESES Projekts. Nicht erfasst sind:
+
+  * Fremdbibliotheken (Flutter, Dart-Pakete, Supabase-Client u. a.) —
+    es gilt jeweils deren eigene Lizenz;
+  * die Bier- und Brauereidaten unter `app/assets/data/` — Herkunft und
+    Lizenz je Datensatz stehen in `app/assets/data/DATENHERKUNFT.md`
+    (u. a. Open Food Facts, CC-BY-SA);
+  * Produktbilder — diese liegen NICHT in diesem Repository. Die
+    Datensätze enthalten nur Verweise (URLs); die Rechte liegen bei den
+    jeweiligen Quellen.

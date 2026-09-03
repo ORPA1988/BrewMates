@@ -59,5 +59,16 @@ Der lokale Kern (Funktionsumfang der Alpha 0.2) ist
 | [`store/`](store/listing-de.md) | Store-Texte (Play Store; App Store optional) |
 | [`supabase/`](supabase/README.md) | Backend (Schema & Migrationen) für die Online-Beta |
 | [`PRIVACY.md`](PRIVACY.md) | Datenschutzerklärung |
+| [`LICENSE`](LICENSE) | **Proprietär — der Code ist einsehbar, aber nicht frei verwendbar** |
 
 CI: Analyze + Tests je PR. Ein Release entsteht per Git-Tag `v*` **oder** manuell im Actions-Tab („Release" → „Run workflow") — beides baut die APK und veröffentlicht sie unter [Releases](https://github.com/ORPA1988/BrewMates/releases).
+
+## Lizenz
+
+**Der Quellcode ist öffentlich einsehbar, aber nicht frei verwendbar.**
+Es wird keine Nutzungslizenz erteilt — Einzelheiten und die wenigen
+Ausnahmen (Lesen, Forks für Beiträge, Zitate) stehen in
+[LICENSE](LICENSE). Für die mitgelieferten Bier- und Brauereidaten gelten
+die Angaben in
+[DATENHERKUNFT.md](app/assets/data/DATENHERKUNFT.md); Produktbilder liegen
+nicht im Repository, es werden nur URLs hinterlegt.
