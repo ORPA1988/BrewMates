@@ -63,6 +63,9 @@ values ('c0000000-0000-0000-0000-000000000002', 'Verein',
 -- ja gerade der Grund fuer die Funktion.
 create temporary table codes as
 select id, join_code from public.crews;
+-- Die Tabelle gehoert `postgres`; gleich prueft der Test als
+-- `authenticated`, und der duerfte sonst nicht hineinsehen.
+grant select on codes to authenticated;
 
 select isnt(
   (select join_code from public.crews
