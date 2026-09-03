@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../core/brewmates_code.dart';
 import '../../data/providers.dart';
-import 'friend_code.dart';
 
 /// „Mein Code": der eigene QR-Code, groß genug fürs Wirtshaus.
 ///

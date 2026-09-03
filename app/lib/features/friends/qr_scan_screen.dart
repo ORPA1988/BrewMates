@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../core/brewmates_code.dart';
 import '../../data/online/online_service.dart';
 import '../../data/providers.dart';
 import '../../widgets/kamera_hinweis.dart';
-import 'friend_code.dart';
 
 /// „Code scannen": Freundschaft per QR statt über die Namenssuche.
 ///
@@ -55,11 +55,18 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
 
   Future<void> _handleCode(String? raw) async {
     if (_busy || _found != null) return;
-    final profileId = parseFriendCode(raw);
-    if (profileId == null) {
-      setState(() => _message = 'Das ist kein BrewMates-Code.');
+    final code = parseBrewMatesCode(raw);
+    if (code == null || code.art != BrewMatesCodeArt.freund) {
+      // Beide Code-Arten sehen gleich aus, und wer am Tisch schnell
+      // scannt, erwischt leicht den falschen. „Kein BrewMates-Code" wäre
+      // dann schlicht gelogen — und hilft niemandem weiter.
+      setState(() => _message = code == null
+          ? 'Das ist kein BrewMates-Code.'
+          : codeArtVerwechselt(
+              erwartet: BrewMatesCodeArt.freund, bekommen: code.art));
       return;
     }
+    final profileId = code.id;
     setState(() {
       _busy = true;
       _message = null;

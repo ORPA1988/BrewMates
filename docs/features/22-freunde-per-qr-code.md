@@ -29,8 +29,12 @@ man den Nutzernamen des anderen kennen muss.
 
 ## Technische Umsetzung
 
-- **Neu:** `features/friends/friend_code.dart` (Nutzlast, rein und
-  testbar), `qr_share_screen.dart` (anzeigen), `qr_scan_screen.dart` (lesen)
+- **Nutzlast:** `core/brewmates_code.dart` (rein und testbar). Sie lag
+  bis 0.10.10 als `features/friends/friend_code.dart` beim Feature; mit
+  dem Crew-Code ([Funktion 09](09-crews.md)) brauchten beide Features
+  dieselbe Sprache, und Features dürfen einander nicht importieren
+- **Bildschirme:** `qr_share_screen.dart` (anzeigen),
+  `qr_scan_screen.dart` (lesen)
 - **Geändert:** `features/friends/friends_screen.dart` (zwei Schaltflächen
   in der Titelleiste), `core/router.dart` (`/friends/code`,
   `/friends/scan`), `data/online/online_service.dart` (`profileById`)
@@ -58,6 +62,13 @@ ohnehin sehen. Kein Geheimnis, kein Zeitstempel, keine Signatur: Ein
 gestohlener Code erlaubt nur, eine Anfrage zu stellen, die der andere
 ablehnen kann. Der Präfix verhindert, dass ein beliebiger fremder QR-Code
 als Freundesanfrage missverstanden wird.
+
+**Seit 0.10.10 gibt es eine zweite Art** (`brewmates:crew:<uuid>`) und
+damit einen Fehlerfall, den es vorher nicht gab: den richtigen Code am
+falschen Scanner. Beide sehen gleich aus, und wer am Tisch schnell scannt,
+erwischt leicht den anderen. „Das ist kein BrewMates-Code" wäre dann
+gelogen — dieser Scanner sagt stattdessen: „Das ist ein Crew-Code. Geh auf
+„Crews" und tipp dort oben auf „Code scannen".
 
 **Kein Deep-Link in der ersten Stufe.** Ein `https://`-Link, der die App
 öffnet, ist bequemer, verlangt aber Universal Links bzw. App Links samt
