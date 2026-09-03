@@ -4,6 +4,17 @@
 > ([Funktion 19](19-feed-eintraege-loeschen.md)), bearbeitbar seit 0.10.1
 > ([Funktion 27](27-check-ins-bearbeiten.md)).
 > **Seit:** 0.1.0 · **Zuletzt geprüft:** 2026-09-03
+>
+> **Eine Bewertung entsteht seit 0.10.12 nur durch einen Tipp.** Vorher
+> stand der Schieberegler auf 3,5, und dieser Wert wurde bei **jedem**
+> Check-in mitgeschrieben — auch bei denen, die niemand beurteilen
+> wollte. Das verzerrte systematisch in eine Richtung: den eigenen
+> Durchschnitt, die Statistik und über `beer_rating_stats` die
+> Community-Bewertung, die anderen angezeigt wird. Ein Bier mit fünf
+> beiläufigen Check-ins sah aus wie ein solide mittelmäßiges Bier,
+> obwohl es niemand beurteilt hatte. „Nicht bewertet" ist jetzt der
+> Anfangszustand und ein gültiges Ergebnis (`widgets/rating_input.dart`,
+> `checkins.rating` war ohnehin schon nullable).
 
 ## Zielsetzung
 

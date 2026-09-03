@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/format.dart' show volumeChoicesMl, formatVolume;
 import '../data/db/database.dart';
 import '../data/providers.dart';
-import 'rating_stars.dart';
+import 'rating_input.dart';
 
 /// Einen eigenen Check-in korrigieren (Funktion 27).
 ///
@@ -44,7 +44,9 @@ class _CheckinEditSheet extends ConsumerStatefulWidget {
 }
 
 class _CheckinEditSheetState extends ConsumerState<_CheckinEditSheet> {
-  late double _rating = widget.details.checkin.rating ?? 3.5;
+  /// Unbewertet bleibt unbewertet — vorher machte das `?? 3.5` aus jeder
+  /// Korrektur eine nachträgliche Bewertung.
+  late double? _rating = widget.details.checkin.rating;
   late final _noteController =
       TextEditingController(text: widget.details.checkin.note ?? '');
   late ServingStyle? _serving = widget.details.checkin.servingStyle;
@@ -66,6 +68,7 @@ class _CheckinEditSheetState extends ConsumerState<_CheckinEditSheet> {
     final ok = await ref.read(actionsProvider).editCheckin(
           widget.details.checkin.id,
           rating: _rating,
+          clearRating: _rating == null,
           note: notiz.isEmpty ? null : notiz,
           clearNote: notiz.isEmpty,
           servingStyle: _serving,
@@ -104,22 +107,9 @@ class _CheckinEditSheetState extends ConsumerState<_CheckinEditSheet> {
           const SizedBox(height: 16),
 
           Text('Bewertung', style: theme.textTheme.titleSmall),
-          Row(
-            children: [
-              Expanded(
-                child: Slider(
-                  value: _rating,
-                  min: 0,
-                  max: 5,
-                  divisions: 20,
-                  label: _rating.toStringAsFixed(2),
-                  onChanged: (v) => setState(() => _rating = v),
-                ),
-              ),
-              RatingStars(rating: _rating, size: 20),
-              const SizedBox(width: 8),
-              Text(_rating.toStringAsFixed(2)),
-            ],
+          RatingInput(
+            rating: _rating,
+            onChanged: (wert) => setState(() => _rating = wert),
           ),
           const SizedBox(height: 16),
 

@@ -13,7 +13,7 @@ import '../../data/providers.dart';
 import '../../domain/statistics.dart' show estimatedVolumeMl;
 import '../../widgets/badge_celebration.dart';
 import '../../widgets/beer_thumbnail.dart';
-import '../../widgets/rating_stars.dart';
+import '../../widgets/rating_input.dart';
 import '../../widgets/venue_picker.dart';
 
 /// Bier einchecken: Auswahl → Bewertung → Geschmack/Serving/Ort/Notiz.
@@ -40,7 +40,11 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
   BeerWithBrewery? _selected;
   bool _searchMode = false;
   String _search = '';
-  double _rating = 3.5;
+  /// `null` = nicht bewertet. Das ist der Anfangszustand und ein
+  /// gültiges Ergebnis: Vorher stand hier 3.5, und dieser Wert wurde bei
+  /// jedem Check-in mitgeschrieben — auch bei denen, die niemand
+  /// beurteilen wollte.
+  double? _rating;
   final Set<String> _tags = {};
   ServingStyle? _serving;
 
@@ -220,22 +224,9 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
           ],
           const SizedBox(height: 20),
           Text('Bewertung', style: theme.textTheme.titleSmall),
-          Row(
-            children: [
-              Expanded(
-                child: Slider(
-                  value: _rating,
-                  min: 0,
-                  max: 5,
-                  divisions: 20,
-                  label: _rating.toStringAsFixed(2),
-                  onChanged: (value) => setState(() => _rating = value),
-                ),
-              ),
-              RatingStars(rating: _rating, size: 20),
-              const SizedBox(width: 8),
-              Text(_rating.toStringAsFixed(2)),
-            ],
+          RatingInput(
+            rating: _rating,
+            onChanged: (wert) => setState(() => _rating = wert),
           ),
           const SizedBox(height: 12),
           Text('Geschmack', style: theme.textTheme.titleSmall),
