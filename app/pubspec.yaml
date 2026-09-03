@@ -49,6 +49,12 @@ dependencies:
   firebase_core: ^4.7.0
   firebase_messaging: ^16.2.0
 
+  # Browser-Bindungen (Systemmeldungen, Sichtbarkeit des Tabs). Reines
+  # Dart, kein Plugin — und ohnehin schon als transitive Abhängigkeit in
+  # genau dieser Fassung aufgelöst; die Zeile macht sie nur benutzbar.
+  # Wird nur im Web-Zweig importiert (data/push/browserfenster_web.dart).
+  web: ^1.1.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

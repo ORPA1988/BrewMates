@@ -140,26 +140,64 @@ class AppShell extends ConsumerWidget {
     // ist, sagt sie es — auf jedem Tab. Der Provider entwertet nebenbei
     // die Listen, sodass Karte und Zahl am Profil-Tab schon stimmen, wenn
     // der Mensch hintippt.
-    ref.listen<AsyncValue<RemoteNotification>>(incomingNotificationsProvider,
-        (_, next) {
-      final n = next.valueOrNull;
-      if (n == null) return;
-      // „Ansehen" führt dorthin, wo die Sache steht. Ohne das Ziel ist
-      // das Banner eine Meldung ohne Ausgang — beim Beacon besonders
-      // ärgerlich, weil genau dann jemand auf eine Antwort wartet.
-      final ziel = switch (n.type) {
-        'friend_request' => () => context.go('/friends'),
-        'beacon' || 'session_toast' || 'session_joined'
-            when n.subjectId != null =>
-          () => context.push('/session/${n.subjectId}'),
-        _ => null,
-      };
+    /// Wohin „Ansehen" führt. Ohne Ziel ist die Meldung ein Hinweis ohne
+    /// Ausgang — beim Beacon besonders ärgerlich, weil genau dann jemand
+    /// auf eine Antwort wartet.
+    void Function()? zielVon(RemoteNotification n) => switch (n.type) {
+          'friend_request' => () => context.go('/friends'),
+          'beacon' || 'session_toast' || 'session_joined'
+              when n.subjectId != null =>
+            () => context.push('/session/${n.subjectId}'),
+          _ => null,
+        };
+
+    void zeigeBanner(String text, void Function()? ziel) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(n.text),
+        content: Text(text),
         action: ziel == null
             ? null
             : SnackBarAction(label: 'Ansehen', onPressed: ziel),
       ));
+    }
+
+    final fenster = ref.watch(browserfensterProvider);
+
+    ref.listen<AsyncValue<RemoteNotification>>(incomingNotificationsProvider,
+        (_, next) {
+      final n = next.valueOrNull;
+      if (n == null) return;
+
+      // Liegt die App vorn, reicht das Banner — so war es immer, und
+      // außerhalb des Browsers meldet `sichtbar` ohnehin immer true.
+      if (fenster.sichtbar) {
+        zeigeBanner(n.text, zielVon(n));
+        return;
+      }
+
+      // Der Tab liegt hinten. Zwei Wege, und der zweite ist der
+      // wichtigere: Auf dem iPhone gibt es außerhalb einer installierten
+      // Web-App gar keine Systemmeldungen. Ohne das Merken wäre die
+      // Meldung dann schlicht weg.
+      if (fenster.erlaubnis == 'granted') {
+        fenster.zeige(text: n.text, tag: n.type, beiKlick: zielVon(n));
+      } else {
+        ref.read(verpassteMeldungenProvider.notifier).merken(n);
+      }
+    });
+
+    // Zurück im Fenster: nachreichen, was währenddessen ankam.
+    ref.listen<AsyncValue<bool>>(seiteSichtbarProvider, (_, next) {
+      if (next.valueOrNull != true) return;
+      final verpasst = ref.read(verpassteMeldungenProvider.notifier).abholen();
+      if (verpasst.isEmpty) return;
+      zeigeBanner(
+        verpasst.length == 1
+            ? verpasst.single.text
+            : '${verpasst.length} neue Meldungen, während du weg warst',
+        // Bei mehreren führt „Ansehen" zur jüngsten — sie ist die, die
+        // gerade noch etwas ändert.
+        zielVon(verpasst.last),
+      );
     });
 
     Widget symbol(IconData icon) => offeneAnfragen == 0

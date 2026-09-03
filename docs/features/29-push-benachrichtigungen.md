@@ -112,8 +112,11 @@ Telefon bestätigt. Testzeile danach gelöscht.
 1. ~~Registrierung, Trigger, Function~~ — erledigt
 2. ~~FCM-Secret setzen, Ende-zu-Ende-Test~~ — erledigt
 3. ~~Beacon-Push mit Spam-Bremse~~ — erledigt in 0.10.10 (0039, Issue #60)
-4. Web-Push im Browser (Issue #63) — braucht `device_platform = 'web'`,
-   einen VAPID-Schlüssel und einen Service Worker
+4. ~~Meldungen im Browser~~ — erledigt in 0.10.11 für den festgelegten
+   Zweck „solange die Web-App offen ist" ([Funktion 38](38-benachrichtigungen-im-browser.md)).
+   Bewusst **ohne** FCM: keine `device_platform = 'web'`, kein
+   VAPID-Schlüssel, kein Service Worker. Für den Fall „Tab zu" stünden
+   sie alle wieder an
 5. iOS über APNs, wenn es eine iOS-Fassung gibt
 
 **Noch offen und bewusst so:** Die Glocke hat keinen eigenen Bildschirm.

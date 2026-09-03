@@ -567,6 +567,72 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   // Fall C: angemeldet – Konto-Ansicht
   // --------------------------------------------------------------------------
 
+  /// Systemmeldungen im Browser — nur dort, wo es sie gibt.
+  ///
+  /// **Warum ein Knopf und nicht automatisch beim Anmelden:** Die Frage
+  /// muss aus einer echten Geste kommen. Firefox verlangt das seit
+  /// Version 72, Chrome ignoriert ungefragte Anfragen zunehmend. Eine
+  /// automatische Anfrage beim Start würde also oft still abgelehnt — und
+  /// verbraucht dabei den einen Versuch, den man hat.
+  ///
+  /// Auf Android, Windows und in Tests gibt die stumme Fassung
+  /// `nicht-verfuegbar` zurück, und hier steht schlicht nichts.
+  Widget _browserBenachrichtigungen(ThemeData theme, ColorScheme scheme) {
+    final fenster = ref.watch(browserfensterProvider);
+    final stand = fenster.erlaubnis;
+    if (stand == Browserfenster.nichtVerfuegbar) return const SizedBox.shrink();
+
+    Widget hinweis(String text) => Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(
+            text,
+            style: theme.textTheme.bodySmall
+                ?.copyWith(color: scheme.onSurfaceVariant),
+          ),
+        );
+
+    return switch (stand) {
+      'granted' => hinweis(
+          'Benachrichtigungen sind erlaubt. Du bekommst sie, solange '
+          'BrewMates in einem Tab offen ist — auch wenn du gerade woanders '
+          'bist.'),
+      // Zurücknehmen kann die App das nicht: Eine abgelehnte Erlaubnis
+      // erneut zu erfragen, verweigert der Browser. Also den Weg nennen.
+      'denied' => hinweis(
+          'Dein Browser lässt BrewMates keine Benachrichtigungen zeigen. '
+          'Du kannst das über das Schloss-Symbol links neben der Adresse '
+          'ändern.'),
+      _ => Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              OutlinedButton.icon(
+                onPressed: _busy
+                    ? null
+                    : () async {
+                        await fenster.erlaubnisAnfragen();
+                        // Der Stand steckt im Browser, nicht in einem
+                        // Provider — also neu bauen lassen.
+                        if (mounted) setState(() {});
+                      },
+                icon: const Icon(Icons.notifications_none, size: 18),
+                label: const Text('Benachrichtigungen erlauben'),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Zeigt dir neue Anfragen und Beacons, solange BrewMates in '
+                'einem Tab offen ist. Ist der Tab zu, kommt nichts — dafür '
+                'gibt es die Android-App.',
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: scheme.onSurfaceVariant),
+              ),
+            ],
+          ),
+        ),
+    };
+  }
+
   Widget _buildAccount(OnlineService online, String? email) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
@@ -691,6 +757,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           label: const Text('Freunde verwalten'),
         ),
         const SizedBox(height: 8),
+        _browserBenachrichtigungen(theme, scheme),
         OutlinedButton.icon(
           onPressed: _busy ? null : () async => _checkForUpdates(),
           icon: const Icon(Icons.system_update_alt, size: 18),
