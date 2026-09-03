@@ -15,7 +15,7 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0042` sind LIVE, lückenlos** (Stand 2026-09-03; 0039 und 0040
+  **`0001–0044` sind LIVE, lückenlos** (Stand 2026-09-03; 0039 und 0040
   am selben Tag eingespielt und gegengeprüft: Trigger, Index, Rechte und
   Policies über `information_schema`/`pg_catalog` bestätigt, Advisor ohne
   Neubefund — nur die bekannte Baseline plus `unused_index` (INFO), was
@@ -45,6 +45,26 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   hängt, prüft sie in der Rolle, die sie betrifft (`set local role
   authenticated` + `request.jwt.claims`); auch die MCP-Probe läuft als
   `postgres`.
+  **0043 `crews_select` auch für den Eigentümer:** `insert … returning`
+  braucht **auch die SELECT-Policy**, und die verlangte eine
+  Mitgliedschaft, die es beim Anlegen noch nicht geben kann. Folge:
+  **Crews ließen sich seit 0.9.12 überhaupt nie anlegen** — die null
+  Crews in der Datenbank hatte ich als „noch keine gegründet“ gelesen.
+  Jetzt sieht auch `owner_id = (select auth.uid())` seine Crew; gegen-
+  geprüft, dass Fremde weiterhin 0 sehen.
+  **0044 Crew-Einladungen:** `crew_invites` (PK `crew_id, invitee_id`),
+  drei Policies — einladen darf nur ein **Mitglied** und nur einen
+  **Freund** und nur im eigenen Namen; sehen dürfen es der Eingeladene
+  und die Crew; löschen beide Seiten. Trigger `crew_invites_notify`
+  (SECURITY DEFINER, EXECUTE entzogen) schreibt und räumt die
+  `notifications`-Zeile vom Typ `crew_invite`. Live in der Rolle
+  `authenticated` gegengeprüft (acht Proben in einer zurückgerollten
+  Transaktion, echte Konten: einladen, Meldung entsteht, Nicht-Freund
+  abgelehnt, fremder Absender abgelehnt, Sichtbarkeit beidseitig,
+  annehmen, Meldung verschwindet mit). Die Edge Function `notify` ist
+  dafür **neu deployt** (Version 6) — sonst hätte der Push
+  „Neue Benachrichtigung“ gesagt statt „Du bist in eine Crew
+  eingeladen“.
   **0041 Crew-Code zum Vorlesen:** `crews.join_code` (6 Zeichen aus
   einem Alphabet ohne Zwillinge — kein 0/O, kein 1/I/L), erzeugt per
   Spaltenvorgabe, eindeutiger Index; Beitritt über
