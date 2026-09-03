@@ -22,6 +22,14 @@ import 'package:flutter/material.dart';
 /// Servern gehört. Beide Fälle enden beim vertrauten Emoji, nicht bei
 /// einem grauen Kasten.
 ///
+/// **Das Seitenverhältnis bleibt.** Die erste Fassung setzte `cacheWidth`
+/// UND `cacheHeight` auf denselben Wert — das entschlüsselt auf ein
+/// Quadrat und staucht jedes Etikett, das keins ist. Flaschen sind hoch,
+/// also praktisch alle. Vorgegeben wird jetzt nur die Breite; die Höhe
+/// ergibt sich. Angezeigt wird mit `BoxFit.contain`: lieber das ganze
+/// Etikett etwas kleiner als ein zurechtgeschnittener Ausschnitt, bei
+/// dem der Namenszug fehlt.
+///
 /// **Zur Herkunft:** Die Bilder stammen von Open Food Facts (CC-BY-SA)
 /// und von den Brauereien selbst. Die Angabe dazu steht bei jedem Bier
 /// auf der Detailseite — ein Klick von jeder Liste entfernt. In der
@@ -56,25 +64,33 @@ class BeerThumbnail extends StatelessWidget {
     // sind 40 logische Punkte 120 echte.
     final dichte = MediaQuery.maybeDevicePixelRatioOf(context) ?? 2.0;
     final kante = (size * dichte).round();
+    final theme = Theme.of(context);
 
     return SizedBox(
       width: size,
       height: size,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(size * 0.2),
-        child: Image.network(
-          url,
-          width: size,
-          height: size,
-          fit: BoxFit.cover,
-          cacheWidth: kante,
-          cacheHeight: kante,
-          // Während des Ladens steht das Emoji da — kein Springen, kein
-          // grauer Kasten, und bei langsamem Netz sieht die Liste
-          // trotzdem fertig aus.
-          frameBuilder: (_, kind, frame, warSofortDa) =>
-              frame == null && !warSofortDa ? ersatz : kind,
-          errorBuilder: (_, __, ___) => ersatz,
+        child: ColoredBox(
+          // Ein Etikett ist selten quadratisch; `contain` lässt oben und
+          // unten Luft. Ein ruhiger Grund lässt sie beabsichtigt
+          // aussehen statt nach einem Loch.
+          color: theme.colorScheme.surfaceContainerHighest,
+          child: Image.network(
+            url,
+            width: size,
+            height: size,
+            fit: BoxFit.contain,
+            // NUR die Breite vorgeben — sonst wird auf ein Quadrat
+            // entschlüsselt und das Bild gestaucht.
+            cacheWidth: kante,
+            // Während des Ladens steht das Emoji da — kein Springen, kein
+            // grauer Kasten, und bei langsamem Netz sieht die Liste
+            // trotzdem fertig aus.
+            frameBuilder: (_, kind, frame, warSofortDa) =>
+                frame == null && !warSofortDa ? ersatz : kind,
+            errorBuilder: (_, __, ___) => ersatz,
+          ),
         ),
       ),
     );
