@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../core/brewmates_code.dart';
 import '../../data/online/online_service.dart';
 import '../../data/providers.dart';
 
@@ -72,6 +74,12 @@ class CrewDetailScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         children: [
           // Einladung: Code = Crew-UUID (bewusst kein Kontakte-Import).
+          //
+          // Der QR-Code steht oben, der getippte darunter — nicht
+          // umgekehrt. Eine Crew entsteht am Tisch, und dort hält man
+          // das Telefon hin, statt 36 Zeichen zu diktieren. Die UUID
+          // bleibt trotzdem sichtbar und kopierbar: für Desktop, für die
+          // Einladung per Nachricht und für alle ohne Kamera.
           Card(
             color: scheme.secondaryContainer,
             child: Padding(
@@ -79,7 +87,38 @@ class CrewDetailScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Einladungscode', style: theme.textTheme.titleSmall),
+                  Text('Einladung', style: theme.textTheme.titleSmall),
+                  const SizedBox(height: 8),
+                  Center(
+                    child: Container(
+                      // Weißer Grund unabhängig vom Farbschema: Ein
+                      // QR-Code auf dunklem Hintergrund wird von vielen
+                      // Kameras nicht erkannt.
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: QrImageView(
+                        data: buildCrewCode(crewId),
+                        version: QrVersions.auto,
+                        size: 200,
+                        errorCorrectionLevel: QrErrorCorrectLevel.M,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Center(
+                    child: Text(
+                      'Scannen lassen — wer den Code scannt, ist sofort '
+                      'in der Crew.',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ),
+                  const Divider(height: 24),
+                  Text('Oder den Code schicken',
+                      style: theme.textTheme.labelMedium),
                   const SizedBox(height: 4),
                   SelectableText(crewId,
                       style: theme.textTheme.bodySmall

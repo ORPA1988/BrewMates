@@ -32,7 +32,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [06](06-karte.md) | Karte | 🟢 | Freunde, Brauereien, Gasthäuser, Zähler |
 | [07](07-sessions-und-beacons.md) | Sessions & Beacons | 🟡 | Ein-Tap-Beacon, Laufzeit wählbar; kein Push für Beacons |
 | [08](08-freunde.md) | Freunde | 🟢 | Anfragen, Suche, QR-Code, Blockieren, Freundeskreise |
-| [09](09-crews.md) | Crews | 🟢 | Gruppen mit Einladungscode |
+| [09](09-crews.md) | Crews | 🟢 | Gruppen mit Einladungscode und QR-Beitritt |
 | [10](10-feed.md) | Feed | 🟢 | Check-in-Strom, Toasts, Kommentare, Löschen, Seitenladen |
 | [11](11-abzeichen.md) | Abzeichen | 🟢 | 23 Abzeichen, Vielfalt statt Menge |
 | [12](12-challenges.md) | Challenges | 🟢 | Serverseitig validiert |

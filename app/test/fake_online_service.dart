@@ -148,6 +148,17 @@ class FakeOnlineService extends OnlineService {
     return !schlaegtFehl;
   }
 
+  /// Crews, denen der Testnutzer beigetreten ist.
+  final List<String> beigetreteneCrews = [];
+
+  @override
+  Future<String?> joinCrew(String code) async {
+    aufrufe.add('joinCrew:$code');
+    if (schlaegtFehl) return 'Diesen Einladungscode gibt es nicht.';
+    beigetreteneCrews.add(code);
+    return null;
+  }
+
   late final _sessions = _FakeSessionsApi(this);
   late final _friends = _FakeFriendsApi(this);
 

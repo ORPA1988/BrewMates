@@ -124,6 +124,14 @@ class CrewsScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('👥 Crews'),
         actions: [
+          // Scannen steht vorn: Es ist der Weg, den man am Tisch nimmt.
+          // Der getippte Code bleibt daneben — für Desktop, für die
+          // Einladung per Nachricht und für alles, was keine Kamera hat.
+          IconButton(
+            tooltip: 'Crew-Code scannen',
+            icon: const Icon(Icons.qr_code_scanner),
+            onPressed: () => context.push('/crews/scan'),
+          ),
           IconButton(
             tooltip: 'Mit Code beitreten',
             icon: const Icon(Icons.key_outlined),
