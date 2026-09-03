@@ -43,6 +43,11 @@ dependencies:
   # Bier-Foto für Community-Einträge (gepinnt passend zur 3.24-Toolchain)
   image_picker: ^1.1.2
 
+  # Fotos vor dem Hochladen auf 500 KB bringen. Reines Dart — dieselbe
+  # Rechnung auf Android wie im Browser; `image_picker` sagt Größe und
+  # Qualität nur zu, hält sie aber je nach Kamera-App und Browser nicht.
+  image: ^4.8.0
+
   # Online-Stufe (Beta): Konten, echte Freunde, Live-Beacon
   supabase_flutter: ^2.8.0
   qr_flutter: ^4.1.0

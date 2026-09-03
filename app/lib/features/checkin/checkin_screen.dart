@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../data/db/database.dart';
 import '../../core/format.dart' show volumeChoicesMl, formatVolume;
+import '../../core/foto_verkleinern.dart';
 import '../../data/providers.dart';
 import '../../domain/statistics.dart' show estimatedVolumeMl;
 import '../../widgets/badge_celebration.dart';
@@ -84,7 +86,12 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
         imageQuality: 80,
       );
       if (file == null) return;
-      final bytes = await file.readAsBytes();
+      // `image_picker` sagt Größe und Qualität nur zu — je nach Kamera-App
+      // und Browser hält es sie nicht. Nachgerechnet wird hier, in einem
+      // eigenen Isolat: Ein 12-Megapixel-Bild zu entschlüsseln dauert auf
+      // dem Telefon lange genug, dass die Oberfläche sonst hakt.
+      final roh = await file.readAsBytes();
+      final bytes = await compute(verkleinereFoto, roh);
       if (!mounted) return;
       setState(() => _photoBytes = bytes);
     } catch (_) {

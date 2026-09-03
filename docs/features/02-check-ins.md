@@ -3,7 +3,7 @@
 > **Status:** 🟢 fertig — löschbar seit 0.9.14
 > ([Funktion 19](19-feed-eintraege-loeschen.md)), bearbeitbar seit 0.10.1
 > ([Funktion 27](27-check-ins-bearbeiten.md)).
-> **Seit:** 0.1.0 · **Zuletzt geprüft:** 2026-09-02
+> **Seit:** 0.1.0 · **Zuletzt geprüft:** 2026-09-03
 
 ## Zielsetzung
 
@@ -32,7 +32,31 @@ Wirtshaus drei Minuten braucht, macht ihn beim nächsten Mal nicht mehr.
   `sessionId`, `createdAt`
 - **Server:** `checkins` (0001) mit denormalisiertem Bier- und
   Brauereinamen, damit der Feed ohne Verknüpfungen auskommt
-- **Fotos:** Bucket `beer-photos`, Pfad je Nutzer
+- **Fotos:** Bucket `beer-photos`, Pfad je Nutzer; vor dem Hochladen auf
+  **höchstens 500 KB** gerechnet (`core/foto_verkleinern.dart`)
+
+### Warum die 500 KB nachgerechnet werden (2026-09-03)
+
+`image_picker` nimmt `maxWidth` und `imageQuality` entgegen — als
+**Bitte, nicht als Zusage**. Auf Android hängt die Umsetzung an der
+Kamera-App, im Browser gilt sie teilweise gar nicht. Und selbst wo sie
+greift, ist ein 1280er JPEG bei Qualität 80 je nach Motiv 200 KB oder
+900 KB. Wer eine Grenze zusagen will, muss sie nachrechnen.
+
+Das Verfahren in der Reihenfolge, in der es Qualität kostet: Kante auf
+1280 px begrenzen (kostet nichts Sichtbares) → JPEG-Qualität schrittweise
+senken → erst danach die Kante halbieren. Ist das Bild schon JPEG, im
+Budget und innerhalb der Kante, wird es **nicht** angefasst: Neu zu
+kodieren würde nur Qualität kosten.
+
+Lässt sich ein Bild nicht entschlüsseln, kommen die ursprünglichen Bytes
+zurück. Ein verlorenes Foto wäre schlimmer als ein großes; der Bucket
+begrenzt seit 0035 ohnehin auf 5 MB.
+
+Gerechnet wird in einem eigenen Isolat (`compute`) — ein
+12-Megapixel-Bild zu entschlüsseln dauert auf dem Telefon lange genug,
+dass die Oberfläche sonst hakt. Reines Dart, also dieselbe Rechnung im
+Browser wie auf Android.
 
 ### „Gespeichert" heißt nicht „angekommen" (2026-09-02)
 
