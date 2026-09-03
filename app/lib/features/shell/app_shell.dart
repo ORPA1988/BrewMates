@@ -6,6 +6,7 @@ import '../../core/format.dart';
 import '../../data/online/online_service.dart' show RemoteNotification;
 import '../../data/providers.dart';
 import '../../widgets/beacon_messages.dart';
+import '../../widgets/glocke.dart';
 
 /// Adaptive Navigation: Tab-Bar auf Telefonen, Navigation-Rail ab 800 px
 /// (Windows/Desktop/Tablet). Die Hero-Aktionen (Scan, Beacon) leben auf dem
@@ -140,16 +141,11 @@ class AppShell extends ConsumerWidget {
     // ist, sagt sie es — auf jedem Tab. Der Provider entwertet nebenbei
     // die Listen, sodass Karte und Zahl am Profil-Tab schon stimmen, wenn
     // der Mensch hintippt.
-    /// Wohin „Ansehen" führt. Ohne Ziel ist die Meldung ein Hinweis ohne
-    /// Ausgang — beim Beacon besonders ärgerlich, weil genau dann jemand
-    /// auf eine Antwort wartet.
-    void Function()? zielVon(RemoteNotification n) => switch (n.type) {
-          'friend_request' => () => context.go('/friends'),
-          'beacon' || 'session_toast' || 'session_joined'
-              when n.subjectId != null =>
-            () => context.push('/session/${n.subjectId}'),
-          _ => null,
-        };
+    // Wohin „Ansehen" führt, steht in `widgets/glocke.dart` — dieselbe
+    // Zuordnung braucht die Nachlese, und zwei Kopien liefen
+    // auseinander, sobald eine dritte Art dazukommt.
+    void Function()? zielVon(RemoteNotification n) =>
+        benachrichtigungsZiel(context, n);
 
     void zeigeBanner(String text, void Function()? ziel) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
