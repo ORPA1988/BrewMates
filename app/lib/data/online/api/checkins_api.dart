@@ -466,19 +466,8 @@ class CheckinsApi extends OnlineApi {
     }
   }
 
-  RemoteCheckin _checkinFromRow(Map<String, dynamic> r) => RemoteCheckin(
-        id: r['id'] as String,
-        author:
-            RemoteProfile.fromRow(r['author'] as Map<String, dynamic>),
-        beerName: (r['beer_name'] as String?) ?? 'Unbekanntes Bier',
-        breweryName: r['brewery_name'] as String?,
-        beerStyle: r['beer_style'] as String?,
-        isAlcoholFree: (r['is_alcohol_free'] as bool?) ?? false,
-        rating: (r['rating'] as num?)?.toDouble(),
-        note: r['note'] as String?,
-        venueName: r['venue_name'] as String?,
-        sessionId: r['session_id'] as String?,
-        photoUrl: r['photo_url'] as String?,
-        createdAt: DateTime.parse(r['created_at'] as String).toLocal(),
-      );
+  // Die Zuordnung liegt seit dem Crew-Feed in `RemoteCheckin.fromRow` —
+  // zwei Kopien laufen auseinander, sobald eine Spalte dazukommt.
+  RemoteCheckin _checkinFromRow(Map<String, dynamic> r) =>
+      RemoteCheckin.fromRow(r);
 }
