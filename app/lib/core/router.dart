@@ -21,6 +21,7 @@ import '../features/checkin/checkin_screen.dart';
 import '../features/crews/crew_detail_screen.dart';
 import '../features/crews/crew_scan_screen.dart';
 import '../features/crews/crews_screen.dart';
+import '../features/moderation/moderation_screen.dart';
 import '../features/feed/feed_screen.dart';
 import '../features/friends/friends_screen.dart';
 import '../features/friends/qr_scan_screen.dart';
@@ -195,6 +196,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/admin',
         builder: (_, __) => const AdminScreen(),
+      ),
+      // Eigener Weg neben /admin: Moderatoren (Stufe 4) sollen Meldungen
+      // bearbeiten koennen, ohne den Admin-Bereich zu betreten — dort
+      // haengen Rollen und Funktionen anderer Leute.
+      GoRoute(
+        path: '/moderation',
+        builder: (_, __) => const ModerationScreen(),
       ),
       GoRoute(
         path: '/profile/badges',

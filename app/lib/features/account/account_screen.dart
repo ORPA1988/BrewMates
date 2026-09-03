@@ -673,6 +673,18 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           ),
           const SizedBox(height: 8),
         ],
+        // Moderatoren (Stufe 4) sind keine Admins: Sie sollen Meldungen
+        // bearbeiten, ohne den Bereich zu betreten, in dem Rollen und
+        // Funktionen anderer Leute hängen. Für Admins steht der Weg
+        // zusätzlich im Admin-Bereich.
+        if (ref.watch(canModerateProvider) && !isAdmin) ...[
+          FilledButton.tonalIcon(
+            onPressed: () => context.push('/moderation'),
+            icon: const Text('🛡', style: TextStyle(fontSize: 18)),
+            label: const Text('Meldungen bearbeiten'),
+          ),
+          const SizedBox(height: 8),
+        ],
         FilledButton.icon(
           onPressed: () => context.push('/friends'),
           icon: const Icon(Icons.group_outlined),
