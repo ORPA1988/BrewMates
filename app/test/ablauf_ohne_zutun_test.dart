@@ -117,6 +117,25 @@ void main() {
               'prüft der Test nur den Abruf, nicht die Uhr.');
     });
 
+    test('ein Kreiswechsel holt die Liste neu — über den Abruf-Provider',
+        () async {
+      // Die Falle, die dieser Test stellt: `thirstyFriendsProvider` ist
+      // abgeleitet. Wer IHN entwertet, bewirkt nichts und merkt es
+      // nicht. Genau das ist beim Umbau einmal passiert.
+      container.listen(thirstyFriendsProvider, (_, __) {});
+      await _warteAufFreunde();
+      await stelleUhr(start);
+      final vorher = online.aufrufe.where((a) => a == 'thirstyFriends').length;
+
+      container.invalidate(thirstyFriendsAbrufProvider);
+      await _warteAufFreunde();
+
+      expect(online.aufrufe.where((a) => a == 'thirstyFriends').length,
+          greaterThan(vorher),
+          reason: 'Nach einem Kreiswechsel muss wirklich neu geholt '
+              'werden — die Sichtbarkeit hat sich geändert.');
+    });
+
     test('abgelaufene Freunde verschwinden aus der Liste', () async {
       container.listen(thirstyFriendsProvider, (_, __) {});
       await _warteAufFreunde();

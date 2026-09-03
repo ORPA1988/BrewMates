@@ -363,7 +363,9 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
     }
     ref.invalidate(onlineFriendsProvider);
     // Sichtbarkeit ändert sich sofort – abhängige Ansichten mitziehen.
-    ref.invalidate(thirstyFriendsProvider);
+    // Entwertet wird der ABRUF: `thirstyFriendsProvider` ist abgeleitet
+    // und holt von sich aus nichts nach.
+    ref.invalidate(thirstyFriendsAbrufProvider);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text('${friend.displayName}: ${chosen.label}'),
     ));
