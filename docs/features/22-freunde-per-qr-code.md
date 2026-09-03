@@ -2,7 +2,7 @@
 
 > **Status:** 🟢 fertig — Code anzeigen und scannen; Desktop bleibt bei
 > der Namenssuche.
-> **Seit:** 0.9.14-beta · **Zuletzt geprüft:** 2026-08-15
+> **Seit:** 0.9.14-beta · **Zuletzt geprüft:** 2026-09-03
 
 ## Zielsetzung
 
@@ -39,6 +39,9 @@ man den Nutzernamen des anderen kennen muss.
   Aufnahme geprüft
 - **Lesen:** `mobile_scanner` ist bereits an Bord; der Bier-Scanner nutzt
   EAN-8/13, dieser hier `BarcodeFormat.qrCode`
+- **Wenn die Kamera nicht liefert:** derselbe `widgets/kamera_hinweis.dart`
+  wie beim Bier-Scanner, nur mit anderem Ausweg — hier die Namenssuche
+  statt der getippten EAN (siehe [Funktion 03](03-barcode-scanner.md))
 
 **Zwei Details, die leicht untergehen:** Der Code steht auf weißem Grund
 unabhängig vom Farbschema — auf dunklem Hintergrund erkennen viele

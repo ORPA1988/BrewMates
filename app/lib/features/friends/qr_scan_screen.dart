@@ -6,6 +6,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../data/online/online_service.dart';
 import '../../data/providers.dart';
+import '../../widgets/kamera_hinweis.dart';
 import 'friend_code.dart';
 
 /// „Code scannen": Freundschaft per QR statt über die Namenssuche.
@@ -169,6 +170,13 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
                   MobileScanner(
                     controller: MobileScannerController(
                       formats: const [BarcodeFormat.qrCode],
+                    ),
+                    errorBuilder: (context, fehler, _) =>
+                        KameraHinweis.ausFehler(
+                      fehler,
+                      ausweg: 'Ohne Kamera geht es auch: Such deinen Mate '
+                          'über seinen Namen — oder lass ihn deinen Code '
+                          'scannen.',
                     ),
                     onDetect: (capture) =>
                         _handleCode(capture.barcodes.firstOrNull?.rawValue),

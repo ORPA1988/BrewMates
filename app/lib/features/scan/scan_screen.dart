@@ -7,6 +7,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
+import '../../widgets/kamera_hinweis.dart';
 import '../../widgets/rating_stars.dart';
 import '../../widgets/story_sheet.dart';
 import 'barcode_lookup.dart';
@@ -283,6 +284,16 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
                         BarcodeFormat.ean13,
                         BarcodeFormat.ean8,
                       ],
+                    ),
+                    // Ohne diesen Bauer zeigt mobile_scanner ein schwarzes
+                    // Rechteck mit weißem Warndreieck. Der Weg unten —
+                    // EAN tippen — ist gleichwertig und steht ohnehin da;
+                    // der Hinweis muss ihn nur nennen.
+                    errorBuilder: (context, fehler, _) =>
+                        KameraHinweis.ausFehler(
+                      fehler,
+                      ausweg: 'Der Barcode geht auch getippt: '
+                          'Das Feld unten nimmt ihn entgegen.',
                     ),
                     onDetect: (capture) {
                       final value = capture.barcodes.firstOrNull?.rawValue;

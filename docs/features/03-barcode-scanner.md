@@ -126,6 +126,11 @@ weiß keine Regel — das wusste nur der Abgleich gegen eine zweite Quelle.
 - **Web:** ZXing liegt als `web/zxing.js` im eigenen Bundle; die
   Script-URL wird in `initState` umgebogen — geladen von unpkg.com
   scheiterte still an VPN und Werbeblockern
+- **Wenn die Kamera nicht liefert:** `widgets/kamera_hinweis.dart` als
+  `errorBuilder` beider Scanner (Bier und QR). Ohne ihn zeigt
+  `mobile_scanner` ein schwarzes Rechteck mit weißem Warndreieck — und
+  das sieht bei fehlender Freigabe genauso aus wie bei einer belegten
+  Kamera oder auf einem Gerät ohne Kamera
 
 **Generische Namen werden verworfen.** Open Food Facts liefert für viele
 Biere schlicht „Bier" als Produktnamen. Wird das übernommen, entstehen
@@ -148,7 +153,27 @@ Einträge namens „Bier" — genau das ist passiert.
 | Web | ✅ (Freigabe nötig) | ✅ |
 | Windows / macOS | ❌ kein Desktop-Support im Paket | ✅ |
 
-Ohne Kamera erscheint kein Fehler, sondern direkt das Eingabefeld.
+Ohne Kamera erscheint kein Fehler, sondern direkt das Eingabefeld — der
+Bildschirm baut den Scanner auf Desktop gar nicht erst.
+
+**Verweigerte Freigabe ist etwas anderes als fehlende Kamera** und wird
+seit 0.10.10 auch anders erklärt (Roadmap-Punkt „Kamera-Hinweise beim
+Scannen", Issue #64). Drei Fälle, drei Sätze:
+
+| Fall | Was der Hinweis sagt |
+|---|---|
+| Freigabe fehlt (App) | „…in den App-Einstellungen unter Berechtigungen" + Knopf **Einstellungen öffnen** |
+| Freigabe fehlt (Browser) | „…Schloss-Symbol links neben der Adresse, dann Seite neu laden" — kein Knopf, es gibt dort keine Seite dafür |
+| Kamera nicht nutzbar / unklar | Ehrlich benannt statt geraten |
+
+In jedem Fall nennt der Hinweis den **zweiten Weg** (EAN tippen bzw. beim
+QR-Scanner die Namenssuche). Ein Hinweis, der nur erklärt, warum etwas
+nicht geht, lässt den Menschen dort stehen, wo er steht.
+
+Den Knopf „Einstellungen öffnen" liefert `Geolocator.openAppSettings()` —
+das Paket ist ohnehin an Bord und öffnet die Systemseite **der App**,
+nicht die des Standorts. Ein zweites Berechtigungspaket wäre bei der auf
+Flutter 3.24 gepinnten Toolchain der teurere Weg.
 
 ## Skalierung
 
