@@ -47,7 +47,13 @@ jobs:
           # neuesten Version — und laeuft in das Ratenlimit (2026-09-02:
           # „Failed to resolve latest Supabase CLI release: rate limit
           # exceeded", ein roter Lauf ohne Codeaenderung).
-          token: ${{ secrets.GITHUB_TOKEN }}
+          #
+          # Der Parameter heisst `github-token`. Er stand hier als `token`,
+          # und die Action hat ihn kommentarlos ignoriert — sichtbar nur
+          # als Warnung mitten im Protokoll: „Unexpected input(s) 'token',
+          # valid inputs are ['version', 'github-token']". Das Ratenlimit
+          # schlug deshalb am 2026-09-03 erneut zu.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       # Baut die Datenbank ALLEIN aus supabase/migrations/ auf. Das prüft
       # zweierlei auf einmal: dass die Migrationen from scratch
       # durchlaufen, und dass sie den Live-Stand vollständig beschreiben.
