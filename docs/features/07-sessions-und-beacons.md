@@ -1,8 +1,16 @@
 # 07 Sessions & Beacons
 
-> **Status:** 🟡 teilweise — funktioniert vollständig; es fehlen
-> Benachrichtigungen, damit Beacons auch ungeöffnete Apps erreichen.
+> **Status:** 🟢 fertig — inklusive Push an die, die den Beacon sehen
+> dürfen (0039, seit 0.10.10).
 > **Seit:** 0.2.0 · **Zuletzt geprüft:** 2026-09-03
+>
+> **Ein neuer Beacon weckt seit 0.10.10 die Freunde** (Issue #60). Wer
+> etwas bekommt, ist wortwörtlich die Bedingung aus `sessions_select`:
+> Freunde ab dem Kreis „Freund" bzw. die Crew, niemand sonst. Eine
+> Benachrichtigung über eine Runde, die man beim Hintippen nicht sehen
+> darf, wäre schlimmer als gar keine. Spam-Bremse: höchstens ein Wecken
+> pro Gastgeber und Stunde. Endet die Runde, verschwindet die
+> Benachrichtigung dazu.
 >
 > **Beenden ist seit 0.10.10 zurücknehmbar** — fünf Sekunden lang, und
 > zwar auf allen vier Bildschirmen, die den Beacon beenden können

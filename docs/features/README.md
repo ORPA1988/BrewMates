@@ -30,7 +30,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [04](04-bier-und-brauerei-datenbank.md) | Bier- & Brauerei-DB | 🟢 | 699 Biere / 162 Brauereien DACH, GitHub-Sync |
 | [05](05-gasthaeuser.md) | Gasthäuser | 🟢 | Gemeinsame DB, Öffnungszeiten, Offline-Queue |
 | [06](06-karte.md) | Karte | 🟢 | Freunde, Brauereien, Gasthäuser, Zähler |
-| [07](07-sessions-und-beacons.md) | Sessions & Beacons | 🟡 | Ein-Tap-Beacon, Laufzeit wählbar; kein Push für Beacons |
+| [07](07-sessions-und-beacons.md) | Sessions & Beacons | 🟢 | Ein-Tap-Beacon, Laufzeit wählbar, Push an die, die ihn sehen dürfen |
 | [08](08-freunde.md) | Freunde | 🟢 | Anfragen, Suche, QR-Code, Blockieren, Freundeskreise |
 | [09](09-crews.md) | Crews | 🟢 | Gruppen mit Einladungscode und QR-Beitritt |
 | [10](10-feed.md) | Feed | 🟢 | Check-in-Strom, Toasts, Kommentare, Löschen, Seitenladen |
@@ -50,7 +50,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [24](24-freundeskreise.md) | Freundeskreise | 🟢 | Bekannte / Freunde / Best Buddys, RLS-durchgesetzt |
 | [27](27-check-ins-bearbeiten.md) | Check-ins bearbeiten | 🟢 | Bewertung, Notiz, Tags, Gebinde, Ort nachträglich ändern; offlinefähig |
 | [28](28-live-vorschlaege.md) | Live-Vorschläge | 🟢 | Beim Tippen passende Biere/Gasthäuser zum Antippen |
-| [29](29-push-benachrichtigungen.md) | Push-Benachrichtigungen | 🟢 | FCM, inhaltsleer, Ende-zu-Ende verifiziert |
+| [29](29-push-benachrichtigungen.md) | Push-Benachrichtigungen | 🟢 | FCM, inhaltsleer, Anfragen + Beacons |
 | [30](30-bierlaune.md) | Bierlaune | 🟢 | „Hätte Lust“ für 4 h, nur Kreis Freund |
 | [31](31-datenpflege-bestenliste.md) | Datenpflege-Bestenliste | 🟢 | Top 20 nach Vertrauenspunkten |
 | [32](32-bierpreise-und-preis-radar.md) | Bierpreise & Preis-Radar | 🟢 | 0,5/0,3 l am Gasthaus, Preis am Kartenschild |

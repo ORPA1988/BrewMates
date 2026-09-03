@@ -1,7 +1,8 @@
 # 29 Push-Benachrichtigungen
 
-> **Status:** 🟢 live und Ende-zu-Ende verifiziert (2026-09-02).
-> · **Seit:** 0.10.4 · **Zuletzt geprüft:** 2026-09-02
+> **Status:** 🟢 live und Ende-zu-Ende verifiziert (2026-09-02); seit
+> 0.10.10 auch für Beacons (0039).
+> · **Seit:** 0.10.4 · **Zuletzt geprüft:** 2026-09-03
 
 ## Zielsetzung
 
@@ -27,6 +28,8 @@ Die Kette, von hinten nach vorn:
 | Schritt | Wo | Datei |
 |---|---|---|
 | Anfrage → Zeile in `notifications` | Trigger `friendships_notify` | 0031 |
+| Prost / „Bin dabei" → Zeile | Trigger `session_participants_notify` | 0037 |
+| **Neuer Beacon → Zeile (mit Spam-Bremse)** | Trigger `sessions_notify` | **0039** |
 | Zeile → HTTP-Aufruf der Function (asynchron, `pg_net`) | Trigger `notifications_push` | 0033 |
 | Geheimnis prüfen, Geräte laden, FCM v1 senden | Edge Function `notify` | `supabase/functions/notify/index.ts` |
 | Gerätetoken beim Server halten | `pushRegistrationProvider`, `DevicesApi` | `data/providers/push.dart`, `data/online/api/devices_api.dart` |
@@ -108,5 +111,15 @@ Telefon bestätigt. Testzeile danach gelöscht.
 
 1. ~~Registrierung, Trigger, Function~~ — erledigt
 2. ~~FCM-Secret setzen, Ende-zu-Ende-Test~~ — erledigt
-3. Beacon-Push mit Spam-Bremse
-4. iOS über APNs, wenn es eine iOS-Fassung gibt
+3. ~~Beacon-Push mit Spam-Bremse~~ — erledigt in 0.10.10 (0039, Issue #60)
+4. Web-Push im Browser (Issue #63) — braucht `device_platform = 'web'`,
+   einen VAPID-Schlüssel und einen Service Worker
+5. iOS über APNs, wenn es eine iOS-Fassung gibt
+
+**Noch offen und bewusst so:** Die Glocke hat keinen eigenen Bildschirm.
+`unreadNotificationsProvider` liefert den ungelesenen Bestand, angezeigt
+wird davon nichts — nur das Live-Banner, wenn die App gerade offen ist,
+und der Zähler für offene Freundschaftsanfragen. Wer den Beacon-Push
+verpasst, findet die Runde über „Gerade unterwegs" auf der Startseite.
+Das trägt, solange es drei Benachrichtigungsarten gibt; mit der vierten
+wird eine Liste fällig.
