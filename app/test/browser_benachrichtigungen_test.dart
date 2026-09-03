@@ -10,7 +10,6 @@ import 'package:brewmates/data/community_sync.dart';
 import 'package:brewmates/data/db/database.dart';
 import 'package:brewmates/data/online/models.dart';
 import 'package:brewmates/data/providers.dart';
-import 'package:brewmates/data/push/browserfenster.dart';
 import 'package:brewmates/features/shell/app_shell.dart';
 
 import 'fake_online_service.dart';
