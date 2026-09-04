@@ -27,14 +27,22 @@ class CrewsApi extends OnlineApi {
   }) async {
     if (currentUser == null) return const [];
     try {
+      // Über `checkin_crews` (0051), nicht mehr über `sessions.crew_id`.
+      //
+      // Der alte Weg fand nur Runden, die **ausdrücklich als Crew-Runde**
+      // gestartet wurden — also eine Crew je Abend, und nur wenn jemand
+      // daran gedacht hatte. Jetzt zählt jede Runde für jede Crew, aus der
+      // jemand dabei war, und zwar so, wie es **damals** war: Die Tabelle
+      // ist eine Momentaufnahme, kein Rechenergebnis. Ein Austritt lässt
+      // die Bilanz vergangener Abende unangetastet.
       final rows = await client
           .from('checkins')
           .select('id, beer_name, brewery_name, beer_style, is_alcohol_free, '
               'rating, note, venue_name, session_id, photo_url, created_at, '
               'author:profiles!checkins_profile_id_fkey('
               '${OnlineApi.profileCols}), '
-              'sessions!inner(crew_id)')
-          .eq('sessions.crew_id', crewId)
+              'checkin_crews!inner(crew_id)')
+          .eq('checkin_crews.crew_id', crewId)
           .order('created_at', ascending: false)
           .limit(limit);
       return [

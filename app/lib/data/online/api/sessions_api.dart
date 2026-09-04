@@ -343,6 +343,41 @@ class SessionsApi extends OnlineApi {
     }
   }
 
+  /// Die laufende **fremde** Runde, an der ich teilnehme — oder `null`.
+  ///
+  /// Für die Zuordnung beim Einchecken: Wer bei jemand anderem mittrinkt,
+  /// soll seinen Check-in in dessen Runde wiederfinden. Bis 0.10.14 ging
+  /// das nicht, weil `getMyActiveSession` nur eigene Runden kennt
+  /// (`host_id = ich`).
+  ///
+  /// **Nur online zu beantworten.** Zusagen leben ausschließlich am
+  /// Server; lokal gibt es keine Spur davon. Ohne Verbindung bleibt die
+  /// Zuordnung deshalb aus — der Check-in selbst nicht. Das ist die
+  /// bewusste Grenze, siehe docs/features/40.
+  ///
+  /// Gibt es mehrere, gewinnt die zuletzt begonnene: Wer an zwei Runden
+  /// zusagt und dann eincheckt, meint mit größter Wahrscheinlichkeit die,
+  /// die gerade läuft.
+  Future<String?> myJoinedRoundId() async {
+    final me = currentUser;
+    if (me == null) return null;
+    try {
+      final rows = await client
+          .from('session_participants')
+          .select('session_id, sessions!inner(status, expires_at, started_at)')
+          .eq('profile_id', me.id)
+          .eq('kind', 'joined')
+          .eq('sessions.status', 'active')
+          .gt('sessions.expires_at', DateTime.now().toUtc().toIso8601String())
+          .order('started_at', referencedTable: 'sessions', ascending: false)
+          .limit(1);
+      if (rows.isEmpty) return null;
+      return rows.first['session_id'] as String?;
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Die eigene Antwort auf einen Beacon zurücknehmen („doch nicht“).
   Future<bool> antwortZuruecknehmen(String sessionId) async {
     final me = currentUser;

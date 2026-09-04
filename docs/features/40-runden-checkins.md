@@ -1,7 +1,7 @@
 # 40 Check-ins in einer Runde
 
-> **Status:** 🟡 teilweise — die **Sichtbarkeit** steht (0050), die
-> Zuordnung beim Einchecken und die Crew-Ansicht folgen.
+> **Status:** 🟢 fertig — Sichtbarkeit (0050), Crew-Zuordnung
+> (0051/0052) und die App-Seite stehen.
 > **Seit:** Server 2026-09-04 (0050); **ohne App-Änderung**, deshalb
 > kein Versionsbump · **Zuletzt geprüft:** 2026-09-04
 >
@@ -41,6 +41,19 @@ befreundet ist, erscheint in der Bilanz seiner eigenen Crew nicht.
 [Funktion 07](07-sessions-und-beacons.md) behauptete „Check-ins während
 der Session werden ihr zugeordnet". Das stimmte nur für den Gastgeber und
 ist dort richtiggestellt.
+
+**Und selbst für ihn stimmte es nur lokal.** Beim Bauen von Schritt 2
+kam der eigentliche Grund heraus: `uploadRow` in
+`data/online/api/checkins_api.dart` setzte `'session_id': null` — hart
+verdrahtet, ohne Kommentar. Die Zuordnung erreichte den Server also
+**nie**, auch die zur eigenen Runde nicht.
+
+Damit lief alles ins Leere, was darauf aufbaut: Die Crew-Bilanz jointe
+über `sessions.crew_id` und fand nichts, und der Runden-Zweig aus 0050
+hätte nie gegriffen, weil `session_id is not null` nie zutraf. Eine
+Server-Regel, die auf ein Feld baut, das der Client nicht füllt, ist
+eine Regel über nichts — und das fällt in keinem Test auf, der nur eine
+Seite betrachtet.
 
 ## Die Entscheidungen
 
@@ -123,12 +136,14 @@ im Profil mit Ausnahmen. Das ist eine Produktfrage, keine technische.
   nicht nach Freundschaft, sondern holt alles außer den eigenen
   Check-ins — was zurückkommt, entscheidet allein die RLS. Die
   Policy-Erweiterung wirkt damit unmittelbar im Feed
-- **Noch offen (App):** `getMyActiveSession` kennt nur eigene Sessions.
-  Für die Zuordnung beim Einchecken muss der Schreibweg auch fremde
-  Runden kennen, an denen ich teilnehme
-- **Noch offen (Crew):** `checkin_crews` (0051) hält fest, welche Crews
-  bei einem Check-in vertreten waren; `crewCheckins()` liest sie statt
-  über `sessions.crew_id` zu joinen
+- **Zuordnung beim Einchecken:** `createCheckin` nimmt die eigene
+  Runde, sonst über `myJoinedRoundId()` die fremde, an der ich
+  zugesagt habe. Nur online zu beantworten — Zusagen leben
+  ausschließlich am Server
+- **Crew-Bilanz:** `crewCheckins()` joint über `checkin_crews` statt
+  über `sessions.crew_id`. Der alte Weg fand nur Runden, die
+  ausdrücklich als Crew-Runde gestartet wurden — eine Crew je Abend,
+  und nur wenn jemand daran gedacht hatte
 
 ### Warum die Regel eine `security definer`-Funktion braucht
 
@@ -248,9 +263,9 @@ und die Crew-Bilanz über Teilnehmer.
 | Schritt | Was | Prüfkriterium |
 |---|---|---|
 | ~~1~~ | ~~`checkins_select` um den Runden-Zweig erweitern~~ | ✅ pgTAP: Teilnehmer sieht, Fremder nicht, `private` bleibt privat |
-| 2 | Zuordnung beim Einchecken: auch fremde Runden, an denen ich zugesagt habe | Test: Check-in während einer fremden Runde trägt deren `session_id` |
-| 3 | `checkin_crews` (0051) und `crewCheckins()` darauf umstellen | pgTAP: Eine Runde ohne `crew_id` erscheint in der Bilanz jeder Crew, aus der jemand dabei war — und **bleibt dort, wenn jemand austritt** |
-| 4 | Runden-Ansicht zeigt die Check-ins aller Teilnehmer | Widget-Test |
+| ~~2~~ | ~~Zuordnung beim Einchecken~~ — **erledigt.** Dabei der eigentliche Fund: `uploadRow` schickte `session_id: null`, hart verdrahtet | ✅ vier Tests in `upload_assistant_test.dart` |
+| ~~3~~ | ~~`crewCheckins()` auf `checkin_crews` umstellen~~ — **erledigt** | ✅ pgTAP, inkl. Austritt |
+| 4 | Runden-Ansicht zeigt die Check-ins aller Teilnehmer | Offen — die Daten liegen jetzt vor, es fehlt die Anzeige |
 
 ## Offene Punkte / Ideen
 

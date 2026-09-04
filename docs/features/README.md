@@ -60,7 +60,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [36](36-rueckgaengig-statt-rueckfrage.md) | Rückgängig statt Rückfrage | 🟡 | Beacon, Anfrage, Wunschliste: Fehltipp fünf Sekunden lang zurücknehmbar |
 | [37](37-meldungen-bearbeiten.md) | Meldungen bearbeiten | 🟢 | Moderatoren sehen gemeldete Profile und schließen sie mit Befund ab |
 | [38](38-benachrichtigungen-im-browser.md) | Benachrichtigungen im Browser | 🟢 | Systemmeldung bzw. Nachreichen, solange die Web-App offen ist |
-| [40](40-runden-checkins.md) | Check-ins in einer Runde | 🟡 | Mitrundige sehen die Check-ins der Runde (0050); Zuordnung und Crew-Bilanz folgen |
+| [40](40-runden-checkins.md) | Check-ins in einer Runde | 🟢 | Mitrundige sehen sie, Zuordnung läuft automatisch, Crew-Bilanz zählt jede beteiligte Crew |
 
 ## Geplante Funktionen
 
