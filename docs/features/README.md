@@ -36,14 +36,14 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [10](10-feed.md) | Feed | 🟢 | Check-in-Strom, Toasts, Kommentare, Löschen, Seitenladen |
 | [11](11-abzeichen.md) | Abzeichen | 🟢 | 23 Abzeichen, Vielfalt statt Menge |
 | [12](12-challenges.md) | Challenges | 🟢 | Serverseitig validiert |
-| [13](13-statistiken-und-tagebuch.md) | Statistiken & Tagebuch | 🟢 | Tagebuch mit Suche und Seitenladen; Auswertung in 20 |
+| [13](13-statistiken-und-tagebuch.md) | Tagebuch & Wochen-Serie | 🟢 | Nachlesen und Suche — ausgewertet wird in 20 |
 | [14](14-wunschliste.md) | Wunschliste | 🟢 | Merken, Cloud-Sync |
 | [15](15-vertrauensstufen-und-moderation.md) | Vertrauensstufen | 🟢 | 5 Stufen, Admin-Bereich, Moderation (siehe 37) |
 | [16](16-datensynchronisation.md) | Datensynchronisation | 🟡 | Local-first, Cloud-Restore; kein Delta-Sync |
 | [17](17-app-update.md) | App-Update | 🟢 | Prüfung gegen GitHub-Releases |
 | [18](18-plattformen.md) | Plattformen | 🟡 | Android + Web live, Windows baubar |
 | [19](19-feed-eintraege-loeschen.md) | Feed-Einträge löschen | 🟢 | Eigene Check-ins entfernen, offlinefähig, Rückgängig |
-| [20](20-feed-statistiken.md) | Statistiken | 🟢 | Menge, Land, Stil, Gebinde, Zeitraum, Filter |
+| [20](20-feed-statistiken.md) | Statistiken & Auswertung | 🟢 | Menge, Land, Stil, Gebinde, Zeitraum, Filter — **Ausbaustufe 2 geplant** |
 | [21](21-hintergrundgeschichten.md) | Hintergrundgeschichten | 🟡 | Technik fertig, 30 von 162 Brauereien erzählt |
 | [22](22-freunde-per-qr-code.md) | Freunde per QR-Code | 🟢 | Anzeigen und scannen statt tippen |
 | [23](23-beacon-laufzeit.md) | Beacon-Laufzeit | 🟢 | 30 min – 12 h, verlängerbar, serverseitig begrenzt |

@@ -1,4 +1,22 @@
-# 06 – Roadmap 2.0
+# 06 – Roadmap
+
+> **Stand: 2026-09-04, Version 0.10.13-beta.**
+> Diese Datei sagt **wann** etwas kommt und in welcher Reihenfolge.
+> **Was** eine Funktion ist und wie sie gebaut ist, steht je Funktion in
+> [docs/features/](features/README.md) — hier wird nur verlinkt, nicht
+> wiederholt.
+
+## Was als Nächstes ansteht
+
+| Rang | Vorhaben | Warum jetzt |
+|---|---|---|
+| 1 | **[Statistik-Ausbaustufe 2](features/20-feed-statistiken.md)** | Stufe 1 läuft seit 0.9.15. Stufe 2 macht sie **erweiterbar**: Aufteilungen als Konfiguration statt als Code, dazu Wochentag, Region, neue Biere, Vergleich zum Vorzeitraum, freier Zeitraum. Der Plan steht |
+| 2 | **Geplante Sessions** („morgen 19 Uhr") | Die Zu- und Absage gibt es seit 0.10.13 — es fehlt nur der Termin in der Zukunft |
+| 3 | **Anmeldeverfahren freischalten** | Die App kann fünf weitere Anbieter; drei davon kosten nichts. Schritte im [Release-Playbook](07-release-playbook.md) |
+| 4 | **[Crew-Challenges und Rollen](features/09-crews.md)** | Sinnvoll, sobald es mehr als eine aktive Crew gibt |
+| 5 | **[Play Store](https://github.com/ORPA1988/BrewMates/issues/67)** | Braucht Konto, Ausweisprüfung und Store-Prozess — Menschenarbeit |
+
+---
 
 Diese Roadmap ersetzt die Roadmap 1.0 vollständig. Sie stellt die App auf ihren
 neuen Kern: Der Startbildschirm hat **zwei Hero-Aktionen** –
@@ -119,17 +137,22 @@ Kosten trägt (siehe [docs/09](09-wachstum-und-geschaeftsmodell.md)).
       Pflege (Drift v8) und strukturierten Öffnungszeiten inkl.
       „Jetzt geöffnet"-Filter (0015); Tap-Listen und
       Betreiber-Verifizierung stehen noch aus*
-- [ ] **Geplante Sessions & Events** (Einladungen, Erinnerungen, Kalender-Export)
+- [ ] **Geplante Sessions & Events** (Termin in der Zukunft, Erinnerungen,
+      Kalender-Export) — *die Zu- und Absage samt sichtbarer Antwortliste
+      ist seit 0.10.13 fertig (0047,
+      [Funktion 07](features/07-sessions-und-beacons.md)); es fehlt der
+      Termin*
 - [ ] **Empfehlungen**: „Das könnte dir schmecken" auf Basis eigener Bewertungen
 - [ ] **Jahresrückblick** („Dein Bierjahr") mit teilbarem Bild-Export
 - [ ] **Etikett-Foto-KI** als Ausbau des Scanners: Kein Barcode? Foto vom
       Etikett genügt — *Vorstufe fertig: Foto + EAN landen beim Anlegen
       direkt in der Community-DB (Migration 0010), die Community validiert
       über Check-ins vs. „Kein Bier"-Meldungen (±10-Regel)*
-- [x] **Crews** (Gruppen) mit Crew-Beacons — *seit 0.9.12: anlegen,
-      Einladungscode, Mitglieder, Sichtbarkeit „nur meine Crew";
-      **Crew-Feed steht noch aus** (siehe
-      [Funktion 09](features/09-crews.md))*
+- [x] **Crews** (Gruppen) mit Crew-Beacons — *seit 0.9.12 anlegen und
+      beitreten; seit 0.10.12 vollständig: Runden-Feed, Bilanz,
+      sechsstelliger Code zum Vorlesen, QR und **Freunde einladen**
+      (0041–0044). Offen bleibt nur der Ausbau — Challenges und Rollen
+      neben dem Gründer (siehe [Funktion 09](features/09-crews.md))*
 - [ ] **Monetarisierung gemäß docs/09**: Premium („BrewMates Pro") zuerst,
       Werbung nur optional und dezent – Kernfunktionen bleiben gratis
 - [x] **Bier-DB über Österreich hinaus**: Erweiterung auf den DACH-Raum
@@ -207,10 +230,11 @@ Maßnahmen sind überwiegend Aktivierung des Vorhandenen.
 
 **Nächste Schritte (priorisiert):**
 
-- [ ] **Session-Push mit Spam-Bremse** — der virale Kern von Beer With Me:
-      Push nur beim Session-*Start*, Mindestintervall 15 Min.,
-      Radius-Option; Antwort-Chips („Prost 🍻" → Toast). *Extern
-      blockiert: braucht Firebase/FCM.*
+- [x] **Session-Push mit Spam-Bremse** — der virale Kern von Beer With Me.
+      *Erledigt mit 0039 (0.10.10): Push nur beim Session-Start, eine
+      Meldung je Gastgeber und Stunde, und die Empfängerliste ist
+      wortwörtlich die Sichtbarkeitsregel der Session. Antworten seit
+      0.10.13: „Prost", „Ich komme vorbei", „Ich hab keine Zeit" (0047).*
 - [x] **Crews aktiv nutzen** (seit 0.9.12): Crew gründen, Beitritt per
       Einladungscode (= Crew-UUID, bewusst kein Kontakte-Import),
       Mitgliederliste, verlassen/auflösen — und **Crew-Beacons**:

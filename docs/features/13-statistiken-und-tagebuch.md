@@ -1,8 +1,12 @@
-# 13 Statistiken & Tagebuch
+# 13 Tagebuch & Wochen-Serie
 
-> **Status:** 🟢 fertig — Tagebuch mit Suche und Seitenladen, Auswertung
-> in [Funktion 20](20-feed-statistiken.md).
-> **Seit:** 0.2.0, Wochen-Serie seit 0.9.12 · **Zuletzt geprüft:** 2026-08-15
+> **Status:** 🟢 fertig — Tagebuch mit Suche und Seitenladen.
+> **Seit:** 0.2.0, Wochen-Serie seit 0.9.12 · **Zuletzt geprüft:** 2026-09-04
+>
+> **Hier steht das Nachlesen, nicht das Auswerten.** Jede Statistik —
+> Mengen, Aufteilungen, Zeiträume, Filter — gehört in
+> [Funktion 20](20-feed-statistiken.md). Die Zähler im Profil sind nur
+> der Anreißer, der dorthin führt; sie werden hier nicht zweitverwaltet.
 
 ## Zielsetzung
 
@@ -14,8 +18,9 @@ niemand weg.
 ## Funktion (Nutzersicht)
 
 - Chronologische Liste aller eigenen Check-ins mit Volltextsuche
-- Profil zeigt: Anzahl Check-ins, verschiedene Stile, Länder,
-  🔥 Wochen-Serie
+- Profil zeigt vier Zähler als Anreißer (Check-ins, Stile, Länder,
+  🔥 Wochen-Serie) und führt von dort in die
+  [Auswertung](20-feed-statistiken.md)
 - Wunschliste und Abzeichen sind von hier erreichbar
 
 **Die Wochen-Serie** zählt Wochen mit mindestens einem Check-in — bewusst

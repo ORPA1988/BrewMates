@@ -21,6 +21,14 @@ BrewMates kombiniert das Beste aus zwei Welten:
 | [04 – Datenmodell](docs/04-datenmodell.md) | Entitäten, Beziehungen, ER-Diagramm |
 | [05 – UI & Screen-Flows](docs/05-ui-screens.md) | Navigationsstruktur, Wireframes, Kern-Flows |
 | [06 – Roadmap](docs/06-roadmap.md) | MVP → v1.0 → v2.0 mit Meilensteinen |
+| [07 – Release-Playbook](docs/07-release-playbook.md) | Weg in die Stores; Anmeldeverfahren freischalten; Riegel anheben |
+| [08 – Funktionsweise für alle](docs/08-funktionsweise-fuer-alle.md) | Dieselbe App, ohne Fachbegriffe erklärt |
+| [09 – Wachstum & Geschäftsmodell](docs/09-wachstum-und-geschaeftsmodell.md) | Wie die App Nutzer und Kosten trägt |
+| [10 – Community-Datenpflege](docs/10-community-datenpflege.md) | Nutzererstellte Biere prüfen — Routine bei jedem Lauf |
+| [11 – Modularität & Portierbarkeit](docs/11-modularitaet-und-portierbarkeit.md) | Architekturgrenzen, die eingehalten werden |
+| [12 – Funktionsaudit](docs/12-funktionsaudit.md) | Vollständigkeit und Skalierbarkeit des Bestands |
+| [13 – Migrationen & Lehren](docs/13-migrationen-und-lehren.md) | Was am Server steht, warum — und welche Fehler es gekostet hat |
+| [Funktionen im Einzelnen](docs/features/README.md) | Ein Dokument je Funktion: Zweck, Bedienung, Umsetzung, Status |
 
 ## 💡 Das Kernkonzept: zwei Buttons
 

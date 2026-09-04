@@ -1,6 +1,6 @@
 {
-  "version": 6,
-  "updated": "2026-09-03",
+  "version": 7,
+  "updated": "2026-09-04",
   "beers": [
     {
       "id": "at-augustiner-salzburg-maerzen",
@@ -3408,7 +3408,7 @@
       "brewery_id": "at-neufeldner-bio-bier",
       "name": "Neufeldner Hopferl",
       "style": "Bier",
-      "abv": null,
+      "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [],
@@ -3420,10 +3420,12 @@
       "brewery_id": "at-neufeldner-bio-bier",
       "name": "Neufeldner Märzen",
       "style": "Märzen",
-      "abv": null,
+      "abv": 4.6,
       "ibu": null,
       "is_alcohol_free": false,
-      "barcodes": [],
+      "barcodes": [
+        "9120050021655"
+      ],
       "image_url": "https://biobrauerei.at/wp-content/uploads/Maerzen-scaled.png",
       "image_source": "https://biobrauerei.at/produkt/biobier/maerzen-05l-e-199/"
     },
@@ -3432,7 +3434,7 @@
       "brewery_id": "at-neufeldner-bio-bier",
       "name": "Neufeldner Mühlviertler Weisse",
       "style": "Weißbier",
-      "abv": null,
+      "abv": 5.4,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [],
@@ -3444,7 +3446,7 @@
       "brewery_id": "at-neufeldner-bio-bier",
       "name": "Neufeldner Pils naturtrüb",
       "style": "Pils",
-      "abv": null,
+      "abv": 4.8,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [],
@@ -3456,7 +3458,7 @@
       "brewery_id": "at-neufeldner-bio-bier",
       "name": "Neufeldner Sommer Bier",
       "style": "Bier",
-      "abv": null,
+      "abv": 4.5,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [],
@@ -3468,7 +3470,7 @@
       "brewery_id": "at-neufeldner-bio-bier",
       "name": "Neufeldner Zwickl",
       "style": "Zwickl",
-      "abv": null,
+      "abv": 5.2,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [],
