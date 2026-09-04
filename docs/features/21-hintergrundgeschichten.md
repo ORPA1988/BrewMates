@@ -1,7 +1,7 @@
 # 21 Hintergrundgeschichten
 
 > **Status:** 🟡 teilweise — Feld, Anzeige und Erst-Scan-Hinweis stehen;
-> 30 von 162 Brauereien haben bislang eine Geschichte.
+> 34 von 137 Brauereien haben bislang eine Geschichte.
 > **Seit:** 0.9.16-beta · **Zuletzt geprüft:** 2026-09-02
 
 ## Zielsetzung
@@ -31,7 +31,7 @@ eine gute Anekdote, kein Werbetext und kein Wikipedia-Auszug.
 
 **Bei Brauereien** steht die Geschichte fest im Detailbereich. Das Ziel
 ist, dass jede Brauerei Hintergrund bekommt, nicht nur die berühmten —
-erreicht ist das noch nicht (Stand 2026-09-02: 30 von 162).
+erreicht ist das noch nicht (Stand 2026-09-04: 34 von 137).
 
 **Bearbeiten** dürfen Vertrauensstufe 3 und höher (Bierkenner, Moderator,
 Admin), wie bei den übrigen Community-Daten. Änderungen laufen über das
@@ -96,7 +96,7 @@ Alle. Nur Text.
 ## Skalierung
 
 Ein Textfeld je Bier und Brauerei erhöht die gebündelten JSON-Dateien
-spürbar — bei 699 Bieren und 162 Brauereien und je 400 Zeichen wären das
+spürbar — bei 660 Bieren und 137 Brauereien und je 400 Zeichen wären das
 rund 340 KB zusätzlich, wenn alle eine hätten. Vertretbar. Ab etwa dem Dreifachen sollten die
 Geschichten aus den gebündelten Dateien heraus und bei Bedarf nachgeladen
 werden; dann trägt der Bundle nur noch, was ohne Netz nötig ist.

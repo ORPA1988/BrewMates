@@ -27,7 +27,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [01](01-konto-und-anmeldung.md) | Konto & Anmeldung | 🟢 | Google + E-Mail, Kontolöschung, Cloud-Wiederherstellung |
 | [02](02-check-ins.md) | Check-ins | 🟢 | Bewertung, Tags, Foto, Notiz, Gasthaus |
 | [03](03-barcode-scanner.md) | Barcode-Scanner | 🟢 | EAN-Scan, Lookup-Kette, Neuanlage mit Foto |
-| [04](04-bier-und-brauerei-datenbank.md) | Bier- & Brauerei-DB | 🟢 | 699 Biere / 162 Brauereien DACH, GitHub-Sync |
+| [04](04-bier-und-brauerei-datenbank.md) | Bier- & Brauerei-DB | 🟢 | 660 Biere / 137 Brauereien DACH, GitHub-Sync |
 | [05](05-gasthaeuser.md) | Gasthäuser | 🟢 | Gemeinsame DB, Öffnungszeiten, Offline-Queue |
 | [06](06-karte.md) | Karte | 🟢 | Freunde, Brauereien, Gasthäuser, Zähler |
 | [07](07-sessions-und-beacons.md) | Sessions & Beacons | 🟢 | Ein-Tap-Beacon, Laufzeit wählbar, Push an die, die ihn sehen dürfen |
@@ -44,7 +44,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [18](18-plattformen.md) | Plattformen | 🟡 | Android + Web live, Windows baubar |
 | [19](19-feed-eintraege-loeschen.md) | Feed-Einträge löschen | 🟢 | Eigene Check-ins entfernen, offlinefähig, Rückgängig |
 | [20](20-feed-statistiken.md) | Statistiken & Auswertung | 🟢 | Menge, Land, Stil, Gebinde, Zeitraum, Filter — **Ausbaustufe 2 geplant** |
-| [21](21-hintergrundgeschichten.md) | Hintergrundgeschichten | 🟡 | Technik fertig, 30 von 162 Brauereien erzählt |
+| [21](21-hintergrundgeschichten.md) | Hintergrundgeschichten | 🟡 | Technik fertig, 34 von 137 Brauereien erzählt |
 | [22](22-freunde-per-qr-code.md) | Freunde per QR-Code | 🟢 | Anzeigen und scannen statt tippen |
 | [23](23-beacon-laufzeit.md) | Beacon-Laufzeit | 🟢 | 30 min – 12 h, verlängerbar, serverseitig begrenzt |
 | [24](24-freundeskreise.md) | Freundeskreise | 🟢 | Bekannte / Freunde / Best Buddys, RLS-durchgesetzt |
@@ -77,3 +77,6 @@ Nicht funktionsgebunden, aber für jede Funktion verbindlich:
   verschwinden und auf neue Plattformen wandern können
 - [Funktionsaudit](../12-funktionsaudit.md) — der aktuelle Befund zu
   Vollständigkeit und Skalierbarkeit aller bestehenden Funktionen
+- [Barrierefreiheit](../14-barrierefreiheit.md) — Trefferflächen,
+  Beschriftungen und Kontrast; was `barrierefreiheit_test.dart` je
+  Bildschirm zusichert und was es bewusst offenlässt
