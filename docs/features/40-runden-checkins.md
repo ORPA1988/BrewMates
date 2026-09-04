@@ -126,9 +126,9 @@ im Profil mit Ausnahmen. Das ist eine Produktfrage, keine technische.
 - **Noch offen (App):** `getMyActiveSession` kennt nur eigene Sessions.
   Für die Zuordnung beim Einchecken muss der Schreibweg auch fremde
   Runden kennen, an denen ich teilnehme
-- **Noch offen (Crew):** `crewCheckins()` joint heute über
-  `sessions.crew_id`. Für „jede Crew, aus der jemand dabei war" muss die
-  Abfrage über die Teilnehmer gehen
+- **Noch offen (Crew):** `checkin_crews` (0051) hält fest, welche Crews
+  bei einem Check-in vertreten waren; `crewCheckins()` liest sie statt
+  über `sessions.crew_id` zu joinen
 
 ### Warum die Regel eine `security definer`-Funktion braucht
 
@@ -155,18 +155,57 @@ hätte sie zu einem Auskunftsdienst über Dritte gemacht („war X bei Runde
 S dabei?") — und genau das ist der Maßstab, an dem docs/13 die übrigen
 Helfer misst.
 
-### Warum keine neue Tabelle für die Crew-Zuordnung
+### Warum die Crew-Zuordnung gespeichert wird — und am Server entsteht
 
-Naheliegend wäre `checkin_crews (checkin_id, crew_id)`. Dagegen spricht,
-dass die Zuordnung **ableitbar** ist: Eine Runde gehört zu den Crews
-ihrer Teilnehmer, und beides steht schon in der Datenbank. Eine
-gespeicherte Kopie müsste bei jedem Crew-Beitritt und -Austritt
-nachgezogen werden — und läuft irgendwann auseinander.
+**Der erste Entwurf dieses Dokuments wollte sie ableiten**: Eine Runde
+gehört zu den Crews ihrer Teilnehmer, beides steht in der Datenbank,
+also braucht es keine Kopie. Das Argument gegen die gespeicherte
+Variante lautete, sie müsse bei jedem Beitritt und Austritt nachgezogen
+werden.
 
-Der Preis der Ableitung: Tritt jemand später einer Crew bei, erscheinen
-rückwirkend auch alte Runden in deren Bilanz. Das ist verkraftbar und
-sogar plausibel („die Runden, die unsere Leute hatten"); die Alternative
-wäre eine eingefrorene Zahl, die niemand mehr erklären kann.
+**Das Argument war falsch.** Es stimmt nur, wenn die gespeicherte
+Zuordnung die Ableitung *nachbilden* soll. Sie soll aber etwas anderes:
+den **damaligen** Stand festhalten — „in dieser Runde saßen Leute aus
+Crew A und B". Dann ist gar keine Pflege nötig, weil sich Vergangenes
+nicht ändert.
+
+Was die Ableitung in der Praxis bedeutet hätte:
+
+| Fall | Folge der Ableitung |
+|---|---|
+| Anna und Ben trinken im Juni, gründen im September eine Crew | Die Juni-Runde erscheint in der Bilanz einer Crew, die es damals nicht gab |
+| David tritt nach dem Sommer aus seiner Crew aus | **Die Bilanz fällt rückwirkend von 60 auf 20** — für Abende, die stattgefunden haben |
+| Eva ist in zwei Crews und trinkt mit Studienfreunden | Die Runde landet in beiden Bilanzen |
+
+Der zweite Fall gibt den Ausschlag. Eine Bilanz ist ein **Rückblick auf
+Geschehenes**; sie darf sich nicht ändern, weil sich heute eine
+Mitgliederliste ändert. Das ist dieselbe Haltung wie in
+[Funktion 20](20-feed-statistiken.md), wo ein Monat ohne Eintrag kein
+Nullwert ist und geschätzte Mengen als geschätzt ausgewiesen werden.
+
+Der dritte Fall bleibt auch mit der gespeicherten Zuordnung bestehen:
+Evas Runde zählt für beide Crews, weil sie in beiden ist. Lösen ließe
+sich das nur mit einer Rückfrage („Für welche Crew zählt dieser
+Abend?") — mehr Bedienung für einen selteneren Fall. Erst einmal beide;
+wenn es stört, lässt sich die Rückfrage nachrüsten.
+
+**Und sie muss am Server entstehen, nicht im Client.** Das ist keine
+Geschmacksfrage: `crew_members_select` zeigt eine Mitgliederliste nur
+den Mitgliedern dieser Crew. Ein Client kann also gar nicht wissen, in
+welchen Crews die anderen am Tisch sind — und soll es auch nicht wissen.
+Ein Trigger mit `security definer` sieht, was nötig ist, und gibt nichts
+davon preis.
+
+### Was die Bilanz trotzdem nicht kann
+
+Sie ist **für jeden Betrachter verschieden**, und das war schon vor 0050
+so: Die RLS zeigt nur, was der Betrachter sehen darf. Frank sagt „wir
+hatten zwölf Check-ins", Greta sieht fünf — weil sie bei sieben davon
+weder dabei noch mit dem Autor befreundet war. **Beide haben recht.**
+
+Das ist der Preis der Entscheidung „Teilnehmer ja, Crew-Rest nein", und
+er ist richtig bezahlt. Die Anzeige sollte ihn allerdings benennen,
+statt eine Gesamtzahl zu behaupten, die für niemanden stimmt.
 
 ## Modularität
 
@@ -210,7 +249,7 @@ und die Crew-Bilanz über Teilnehmer.
 |---|---|---|
 | ~~1~~ | ~~`checkins_select` um den Runden-Zweig erweitern~~ | ✅ pgTAP: Teilnehmer sieht, Fremder nicht, `private` bleibt privat |
 | 2 | Zuordnung beim Einchecken: auch fremde Runden, an denen ich zugesagt habe | Test: Check-in während einer fremden Runde trägt deren `session_id` |
-| 3 | `crewCheckins()` über Teilnehmer statt nur `sessions.crew_id` | Test: Eine Runde ohne `crew_id` erscheint in der Bilanz jeder Crew, aus der jemand dabei war |
+| 3 | `checkin_crews` (0051) und `crewCheckins()` darauf umstellen | pgTAP: Eine Runde ohne `crew_id` erscheint in der Bilanz jeder Crew, aus der jemand dabei war — und **bleibt dort, wenn jemand austritt** |
 | 4 | Runden-Ansicht zeigt die Check-ins aller Teilnehmer | Widget-Test |
 
 ## Offene Punkte / Ideen
