@@ -35,6 +35,12 @@ Der Beacon ist die Einladung: „Ich sitze hier, kommt vorbei." Er ersetzt
 die Rundmail an fünf Leute, von denen vier zu spät antworten. Ein Tipp,
 und die Freunde wissen Bescheid.
 
+Er beantwortet damit ausdrücklich das **jetzt**. Der geplante Termin
+(„Freitag 19 Uhr“) ist eine eigene Funktion mit eigenem Entwurf —
+[Funktion 39](39-geplante-sessions.md) — und sie wird bewusst **nicht**
+automatisch zum Beacon: Ein Beacon behauptet Anwesenheit, eine
+Verabredung nur eine Absicht.
+
 ## Funktion (Nutzersicht)
 
 - **Ein Tipp** startet die Session — optional mit Gasthaus, Nachricht und

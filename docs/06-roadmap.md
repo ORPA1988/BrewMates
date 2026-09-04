@@ -10,7 +10,7 @@
 
 | Rang | Vorhaben | Warum jetzt |
 |---|---|---|
-| 1 | **Geplante Sessions** („morgen 19 Uhr") | Die Zu- und Absage gibt es seit 0.10.13 — es fehlt nur der Termin in der Zukunft |
+| 1 | **[Geplante Sessions](features/39-geplante-sessions.md)** („Freitag 19 Uhr“) | Die Zu- und Absage gibt es seit 0.10.13 — es fehlt nur der Termin in der Zukunft. **Der Entwurf steht** (Funktion 39), Schritt 1 ist eine Rechteprobe von zwanzig Minuten |
 | 2 | **Anmeldeverfahren freischalten** | Die App kann fünf weitere Anbieter; drei davon kosten nichts. Schritte im [Release-Playbook](07-release-playbook.md) |
 | 3 | **[Crew-Challenges und Rollen](features/09-crews.md)** | Sinnvoll, sobald es mehr als eine aktive Crew gibt |
 | 4 | **[Statistik: CSV-Export](features/20-feed-statistiken.md)** | Die Maschinerie steht seit 0.10.14, Reinalkohol ist entschieden und gebaut; der Export fällt aus der Trennung Auswahl/Aufteilung/Zahlen fast heraus |
