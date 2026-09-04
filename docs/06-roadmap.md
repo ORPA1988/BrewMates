@@ -12,9 +12,10 @@
 |---|---|---|
 | 1 | **[Geplante Sessions](features/39-geplante-sessions.md)** („Freitag 19 Uhr“) | Die Zu- und Absage gibt es seit 0.10.13 — es fehlt nur der Termin in der Zukunft. **Der Entwurf steht** (Funktion 39), Schritt 1 ist eine Rechteprobe von zwanzig Minuten |
 | 2 | **Anmeldeverfahren freischalten** | Die App kann fünf weitere Anbieter; drei davon kosten nichts. Schritte im [Release-Playbook](07-release-playbook.md) |
-| 3 | **[Crew-Challenges und Rollen](features/09-crews.md)** | Sinnvoll, sobald es mehr als eine aktive Crew gibt |
-| 4 | **[Statistik: CSV-Export](features/20-feed-statistiken.md)** | Die Maschinerie steht seit 0.10.14, Reinalkohol ist entschieden und gebaut; der Export fällt aus der Trennung Auswahl/Aufteilung/Zahlen fast heraus |
-| 5 | **[Play Store](https://github.com/ORPA1988/BrewMates/issues/67)** | Braucht Konto, Ausweisprüfung und Store-Prozess — Menschenarbeit |
+| 3 | **Sichtbarkeits-Konzept** — wer sieht meinen Namen, meine Check-ins, meine Daten | Steht seit dem Anfang als [v1]-Ziel in [docs/02](02-funktionsspezifikation.md), Abschnitt 10, und ist nie gebaut worden. Die `visibility`-Spalte am Check-in gibt es (`friends`/`crew`/`private`), die Bedienung fehlt — die App schreibt hart `friends`. **Seit 0050 hängt eine Voreinstellung daran, die niemand abwählen kann:** Rundenteilnehmer sehen meine Check-ins. Das ist gewollt, aber es gehört in die Hand des Menschen. Fasst zusammen, was heute an fünf Stellen einzeln geregelt ist (Check-in, Beacon, Bierlaune, Profil, Karte) |
+| 4 | **[Crew-Challenges und Rollen](features/09-crews.md)** | Sinnvoll, sobald es mehr als eine aktive Crew gibt |
+| 5 | **[Statistik: CSV-Export](features/20-feed-statistiken.md)** | Die Maschinerie steht seit 0.10.14, Reinalkohol ist entschieden und gebaut; der Export fällt aus der Trennung Auswahl/Aufteilung/Zahlen fast heraus |
+| 6 | **[Play Store](https://github.com/ORPA1988/BrewMates/issues/67)** | Braucht Konto, Ausweisprüfung und Store-Prozess — Menschenarbeit |
 
 ---
 
