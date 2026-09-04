@@ -193,10 +193,22 @@ async function syncIssue(nummer: number): Promise<Record<string, unknown>> {
       roadmapId = row.id as string;
       ergebnis.roadmap = "updated";
     } else {
+      // `upsert` statt `insert`, und das ist keine Vorsicht auf Verdacht:
+      // GitHub schickt beim Anlegen eines Roadmap-Issues **zwei** Ereignisse
+      // kurz hintereinander (`opened` und `labeled`). Beide Läufe finden
+      // oben keine Zeile, beide fügen ein — und der zweite scheitert an
+      // `roadmap_items_github_issue_key`. Am 2026-09-04 live passiert:
+      // Der Lauf brach mit 502 ab, und ohne den `all`-Lauf hinterher wäre
+      // der Punkt nie in der App erschienen.
+      //
+      // Zwischen Nachsehen und Schreiben liegt eine Lücke; ein
+      // `on conflict` schließt sie, eine zweite Abfrage nicht.
       const { data, error } = await supabase.from("roadmap_items")
-        .insert({ ...felder, sort_order: 1000 + nummer }).select("id")
-        .single();
-      if (error) throw new Error(`roadmap insert: ${error.message}`);
+        .upsert(
+          { ...felder, sort_order: 1000 + nummer },
+          { onConflict: "github_issue" },
+        ).select("id").single();
+      if (error) throw new Error(`roadmap upsert: ${error.message}`);
       roadmapId = data.id as string;
       ergebnis.roadmap = "inserted";
     }

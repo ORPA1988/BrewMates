@@ -57,6 +57,14 @@ und verschwinden nach der Testphase ohne Release.
   Einzelabgleiche 60/min) und schreibt `feedback.status/reply/roadmap_id`
   und `roadmap_items`. `{ "all": true }` synchronisiert alles (Run
   workflow ohne Nummer).
+- **Ein neuer Roadmap-Punkt löst zwei Läufe aus.** GitHub schickt beim
+  Anlegen `opened` **und** `labeled` kurz hintereinander. Beide sahen
+  nach, fanden nichts, und fügten ein — der zweite scheiterte an
+  `roadmap_items_github_issue_key`, der Lauf brach mit 502 ab. Am
+  2026-09-04 live beobachtet: Ohne den `all`-Lauf hinterher wäre der Punkt
+  **nie in der App erschienen**. Behoben mit `upsert … onConflict`;
+  zwischen Nachsehen und Schreiben liegt eine Lücke, die keine zweite
+  Abfrage schließt.
 - **Roadmap = Issues mit Label `roadmap`:** Titel und erster Absatz
   erscheinen in der App; Status aus `status:in-arbeit` / geschlossen =
   fertig / sonst geplant. **Label weg → Punkt weg** (bewusst; der Text
