@@ -1,0 +1,49 @@
+{
+  // ---- Deno nur für die Edge Functions -------------------------------
+  // supabase/functions/{feedback-issue,github-sync,notify}/index.ts laufen
+  // auf Deno. Ohne diese Grenze beansprucht die Deno-Erweiterung den
+  // ganzen Baum und streitet mit der Dart-Analyse.
+  "deno.enable": false,
+  "deno.enablePaths": ["supabase/functions"],
+  "deno.lint": true,
+
+  // ---- GitHub-Workflows ----------------------------------------------
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.yml"
+  },
+
+  // ---- Doku ------------------------------------------------------------
+  // Die Doku ist deutsch; im Dart-Code erzeugt die Prüfung nur Lärm.
+  "cSpell.language": "de,en",
+  "cSpell.enabledFileTypes": {
+    "*": false,
+    "markdown": true
+  },
+  "markdownlint.config": {
+    // Tabellen und Links sprengen jede feste Zeilenbreite.
+    "MD013": false,
+    // Gelegentliches HTML in docs/ ist gewollt.
+    "MD033": false,
+    // Gleichnamige Überschriften nur innerhalb derselben Ebene beanstanden.
+    "MD024": { "siblings_only": true }
+  },
+
+  // ---- Dart ------------------------------------------------------------
+  // Kein formatOnSave: die CI erzwingt keine Formatierung (ci.yml prüft
+  // analyze/test), ein Autoformat würde nur fremde Zeilen in Diffs ziehen.
+  "[dart]": {
+    "editor.rulers": [80],
+    "editor.selectionHighlight": false
+  },
+
+  // ---- Suche -----------------------------------------------------------
+  "search.exclude": {
+    "**/build": true,
+    "**/.dart_tool": true,
+    "**/app/.dart_tool": true
+  },
+  "files.watcherExclude": {
+    "**/build/**": true,
+    "**/.dart_tool/**": true
+  }
+}

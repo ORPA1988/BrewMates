@@ -1,0 +1,37 @@
+{
+  // Was BrewMates am Arbeitsplatz braucht. VS Code schlägt diese Liste
+  // beim Öffnen des Ordners vor; installiert wird nichts von selbst.
+  "recommendations": [
+    // Kern: die App ist Flutter/Dart.
+    "dart-code.dart-code",
+    "dart-code.flutter",
+    "usernamehw.errorlens",
+
+    // Backend: die drei Edge Functions unter supabase/functions sind Deno,
+    // config.toml ist TOML.
+    "denoland.vscode-deno",
+    "tamasfe.even-better-toml",
+
+    // Auslieferung läuft über GitHub Actions, main ist geschützt (Regel E).
+    "github.vscode-github-actions",
+    "github.vscode-pull-request-github",
+    "redhat.vscode-yaml",
+    "eamodio.gitlens",
+
+    // Doku ist Teil jeder Änderung (Regel F): 76 Markdown-Dateien,
+    // deutsch, mit Mermaid-Diagrammen in docs/03, 04, 05, 08, 09.
+    "davidanson.vscode-markdownlint",
+    "bierner.markdown-mermaid",
+    "streetsidesoftware.code-spell-checker",
+    "streetsidesoftware.code-spell-checker-german",
+
+    // tools/*.py pflegen die Community-Datenbestände.
+    "ms-python.python",
+    "ms-python.vscode-pylance"
+  ],
+
+  // Beansprucht .dart-Dateien und kollidiert mit dart-code.
+  "unwantedRecommendations": [
+    "ms-vscode.cpptools-extension-pack"
+  ]
+}

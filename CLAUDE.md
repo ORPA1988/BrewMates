@@ -180,6 +180,13 @@ nicht nachlesen.
   (`Unable to delete directory`) — das war nie ein Codefehler. Seit dem
   Umzug auf F: entfällt der Grund; verbindlich bleibt trotzdem der
   Release-Build in der CI.
+- **Arbeitsplatz (VS Code):** `.vscode/extensions.json` nennt, was hier
+  gebraucht wird; `.vscode/settings.json` zieht die Grenzen. Wichtigste:
+  `deno.enablePaths` beschränkt die Deno-Erweiterung auf
+  `supabase/functions` — ohne das beansprucht sie den ganzen Baum und
+  streitet mit der Dart-Analyse. Deno selbst ist **nicht** global
+  installiert. Kein `formatOnSave` für Dart: die CI erzwingt keine
+  Formatierung, ein Autoformat zieht nur fremde Zeilen in Diffs.
 - **Fallstricke:** `flutter test` nie nach `tail` pipen (scheint zu
   hängen) — in eine Datei umleiten und diese lesen. In Git Bash braucht
   `flutter build web --base-href /BrewMates/` ein vorangestelltes
