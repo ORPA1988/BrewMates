@@ -247,6 +247,81 @@ Checkboxen ☐ markiert.
    die Stores hochladen (kein automatischer Store-Upload konfiguriert —
    dafür fehlen bewusst die Secrets; für v1 reichen die Artefakte).
 
+## Weitere Anmeldeverfahren freischalten (seit 0.10.13)
+
+Die App **kann** Apple, Microsoft, Facebook, Discord und GitHub. Ob ein
+Knopf erscheint, entscheidet allein diese Zeile:
+
+```sql
+update app_config set value = 'google,apple', updated_at = now()
+ where key = 'auth_providers';
+```
+
+Die Reihenfolge in der Liste ist die Reihenfolge der Knöpfe. Der Wert
+darf **nur** nennen, was wirklich eingerichtet ist — ein Knopf, der
+„provider is not enabled" antwortet, ist schlimmer als kein Knopf: Wer
+sich nicht anmelden kann, kommt nicht wieder. Kein Release nötig, auch
+nicht für Geräte, die nie wieder aktualisiert werden.
+
+Vorher pro Anbieter, im Browser:
+
+### Gemeinsam für alle
+
+1. ☐ Supabase → Authentication → Providers → den Anbieter einschalten,
+   **Client ID** und **Secret** eintragen
+2. ☐ Die dort angezeigte **Callback-URL**
+   (`https://swlqkwlpnxwthbneblww.supabase.co/auth/v1/callback`) beim
+   Anbieter als erlaubte Rück-URL hinterlegen
+3. ☐ Supabase → Authentication → URL Configuration: die App-Rückwege
+   müssen unter *Redirect URLs* stehen —
+   `de.brewmates.app://login-callback` und
+   `https://orpa1988.github.io/BrewMates/`. Sie stehen dort schon für
+   Google; ein neuer Anbieter braucht sie **nicht** erneut
+
+### Apple — kostet Geld, und daran führt kein Weg vorbei
+
+☐ **Apple Developer Program, 99 $/Jahr** (<https://developer.apple.com>).
+Ohne Mitgliedschaft gibt es keine Schlüssel, und ohne Schlüssel kein
+„Mit Apple anmelden" — auf keiner Plattform, auch nicht auf Android.
+Das ist keine technische Hürde, die sich umgehen ließe.
+
+Danach im Apple-Developer-Portal:
+
+1. ☐ **App ID** anlegen (Identifier, z. B. `de.brewmates.app`) und darin
+   *Sign in with Apple* aktivieren
+2. ☐ **Services ID** anlegen (z. B. `de.brewmates.web`) — **das** ist die
+   Client-ID für Supabase, nicht die App ID. Darin *Sign in with Apple*
+   konfigurieren, Domain `swlqkwlpnxwthbneblww.supabase.co` und die
+   Callback-URL von oben eintragen
+3. ☐ **Key** erzeugen (Keys → +, *Sign in with Apple*), die `.p8`-Datei
+   herunterladen — **sie ist nur einmal ladbar** — und Key ID sowie
+   Team ID notieren
+4. ☐ In Supabase beim Apple-Provider Services ID als *Client ID* und den
+   aus `.p8` + Key ID + Team ID erzeugten Secret eintragen. Supabase
+   nimmt die vier Angaben direkt entgegen; der Secret läuft nach
+   **maximal sechs Monaten ab** und muss dann erneuert werden — das ist
+   der Teil, den man vergisst und der die Anmeldung stumm bricht
+
+**Pflicht wird Apple erst mit einer iOS-Fassung**, wenn dort ein anderer
+Fremdanbieter angeboten wird (App-Store-Regel). Auf Android und im Web
+ist es freiwillig.
+
+### Microsoft, Discord, GitHub — kostenlos, Minutensache
+
+- ☐ **Microsoft** (heißt bei Supabase `azure`):
+  <https://portal.azure.com> → Entra ID → App registrations → New
+  registration; unter *Certificates & secrets* ein Client Secret
+- ☐ **Discord**: <https://discord.com/developers/applications> → New
+  Application → OAuth2; Client ID und Secret
+- ☐ **GitHub**: Settings → Developer settings → OAuth Apps → New
+
+### Facebook — kostenlos, aber mit Prüfung
+
+☐ <https://developers.facebook.com> → App anlegen → *Facebook Login*.
+Für die Berechtigung `email` verlangt Meta eine **App-Prüfung** samt
+Geschäftsverifizierung; ohne sie funktioniert die Anmeldung nur für die
+eingetragenen Testkonten. Das ist der aufwendigste der fünf.
+
 ## Riegel anheben (`min_supported_version`)
 
 Nach einem Rollout, sobald die alte Fassung nicht mehr bedient werden

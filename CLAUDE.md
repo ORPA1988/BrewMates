@@ -7,8 +7,8 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
 
 - **Branch**: PRs #2–#4 sind in `main` gemerged; neue Arbeit startet auf
   frischen Branches von `main`.
-  Version `0.10.12-beta+30` — `pubspec.yaml` und `AppConfig.appVersion`
-  stehen darauf. Sie bringt die Crews
+  Version `0.10.13-beta+31` — `pubspec.yaml` und `AppConfig.appVersion`
+  stehen darauf; 0.10.12 ist veröffentlicht und brachte die Crews
   vollständig (Feed, Bilanz, Kurzcode, Einladungen), Vorschaubilder
   der Biere, Sterne ohne Standardwert und die eigene Lizenz.
   (Beta 0.x bis
@@ -17,7 +17,7 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0045` sind LIVE, lückenlos** (Stand 2026-09-03; 0039 und 0040
+  **`0001–0046` sind LIVE, lückenlos** (Stand 2026-09-03; 0039 und 0040
   am selben Tag eingespielt und gegengeprüft: Trigger, Index, Rechte und
   Policies über `information_schema`/`pg_catalog` bestätigt, Advisor ohne
   Neubefund — nur die bekannte Baseline plus `unused_index` (INFO), was
@@ -47,6 +47,17 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   hängt, prüft sie in der Rolle, die sie betrifft (`set local role
   authenticated` + `request.jwt.claims`); auch die MCP-Probe läuft als
   `postgres`.
+  **0046 Anmeldewege:** `app_config.auth_providers` (Startwert `google`)
+  sagt, welche OAuth-Anbieter der Anmeldebildschirm zeigen darf. Die App
+  kann Apple, Microsoft (`azure`), Facebook, Discord und GitHub — ob ein
+  Knopf erscheint, entscheidet diese Zeile, **nicht das Release**.
+  Grund: Jeder Anbieter braucht ein eingerichtetes Konto bei ihm, und ein
+  Knopf, der „provider is not enabled" antwortet, ist schlimmer als
+  keiner. Freischalten ist danach ein `update` (Schritte je Anbieter in
+  `docs/07-release-playbook.md`; **Apple kostet 99 $/Jahr**, daran führt
+  kein Weg vorbei). Ohne Anmeldung lesbar — muss es sein, denn gebraucht
+  wird die Liste von dem, der noch kein Konto hat. Live als `anon`
+  gegengeprüft.
   **0045 TRUNCATE entzogen:** `anon` und `authenticated` hatten auf
   jeder Tabelle in `public` noch `TRUNCATE, REFERENCES, TRIGGER` — Erbe
   der Supabase-Vorgaben, das 0035 nicht mitgenommen hat. **TRUNCATE

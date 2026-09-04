@@ -1,0 +1,44 @@
+-- 0046: Welche Anmeldewege die App anbieten darf.
+--
+-- ============================================================================
+-- DAS PROBLEM MIT EINEM KNOPF, DER NICHT GEHT
+--
+-- Ein zweiter Anmeldeweg ist nicht mit einem Knopf getan. Jeder Anbieter
+-- braucht am Server ein eingerichtetes Konto — Client-ID, Geheimnis,
+-- hinterlegte Rück-URL —, und das kann nur ein Mensch im Dashboard des
+-- jeweiligen Anbieters einrichten. Fehlt das, antwortet Supabase mit
+-- „provider is not enabled".
+--
+-- Stünde die Liste der Knöpfe im App-Code, hätte jeder Ausgelieferte
+-- genau die Knöpfe, die beim Bauen bekannt waren: entweder Knöpfe für
+-- Anbieter, die es noch nicht gibt, oder keinen Knopf für den, der
+-- inzwischen da ist. Beides ist falsch, und das erste ist schlimmer —
+-- wer sich nicht anmelden kann, kommt nicht wieder.
+--
+-- Deshalb sagt es der Server. Dieselbe Stelle, dieselbe Begründung wie
+-- bei `feedback_enabled` (0037) und `min_supported_version` (0029):
+-- Entscheidungen, die sich ändern, gehören nicht in ein Release.
+--
+-- ============================================================================
+-- WARUM DER STARTWERT NUR `google` IST
+--
+-- Weil heute nur Google eingerichtet ist. Der Wert beschreibt, was **ist**,
+-- nicht was gewünscht ist — eine Konfiguration, die etwas verspricht, das
+-- am Anbieter noch nicht existiert, ist derselbe kaputte Knopf, nur eine
+-- Ebene tiefer.
+--
+-- Erweitert wird er, wenn der Anbieter wirklich eingerichtet ist:
+--
+--   update app_config set value = 'google,apple', updated_at = now()
+--    where key = 'auth_providers';
+--
+-- Die Reihenfolge in der Liste ist die Reihenfolge der Knöpfe.
+--
+-- E-Mail + Passwort steht bewusst NICHT darin: Das ist kein OAuth-Weg,
+-- braucht keine Freischaltung und ist immer da. Ein Schalter dafür wäre
+-- ein Schalter, mit dem man sich selbst aussperrt.
+-- ============================================================================
+
+insert into app_config (key, value)
+values ('auth_providers', 'google')
+on conflict (key) do nothing;

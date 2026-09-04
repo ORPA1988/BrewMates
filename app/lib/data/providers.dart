@@ -37,6 +37,7 @@ import 'online/remote_mapping.dart';
 
 // Aufgeteilt nach Themen (Backlog B-4). Reihenfolge alphabetisch.
 part 'providers/anfragen.dart';
+part 'providers/anmeldung.dart';
 part 'providers/beers.dart';
 part 'providers/challenges.dart';
 part 'providers/crews.dart';

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../core/anmeldeverfahren.dart';
 import '../../core/supabase_config.dart';
 
 import 'api/checkins_api.dart';
@@ -28,6 +29,10 @@ export 'api/friends_api.dart';
 export 'api/moderation_api.dart';
 export 'api/sessions_api.dart';
 export 'api/venues_api.dart';
+
+// Aus demselben Grund weitergereicht: Wer die Anmeldewege anzeigt,
+// importiert ohnehin den OnlineService.
+export '../../core/anmeldeverfahren.dart';
 
 // Die Antwort-Typen stehen in models.dart. Weitergereicht, damit die
 // bestehenden Importeure von `online_service.dart` unverändert bleiben.
@@ -203,13 +208,41 @@ class OnlineService {
     }
   }
 
-  /// Anmeldung/Registrierung mit dem Google-Konto (Browser-OAuth-Flow;
-  /// die Rückkehr in die App läuft über [oauthRedirect]). Das Profil
-  /// entsteht serverseitig automatisch (Trigger) mit Platzhalter-Username.
-  Future<String?> signInWithGoogle() async {
+  /// Welche Anmeldewege der Server wirklich anbietet (Migration 0046).
+  ///
+  /// Ohne Anmeldung lesbar — das muss es sein, denn gebraucht wird die
+  /// Liste genau von dem, der noch kein Konto hat.
+  ///
+  /// Gibt zurück, **was dasteht** — auch nichts. Was aus „nichts“ wird,
+  /// entscheidet `anmeldeverfahrenProvider` an einer einzigen Stelle;
+  /// hätte diese Methode selbst schon geraten, gäbe es die Regel zweimal
+  /// und sie würde beim ersten Umbau auseinanderlaufen.
+  Future<List<Anmeldeverfahren>> verfuegbareAnmeldeverfahren() async {
+    try {
+      final row = await _client
+          .from('app_config')
+          .select('value')
+          .eq('key', 'auth_providers')
+          .maybeSingle();
+      return anmeldeverfahrenAus(row?['value'] as String?);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Anmeldung/Registrierung über einen fremden Anbieter
+  /// (Browser-OAuth-Flow; die Rückkehr in die App läuft über
+  /// [oauthRedirect]). Das Profil entsteht serverseitig automatisch
+  /// (Trigger) mit Platzhalter-Username.
+  ///
+  /// Der Weg ist für **alle** Anbieter derselbe — Supabase vereinheitlicht
+  /// das. Deshalb gibt es hier eine Methode und nicht eine je Anbieter:
+  /// Sechs Kopien desselben Ablaufs wären sechs Stellen, an denen der
+  /// nächste Fix nur fünfmal ankommt.
+  Future<String?> signInWithProvider(Anmeldeverfahren verfahren) async {
     try {
       final launched = await _client.auth.signInWithOAuth(
-        OAuthProvider.google,
+        _oauthProvider(verfahren),
         // Web: zurück auf die eigene Seiten-URL (GitHub Pages), sonst
         // Custom-Scheme in die App; supabase_flutter erkennt den
         // PKCE-Code in der Rück-URL automatisch.
@@ -219,17 +252,32 @@ class OnlineService {
             ? LaunchMode.platformDefault
             : LaunchMode.externalApplication,
       );
-      return launched ? null : 'Google-Anmeldung konnte nicht gestartet werden.';
+      return launched
+          ? null
+          : 'Anmeldung mit ${verfahren.name} konnte nicht gestartet werden.';
     } on AuthException catch (e) {
       if (e.message.toLowerCase().contains('not enabled')) {
-        return 'Google-Login ist serverseitig noch nicht freigeschaltet – '
-            'nutze vorerst E-Mail + Passwort.';
+        // Sollte nicht vorkommen — die Liste kommt vom Server. Wenn doch,
+        // dann steht in `auth_providers` mehr, als eingerichtet ist, und
+        // der Satz muss sagen, was der Mensch jetzt tun kann.
+        return '${verfahren.name}-Anmeldung ist serverseitig noch nicht '
+            'freigeschaltet – nutze vorerst E-Mail + Passwort.';
       }
-      return 'Google-Anmeldung fehlgeschlagen: ${e.message}';
+      return '${verfahren.name}-Anmeldung fehlgeschlagen: ${e.message}';
     } catch (_) {
       return 'Keine Verbindung – bitte später erneut versuchen.';
     }
   }
+
+  static OAuthProvider _oauthProvider(Anmeldeverfahren verfahren) =>
+      switch (verfahren) {
+        Anmeldeverfahren.google => OAuthProvider.google,
+        Anmeldeverfahren.apple => OAuthProvider.apple,
+        Anmeldeverfahren.microsoft => OAuthProvider.azure,
+        Anmeldeverfahren.facebook => OAuthProvider.facebook,
+        Anmeldeverfahren.discord => OAuthProvider.discord,
+        Anmeldeverfahren.github => OAuthProvider.github,
+      };
 
   /// Nutzername ändern – frei wählbar, aber global nur einmal vergeben.
   /// Die Kontonummer/Konto-ID bleibt dabei unverändert.
