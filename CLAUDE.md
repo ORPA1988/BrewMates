@@ -1,8 +1,8 @@
 # CLAUDE.md — Arbeitsanleitung für Claude-Sessions
 
-BrewMates: Bier-App (Untappd × Beer with Me), Flutter, deutschsprachig,
-Fokus DACH-Raum (Herz: Österreich + Bayern). **Antworte dem Nutzer auf
-Deutsch.**
+BrewMates: Bier-App — Bier-Tagebuch und spontane Treffen in einem.
+Flutter, deutschsprachig, Fokus DACH-Raum (Herz: Österreich + Bayern).
+**Antworte dem Nutzer auf Deutsch.**
 
 Diese Datei ist der Einstieg und wird jede Sitzung gelesen. Sie sagt, was
 zu tun ist. Was war und warum, steht in

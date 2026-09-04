@@ -101,9 +101,9 @@ Ab dieser Größe stoßen die „geliehenen" Gratis-Dienste an Grenzen:
 
 ## Geschäftsmodell – realistisch betrachtet
 
-Wichtig vorweg: Eine Bier-App ist ein Nischenprodukt. Selbst Untappd mit
-Millionen Nutzern lebt von einem Mix aus Abo und Partnerschaften. Für
-BrewMates kommen vier Bausteine infrage:
+Wichtig vorweg: Eine Bier-App ist ein Nischenprodukt. Selbst die großen
+Anbieter dieser Nische leben mit Millionen Nutzern von einem Mix aus Abo
+und Partnerschaften. Für BrewMates kommen vier Bausteine infrage:
 
 ### 1. Werbung (AdMob)
 

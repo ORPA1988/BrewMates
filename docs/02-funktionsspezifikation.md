@@ -11,14 +11,14 @@ Priorisierung: **[MVP]** = Muss für den ersten Release · **[v1]** = erste Voll
 - **[MVP]** Altersverifikation (Selbstauskunft ≥ 18/21 je nach Land, App-Store-Kennzeichnung).
 - **[v1]** Öffentliches Profil mit Statistiken (optional privat schaltbar).
 
-## 2. Freunde & Crews *(aus Beer with Me)*
+## 2. Freunde & Crews
 
 - **[MVP]** Freunde finden per Nutzername/QR-Code; Anfrage → Bestätigung (beidseitig).
 - **[MVP]** Freundesliste mit Status: aktive Session sichtbar („🍺 gerade im Hopfengarten").
 - **[v1]** **Crews**: benannte Gruppen (z. B. „Stammtisch Donnerstag"), eigenes Feed- und Beacon-Ziel.
 - **[v2]** Kontaktbuch-Abgleich (opt-in, gehasht) zum Freunde-Finden.
 
-## 3. Session & Beacon *(Herzstück, aus Beer with Me)*
+## 3. Session & Beacon *(Herzstück)*
 
 - **[MVP]** **Session starten mit einem Tap**: wählt automatisch aktuellen Standort (optional Venue), sendet Push an gewählte Zielgruppe (alle Freunde / Crew / niemand = Stealth-Session).
 - **[MVP]** Beacon-Antworten: **„Prost! 🍻"** (Reaktion) und **„Bin dabei!"** (Teilnahme, erscheint in der Session).
@@ -28,7 +28,7 @@ Priorisierung: **[MVP]** = Muss für den ersten Release · **[v1]** = erste Voll
 - **[v1]** Session-Nachricht („Wir sitzen hinten im Garten, Tisch 12").
 - **[v2]** Geplante Sessions („Freitag 18 Uhr, Craft-Bar" → Einladung + Erinnerung, Kalender-Export).
 
-## 4. Check-ins & Bewertung *(aus Untappd)*
+## 4. Check-ins & Bewertung
 
 - **[MVP]** Check-in eines Biers: Suche in Bier-Datenbank, Bewertung (0,25er-Schritte bis 5 ⭐), Freitext-Notiz, Foto.
 - **[MVP]** Check-in optional mit Venue und innerhalb einer Session.
@@ -36,7 +36,7 @@ Priorisierung: **[MVP]** = Muss für den ersten Release · **[v1]** = erste Voll
 - **[v1]** Barcode-Scanner für Flaschen/Dosen.
 - **[v2]** Foto-Erkennung des Etiketts (ML-basiert).
 
-## 5. Bier-Datenbank & Entdecken *(aus Untappd)*
+## 5. Bier-Datenbank & Entdecken
 
 - **[MVP]** Datenbank: Bier (Name, Stil, ABV, IBU, Beschreibung), Brauerei (Name, Ort, Logo). Start mit Open-Data-Import + Community-Einreichungen (moderiert).
 - **[MVP]** Suche nach Bier, Brauerei, Stil.
@@ -44,20 +44,20 @@ Priorisierung: **[MVP]** = Muss für den ersten Release · **[v1]** = erste Voll
 - **[v1]** Entdecken-Feed: beliebt bei Freunden, Top-Biere in der Nähe, neue Biere deines Lieblingsstils.
 - **[v2]** Personalisierte Empfehlungen („Dir schmeckt NEIPA → probiere …").
 
-## 6. Venues *(aus Untappd)*
+## 6. Venues
 
 - **[MVP]** Venue-Zuordnung beim Check-in/Session (Karten-POI-Suche).
 - **[v1]** Venue-Seiten: dort getrunkene Biere, Freunde-Aktivität, Fotos.
 - **[v2]** **Tap-Listen** für verifizierte Betreiber (was läuft gerade vom Fass) + „Bier X ist in deiner Nähe verfügbar"-Benachrichtigung.
 
-## 7. Feed & Interaktion *(aus Untappd + Beer with Me)*
+## 7. Feed & Interaktion
 
 - **[MVP]** Aktivitäts-Feed der Freunde: Check-ins, gestartete Sessions, neue Abzeichen.
 - **[MVP]** Reaktionen: **Toast 🍻** (Like) und Kommentare.
 - **[v1]** Crew-Feed (nur Crew-Mitglieder).
 - **[v2]** Teilen nach außen (Bild-Export „Mein Abend" für Messenger/Social).
 
-## 8. Abzeichen & Statistiken *(aus Untappd)*
+## 8. Abzeichen & Statistiken
 
 - **[v1]** **Abzeichen** – belohnt werden Vielfalt & Gemeinsamkeit, nie Menge:
   - Stil-Entdecker (5 verschiedene Stile), Weltenbummler (Biere aus N Ländern),

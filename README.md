@@ -2,10 +2,10 @@
 
 **Die Bier-App, die Entdecken und Zusammensein vereint.**
 
-BrewMates kombiniert das Beste aus zwei Welten:
+BrewMates kombiniert zwei Hälften desselben Abends:
 
-- **Untappd** – Biere entdecken, einchecken, bewerten, Abzeichen sammeln und ein persönliches Bier-Tagebuch führen.
-- **Beer with Me** – mit einem Tap den Freunden sagen *„Ich trinke gerade ein Bier – komm vorbei!"*, Freunde live auf der Karte sehen und spontane Treffen ermöglichen.
+- **Das Bier** – entdecken, einchecken, bewerten, Abzeichen sammeln und ein persönliches Bier-Tagebuch führen.
+- **Die Leute** – mit einem Tap den Freunden sagen *„Ich trinke gerade ein Bier – komm vorbei!"*, Freunde live auf der Karte sehen und spontane Treffen ermöglichen.
 
 **Plattform-Fokus: Android** (die iOS-Option bleibt über dieselbe Flutter-Codebasis offen; Windows/macOS/Web funktionieren als Entwickler-Targets).
 
@@ -15,7 +15,7 @@ BrewMates kombiniert das Beste aus zwei Welten:
 
 | Dokument | Inhalt |
 |---|---|
-| [01 – Produktvision](docs/01-produktvision.md) | Idee, Zielgruppe, Kernversprechen, Abgrenzung zu Untappd & Beer with Me |
+| [01 – Produktvision](docs/01-produktvision.md) | Idee, Zielgruppe, Kernversprechen, Abgrenzung |
 | [02 – Funktionsspezifikation](docs/02-funktionsspezifikation.md) | Alle Features im Detail, priorisiert |
 | [03 – Architektur & Tech-Stack](docs/03-architektur.md) | Flutter-Multi-Plattform-Strategie, Backend, Push, Karten, Offline-Sync |
 | [04 – Datenmodell](docs/04-datenmodell.md) | Entitäten, Beziehungen, ER-Diagramm |

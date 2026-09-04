@@ -3,15 +3,15 @@
 ## Elevator Pitch
 
 > **BrewMates** ist die App für Menschen, die Bier lieben – und zwar am liebsten gemeinsam.
-> Sie vereint das Bier-Tagebuch und die Entdecker-Community von **Untappd** mit der
-> spontanen „Komm auf ein Bier vorbei!"-Magie von **Beer with Me** in einer einzigen App
+> Sie vereint das **Bier-Tagebuch mit Entdecker-Community** und die spontane
+> **„Komm auf ein Bier vorbei!"-Einladung** in einer einzigen App
 > für Android, iOS und Windows.
 
 ## Das Problem
 
 Heute braucht man zwei Apps für zwei Hälften desselben Erlebnisses:
 
-| | Untappd | Beer with Me |
+| | Die Katalog-Hälfte | Die Treffen-Hälfte |
 |---|---|---|
 | **Stärke** | Biere entdecken, bewerten, katalogisieren; riesige Bier-Datenbank; Abzeichen & Statistiken | Freunde in Echtzeit wissen lassen, dass man gerade (wo) ein Bier trinkt; spontane Treffen |
 | **Schwäche** | Sozial eher passiv: Man sieht *nachher*, was Freunde getrunken haben | Kein Bier-Wissen: *was* getrunken wird, wie es schmeckt, keine Historie |
@@ -24,13 +24,13 @@ Moment – aber er zerfällt heute in zwei Apps: eine für das Bier, eine für d
 BrewMates macht aus dem Check-in einen **sozialen Beacon** und aus dem Beacon ein
 **Bier-Tagebuch**:
 
-- **Jeder Check-in kann Freunde einladen.** Bewertung, Foto und Geschmacksnoten wie bei Untappd – plus optional „Ich bin hier, kommt vorbei!" wie bei Beer with Me.
+- **Jeder Check-in kann Freunde einladen.** Bewertung, Foto und Geschmacksnoten – plus optional „Ich bin hier, kommt vorbei!".
 - **Jede Session wird automatisch dokumentiert.** Wer auf den Beacon eines Freundes reagiert und dazukommt, hat hinterher gemeinsame Check-ins, gemeinsame Statistiken, gemeinsame Abzeichen.
 
 ## Zielgruppen
 
-1. **Craft-Bier-Enthusiasten** (Kern von Untappd): wollen Biere loggen, bewerten, Neues entdecken, Sammlungen und Statistiken pflegen.
-2. **Gesellige Gelegenheitstrinker** (Kern von Beer with Me): wollen unkompliziert Freunde treffen; das Bier ist der Anlass, nicht das Studienobjekt.
+1. **Craft-Bier-Enthusiasten**: wollen Biere loggen, bewerten, Neues entdecken, Sammlungen und Statistiken pflegen.
+2. **Gesellige Gelegenheitstrinker**: wollen unkompliziert Freunde treffen; das Bier ist der Anlass, nicht das Studienobjekt.
 3. **Freundesgruppen & Stammtische**: wiederkehrende Crews, die gemeinsame Rituale pflegen (Feierabendbier, Stammtisch, Braurunden).
 
 Die App muss für Gruppe 2 **mit einem einzigen Tap** funktionieren (Beacon senden)

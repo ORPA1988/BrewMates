@@ -59,7 +59,7 @@ RLS: sichtbar nur für die beiden Beteiligten. Hilfsfunktion `are_friends(a,b)`
 Crews: `id, name, emoji, owner_id`. Members: `crew_id, profile_id, role(owner|member)`.
 RLS: nur Mitglieder sehen Crew und Mitgliederliste.
 
-### `sessions` *(das Beer-with-Me-Herzstück)*
+### `sessions` *(das Herzstück der Treffen)*
 | Spalte | Typ | Anmerkung |
 |---|---|---|
 | id | uuid PK | |
@@ -90,7 +90,7 @@ Volltextsuche über `tsvector`-Index auf Name+Brauerei+Stil.
 `id, name, location geography(point), address, osm_id, verified`. POI-Anlage aus
 OpenStreetMap-Daten beim ersten Check-in an einem Ort.
 
-### `checkins` *(das Untappd-Herzstück)*
+### `checkins` *(das Herzstück)*
 | Spalte | Typ | Anmerkung |
 |---|---|---|
 | id | uuid PK | Client-generiert (Offline-Sync, idempotent) |
