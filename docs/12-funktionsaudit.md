@@ -1,12 +1,19 @@
-# Funktionsaudit
+# 12 — Funktionsaudit
 
-**Stand: 2026-08-15, Version 0.9.13-beta.** Durchsicht aller bestehenden
-Funktionen auf drei Fragen: Ist sie vollständig? Ist sie sinnvoll
-geschnitten? Trägt sie Wachstum?
+> **Erstellt:** 2026-08-15 (0.9.13-beta) ·
+> **Nachgeführt:** 2026-09-04 (0.10.13-beta)
 
-Der Befund ist insgesamt gut — die App ist funktional weiter, als der
-Beta-Stand vermuten lässt. Die Schwächen liegen fast alle an derselben
-Stelle: Sie stammen aus der Zeit, als „viele Daten" fünf Check-ins hieß.
+Durchsicht aller bestehenden Funktionen auf drei Fragen: Ist sie
+vollständig? Ist sie sinnvoll geschnitten? Trägt sie Wachstum?
+
+Der Befund war schon 2026-08-15 gut — die App ist funktional weiter, als
+der Beta-Stand vermuten lässt. Die Schwächen lagen fast alle an derselben
+Stelle: Sie stammten aus der Zeit, als „viele Daten" fünf Check-ins hieß.
+
+**Von den ursprünglichen Befunden ist einer übrig.** Der Rest ist
+erledigt und hier durchgestrichen statt gelöscht — ein Audit, das seine
+eigene Geschichte verschweigt, sieht aus, als hätte es nie Mängel gegeben.
+Durchgestrichenes ist **nicht mehr zu tun.**
 
 ## Zusammenfassung
 
@@ -16,7 +23,7 @@ Stelle: Sie stammen aus der Zeit, als „viele Daten" fünf Check-ins hieß.
 | ~~Feed-Abfrage ohne Obergrenze (lokal)~~ | erledigt | Feed |
 | ~~Eigene Check-ins nicht löschbar~~ | erledigt | Feed, Tagebuch |
 | ~~Fehlender Index auf `checkins.created_at`~~ | erledigt (0020) | Feed |
-| Freundessuche über `display_name` ohne Trigram-Index | mittel | Freundessuche |
+| ~~Freundessuche über `display_name` ohne Trigram-Index~~ | erledigt (0027) | Freundessuche |
 | Statistiken bleiben unter ihren Möglichkeiten | mittel | Profil |
 | Cloud-Wiederherstellung holt immer alles | mittel | Synchronisation |
 | Beacon-Laufzeit nicht wählbar | niedrig | Sessions |
@@ -80,37 +87,45 @@ Was fehlte, war ein eigener Index auf `(created_at desc)` — nachgeliefert
 in **Migration 0020**. Solange die Tabelle klein ist, merkt das niemand;
 ab einigen zehntausend Zeilen wird das Sortieren teuer.
 
-Die Freundessuche, die seit heute auch den Anzeigenamen durchsucht,
-benutzt `ilike '%begriff%'`. Ein solcher Ausdruck kann einen normalen
-Index prinzipiell nicht nutzen — er braucht `pg_trgm` mit einem
-GIN-Index. Bei zwei Profilen ist das egal, bei zehntausend nicht mehr.
-Kein Fehler, aber eine Schuld, die man kennen muss.
+Die Freundessuche durchsucht auch den Anzeigenamen und benutzt
+`ilike '%begriff%'`. Ein solcher Ausdruck kann einen normalen Index
+prinzipiell nicht nutzen — er braucht `pg_trgm` mit einem GIN-Index.
+**Nachgeliefert in Migration 0027**; live liegen zwei GIN-Indizes
+(nachgeprüft am 2026-09-04 über `pg_indexes`).
 
 ## Was funktional fehlt
 
 **~~Check-ins lassen sich nicht löschen.~~** War die klarste Lücke im
 Bestand: Wer sich vertippte oder das falsche Bier scannte, hatte keine
-Handhabe außer der Löschung des ganzen Kontos. Seit 0.9.14 erledigt,
-siehe [Funktion 19](features/19-feed-eintraege-loeschen.md). Offen bleibt
-das **Bearbeiten** — es deckt vermutlich die Hälfte der Löschwünsche ab.
+Handhabe außer der Löschung des ganzen Kontos. Seit 0.9.14 erledigt
+([Funktion 19](features/19-feed-eintraege-loeschen.md)); das
+**Bearbeiten** kam mit 0.10.x dazu
+([Funktion 27](features/27-check-ins-bearbeiten.md)).
 
 **Die Statistiken bleiben unter ihren Möglichkeiten.** Das Profil zeigt
-Zähler: Check-ins, Stile, Länder, Wochen-Serie. Fast alle Daten für echte
-Auswertungen liegen längst da — Land, Stil, Alkoholgehalt, Zeitpunkt,
-Gasthaus und sogar das Gebinde (`ServingStyle`: Fass, Flasche, Dose,
-Growler). Was fehlt, ist die Auswertung selbst, ein Weg sie zu filtern —
-und die **Menge**: Ohne Füllmenge je Check-in gibt es keine Literangabe,
-und genau danach fragt man als erstes. Siehe
+Zähler: Check-ins, Stile, Länder, Wochen-Serie. **Alle** Daten für echte
+Auswertungen liegen inzwischen da — Land, Stil, Alkoholgehalt, Zeitpunkt,
+Gasthaus, Gebinde (`ServingStyle`) und seit 0022/Drift v11 auch die
+**Füllmenge je Check-in**, die 2026-08-15 noch als Hauptlücke galt.
+
+Es fehlt also nicht mehr das Datum, sondern die Auswertung: eine Ansicht,
+die mehr sagt als eine Zahl, und ein Weg, sie zu filtern. Siehe
 [Funktion 20](features/20-feed-statistiken.md).
 
-**Beacons laufen fest.** Die Laufzeit ist einprogrammiert, nicht wählbar.
-Wer zwei Stunden im Wirtshaus sitzt, hat dieselbe Anzeige wie jemand, der
-kurz auf ein Feierabendbier vorbeischaut.
+**~~Beacons laufen fest.~~** Die Laufzeit war einprogrammiert. Seit
+0.9.14 wählbar, verlängerbar und serverseitig auf 29 min–24 h begrenzt
+(0021, [Funktion 23](features/23-beacon-laufzeit.md)). Seit 0.10.13 kann
+man auf einen fremden Beacon außerdem **zu- und absagen**
+([Funktion 07](features/07-sessions-und-beacons.md)).
 
-**Freunde sind eine flache Menge.** Entweder jemand sieht alles, oder er
-ist kein Freund. Für ein Werkzeug, das Standort und Trinkverhalten zeigt,
-ist das grob — Arbeitskollegen und beste Freunde verdienen unterschiedliche
-Nähe.
+**~~Freunde sind eine flache Menge.~~** Entweder jemand sah alles, oder
+er war kein Freund. Seit 0024 gibt es **Freundeskreise** (Bekannter /
+Freund / Enger Freund) mit serverseitiger Durchsetzung
+([Funktion 24](features/24-freundeskreise.md)).
+
+**Die Statistiken sind damit der einzige Befund, der offen geblieben
+ist** — und der größte Hebel im Bestand. Der Plan dazu steht in
+[Funktion 20](features/20-feed-statistiken.md).
 
 ## Was gut ist und so bleiben sollte
 

@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "updated": "2026-09-03",
+  "version": 4,
+  "updated": "2026-09-04",
   "beers": [
     {
       "id": "de-by-augustiner-lagerbier-hell",
@@ -838,6 +838,19 @@
       "description_manufacturer": "Der legendäre Eisbock aus Kulmbach, durch Ausfrieren konzentriert – die Brauerei beruft sich auf die Kulmbacher Eisbock-Tradition des 19. Jahrhunderts.",
       "description_community": "Rarität mit Kultstatus: dickflüssig-malzig, Dörrobst, Süße und deutliche Alkoholwärme – eher Digestif als Durstlöscher.",
       "community_rating": 3.8
+    },
+    {
+      "id": "de-by-kulmbacher-moenchshof-kellerbier",
+      "brewery_id": "de-by-kulmbacher",
+      "name": "Mönchshof Kellerbier",
+      "style": "Kellerbier",
+      "abv": 5.4,
+      "ibu": null,
+      "is_alcohol_free": false,
+      "barcodes": [
+        "4082100009097"
+      ],
+      "description_manufacturer": "Naturtrübes Kellerbier der Kulmbacher Traditionsmarke Mönchshof: ungefiltert, bernsteinfarben und vollmundig malzig."
     },
     {
       "id": "de-by-mahrs-au",

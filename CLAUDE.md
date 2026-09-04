@@ -1,414 +1,210 @@
 # CLAUDE.md — Arbeitsanleitung für Claude-Sessions
 
-BrewMates: Android-Bier-App (Untappd × Beer with Me), Flutter, deutschsprachig,
-Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
+BrewMates: Bier-App (Untappd × Beer with Me), Flutter, deutschsprachig,
+Fokus DACH-Raum (Herz: Österreich + Bayern). **Antworte dem Nutzer auf
+Deutsch.**
 
-## Aktueller Stand (2026-09-03)
+Diese Datei ist der Einstieg und wird jede Sitzung gelesen. Sie sagt, was
+zu tun ist. Was war und warum, steht in
+[docs/13 — Migrationen & Lehren](docs/13-migrationen-und-lehren.md).
 
-- **Branch**: PRs #2–#4 sind in `main` gemerged; neue Arbeit startet auf
-  frischen Branches von `main`.
-  Version `0.10.13-beta+31` — `pubspec.yaml` und `AppConfig.appVersion`
-  stehen darauf; 0.10.12 ist veröffentlicht und brachte die Crews
-  vollständig (Feed, Bilanz, Kurzcode, Einladungen), Vorschaubilder
-  der Biere, Sterne ohne Standardwert und die eigene Lizenz.
-  (Beta 0.x bis
-  zum Play-Store-1.0; Android-`versionCode` zählt immer weiter hoch; die
-  frühen Alpha-Releases wurden von 1.1/1.2 auf 0.1.0/0.2.0 umbenannt).
-  Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
-  `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
-- **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0047` sind LIVE, lückenlos** (Stand 2026-09-03; 0039 und 0040
-  am selben Tag eingespielt und gegengeprüft: Trigger, Index, Rechte und
-  Policies über `information_schema`/`pg_catalog` bestätigt, Advisor ohne
-  Neubefund — nur die bekannte Baseline plus `unused_index` (INFO), was
-  bei leerer Datenbank erwartbar ist).
-  **0039 Beacon-Benachrichtigungen:** Trigger `sessions_notify` schreibt
-  beim Start eines Beacons `notifications`-Zeilen an genau die, die ihn
-  auch sehen dürfen (Freunde ab Kreis „Freund", bzw. die Crew) —
-  wortwörtlich die Bedingung aus `sessions_select`. Spam-Bremse: ein
-  Wecken je Gastgeber und Stunde, **gemessen an `sessions`**, nicht an
-  `notifications` (die verschwinden beim Beenden, sonst setzte
-  „starten, beenden, starten" die Bremse zurück). Der Trigger benutzt
-  bewusst NICHT `are_friends`/`is_crew_member`: Die verlangen seit 0009
-  eine Beteiligung von `auth.uid()` und lieferten bei einem Insert ohne
-  Sitzung still `false`.
-  ⚠️ **0042 repariert einen Fehler aus 0041 — und die Lehre daraus ist
-  wichtiger als der Fehler.** Der Code entstand per Spaltenvorgabe
-  (`default neuer_crew_code()`); eine Spaltenvorgabe wird aber **mit den
-  Rechten des Einfügenden** ausgewertet, nicht mit denen des Besitzers.
-  Die Funktion war für `authenticated` gesperrt, also scheiterte „Crew
-  gründen" für alle mit `permission denied for function
-  neuer_crew_code` — auch in der veröffentlichten 0.10.11. Jetzt ein
-  `before insert`-Trigger als SECURITY DEFINER (Muster:
-  `friendships_notify`). **Warum es durchrutschte:** Die Live-Probe legte
-  die Wegwerf-Crew als `postgres` an, und der darf die Funktion rufen —
-  geprüft war, dass der Code richtig aussieht, nicht dass ihn der
-  richtige Rolleninhaber bekommt. Wer eine Regel prüft, die an Rechten
-  hängt, prüft sie in der Rolle, die sie betrifft (`set local role
-  authenticated` + `request.jwt.claims`); auch die MCP-Probe läuft als
-  `postgres`.
-  **0047 Zu- und Absagen auf einen Beacon:** `participant_kind` heißt
-  jetzt `joined | toast | declined`. Grund: Wer nicht kann, hatte keinen
-  Knopf — und damit fehlte dem Gastgeber die halbe Information.
-  „Drei haben zugesagt“ heißt nichts, solange offen ist, ob die anderen
-  noch überlegen oder längst abgesagt haben. Zusage und Absage schließen
-  einander aus (der **Client** räumt die andere Zeile weg — der Schlüssel
-  ist `(session, profil, art)`), Prost steht daneben: „kann heute nicht,
-  trink eins auf mich“. Der Trigger aus 0037 behandelte alles, was nicht
-  `toast` war, als Zusage — eine Absage wäre als „ist dabei“ gemeldet
-  worden; die Zuordnung liegt jetzt in `participant_notification_type()`
-  an **einer** Stelle. ⚠️ Der Helfer vergleicht `k::text` und nicht `k`:
-  Ein Enum-Literal in einer `language sql`-Funktion wird beim Anlegen
-  aufgelöst und scheiterte an „unsafe use of new value of enum type“ —
-  der Wert entsteht in derselben Transaktion. Live als `authenticated`
-  gegengeprüft (neun Proben in einer zurückgerollten Transaktion, echte
-  Konten). `notify` ist dafür **neu deployt** (Version 7).
-  **Dazu der gemeldete Fehler:** „Session nicht gefunden“ beim Klick auf
-  einen fremden Beacon. Die Detailansicht kannte nur die lokale Datenbank
-  und die Liste laufender Freundes-Beacons; eine Benachrichtigung trägt
-  aber die **blanke UUID** ohne `remote-`, landete im Zweig für eigene
-  Sessions und fragte die lokale Datenbank nach einer fremden Session.
-  Jetzt `SessionsApi.byId()` als dritte Quelle.
-  **0046 Anmeldewege:** `app_config.auth_providers` (Startwert `google`)
-  sagt, welche OAuth-Anbieter der Anmeldebildschirm zeigen darf. Die App
-  kann Apple, Microsoft (`azure`), Facebook, Discord und GitHub — ob ein
-  Knopf erscheint, entscheidet diese Zeile, **nicht das Release**.
-  Grund: Jeder Anbieter braucht ein eingerichtetes Konto bei ihm, und ein
-  Knopf, der „provider is not enabled" antwortet, ist schlimmer als
-  keiner. Freischalten ist danach ein `update` (Schritte je Anbieter in
-  `docs/07-release-playbook.md`; **Apple kostet 99 $/Jahr**, daran führt
-  kein Weg vorbei). Ohne Anmeldung lesbar — muss es sein, denn gebraucht
-  wird die Liste von dem, der noch kein Konto hat. Live als `anon`
-  gegengeprüft.
-  **0045 TRUNCATE entzogen:** `anon` und `authenticated` hatten auf
-  jeder Tabelle in `public` noch `TRUNCATE, REFERENCES, TRIGGER` — Erbe
-  der Supabase-Vorgaben, das 0035 nicht mitgenommen hat. **TRUNCATE
-  umgeht RLS**, deshalb ist es weg (SELECT bleibt, begrenzt wird über
-  RLS). Offen war es nie: PostgREST bietet kein TRUNCATE, und keine der
-  beiden Rollen hat einen Datenbankzugang — genau darum ist es durch
-  zwei Sicherheits-Checks gerutscht. **Neu in der Baseline:** Die
-  Default-Privileges gibt es zweimal, von `postgres` und von
-  `supabase_admin`; welche greift, entscheidet, **wer die Tabelle
-  anlegt**. Die von `supabase_admin` gewährt `anon` weiterhin INSERT,
-  UPDATE, DELETE und ist als `postgres` nicht änderbar. Folgenlos,
-  solange niemand als `supabase_admin` Tabellen in `public` anlegt —
-  aber 0035s Satz „auch nicht auf künftigen“ gilt nur für Tabellen,
-  die `postgres` anlegt.
-  **0043 `crews_select` auch für den Eigentümer:** `insert … returning`
-  braucht **auch die SELECT-Policy**, und die verlangte eine
-  Mitgliedschaft, die es beim Anlegen noch nicht geben kann. Folge:
-  **Crews ließen sich seit 0.9.12 überhaupt nie anlegen** — die null
-  Crews in der Datenbank hatte ich als „noch keine gegründet“ gelesen.
-  Jetzt sieht auch `owner_id = (select auth.uid())` seine Crew; gegen-
-  geprüft, dass Fremde weiterhin 0 sehen.
-  **0044 Crew-Einladungen:** `crew_invites` (PK `crew_id, invitee_id`),
-  drei Policies — einladen darf nur ein **Mitglied** und nur einen
-  **Freund** und nur im eigenen Namen; sehen dürfen es der Eingeladene
-  und die Crew; löschen beide Seiten. Trigger `crew_invites_notify`
-  (SECURITY DEFINER, EXECUTE entzogen) schreibt und räumt die
-  `notifications`-Zeile vom Typ `crew_invite`. Live in der Rolle
-  `authenticated` gegengeprüft (acht Proben in einer zurückgerollten
-  Transaktion, echte Konten: einladen, Meldung entsteht, Nicht-Freund
-  abgelehnt, fremder Absender abgelehnt, Sichtbarkeit beidseitig,
-  annehmen, Meldung verschwindet mit). Die Edge Function `notify` ist
-  dafür **neu deployt** (Version 6) — sonst hätte der Push
-  „Neue Benachrichtigung“ gesagt statt „Du bist in eine Crew
-  eingeladen“.
-  **0041 Crew-Code zum Vorlesen:** `crews.join_code` (6 Zeichen aus
-  einem Alphabet ohne Zwillinge — kein 0/O, kein 1/I/L), erzeugt per
-  Spaltenvorgabe, eindeutiger Index; Beitritt über
-  `join_crew_by_code(text)`. Die Funktion ist nötig, weil `crews_select`
-  nur die eigenen Crews zeigt — der Client kann „welche Crew hat Code X?"
-  gar nicht fragen, und das bleibt so. Sie unterscheidet bewusst NICHT
-  zwischen „gibt es nicht" und „ging nicht". Live gegengeprüft:
-  Spaltenvorgabe erzeugt einen gültigen Code (Wegwerf-Crew angelegt,
-  geprüft, gelöscht), Index da, `anon` darf nicht.
-  **0040 Moderation:** `is_moderator(uid)`, `reports.handled_by/
-  handled_at/note`, `reports_select`/`reports_update` für Moderatoren,
-  RPCs `moderation_reports(status)` und `resolve_report(id, status,
-  note)`. **`profiles_select` wurde ausdrücklich NICHT geöffnet** — die
-  Namen kommen aus der RPC, sonst hätte jeder Moderator ein Dauerrecht
-  auf jedes private Profil. Nachtrag darin: fester `search_path` für
-  `feedback_issue_reset` (0038), rein kosmetisch.
-  (Stand davor: 0038 gegen `information_schema` geprüft, Hin- und
-  Rückweg live getestet: Issue #68).
-  In `supabase_migrations.schema_migrations` stehen zusätzlich zwei
-  **verwaiste Einträge** des parallelen Versuchs (`20260902223553
-  feedback_github_issue`, `20260902224114 feedback_clear_github_columns_
-  search_path`) — ihre Objekte sind weg, die Zeilen blieben, weil der
-  Auto-Modus das Löschen blockiert hat. Einzeiler für den Menschen:
-  `delete from supabase_migrations.schema_migrations where version in
-  ('20260902223553','20260902224114');`. Ebenso ist die fremde Function
-  `feedback-to-github` noch deployt, aber ohne Trigger tot — löschbar im
-  Dashboard (Edge Functions). — `0020–0024` am 2026-08-15 eingespielt und
-  gegengeprüft (Spalten, Constraints, Enum, Index, vier neue Funktionen,
-  Policy; `friendships` unverändert alle auf `freund`, also keine
-  Sichtbarkeitsänderung am Rollout-Tag). Kein Schema-Drift.
-  `0025` (Tabellenrechte) ist **jederzeit einspielbar** und ändert live
-  nichts — es schreibt fest, was dort ohnehin gilt. Ohne diese Migration
-  ließ sich das Projekt aus dem Repo **nicht wiederherstellen**: Die
-  DML-Rechte für `anon`/`authenticated` stammten aus Supabase-Default-
-  Privileges und standen in keiner Migration. Aufgefallen beim ersten
-  echten From-scratch-Aufbau für die RLS-Tests.
-  `0026` (`thirsty_until` aus den lesbaren Spalten von `profiles`) ist
-  **eingespielt** — am 2026-08-15, zusammen mit dem Rest. Gelesen wird
-  seither über `my_thirsty_until()`, geschrieben weiterhin direkt
-  (`0026` fasst nur `select` an, nie `update`).
-  ⚠️ **Hier stand bis 2026-08-16 das Gegenteil** — „bewusst NICHT
-  eingespielt und wartet". Der Rechtestand widersprach dem seit dem
-  ersten Tag: Tabellenrecht entzogen, `thirsty_until` nicht gewährt, 22
-  Einzelspalten gewährt. Aufgefallen erst, als der Rollout anstand.
-  **Die Lehre:** Eine Datei, die einen Sicherheitsvorbehalt behauptet,
-  ist kein Beleg für ihn. Wer plant, ob eine Migration laufen darf,
-  fragt die Datenbank — `information_schema.table_privileges` und
-  `column_privileges` —, nicht diesen Absatz. Ein Vorbehalt, den man
-  für aktiv hält, obwohl er längst gefallen ist, ist gefährlicher als
-  gar keiner: Man baut die nächste Entscheidung darauf.
-  **Riegel scharf**: `app_config.min_supported_version` steht auf
-  `0.10.4` (2026-09-02; vom Menschen gesetzt, siehe unten). ⚠️ Das Anheben auf
-  0.10.3 wurde vom Auto-Modus-Klassifizierer zweimal blockiert — es ist
-  eine Aussperr-Entscheidung und gehört dem Menschen; der Einzeiler steht
-  in `docs/07-release-playbook.md`. Das sperrt heute
-  **niemanden** aus — der Riegel existiert erst ab 0.10.2, alles
-  darunter fragt ihn nie. Sein Wert liegt in der Zukunft.
-  `beers.barcode` ist **weg** (0032). Für Barcodes gibt es am Server nur
-  noch eine Wahrheit: `beer_barcodes`.
-  **Zwei Lehren, beide teuer erkauft:**
-  (1) Eine Migration, die ein Recht entzieht, gehört nie in dieselbe Datei
-  wie die Ersatzschnittstelle — sonst gibt es kein Zeitfenster, in dem
-  alter und neuer Client zugleich funktionieren.
-  (2) `revoke select (spalte)` ist **wirkungslos**, solange ein Recht auf
-  Tabellenebene besteht. Postgres meldet „REVOKE" und lässt die Spalte
-  lesbar. Wer eine Spalte verbergen will, entzieht das Tabellenrecht und
-  gewährt alle übrigen Spalten einzeln — mit der Folge, dass jede neue
-  Spalte auf `profiles` ihr `grant select (…)` mitbringen muss.
-  Frühere Migrationen (0011 Gasthäuser, 0012
-  Challenges, 0013 Vertrauensstufen + edit_log, 0014 complete_challenge-RPC
-  + contribution_leaderboard, 0015 venues.opening_hours_json, 0016
-  user_badges/wishlist_items für den Cloud-Sync, 0017
-  delete_my_account-RPC, 0018 profiles.thirsty_until „Bierlaune", 0019
-  sprechende Nutzernamen aus full_name/E-Mail statt mate_<hex>; die
-  Freundessuche matcht seit 0.9.13 auch display_name; 0020
-  checkins_created_idx, 0021 sessions_duration_bounds 29 min–24 h, 0022
-  checkins.volume_ml, 0023 story auf beers/breweries, 0024 Freundeskreise
-  `friend_tier` + tier_for/set_friend_tier/my_thirsty_until/
-  thirsty_friends + neue sessions_select-Policy, 0025 Tabellenrechte,
-  0027 pg_trgm-Indizes für die Freundessuche, 0028 beer_barcodes:
-  mehrere EANs je Bier mit Gebindegröße, 0029 app_config mit
-  `min_supported_version` — Riegel „Update erforderlich"; 0030
-  Barcode-Suche über `beer_barcodes` statt `beers.barcode`, inkl.
-  Backfill — 0028 hatte die Tabelle angelegt, aber die Lesestelle nie
-  umgestellt, sodass nachgetragene Codes gespeichert und beim Suchen
-  ignoriert wurden; 0031 Benachrichtigungen per Trigger auf `friendships`
-  + `notifications` in Realtime — **live seit 2026-08-16**, Trigger,
-  Publikation und Delete-Policy gegengeprüft, Advisor ohne Neubefund
-  (`friendships_notify` ist SECURITY DEFINER, aber EXECUTE ist allen
-  entzogen — sie hängt nur am Trigger); 0032 `beers.barcode`
-  `beers.barcode` entfernt — **live seit 2026-09-02**, nachdem der Riegel
-  auf 0.10.4 stand und das Gerät des einzigen Nutzers 0.10.4 meldete;
-  Backfill 6/6, `flag_beer_by_barcode` nur noch über `beer_barcodes`).
-  Google-Login und
-  E-Mail-Anmeldung (ohne Bestätigungspflicht) sind eingerichtet und
-  funktionieren. Seit 0008 gilt: EXECUTE auf Funktionen wird von PUBLIC
-  entzogen und pro Funktion gezielt gewährt — neue Funktionen brauchen in
-  ihrer Migration ein explizites `grant execute … to authenticated`
-  (bzw. die jeweils passende Rolle).
-- **Security-Check 2026-09-02** (0035 `security_hardening_2`): `anon` hat
-  auf keiner eigenen Tabelle mehr INSERT/UPDATE/DELETE (auch nicht auf
-  künftigen — Default-Privileges angepasst); Bucket `beer-photos` auf
-  5 MB und Bildtypen begrenzt, eigene Fotos löschbar; `app_config`
-  mit je einer Policy pro Befehl. Repo: Secret-Scanning + Push-Schutz
-  aktiv, Dependabot-Alerts/-Updates eingeschaltet (0 offen), **`main`
-  ohne Branch-Schutz** (Entscheidung des Menschen). Keine Geheimnisse
-  im Repo (geprüft: Schlüssel, service_role, .jks, .env, Dienstkonto).
-  **Nicht behebbar** (live verifiziert, REVOKE als `postgres` ohne
-  Wirkung): alles, was PostGIS/`supabase_admin` gehört —
-  `spatial_ref_sys` ohne RLS, `st_estimatedextent` SECURITY DEFINER für
-  anon, 9 anon-Schreibrechte auf `spatial_ref_sys`/`geometry_columns`/
-  `geography_columns`. Öffentliche Referenzdaten, keine Nutzerdaten.
-  Leaked-Password-Protection braucht **Pro** (geprüft 2026-09-02);
-  E-Mail-Bestätigung bewusst aus bis zur Play-Store-Veröffentlichung.
-  **`main` ist seit 2026-09-02 geschützt** (PR + grüne CI Pflicht, auch
-  für Admins): kein `git push origin main` mehr — Merges über
-  `gh api -X PUT repos/ORPA1988/BrewMates/pulls/<n>/merge` (Merge-Commit).
-- **0037 (2026-09-03):** Trigger `session_participants_notify` (Prost/„Bin
-  dabei“ erreichen den Gastgeber als `session_toast`/`session_joined`);
-  Tabellen `feedback` (Absender + Admin) und `roadmap_items` (alle lesen,
-  Admins schreiben), Schalter `app_config.feedback_enabled`. Auswertung
-  per SQL, siehe `docs/features/35-feedback-und-roadmap.md`. **Web ist
-  Zweitgerät mit vollem Funktionsumfang** (iPhone-Tester) — Parität ist
-  Anforderung, kein Nice-to-have.
-- **0038 (2026-09-03):** Feedback und Roadmap werden **in GitHub verwaltet**
-  (Issues + Labels `feedback`/`bug`/`wunsch`/`roadmap`/`status:*`), siehe
-  `docs/features/35-feedback-und-roadmap.md`. Edge Functions
-  `feedback-issue` (Trigger → anonymes Issue) und `github-sync` (Workflow
-  `feedback-sync.yml` → liest Issue nach, schreibt Supabase). Secret
-  `GITHUB_TOKEN` (feingranular, nur Issues) bei den Edge Functions.
-  Meldungen auslesen: `gh issue list --label feedback --state open`.
-  Einrichtung nach dem Merge: 0038 einspielen, beide Functions deployen
-  (verify_jwt false), Secret `GITHUB_TOKEN` setzen, dann
-  `scratchpad/seed_roadmap_issues.py` bzw. `gh workflow run feedback-sync.yml`.
-- **Web-Push ist am Hosting blockiert (2026-09-03, untersucht):** Das
-  Firebase-JS-SDK registriert seinen Service Worker fest unter
-  `/firebase-messaging-sw.js` — im **Wurzelverzeichnis der Domain**; der
-  Dart-Aufsatz reicht keine eigene Registrierung durch
-  (`serviceWorkerRegistration` ist in `firebase_messaging_web 4.1.5`
-  auskommentiert). BrewMates liegt unter `…github.io/BrewMates/`. Ein
-  Firebase-Web-Schlüssel ändert daran nichts — **nicht beschaffen, bevor
-  der Weg entschieden ist.** Drei Wege und eine Empfehlung (eigenes
-  Web-Push ohne Nutzlast, damit die Verschlüsselung entfällt) stehen in
-  `docs/features/38-benachrichtigungen-im-browser.md`. Offen: Entscheidung
-  des Menschen, und die Frage, wer es nach der Veröffentlichung testet —
-  Web-Push ist hier nicht prüfbar.
-- **Kollision 2026-09-03:** Während PR #54 entstand, hat eine zweite
-  Sitzung live eine eigene Variante eingespielt (`github_issue_number`/
-  `github_issue_url`, Trigger `feedback_github_issue`, Function
-  `feedback-to-github`, Secret `GITHUB_FEEDBACK_TOKEN`, Test-Issue #55).
-  0038 räumt sie idempotent ab; die Functions lesen beide Secret-Namen.
-  **Vor jedem Live-Eingriff:** `list_migrations`/`list_edge_functions`
-  ansehen — nicht nur das Repo. Zwei Sitzungen auf einer Datenbank
-  brauchen einen Menschen, der sagt, welche weitermacht.
-- **Paralleles Arbeiten:** Am 2026-09-03 stand das Haupt-Arbeitsverzeichnis
-  auf `data/oesterreich-ueberarbeitung` (zweite Sitzung, Datenpflege).
-  Wer das vorfindet: **nicht** darauf committen, nicht stashen, nicht
-  wechseln — eigenen Klon/Worktree von `origin/main` benutzen.
-- **Performance (0036, 2026-09-02):** alle 77 RLS-Policies in `public`
-  werten `auth.uid()` als `(select auth.uid())` aus (einmal pro Abfrage
-  statt pro Zeile), 21 Fremdschlüssel haben Indizes. Beides wird zur
-  Laufzeit aus dem Katalog erzeugt, nicht abgetippt — neue Policies
-  mit nacktem `auth.uid()` fängt `performance_0036.test.sql`. Der
-  Performance-Advisor meldet danach nur noch `unused_index` (INFO) —
-  erwartbar bei leerer Datenbank, kein Handlungsbedarf.
-- **Security-Advisor-Baseline** (bekannt, bewusst offen; zuletzt geprüft
-  2026-08-15 nach dem Rollout von 0020–0024, keine echten Neubefunde —
-  die vier neuen RPCs schränken ihre Argumente selbst ein: `tier_for`
-  erbt die Härtung von `are_friends`, `set_friend_tier` schreibt nur
-  Zeilen mit eigener Beteiligung, `my_thirsty_until` nur das eigene
-  Konto, `thirsty_friends` filtert serverseitig auf Kreis „Freund"):
-  PostGIS im public-Schema inkl.
-  `st_estimatedextent`/`spatial_ref_sys`, Leaked-Password-Protection
-  deaktiviert. Dazu meldet der Linter (0028/0029) **jede** SECURITY-
-  DEFINER-Funktion, die `authenticated` aufrufen darf — das sind
-  sämtliche RPCs der App (`account_level`, `are_friends`,
-  `beer_rating_stats`, `complete_challenge`, `contribution_leaderboard`,
-  `count_other_active_sessions`, `delete_my_account`,
-  `flag_beer_by_barcode`, `has_blocked`, `is_admin`, `is_blocked`,
-  `is_crew_member`, `my_account_level_info`) und ist Absicht: Sie sind
-  der Zugriffsweg, nicht das Leck. Geprüft wurde, dass sie ihre Argumente
-  selbst einschränken — `are_friends`/`has_blocked` beantworten nur Paare,
-  an denen der Aufrufer beteiligt ist, `account_level` nur das eigene
-  Konto oder das eines Admins. **Neu hinzukommende Funktionen sind an
-  diesem Maßstab zu prüfen, nicht pauschal der Baseline zuzuschlagen.**
+**Sie enthält nur Aussagen, die stimmen.** Steht hier etwas, das die
+Datenbank oder das Repo widerlegt, ist diese Datei der Fehler — nicht die
+Wirklichkeit. Richtigstellen gehört zum Durchlauf.
 
-## Toolchain (Cloud-Session, frische Container)
+---
 
-- Flutter **3.24.5** nach Scratchpad laden und nutzen; `flutter analyze` und
-  `flutter test` laufen ohne Android-SDK.
-- Android-Release-Build braucht: Android SDK (cmdline-tools) + **JDK 17**
-  (`JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64`; JDK 21 bricht mit
-  AGP 8.1/jlink). `app/android/build.gradle` enthält bewusst eine
-  `ext.flutter`-Map + AGP-8.1-Classpath — nicht „aufräumen".
-- **Push/Firebase** (0.10.4): `firebase_core ^4.7`, `firebase_messaging
-  ^16.2`, `minSdk` 23, `google-services.json` liegt bewusst im Repo
-  (`app/android/app/`), der Dienstkonto-Schlüssel NIE. Lokale
-  `flutter build apk` scheitern auf OneDrive oft an Dateisperren
-  (`Unable to delete directory`) — kein Codefehler; verbindlich ist
-  der Release-Build in der CI.
-- Gepinnte Pakete (Flutter-3.24-Toolchain): `mobile_scanner ^5.2.3`,
-  `geolocator ^13.0.2` — nicht ohne Toolchain-Upgrade anheben.
-  `qr_flutter ^4.1.0` (reines Dart) kam mit den Freundes-QR-Codes dazu.
-- `flutter test` NIE nach `tail` pipen (scheint zu hängen) — in Datei
-  umleiten und die Datei lesen.
+## 1. Bei jedem Durchlauf
 
-## Releases
+Diese vier Punkte gehören zu jeder Sitzung, unabhängig vom Auftrag:
 
-GitHub-Release = Workflow `release.yml` per **workflow_dispatch** auf dem
-Branch triggern (Input `version`, z. B. `v0.9.5-beta`); Tag-Push scheitert
-mit 403 (Branch-Scope-Token). Der Lauf baut APK+AAB und veröffentlicht sie.
+1. **Diese Datei lesen** und am Ende richtigstellen, was nicht mehr
+   stimmt.
+2. **Nutzererstellte Biere pflegen** — Anleitung und SQL in
+   [docs/10 — Community-Datenpflege](docs/10-community-datenpflege.md).
+   Kurz: `beers.verified = false` prüfen, **auf Dubletten prüfen**,
+   fehlende Felder aus Herstellerseite + Open Food Facts ergänzen,
+   `verified = true` setzen und `checkins.beer_name`/`brewery_name`
+   nachziehen.
+3. **Offene Meldungen ansehen:**
+   `gh issue list --label feedback --state open`. Eine Antwort für den
+   Melder ist ein Kommentar, der mit **„Antwort:"** beginnt.
+4. **Doku mitziehen** — im selben Commit wie der Code, nie danach.
 
-## Daten & Konventionen
+## 2. Unverhandelbare Regeln
 
-- Community-DB: `app/assets/data/` — acht Dateien (`beers-at/by/de/ch`,
-  `breweries-at/by/de/ch`; DACH seit 0.9.13, Bayern-IDs `de-by-…`,
-  Restdeutschland `de-…`, Schweiz `ch-…`), verknüpft über `brewery_id`;
-  Bild-URLs nur als Links auf Open Food Facts (CC-BY-SA), Herkunft/Lizenz
-  in `DATENHERKUNFT.md`.
-- Karten-Wording zentral: `activeUsersLabel()` in
-  `app/lib/features/map/map_screen.dart`.
-- Nicht-Freunde erscheinen auf der Karte NIE mit Position, nur als Zähler.
-- **Pflicht bei JEDER Funktionsänderung**: Jede Funktion hat ein Dokument
-  unter `docs/features/` (Vorlage: `_vorlage.md`, Index: `README.md`) mit
-  Zielsetzung, Nutzersicht, technischer Umsetzung, Modularität,
-  Plattformen, Skalierung, Status und Plan. Das Dokument wird **im selben
-  Commit** mitgezogen — Status, „Zuletzt geprüft"-Datum und die
-  betroffenen Abschnitte. Eine NEUE Funktion beginnt mit ihrem Dokument,
-  nicht mit dem ersten Widget. Roadmap (`docs/06-roadmap.md`) verlinkt
-  dorthin und sagt nur noch WANN, nicht WAS.
-- **Architektur-Leitplanken**: `docs/11-modularitaet-und-portierbarkeit.md`
-  — Schichtrichtung `features → domain/data → core`, keine
-  Cross-Imports zwischen Features (gilt heute lückenlos), neue Funktionen
-  bekommen eigene API- und Provider-Datei statt in die Sammelstellen
-  (`online_service.dart` 1705 Z., `providers.dart` 71 Provider,
-  `database.dart` 13 Tabellen) hineinzuwachsen. Kein `dart:io` in `lib/`,
-  nichts zur Laufzeit von fremden CDNs nachladen.
-- **Aktueller Befund** zu Vollständigkeit und Skalierbarkeit aller
-  Funktionen: `docs/12-funktionsaudit.md`. Die dringlichsten Punkte sind
-  mit 0.10 erledigt (Seitenladen, faule Listen, Feed-Index, Löschen);
-  offen bleiben Trigram-Index für die Freundessuche und ein
-  Delta-Restore.
-- **Drift-Stand v15** (v15 Bildherkunft `imageSource`/`imageLicense`)
-- **Drift-Stand v14** (v14 `barcode_volumes`: Gebindegroesse je EAN):
-   v10 Warteschlange gelöschter Check-ins, v11
-  `checkins.volumeMl`, v12 `story` bei Bier und Brauerei, v13
-  `checkins.dirty` (Korrekturen, Funktion 27). Schreibende
-  Aktionen, die offline funktionieren sollen, folgen dem Muster
-  `venue_queue.dart` / `checkin_delete_queue.dart` (FIFO, idempotent,
-  Verbindungsfehler bricht ab, fachlicher Fehler verwirft).
-- **Pflicht bei JEDEM Entwicklungslauf**: nutzererstellte Biere prüfen
-  (`beers.verified = false` in Supabase) und fehlende Infos ergänzen —
-  Anleitung + SQL in `docs/10-community-datenpflege.md`. Beste Quelle ist
-  das Etikettfoto des Nutzers (`beers.label_url`), danach Open Food Facts
-  über den Barcode. Geprüfte Einträge auf `verified = true` setzen und
-  denormalisierte `checkins.beer_name`/`brewery_name` nachziehen.
-- **Sync-Invariante**: Community-JSON-Datensätze (Biere mit
-  `isUserSubmitted == false`, Brauereien mit Nicht-UUID-ID) sind in der App
-  READ-ONLY — der GitHub-Sync überschreibt sie wholesale. In-App-Bearbeitung
-  gibt es nur für nutzererstellte Zeilen (UUIDs) und Gasthäuser (Supabase).
-  Korrekturen an Community-Daten laufen über „Korrektur vorschlagen"
-  (GitHub-Issue-Prefill, `core/external_links.dart`).
+**A — Kein Erfolg, den der Server nicht bestätigt hat.**
+Eine Zusage, die niemanden erreicht, lässt jemanden warten. Eine
+Erfolgsmeldung ohne Bestätigung ist der teuerste Fehler dieser App und
+war schon dreimal da. Rückgabewerte weiterreichen, Fehlschläge benennen.
+
+**B — Rechte prüft man in der Rolle, die sie betrifft.**
+`set local role authenticated` + `request.jwt.claims`. `postgres` umgeht
+RLS und beweist nichts. Auch die MCP-Probe läuft als `postgres`.
+
+**C — Migrationen: erst grüne CI, dann live.**
+Die CI baut die Datenbank bei jedem PR **neu aus `supabase/migrations/`**
+— das prüft den Aufbauweg mit. Erst danach `apply_migration`. Eine
+Migration, die ein Recht entzieht, gehört nie in dieselbe Datei wie die
+Ersatzschnittstelle.
+
+**D — Vor jedem Live-Eingriff `list_migrations` und
+`list_edge_functions` ansehen**, nicht nur das Repo. Zwei Sitzungen auf
+einer Datenbank brauchen einen Menschen, der sagt, welche weitermacht.
+
+**E — `main` ist geschützt.** Kein `git push origin main`. Merge über
+`gh api -X PUT repos/ORPA1988/BrewMates/pulls/<n>/merge -f merge_method=merge`.
+Neue Arbeit startet auf einem frischen Branch von `main`.
+
+**F — Jede Funktionsänderung zieht ihr Dokument mit**, im selben Commit:
+`docs/features/` (Vorlage `_vorlage.md`, Index `README.md`). Eine **neue**
+Funktion beginnt mit ihrem Dokument, nicht mit dem ersten Widget.
+
+**G — Architektur-Leitplanken** ([docs/11](docs/11-modularitaet-und-portierbarkeit.md)):
+Schichtrichtung `features → domain/data → core`; keine Cross-Imports
+zwischen Features; neue Funktionen bekommen eigene API- und
+Provider-Datei statt in die Sammelstellen hineinzuwachsen. **Kein
+`dart:io` in `app/lib/`** (die CI erzwingt `flutter build web`);
+Plattform-Weichen über `kIsWeb`/`defaultTargetPlatform` oder Conditional
+Imports (Muster: `data/db/connection/`). **Zur Laufzeit nichts von fremden
+Servern nachladen.**
+
+**H — Versions-Bump immer an beiden Stellen:** `app/pubspec.yaml` **und**
+`AppConfig.appVersion` in `core/config.dart`. Ein Test erzwingt den
+Gleichstand.
+
+**I — Sync-Invariante.** Community-JSON-Datensätze (Biere mit
+`isUserSubmitted == false`, Brauereien mit Nicht-UUID-ID) sind in der App
+**read-only** — der GitHub-Sync überschreibt sie wholesale.
+In-App-Bearbeitung gibt es nur für nutzererstellte Zeilen (UUIDs) und
+Gasthäuser (Supabase). Korrekturen an Community-Daten laufen über
+„Korrektur vorschlagen" (`core/external_links.dart`).
+
+**J — Web ist Zweitgerät mit vollem Funktionsumfang** (iPhone-Tester).
+Parität ist Anforderung, kein Nice-to-have.
+
+**K — Aussperr- und Datenschutz-Entscheidungen gehören dem Menschen.**
+`min_supported_version` anheben, E-Mail-Bestätigung, Sichtbarkeiten —
+vorlegen, nicht entscheiden.
+
+## 3. Prüfen statt glauben
+
+Der teuerste Fehler dieses Projekts war ein Absatz, der einen
+Sicherheitsvorbehalt behauptete, den es längst nicht mehr gab (siehe
+[docs/13, Lehre 1](docs/13-migrationen-und-lehren.md)). Deshalb: fragen,
+nicht nachlesen.
+
+| Frage | Wie du sie beantwortest |
+|---|---|
+| Welche Migrationen sind live? | `list_migrations` |
+| Welche Edge Functions, in welcher Version? | `list_edge_functions` |
+| Wer darf was auf einer Tabelle? | `information_schema.table_privileges` |
+| Wer darf welche **Spalte** lesen? | `information_schema.column_privileges` |
+| Greift eine Policy wirklich? | `set local role authenticated` + `request.jwt.claims`, in einer Transaktion mit `rollback` |
+| Ist eine Funktion für `authenticated` aufrufbar? | `has_function_privilege('authenticated', '…', 'execute')` |
+| Was meldet der Linter? | `get_advisors` (`security` / `performance`) — Baseline in docs/13, Teil 3 |
+
+## 4. Wo was steht
+
+| Frage | Datei |
+|---|---|
+| Was ist am Server, warum, welche Fehler kennen wir? | [docs/13 — Migrationen & Lehren](docs/13-migrationen-und-lehren.md) |
+| Was kann eine einzelne Funktion, wie ist sie gebaut? | [docs/features/](docs/features/README.md) — ein Dokument je Funktion |
+| Wann kommt was? | [docs/06 — Roadmap](docs/06-roadmap.md) |
+| Wie kommt ein Release heraus, wie schalte ich Anbieter frei? | [docs/07 — Release-Playbook](docs/07-release-playbook.md) |
+| Wie pflege ich Bierdaten? | [docs/10 — Community-Datenpflege](docs/10-community-datenpflege.md) |
+| Wo verlaufen die Architekturgrenzen? | [docs/11 — Modularität](docs/11-modularitaet-und-portierbarkeit.md) |
+| Wie vollständig und skalierbar ist der Bestand? | [docs/12 — Funktionsaudit](docs/12-funktionsaudit.md) |
+| Wie erkläre ich es einem Laien? | [docs/08 — Funktionsweise für alle](docs/08-funktionsweise-fuer-alle.md) |
+
+## 5. Der Stand
+
+- **Version:** `0.10.13-beta+31` (Beta 0.x bis zum Play-Store-1.0; der
+  Android-`versionCode` zählt immer weiter hoch).
+- **Backend:** Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
+  **`0001–0047` sind live, lückenlos.** Details: docs/13.
+- **Riegel:** `app_config.min_supported_version` steht auf `0.10.4`.
+  Anheben ist eine Aussperr-Entscheidung (Regel K); Einzeiler im
+  Release-Playbook.
+- **Anmeldung:** Google und E-Mail (ohne Bestätigungspflicht) sind
+  eingerichtet. Die App **kann** zusätzlich Apple, Microsoft (`azure`),
+  Facebook, Discord und GitHub — welche Knöpfe erscheinen, sagt
+  `app_config.auth_providers` (0046), nicht das Release. Einrichtung je
+  Anbieter im Release-Playbook; **Apple kostet 99 $/Jahr.**
+- **Drift-Stand v15** (v10 Löschwarteschlange, v11 `checkins.volumeMl`,
+  v12 `story`, v13 `checkins.dirty`, v14 `barcode_volumes`, v15
+  `imageSource`/`imageLicense`). Schreibende Aktionen, die offline
+  funktionieren sollen, folgen dem Muster `venue_queue.dart` /
+  `checkin_delete_queue.dart` (FIFO, idempotent, Verbindungsfehler bricht
+  ab, fachlicher Fehler verwirft).
 - **Vertrauensstufen** (0013): 1 Neuling · 2 Stammgast (≥25 P.) ·
   3 Bierkenner (≥100 P.) · 4 Moderator · 5 Admin; Overrides über
-  user_features (`trust_level_2/3`, `edit_lock`). RLS erzwingt, die UI
-  spiegelt (`accountLevelProvider`).
-- **Persistenz**: Release-CI signiert mit dem Upload-Keystore aus den
-  GitHub-Secrets `KEYSTORE_BASE64`/`KEYSTORE_PASSWORD` (ohne Secrets:
-  Debug-Fallback mit Warnung) — stabile Signatur = Updates ohne
-  Datenverlust. Cloud-Restore (`data/restore.dart`,
-  `cloudRestoreProvider`) holt nach Anmeldung eigene Check-ins, Erfolge
-  und Wunschliste zurück (Union, idempotent); Badge-Vergabe und
-  Wunschlisten-Toggle spiegeln best-effort zum Server. Seit Drift v9:
-  Foto-Check-ins (beer-photos-Bucket, `checkins.photo_url`); Toasts und
-  Kommentare laufen für hochgeladene Check-ins über den Server
-  (`feedReactionsProvider`). Kontolöschung in-app (0017,
-  Play-Store-Pflicht).
-- Challenge-Abschlüsse werden seit 0014 SERVERSEITIG validiert
-  (`complete_challenge`-RPC; direkte Inserts gesperrt). Gasthaus-Pflege
-  funktioniert seit Drift v8 auch offline: `venue_edit_queue` +
-  `replayVenueQueue` (FIFO, Last-write-wins; Replay am Anfang von
-  `VenueSync.sync()`; Neuanlagen bekommen bis zum Upload eine
-  `local-…`-Pseudo-ID im Cache).
-- **Web-App**: Seit 0.9.10 baut die App auch fürs Web
-  (`https://orpa1988.github.io/BrewMates/`, Datenschutz unter
-  `…/privacy/`; kombiniertes Pages-Deployment in `pages.yml`). Drift läuft
-  im Browser über `WasmDatabase` — die Plattform-Weiche liegt in
-  `data/db/connection/` (Conditional Imports; nativer Pfad byte-identisch).
-  `web/sqlite3.wasm` (sqlite3 2.9.4), `web/drift_worker.js`
-  (drift 2.23.1) und `web/zxing.js` (@zxing/library 0.19.1, muss zur
-  scriptUrl in mobile_scanner passen; Override in `scan_screen.initState`)
-  sind versionsgepinnt — bei Paket-Upgrades neu laden!
-  CanvasKit wird selbst gehostet (`web/flutter_bootstrap.js`).
-  KEIN `dart:io` in `app/lib/` (CI erzwingt `flutter build web`);
-  Plattform-Checks über `kIsWeb`/`defaultTargetPlatform` — in Widget-Tests
-  meldet `defaultTargetPlatform` Android, Desktop-Tests setzen
-  `debugDefaultTargetPlatformOverride`.
-- orpa-tech.at ist bewusst KEIN Bestandteil des Projekts.
+  `user_features`. RLS erzwingt, die UI spiegelt
+  (`accountLevelProvider`).
+- **Web-Push bei geschlossenem Tab ist am Hosting blockiert.** Das
+  Firebase-JS-SDK registriert seinen Service Worker fest unter
+  `/firebase-messaging-sw.js` im **Wurzelverzeichnis der Domain**;
+  BrewMates liegt unter `…github.io/BrewMates/`. Ein Firebase-Web-Schlüssel
+  ändert daran nichts — **nicht beschaffen, bevor der Weg entschieden
+  ist.** Drei Wege und eine Empfehlung:
+  [Funktion 38](docs/features/38-benachrichtigungen-im-browser.md).
+- **Repo-Sicherheit:** Secret-Scanning + Push-Schutz aktiv,
+  Dependabot ein, keine Geheimnisse im Repo.
+
+## 6. Toolchain
+
+- **Flutter 3.24.5**, gepinnt. `flutter analyze` und `flutter test` laufen
+  ohne Android-SDK. Lokal liegt Flutter unter
+  `C:\Users\patri\toolchain\flutter\bin`.
+- **Gepinnte Pakete** (Flutter-3.24-Kette): `mobile_scanner ^5.2.3`,
+  `geolocator ^13.0.2` — **nicht ohne Toolchain-Upgrade anheben.**
+  `qr_flutter ^4.1.0` ist reines Dart.
+- **Android-Release** braucht Android SDK (cmdline-tools) + **JDK 17**
+  (JDK 21 bricht mit AGP 8.1/jlink). `app/android/build.gradle` enthält
+  bewusst eine `ext.flutter`-Map + AGP-8.1-Classpath — **nicht
+  „aufräumen".**
+- **Push/Firebase:** `firebase_core ^4.7`, `firebase_messaging ^16.2`,
+  `minSdk` 23. `google-services.json` liegt bewusst im Repo
+  (`app/android/app/`), der Dienstkonto-Schlüssel **nie**.
+- **Web-Laufzeitdateien sind versionsgepinnt** und müssen bei
+  Paket-Upgrades neu geladen werden: `web/sqlite3.wasm` (sqlite3 2.9.4),
+  `web/drift_worker.js` (drift 2.23.1), `web/zxing.js`
+  (@zxing/library 0.19.1 — muss zur `scriptUrl` in `mobile_scanner`
+  passen). CanvasKit wird selbst gehostet
+  (`web/flutter_bootstrap.js`).
+- **Fallstricke:** `flutter test` nie nach `tail` pipen (scheint zu
+  hängen) — in eine Datei umleiten und diese lesen. Lokale
+  `flutter build apk` scheitern auf OneDrive oft an Dateisperren
+  (`Unable to delete directory`) — kein Codefehler; verbindlich ist der
+  Release-Build in der CI. In Git Bash braucht
+  `flutter build web --base-href /BrewMates/` ein vorangestelltes
+  `MSYS_NO_PATHCONV=1`.
+- **In Widget-Tests** meldet `defaultTargetPlatform` Android;
+  Desktop-Tests setzen `debugDefaultTargetPlatformOverride`. Nach einem
+  Tipp, der die Datenbank anfasst, reicht `pumpAndSettle` nicht —
+  `tester.runAsync` dazwischen (Beispiel: `beacon_zusagen_test.dart`).
+
+## 7. Releases
+
+GitHub-Release = Workflow `release.yml` per **workflow_dispatch**
+triggern (Input `version`, z. B. `v0.10.13-beta`); ein Tag-Push scheitert
+mit 403. Der Lauf baut APK + AAB und veröffentlicht sie, signiert mit dem
+Upload-Keystore aus den Secrets `KEYSTORE_BASE64`/`KEYSTORE_PASSWORD` —
+**stabile Signatur = Updates ohne Datenverlust.**
+
+Die Web-App wird bei jedem Push auf `main` automatisch deployt
+(`pages.yml` → <https://orpa1988.github.io/BrewMates/>).
+
+## 8. Daten & Konventionen
+
+- **Community-DB:** `app/assets/data/` — acht Dateien (`beers-at/by/de/ch`,
+  `breweries-at/by/de/ch`), verknüpft über `brewery_id`. Bayern-IDs
+  `de-by-…`, Restdeutschland `de-…`, Schweiz `ch-…`. Bild-URLs nur als
+  **Links** auf Open Food Facts (CC-BY-SA), Herkunft und Lizenz in
+  `DATENHERKUNFT.md`.
+- **Nicht-Freunde erscheinen auf der Karte nie mit Position**, nur als
+  Zähler. Karten-Wording zentral in `activeUsersLabel()`
+  (`features/map/map_screen.dart`).
+- **Challenge-Abschlüsse werden serverseitig validiert**
+  (`complete_challenge`-RPC; direkte Inserts sind gesperrt).
+- **orpa-tech.at ist bewusst kein Bestandteil des Projekts.**
