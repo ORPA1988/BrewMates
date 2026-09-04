@@ -343,6 +343,35 @@ class SessionsApi extends OnlineApi {
     }
   }
 
+  /// Alle Check-ins einer Runde, die ich sehen darf.
+  ///
+  /// Nötig, weil die lokale Datenbank nur die **eigenen** Check-ins
+  /// kennt: Selbst in der eigenen Runde liegen die der anderen
+  /// ausschließlich am Server. Ohne diesen Abruf zeigte die
+  /// Runden-Ansicht dem Gastgeber nur, was er selbst getrunken hat.
+  ///
+  /// Was zurückkommt, entscheidet allein die RLS (`checkins_select`,
+  /// 0050): Mitrundige sehen einander, Unbeteiligte nichts. Hier wird
+  /// nichts gefiltert, was der Server nicht schon gefiltert hat.
+  Future<List<RemoteCheckin>> sessionCheckins(String sessionId,
+      {int limit = 100}) async {
+    if (currentUser == null) return const [];
+    try {
+      final rows = await client
+          .from('checkins')
+          .select('id, beer_name, brewery_name, beer_style, is_alcohol_free, '
+              'rating, note, venue_name, session_id, photo_url, created_at, '
+              'author:profiles!checkins_profile_id_fkey('
+              '${OnlineApi.profileCols})')
+          .eq('session_id', sessionId)
+          .order('created_at')
+          .limit(limit);
+      return [for (final r in rows) RemoteCheckin.fromRow(r)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
   /// Die laufende **fremde** Runde, an der ich teilnehme — oder `null`.
   ///
   /// Für die Zuordnung beim Einchecken: Wer bei jemand anderem mittrinkt,

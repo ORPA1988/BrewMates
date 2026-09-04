@@ -95,8 +95,63 @@ Future<SessionDetails?> _vomServer(Ref ref, String uuid) async {
   return session == null ? null : remoteSessionToDetails(session);
 }
 
+/// Die Check-ins einer Runde, wie der Server sie kennt.
+///
+/// Auffrischung am 30-Sekunden-Takt: Eine Runde ist ein laufender Abend,
+/// und wer gerade etwas eingecheckt hat, soll nicht erst beim nächsten
+/// Bildschirmwechsel auftauchen.
+final _sessionCheckinsRemoteProvider =
+    FutureProvider.autoDispose.family<List<CheckinDetails>, String>(
+        (ref, id) async {
+  ref.watch(clockProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null || online.currentUser == null) return const [];
+  final rows = await online.sessions.sessionCheckins(stripRemote(id));
+  return [for (final r in rows) remoteCheckinToDetails(r)];
+});
+
+/// Alle Check-ins einer Runde — die eigenen aus der lokalen Datenbank,
+/// die der anderen vom Server.
+///
+/// **Warum beides.** Lokal stehen nur die eigenen Check-ins; selbst in
+/// der eigenen Runde liegen die der Mitrundigen ausschließlich am
+/// Server. Vorher gab dieser Provider für fremde Runden schlicht eine
+/// leere Liste zurück — die Detailansicht einer fremden Runde zeigte
+/// also nie etwas, und die eigene zeigte nur einen selbst.
+///
+/// Der lokale Zweig bleibt trotzdem: Er ist sofort da, funktioniert
+/// offline und zeigt einen gerade angelegten Check-in, bevor der Upload
+/// durch ist.
 final sessionCheckinsProvider =
     StreamProvider.family<List<CheckinDetails>, String>((ref, id) {
-  if (isRemoteId(id)) return Stream.value(const []);
-  return ref.watch(databaseProvider).watchSessionCheckins(id);
+  final vomServer =
+      ref.watch(_sessionCheckinsRemoteProvider(id)).valueOrNull ?? const [];
+  final lokal = isRemoteId(id)
+      ? Stream.value(const <CheckinDetails>[])
+      : ref.watch(databaseProvider).watchSessionCheckins(id);
+  return lokal.map((eigene) => rundeVereinen(eigene, vomServer));
 });
+
+/// Führt lokale und Server-Check-ins zusammen.
+///
+/// Der eigene Check-in steht in beiden Quellen. Die **lokale** Fassung
+/// gewinnt: Sie trägt Bier und Brauerei als vollständige Datensätze,
+/// während die Server-Zeile nur denormalisierte Namen kennt.
+///
+/// **Der Schlüssel ist die blanke UUID, nicht die ID.** Dieselbe Zeile
+/// heißt lokal `abc` und vom Server `remote-abc` —
+/// `remoteCheckinToDetails` setzt das Präfix, damit fremde und eigene
+/// Datensätze nicht kollidieren. Ohne `stripRemote` griffe die
+/// Entdopplung deshalb nie, und der eigene Check-in stünde zweimal in
+/// der Runde: einmal mit Bierdatensatz, einmal nur mit Namen.
+List<CheckinDetails> rundeVereinen(
+  List<CheckinDetails> lokal,
+  List<CheckinDetails> vomServer,
+) {
+  final nachId = <String, CheckinDetails>{
+    for (final c in vomServer) stripRemote(c.checkin.id): c,
+    for (final c in lokal) stripRemote(c.checkin.id): c,
+  };
+  return nachId.values.toList()
+    ..sort((a, b) => a.checkin.createdAt.compareTo(b.checkin.createdAt));
+}

@@ -1,7 +1,7 @@
 # 40 Check-ins in einer Runde
 
 > **Status:** 🟢 fertig — Sichtbarkeit (0050), Crew-Zuordnung
-> (0051/0052) und die App-Seite stehen.
+> (0051/0052), Zuordnung beim Einchecken und die Runden-Ansicht stehen.
 > **Seit:** Server 2026-09-04 (0050); **ohne App-Änderung**, deshalb
 > kein Versionsbump · **Zuletzt geprüft:** 2026-09-04
 >
@@ -265,7 +265,7 @@ und die Crew-Bilanz über Teilnehmer.
 | ~~1~~ | ~~`checkins_select` um den Runden-Zweig erweitern~~ | ✅ pgTAP: Teilnehmer sieht, Fremder nicht, `private` bleibt privat |
 | ~~2~~ | ~~Zuordnung beim Einchecken~~ — **erledigt.** Dabei der eigentliche Fund: `uploadRow` schickte `session_id: null`, hart verdrahtet | ✅ vier Tests in `upload_assistant_test.dart` |
 | ~~3~~ | ~~`crewCheckins()` auf `checkin_crews` umstellen~~ — **erledigt** | ✅ pgTAP, inkl. Austritt |
-| 4 | Runden-Ansicht zeigt die Check-ins aller Teilnehmer | Offen — die Daten liegen jetzt vor, es fehlt die Anzeige |
+| ~~4~~ | ~~Runden-Ansicht zeigt die Check-ins aller Teilnehmer~~ — **erledigt.** Der Provider las nur lokal und gab für fremde Runden unbesehen eine leere Liste zurück | ✅ sieben Tests in `runden_ansicht_test.dart` |
 
 ## Offene Punkte / Ideen
 
