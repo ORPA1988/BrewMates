@@ -196,7 +196,7 @@ void main() {
         RemoteParticipant(
             profile: RemoteProfile(id: 'p2', username: 'bert',
                 displayName: 'Bert', avatarEmoji: '🍺'),
-            joined: false),
+            art: Teilnahme.prost),
       ],
     };
     final c = ProviderContainer(overrides: [

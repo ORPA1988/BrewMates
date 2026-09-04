@@ -452,21 +452,59 @@ class BrewActions {
   /// [synced] ist false, wenn der Server es nicht angenommen hat — dann
   /// weiss der Gastgeber nichts davon, und das muss der Mensch erfahren.
   Future<({List<BadgeDef> earned, bool synced})> joinSession(
-      String sessionId) async {
+          String sessionId) =>
+      antwortAufBeacon(sessionId, Teilnahme.dabei);
+
+  /// Auf den Beacon eines anderen antworten (0047).
+  ///
+  /// **Warum eine Absage einen eigenen Weg hat.** Wer schweigt, sagt
+  /// nichts — der Gastgeber weiß dann nicht, ob noch jemand kommt, und
+  /// wartet womöglich. Eine Absage ist eine Information, kein Verzicht
+  /// auf eine.
+  ///
+  /// [synced] `false` heißt: Der Server hat es nicht angenommen. Das ist
+  /// der eine Fall, in dem stilles Scheitern wirklich Schaden anrichtet —
+  /// eine Zusage, die niemanden erreicht, lässt jemanden warten (A-8).
+  ///
+  /// Abzeichen gibt es nur für eine Zusage: Absagen sammelt man nicht.
+  Future<({List<BadgeDef> earned, bool synced})> antwortAufBeacon(
+      String sessionId, Teilnahme art) async {
     final me = await _me();
     var synced = true;
     if (isRemoteId(sessionId)) {
       final online = await _online();
       synced = online != null &&
-          await online.sessions
-              .joinSession(stripRemote(sessionId), joined: true);
+          await online.sessions.antworten(stripRemote(sessionId), art);
     } else {
-      await _db.joinSession(sessionId, me.id, ParticipantKind.joined);
+      await _db.joinSession(sessionId, me.id, _lokaleArt(art));
     }
-    final earned = await BadgeEngine(_db).evaluate(me.id,
-        onlineUserId: (await _online())?.currentUser?.id);
+    _ref.invalidate(remoteParticipantsProvider(sessionId));
+    final earned = art == Teilnahme.dabei
+        ? await BadgeEngine(_db).evaluate(me.id,
+            onlineUserId: (await _online())?.currentUser?.id)
+        : const <BadgeDef>[];
     return (earned: earned, synced: synced);
   }
+
+  /// Die eigene Zu- oder Absage zurücknehmen — „doch nicht".
+  Future<bool> antwortZuruecknehmen(String sessionId) async {
+    var ok = true;
+    if (isRemoteId(sessionId)) {
+      final online = await _online();
+      ok = online != null &&
+          await online.sessions.antwortZuruecknehmen(stripRemote(sessionId));
+    } else {
+      await _db.antwortZuruecknehmen(sessionId, (await _me()).id);
+    }
+    _ref.invalidate(remoteParticipantsProvider(sessionId));
+    return ok;
+  }
+
+  static ParticipantKind _lokaleArt(Teilnahme art) => switch (art) {
+        Teilnahme.dabei => ParticipantKind.joined,
+        Teilnahme.abgesagt => ParticipantKind.declined,
+        Teilnahme.prost => ParticipantKind.toast,
+      };
 
   /// Fern-Prost auf eine Session (lokal oder online). Rueckgabe: ob er
   /// angekommen ist.

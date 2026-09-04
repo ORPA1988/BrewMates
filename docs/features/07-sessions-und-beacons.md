@@ -2,7 +2,7 @@
 
 > **Status:** 🟢 fertig — inklusive Push an die, die den Beacon sehen
 > dürfen (0039, seit 0.10.10).
-> **Seit:** 0.2.0 · **Zuletzt geprüft:** 2026-09-03
+> **Seit:** 0.2.0; Zu- und Absagen 0.10.13 · **Zuletzt geprüft:** 2026-09-04
 >
 > **Fremde Beacons laufen seit 0.10.12 zuverlässig ab.** Der Zeitfilter
 > lag im Realtime-Stream — und Realtime schickt nur, wenn sich eine
@@ -40,7 +40,13 @@ und die Freunde wissen Bescheid.
 - **Ein Tipp** startet die Session — optional mit Gasthaus, Nachricht und
   Sichtbarkeit (öffentlich, Freunde, Crew, versteckt)
 - **Stealth:** Beacon ohne Position — „ich bin unterwegs", ohne zu sagen wo
-- Freunde sehen die Session auf Karte und Startseite und können beitreten
+- Freunde sehen die Session auf Karte und Startseite
+- **„Kommst du vorbei?"** — beim Öffnen eines fremden Beacons steht die
+  Frage oben: *Ich komme vorbei* oder *Ich hab keine Zeit*. Die Antwort
+  ist jederzeit änderbar
+- **Wer kommt und wer nicht, sehen alle**, die den Beacon sehen dürfen —
+  nicht nur der Gastgeber
+- Zuprosten geht unabhängig davon: „kann heute nicht, trink eins auf mich"
 - Check-ins während der Session werden ihr zugeordnet
 - Beenden jederzeit; sonst endet sie nach 3 Stunden von selbst
 
@@ -50,7 +56,8 @@ und die Freunde wissen Bescheid.
   `session_detail_screen.dart`, `widgets/session_card.dart`
 - **Server:** `sessions` (0001) mit `location` (PostGIS, `null` bei
   Stealth), `visibility`, `crew_id`, `expires_at`;
-  `session_participants` für Beitritte
+  `session_participants` für Antworten (`joined | toast | declined`,
+  0047)
 - **Automatisches Ende:** `end_expired_sessions()` läuft per Cron und
   schließt abgelaufene Sessions
 - **Sicherheit:** RLS entscheidet über Sichtbarkeit; wer nicht darf, sieht
@@ -145,6 +152,63 @@ Die Session-Ansicht lädt bei eigenen Sessions die Reaktionen vom Server
 (`participantsOf`, `remoteParticipantsProvider`) und zeigt „Mit dabei“
 und „🍻 Zugeprostet: …“.
 
+### „Session nicht gefunden" — der Weg dorthin war zu eng (2026-09-04)
+
+Gemeldet: Ein Klick auf den Beacon eines Freundes endete bei „Session
+nicht gefunden", ebenso der Weg über einen fremden Feed.
+
+Die Detailansicht kannte genau **zwei** Quellen: die lokale Datenbank
+(eigene Sessions) und die Liste der gerade laufenden Freundes-Beacons.
+Wer anders ankam, fiel durch — und „anders" waren die häufigen Wege:
+
+- **Aus der Glocke oder einem Push.** Die Benachrichtigung trägt die
+  blanke Server-UUID, kein `remote-` davor. Der Aufruf landete damit im
+  Zweig für *eigene* Sessions und fragte die lokale Datenbank nach einer
+  fremden Session — die dort naturgemäß nie steht.
+- **Aus dem Feed eines Freundes.**
+- **Schlicht zu früh.** Der Realtime-Strom baut beim Bildschirmwechsel
+  neu auf; in diesen Sekunden ist die Liste leer.
+
+Jetzt gibt es eine dritte Quelle: `SessionsApi.byId()` fragt den Server
+nach genau dieser einen Session. Reihenfolge lokal → Liste → Server; die
+letzte beantwortet alle drei Fälle auf einmal.
+
+**Der leere Fall heißt jetzt etwas anderes.** Die RLS zeigt fremde
+Sessions nur, solange sie laufen — „vorbei" und „nicht für dich" sehen
+von außen gleich aus, und das ist Absicht (0024): Sonst wäre aus einer
+Fehlermeldung ablesbar, wer wo unterwegs ist. Statt „Session nicht
+gefunden" (klingt nach kaputt) steht deshalb: *Dieser Beacon ist nicht
+mehr zu sehen. Beacons enden nach höchstens drei Stunden.*
+
+### Warum eine Absage ein eigener Knopf ist (0047)
+
+Ein Beacon ist eine Verabredung. Wer darauf klickt, will nicht lesen,
+sondern antworten — und bis 0.10.13 gab es dafür nur eine Richtung:
+zusagen. Wer nicht konnte, klickte weg.
+
+Damit fehlte dem Gastgeber die halbe Information. „Drei haben zugesagt"
+heißt nichts, solange offen ist, ob die anderen fünf noch überlegen oder
+längst abgesagt haben. Schweigen ist mehrdeutig, und Mehrdeutigkeit ist
+bei einer Verabredung teuer: Man wartet auf jemanden, der nie kommt.
+
+Deshalb ist „ich hab keine Zeit" eine Antwort und kein Nicht-Klick — und
+sie steht in der Teilnehmerliste unter „Kann heute nicht", für alle
+sichtbar, die den Beacon sehen dürfen. Das regelt keine neue Policy:
+`session_participants_select` (0001) hängt an der Sichtbarkeit der
+Session selbst. Wer den Beacon nicht sieht, sieht auch die Antworten
+nicht.
+
+**Zuprosten bleibt daneben.** Es beantwortet eine andere Frage: Man kann
+aus der Ferne zuprosten *und* absagen — das ist sogar der häufigste Fall.
+Was sich ausschließt, ist Zusage gegen Absage; das räumt der Client beim
+Antworten weg, weil der Schlüssel `(session, profil, art)` sonst beide
+Zeilen nebeneinander stehen ließe.
+
+**Die Frage steht als Karte, nicht als Dialog.** Ein Dialog beim Öffnen
+verlangt eine Antwort, bevor man weiß, worauf man antwortet: wo, seit
+wann, wer ist schon da, wie lange noch. Die Frage gehört an den Anfang
+des Bildschirms — nicht davor.
+
 ## Modularität
 
 - **Hängt ab von:** Konto (01), Freunde (08), Gasthäuser (05, optional),
@@ -167,24 +231,34 @@ aktiver Sessions zusätzlich.
 
 ## Umsetzungsstatus
 
-Funktional vollständig. Zwei Einschränkungen:
+Funktional vollständig.
 
 - ~~**Laufzeit fest** bei 3 Stunden~~ — seit 0.9.14 wählbar, verlängerbar
   und serverseitig begrenzt ([Funktion 23](23-beacon-laufzeit.md))
-- **Keine Benachrichtigung:** Wer die App nicht öffnet, erfährt vom Beacon
-  eines Freundes nichts. Das ist die größte Lücke der Funktion und hängt
-  an Push-Nachrichten (Firebase), die noch nicht eingerichtet sind.
+- ~~**Keine Benachrichtigung**~~ — seit 0.10.10 weckt 0039 genau die, die
+  den Beacon auch sehen dürfen
+- ~~**Nur zusagen möglich**~~ — seit 0.10.13 auch absagen (0047)
+
+Abgesichert durch `test/beacon_zusagen_test.dart` (9 Widget-Tests: die
+blanke UUID aus der Glocke findet die Session, der leere Fall sagt warum,
+zu- und absagen, A-8 bei fehlender Verbindung, fremde Antworten stehen
+nebeneinander) und `supabase/tests/beacon_zusagen.test.sql`
+(9 Prüfungen in der Rolle `authenticated`: eine Absage kommt als Absage
+an, nur der Gastgeber wird geweckt, Umentscheiden hinterlässt genau eine
+Antwort, Prost verdrängt sie nicht, und niemand antwortet in fremdem
+Namen).
 
 ## Umsetzungsplan
 
 1. ~~[Laufzeit wählbar](23-beacon-laufzeit.md) inklusive Restanzeige und
    Verlängern~~ — erledigt (0.9.14)
-2. Push-Nachrichten beim Start einer Freundes-Session — mit strengen
-   Regeln gegen Belästigung: nur beim Start, höchstens alle 15 Minuten je
-   Empfänger, abschaltbar
-3. Sichtbarkeit nach [Freundeskreisen](24-freundeskreise.md)
+2. ~~Push-Nachrichten beim Start einer Freundes-Session~~ — erledigt
+   (0039, 0.10.10)
+3. ~~Zu- und Absagen, für alle sichtbar~~ — erledigt (0047, 0.10.13)
+4. Sichtbarkeit nach [Freundeskreisen](24-freundeskreise.md)
 
 ## Offene Punkte / Ideen
 
-- Geplante Sessions („morgen 19 Uhr") mit Zusage
+- Geplante Sessions („morgen 19 Uhr") mit Zusage — die Zusage selbst gibt
+  es jetzt; es fehlt nur der Termin in der Zukunft
 - Wiederkehrender Stammtisch

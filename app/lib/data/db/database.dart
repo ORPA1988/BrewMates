@@ -22,7 +22,9 @@ enum SessionStatus { active, ended }
 
 // ServingStyle steht in core/serving_style.dart (oben re-exportiert).
 
-enum ParticipantKind { joined, toast }
+/// Antworten auf einen Beacon. `declined` kam mit 0047 dazu — als
+/// `textEnum` gespeichert, deshalb verschiebt ein neuer Wert nichts.
+enum ParticipantKind { joined, toast, declined }
 
 // ============================================================================
 // Tabellen
@@ -837,6 +839,18 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> joinSession(
       String sessionId, String profileId, ParticipantKind kind) async {
+    // Zusage und Absage schließen einander aus; Prost steht daneben (man
+    // kann zuprosten UND absagen). Der Schlüssel ist
+    // (session, profil, art) — ohne das Löschen stünden nach „doch nicht"
+    // beide Antworten nebeneinander.
+    if (kind != ParticipantKind.toast) {
+      await (delete(sessionParticipants)
+            ..where((t) =>
+                t.sessionId.equals(sessionId) &
+                t.profileId.equals(profileId) &
+                t.kind.equalsValue(ParticipantKind.toast).not()))
+          .go();
+    }
     await into(sessionParticipants).insert(
       SessionParticipantsCompanion.insert(
         sessionId: sessionId,
@@ -846,6 +860,15 @@ class AppDatabase extends _$AppDatabase {
       mode: InsertMode.insertOrIgnore,
     );
   }
+
+  /// Die eigene Zu- oder Absage zurücknehmen. Der Prost bleibt.
+  Future<void> antwortZuruecknehmen(String sessionId, String profileId) =>
+      (delete(sessionParticipants)
+            ..where((t) =>
+                t.sessionId.equals(sessionId) &
+                t.profileId.equals(profileId) &
+                t.kind.equalsValue(ParticipantKind.toast).not()))
+          .go();
 
   Future<int> countMySessions(String profileId) async {
     final hosted = await (select(sessions)

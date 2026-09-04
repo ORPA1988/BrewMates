@@ -23,7 +23,11 @@ void Function()? benachrichtigungsZiel(
       // Die Einladung wird in der Crew-Liste beantwortet, nicht in der
       // Crew selbst — die sieht man ja erst als Mitglied.
       'crew_invite' => () => context.push('/crews'),
-      'beacon' || 'session_toast' || 'session_joined'
+      // Alle vier führen zur Session. `subjectId` ist die blanke
+      // Server-UUID; dass die Detailansicht damit klarkommt, ist seit
+      // 0.10.13 wahr — vorher fragte sie damit die lokale Datenbank und
+      // meldete bei fremden Beacons „Session nicht gefunden".
+      'beacon' || 'session_toast' || 'session_joined' || 'session_declined'
           when n.subjectId != null =>
         () => context.push('/session/${n.subjectId}'),
       _ => null,
