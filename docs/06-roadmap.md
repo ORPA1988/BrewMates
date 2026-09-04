@@ -10,7 +10,7 @@
 
 | Rang | Vorhaben | Warum jetzt |
 |---|---|---|
-| 1 | **[Statistiken ausbauen](features/20-feed-statistiken.md)** | Der einzige offene Befund des [Funktionsaudits](12-funktionsaudit.md). Alle Daten liegen da; es fehlt die Auswertung. Der Grund, jede Woche zurückzukommen |
+| 1 | **[Statistik-Ausbaustufe 2](features/20-feed-statistiken.md)** | Stufe 1 läuft seit 0.9.15. Stufe 2 macht sie **erweiterbar**: Aufteilungen als Konfiguration statt als Code, dazu Wochentag, Region, neue Biere, Vergleich zum Vorzeitraum, freier Zeitraum. Der Plan steht |
 | 2 | **Geplante Sessions** („morgen 19 Uhr") | Die Zu- und Absage gibt es seit 0.10.13 — es fehlt nur der Termin in der Zukunft |
 | 3 | **Anmeldeverfahren freischalten** | Die App kann fünf weitere Anbieter; drei davon kosten nichts. Schritte im [Release-Playbook](07-release-playbook.md) |
 | 4 | **[Crew-Challenges und Rollen](features/09-crews.md)** | Sinnvoll, sobald es mehr als eine aktive Crew gibt |

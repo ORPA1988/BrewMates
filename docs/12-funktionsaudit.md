@@ -102,14 +102,25 @@ Handhabe außer der Löschung des ganzen Kontos. Seit 0.9.14 erledigt
 **Bearbeiten** kam mit 0.10.x dazu
 ([Funktion 27](features/27-check-ins-bearbeiten.md)).
 
-**Die Statistiken bleiben unter ihren Möglichkeiten.** Das Profil zeigt
-Zähler: Check-ins, Stile, Länder, Wochen-Serie. **Alle** Daten für echte
-Auswertungen liegen inzwischen da — Land, Stil, Alkoholgehalt, Zeitpunkt,
-Gasthaus, Gebinde (`ServingStyle`) und seit 0022/Drift v11 auch die
-**Füllmenge je Check-in**, die 2026-08-15 noch als Hauptlücke galt.
+**~~Die Statistiken bleiben unter ihren Möglichkeiten.~~** Der Befund
+stammt vom 2026-08-15 und war **schon vier Wochen später überholt**: Seit
+0.9.15 gibt es einen eigenen Statistikbereich mit Mengen, vier
+Aufteilungen, Zeitraum, Filtern und Monatsverlauf
+([Funktion 20](features/20-feed-statistiken.md), 15 Tests). Auch die
+Füllmenge je Check-in, die hier als Hauptlücke stand, gibt es seit
+0022/Drift v11.
 
-Es fehlt also nicht mehr das Datum, sondern die Auswertung: eine Ansicht,
-die mehr sagt als eine Zahl, und ein Weg, sie zu filtern. Siehe
+⚠️ **Das ist die Stelle, an der dieses Dokument selbst zum Fehler wurde.**
+Am 2026-09-04 habe ich anhand dieses Absatzes berichtet, die Statistik
+sei die größte offene Lücke — sie war längst gebaut. Ein Audit, das nicht
+nachgeführt wird, ist keine Bestandsaufnahme mehr, sondern eine
+Behauptung. Dieselbe Lehre wie in
+[docs/13, Lehre 1](13-migrationen-und-lehren.md), nur eine Ebene höher:
+**Vor dem Berichten gegen die Wirklichkeit prüfen, nicht gegen die
+Notiz.**
+
+Offen ist die **Ausbaustufe 2** — mehr Aufteilungen, freier Zeitraum,
+Vergleich zum Vorzeitraum, Export. Der Plan dafür steht ausführlich in
 [Funktion 20](features/20-feed-statistiken.md).
 
 **~~Beacons laufen fest.~~** Die Laufzeit war einprogrammiert. Seit
