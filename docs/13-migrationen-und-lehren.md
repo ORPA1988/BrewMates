@@ -96,7 +96,7 @@ sich die Frage nicht.
 
 ## Teil 2 — Die Migrationen
 
-**`0001–0049` sind live, lückenlos** (Stand 2026-09-04). Die Nummern ohne
+**`0001–0050` sind live, lückenlos** (Stand 2026-09-04). Die Nummern ohne
 eigenen Abschnitt sind unauffällig: Sie haben getan, was ihr Name sagt.
 
 | # | Name | Wofür |
@@ -124,6 +124,7 @@ eigenen Abschnitt sind unauffällig: Sie haben getan, was ihr Name sagt.
 | 0047 | beacon_zusagen | Zusagen **und Absagen** auf einen Beacon |
 | 0048 | geplante_sessions_typ | Enum-Wert `planned`, Spalte `scheduled_for` |
 | 0049 | geplante_sessions_regeln | Checks, `sessions_select` um Verabredungen erweitert, Aufräumen |
+| 0050 | runden_checkins | Mitrundige sehen die Check-ins der Runde (`is_my_round`) |
 
 ### 0025 — Tabellenrechte, oder: das Repo konnte das Projekt nicht wiederherstellen
 
@@ -257,6 +258,37 @@ deckt diesen Fall mit ab.
 function` behält die ACL. `end_expired_sessions()` ist weiterhin für
 `anon` und `authenticated` gesperrt (`0005`) — nachgesehen, nicht
 gehofft, denn ein Neuanlegen hätte die Rechte zurückgesetzt.
+
+### 0050 — RLS gilt auch in der eigenen Unterabfrage
+
+Der erste Entwurf prüfte die Rundenzugehörigkeit direkt in der Policy:
+ein `exists` über `sessions` und `session_participants`. Die CI hat ihn
+zerlegt — **sieben Gegenproben grün, ausgerechnet das Öffnen rot.**
+
+`sessions` trägt selbst RLS. Die Unterabfrage lief als der fragende
+Mensch, und der sieht die Runde eines Nicht-Freundes gar nicht
+(`sessions_select` verlangt Freundschaft oder Crew). Also fand das
+`exists` nichts: Die Regel sperrte einwandfrei und öffnete nie.
+
+**Die Fehlerrichtung ist der eigentliche Punkt.** Ein
+Sichtbarkeitsfehler, der zu **wenig** zeigt, fällt beim ersten Benutzen
+auf. Einer, der zu **viel** zeigt, fällt vielleicht nie auf. Dass hier
+die harmlose Richtung getroffen wurde, war Zufall der Konstruktion —
+kein Verdienst. Deshalb prüft `runden_checkins.test.sql` beide
+Richtungen, und die Gegenproben sind in der Überzahl.
+
+Gelöst mit `is_my_round(session)` nach dem Muster von `are_friends`,
+`is_crew_member` und `tier_for`. **Ohne Profil-Parameter**: Die Funktion
+gibt nur über den Aufrufer Auskunft. Ein zweiter Parameter hätte sie zu
+einem Auskunftsdienst über Dritte gemacht — genau der Maßstab, an dem
+Teil 3 unten die übrigen Helfer misst.
+
+**Dabei gefunden:** Der `crew`-Zweig in `checkins_select` greift seit
+0001 **nie**. Er verlangt `visibility = 'crew'`, und die App schreibt
+hart verdrahtet `'friends'`. Die Crew-Bilanz zeigte deshalb immer nur
+Check-ins von Crew-Kollegen, mit denen man zusätzlich befreundet ist.
+Stehen gelassen: Ihn zu entfernen wäre eine Entscheidung über die
+Funktion, keine Aufräumarbeit — siehe Roadmap-Rang 3.
 
 ---
 
