@@ -125,8 +125,8 @@ nicht nachlesen.
 - **Version:** `0.10.14-beta+32` (Beta 0.x bis zum Play-Store-1.0; der
   Android-`versionCode` zählt immer weiter hoch).
 - **Backend:** Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0050` sind live, lückenlos.** Details: docs/13.
-  `list_migrations` zeigt **51** Einträge, das Repo hat 50 Dateien —
+  **`0001–0052` sind live, lückenlos.** Details: docs/13.
+  `list_migrations` zeigt **53** Einträge, das Repo hat 52 Dateien —
   **das ist kein Drift.** `0024_friend_tiers.sql` wurde live in zwei
   Schritten eingespielt (`friend_tiers` + `friend_tiers_thirsty_friends`);
   inhaltlich steht beides in der einen Repo-Datei. Wer nur zählt, meldet

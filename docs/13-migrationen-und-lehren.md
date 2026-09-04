@@ -96,7 +96,7 @@ sich die Frage nicht.
 
 ## Teil 2 — Die Migrationen
 
-**`0001–0050` sind live, lückenlos** (Stand 2026-09-04). Die Nummern ohne
+**`0001–0052` sind live, lückenlos** (Stand 2026-09-05). Die Nummern ohne
 eigenen Abschnitt sind unauffällig: Sie haben getan, was ihr Name sagt.
 
 | # | Name | Wofür |
@@ -125,6 +125,8 @@ eigenen Abschnitt sind unauffällig: Sie haben getan, was ihr Name sagt.
 | 0048 | geplante_sessions_typ | Enum-Wert `planned`, Spalte `scheduled_for` |
 | 0049 | geplante_sessions_regeln | Checks, `sessions_select` um Verabredungen erweitert, Aufräumen |
 | 0050 | runden_checkins | Mitrundige sehen die Check-ins der Runde (`is_my_round`) |
+| 0051 | checkin_crews | Welche Crews bei einem Check-in dabei waren — Momentaufnahme per Trigger |
+| 0052 | checkin_crews_rechte | Entzieht, was 0051 nur behauptet hatte |
 
 ### 0025 — Tabellenrechte, oder: das Repo konnte das Projekt nicht wiederherstellen
 
@@ -289,6 +291,40 @@ hart verdrahtet `'friends'`. Die Crew-Bilanz zeigte deshalb immer nur
 Check-ins von Crew-Kollegen, mit denen man zusätzlich befreundet ist.
 Stehen gelassen: Ihn zu entfernen wäre eine Entscheidung über die
 Funktion, keine Aufräumarbeit — siehe Roadmap-Rang 3.
+
+### 0051/0052 — zwei Regeln über nichts
+
+**Erstens: `grant` entzieht nichts.** 0051 legte `checkin_crews` an und
+schrieb als Kommentar dazu: „Kein insert/update/delete für irgendjemanden."
+Nachgesehen nach dem Einspielen stand da:
+
+    authenticated : DELETE, INSERT, SELECT, UPDATE
+    anon          : SELECT
+
+Aus den Default-Privileges, nicht aus einem `grant`. Dass trotzdem
+niemand schreiben kann, liegt **allein** an RLS ohne Schreib-Policy. Es
+war nie ein Loch — aber eine Sicherung, die anders zustande kommt als
+der Kommentar sagt, ist eine, auf die sich der Nächste falsch verlässt:
+Wer eine insert-Policy für „nur den Autor" ergänzt, gibt damit das
+volle DML frei, weil das Tabellenrecht längst da ist. 0052 zieht die
+`revoke`s nach, und der Test prüft jetzt **die Rechte**, nicht nur dass
+ein Schreibversuch scheitert. Das sind zwei verschiedene Aussagen.
+
+**Zweitens, und teurer: eine Server-Regel auf einem Feld, das der Client
+nie füllt.** `uploadRow` in `data/online/api/checkins_api.dart` setzte
+`'session_id': null` — hart verdrahtet, ohne Kommentar. Die Zuordnung
+erreichte den Server also nie, auch die zur eigenen Runde nicht.
+
+Damit war alles darüber wirkungslos: Die Crew-Bilanz jointe über
+`sessions.crew_id` und fand nichts. Der Runden-Zweig aus 0050 hätte nie
+gegriffen, weil `session_id is not null` nie zutraf. Beide hätten in
+jedem pgTAP-Test bestanden — dort setzt der Test die Spalte ja selbst.
+
+**Die Lehre:** Ein Server-Test belegt, dass die Regel richtig ist, wenn
+die Daten so aussehen. Er belegt nicht, dass die Daten je so aussehen.
+Wo eine Regel an einer Spalte hängt, die der Client füllt, gehört die
+Frage dazu: **Füllt er sie überhaupt?** Diese eine Frage hätte hier drei
+Migrationen früher gestellt gehört.
 
 ---
 
