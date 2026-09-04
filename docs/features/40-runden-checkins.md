@@ -129,6 +129,31 @@ im Profil mit Ausnahmen. Das ist eine Produktfrage, keine technische.
   `sessions.crew_id`. Für „jede Crew, aus der jemand dabei war" muss die
   Abfrage über die Teilnehmer gehen
 
+### Warum die Regel eine `security definer`-Funktion braucht
+
+Der erste Entwurf stellte die Frage direkt in der Policy: ein `exists`
+über `sessions` und `session_participants`. **Die CI hat ihn zerlegt —
+sieben Gegenproben grün, ausgerechnet das Öffnen rot.**
+
+Der Grund ist eine Eigenschaft von RLS, die man beim Schreiben leicht
+übersieht: `sessions` trägt selbst eine Policy. Die Unterabfrage lief als
+der fragende Mensch — und der sieht die Runde eines Nicht-Freundes gar
+nicht, weil `sessions_select` Freundschaft oder Crew verlangt. Also fand
+das `exists` nichts. Die Regel sperrte einwandfrei und öffnete nie.
+
+Bemerkenswert ist die Fehlerrichtung: Ein Sichtbarkeitsfehler, der zu
+**wenig** zeigt, fällt beim Benutzen sofort auf. Einer, der zu **viel**
+zeigt, fällt vielleicht nie auf. Dass ausgerechnet die sieben
+Gegenproben grün waren, war Zufall der Konstruktion — deshalb prüft
+dieser Test beide Richtungen und nicht nur die neue.
+
+`is_my_round(session)` löst es nach dem Muster von `are_friends`,
+`is_crew_member` und `tier_for`. **Ohne Profil-Parameter**, mit Absicht:
+Die Funktion gibt nur über den Aufrufer Auskunft. Ein zweiter Parameter
+hätte sie zu einem Auskunftsdienst über Dritte gemacht („war X bei Runde
+S dabei?") — und genau das ist der Maßstab, an dem docs/13 die übrigen
+Helfer misst.
+
 ### Warum keine neue Tabelle für die Crew-Zuordnung
 
 Naheliegend wäre `checkin_crews (checkin_id, crew_id)`. Dagegen spricht,

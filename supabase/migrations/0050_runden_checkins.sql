@@ -50,8 +50,58 @@
 -- der Sichtbarkeit, oder der Zweig fällt. Bis dahin bleibt er stehen,
 -- wo er ist; er schadet nicht.
 --
+-- ============================================================================
+-- WARUM DAS EINE SECURITY-DEFINER-FUNKTION BRAUCHT
+--
+-- Der erste Entwurf stellte die Frage direkt in der Policy: ein `exists`
+-- über `sessions` und `session_participants`. Die CI hat ihn zerlegt —
+-- **sieben Gegenproben grün, ausgerechnet das Öffnen rot.**
+--
+-- Der Grund: `sessions` trägt selbst RLS. Die Unterabfrage lief als der
+-- fragende Mensch, und der sieht die Session eines Nicht-Freundes gar
+-- nicht (`sessions_select` verlangt Freundschaft oder Crew). Also fand
+-- das `exists` nichts, und die Regel sperrte perfekt, ohne je etwas zu
+-- öffnen.
+--
+-- Deshalb dasselbe Muster wie bei `are_friends`, `is_crew_member` und
+-- `tier_for`: eine `security definer`-Funktion, die unter RLS
+-- hindurchsieht.
+--
+-- **Ohne Profil-Parameter, mit Absicht.** `is_my_round(session)` gibt
+-- nur über den Aufrufer Auskunft. Ein Parameter `profile` hätte die
+-- Funktion zu einem Auskunftsdienst über Dritte gemacht („war X bei
+-- Runde S dabei?"), und genau das ist der Maßstab, an dem die Baseline in
+-- docs/13 die übrigen Helfer misst: Sie beantworten nur Fragen, an denen
+-- der Aufrufer beteiligt ist.
+--
 -- Entwurf und Begründung: docs/features/40-runden-checkins.md
 -- ============================================================================
+
+create or replace function public.is_my_round(p_session uuid)
+returns boolean
+language sql stable security definer set search_path = public as $$
+  select exists (
+    select 1 from sessions s
+    where s.id = p_session
+      and (
+        s.host_id = auth.uid()
+        or exists (
+          select 1 from session_participants p
+          where p.session_id = s.id
+            and p.profile_id = auth.uid()
+            and p.kind = 'joined'
+        )
+      )
+  );
+$$;
+
+comment on function public.is_my_round(uuid) is
+  'Gehört diese Runde zu mir — als Gastgeber oder mit Zusage? Security '
+  'definer, weil sessions selbst RLS trägt. Nur über den Aufrufer, nie '
+  'über Dritte.';
+
+revoke execute on function public.is_my_round(uuid) from public, anon;
+grant execute on function public.is_my_round(uuid) to authenticated;
 
 drop policy if exists checkins_select on checkins;
 create policy checkins_select on checkins for select using (
@@ -75,17 +125,5 @@ create policy checkins_select on checkins for select using (
   -- NEU: Wer zur selben Runde gehört — als Gastgeber oder mit Zusage.
   or (session_id is not null
       and visibility <> 'private'
-      and exists (
-        select 1 from sessions s
-        where s.id = checkins.session_id
-          and (
-            s.host_id = (select auth.uid())
-            or exists (
-              select 1 from session_participants p
-              where p.session_id = s.id
-                and p.profile_id = (select auth.uid())
-                and p.kind = 'joined'
-            )
-          )
-      ))
+      and public.is_my_round(session_id))
 );
