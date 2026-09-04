@@ -47,6 +47,10 @@ class FakeOnlineService extends OnlineService {
   /// Profile, die der „Server" per ID kennt — fuer den QR-Weg.
   Map<String, RemoteProfile> profileNachId = const {};
 
+  /// Was der „Server" als Check-ins einer Runde liefert — also die der
+  /// Mitrundigen, die lokal gar nicht vorliegen.
+  List<RemoteCheckin> rundenCheckins = const [];
+
   /// Ein angemeldeter Nutzer muss vorgetäuscht werden: Die Provider
   /// prüfen `currentUser != null`, bevor sie überhaupt etwas versuchen.
   @override
@@ -297,6 +301,13 @@ class _FakeSessionsApi extends SessionsApi {
   @override
   Stream<List<RemoteSession>> friendSessionsStream() =>
       Stream.value(_fake.freundesSessions);
+
+  @override
+  Future<List<RemoteCheckin>> sessionCheckins(String sessionId,
+      {int limit = 100}) async {
+    _fake.aufrufe.add('sessionCheckins:$sessionId');
+    return List.of(_fake.rundenCheckins);
+  }
 
   @override
   Future<List<String>> myActiveSessionIds() async {
