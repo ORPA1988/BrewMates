@@ -2,7 +2,7 @@
 
 > **Status:** 🟡 teilweise — Android und Web laufen im Einsatz, Windows
 > baut, iOS ist ungetestet, macOS und Linux fehlen.
-> **Seit:** Web seit 0.9.10 · **Zuletzt geprüft:** 2026-09-03
+> **Seit:** Web seit 0.9.10 · **Zuletzt geprüft:** 2026-09-04
 
 ## Zielsetzung
 
@@ -35,6 +35,8 @@ Live: `https://orpa1988.github.io/BrewMates/`
   (APK/AAB, signiert)
 - **Regel:** kein `dart:io` in `lib/`; die CI erzwingt es über
   `flutter build web`
+- **Prüfung:** `flutter build web --release` **und** seit 2026-09-04
+  `flutter test --platform chrome` (siehe unten)
 
 **Die teuerste Lektion steckt in diesen Zeilen.** Drei Bestandteile wurden
 ursprünglich zur Laufzeit von fremden CDNs geladen — Schriften, Engine,
@@ -62,6 +64,67 @@ Wurzelverzeichnis der Domain, BrewMates liegt unter
 macht Service Worker, VAPID-Schlüssel und eine Migration allesamt
 überflüssig. Die Einzelheiten samt Kosten des anderen Wegs stehen in
 [Funktion 38](38-benachrichtigungen-im-browser.md).
+
+### Was die CI vom Browser tatsächlich weiß (Stand 2026-09-04)
+
+Bis hierher war Regel J eine Absichtserklärung: Die CI baute die Web-App
+(`flutter build web --release`), ließ aber nichts im Browser laufen. Ein
+Build beweist, dass der Code **übersetzt** — nicht, dass er dort auch
+**tut**. Der Unterschied ist nicht theoretisch: Im JavaScript ist `int`
+ein `double`, `DateTime` hat keine Mikrosekunden, und jede
+`kIsWeb`-Weiche nimmt den jeweils anderen Zweig.
+
+Seit 2026-09-04 läuft `flutter test --platform chrome` in `ci.yml`. Was
+er abdeckt und was nicht, in Zahlen — gemessen am Bestand von 70
+Testdateien:
+
+| | Dateien | Warum |
+|---|---|---|
+| **laufen im Browser** | 22 (153 Tests, grün) | reine Logik, Widgets ohne Datenbank |
+| ausgenommen: `AppDatabase.memory()` | 42 | `data/db/connection/web.dart` wirft dort `UnsupportedError` |
+| ausgenommen: Repo-Wächter | 6 | lesen Dateien mit `dart:io` |
+
+Der Schritt kostet **4:23** (gemessen 2026-09-04); der Flutter-Job der CI
+wächst damit von rund 3½ auf 8 Minuten. Derselbe Befehl ohne die
+Ausnahmen brauchte 7:43 und meldete 242 Fehlschläge — 229 davon gingen
+auf die beiden Gründe oben zurück, keiner auf die App.
+
+Die 48 ausgenommenen Dateien tragen `@TestOn('vm')` **mit dem Grund im
+Kopf der Datei**. Bewusst so und nicht als Dateiliste im Workflow: Eine
+neue Testdatei läuft damit im Browser mit, ohne dass jemand daran denken
+muss. Wer sie ausnimmt, muss es hinschreiben.
+
+**Zwei Fälle sind keine Ausnahme, sondern geteilt.** In
+`emoji_font_test.dart` prüft `testOn: 'vm'` das Gerät und
+`testOn: 'browser'` das Web — die Schriftkette hängt an `kIsWeb` und
+lässt sich nicht überschreiben, also braucht jede Seite ihren eigenen
+Lauf. In `kamera_hinweis_test.dart` steht der Fall mit dem
+Einstellungs-Knopf hinter `if (!kIsWeb)`: Den Knopf gibt es im Browser
+nicht, weil er dort ins Leere führte.
+
+**Was fehlt, um die 42 nachzuholen:** eine Drift-Datenbank, die im
+Browser-Test lebt. `WasmDatabase` braucht `sqlite3.wasm`, und das liegt
+heute in `web/` — vom Testlauf aus nicht erreichbar. Der Weg wäre, es
+zusätzlich als Asset zu führen und `openInMemory()` im Web-Zweig darüber
+zu bauen. Das ist echte Arbeit und nichts, was man nebenbei tut; bis
+dahin ist die Datenschicht im Browser nur durch den Build und die App
+selbst gedeckt.
+
+**Fallstrick beim Nachvollziehen:** Lokal (Windows 11, Chrome 152) hängt
+`flutter test --platform chrome` — **jede** Suite, auch ein
+`expect(1, 1)`, läuft zwölf Minuten in eine Ladezeitüberschreitung und
+meldet nichts. Im Browser-Protokoll stirbt `host.dart.js` sofort mit
+„Null check operator used on a null value": Das von Flutter 3.24.5
+gepinnte `test 1.25.7` sucht dort ein Element `#play`, das
+`flutter_tools/static/index.html` nicht mitbringt. Das Element
+versuchsweise zu ergänzen behob den Hänger allerdings **nicht** — es
+steckt also mehr dahinter, und die Ursache ist nicht zu Ende erklärt.
+
+**Auf dem CI-Läufer (ubuntu-latest) tritt das nicht auf**, dort läuft
+derselbe Befehl mit derselben Flutter-Version durch. Wer den Browser-Lauf
+sehen will, prüft ihn deshalb über einen Branch-Push, nicht auf dem
+eigenen Rechner. Die Kette `flutter analyze && flutter test --coverage &&
+…` bleibt lokal vollständig — nur dieser eine Schritt gehört der CI.
 
 ## Modularität
 

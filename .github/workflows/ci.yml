@@ -40,6 +40,24 @@ jobs:
       # Fängt dart:io-Regressionen: die App muss auch fürs Web bauen
       # (GitHub-Pages-Deployment, siehe pages.yml).
       - run: flutter build web --release
+      # Regel J („Web ist Zweitgerät mit vollem Funktionsumfang") stand
+      # bis hierher ungeprüft im Raum: Der Schritt darüber zeigt nur, dass
+      # die App fürs Web ÜBERSETZT. Dieser hier lässt die Tests im Browser
+      # LAUFEN — dort ist `int` ein double, `DateTime` hat keine
+      # Mikrosekunden, und jede `kIsWeb`-Weiche nimmt den anderen Zweig.
+      #
+      # Was er NICHT abdeckt: 48 der 70 Testdateien tragen `@TestOn('vm')`
+      # und bleiben draußen. Der Grund steht in jeder einzelnen Datei und
+      # ist zweimal derselbe — Repo-Wächter lesen Dateien (`dart:io`), und
+      # `AppDatabase.memory()` gibt es im Browser nicht. Die Rechnung samt
+      # nächstem Schritt: docs/features/18-plattformen.md.
+      #
+      # Preis, am 2026-09-04 auf diesem Läufer gemessen: 4:23 für 153
+      # Tests. Der Flutter-Job wächst damit von rund 3½ auf 8 Minuten —
+      # das ist der Gegenwert dafür, dass „läuft im Browser" nicht mehr
+      # geglaubt, sondern geprüft wird. Ohne die Ausnahmen dauerte
+      # derselbe Befehl 7:43 und war rot.
+      - run: flutter test --platform chrome
 
   rls:
     name: RLS & Migrationen (Supabase)

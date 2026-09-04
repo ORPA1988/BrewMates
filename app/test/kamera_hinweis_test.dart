@@ -100,24 +100,30 @@ void main() {
       expect(find.text('Der Barcode geht auch getippt.'), findsOneWidget);
     });
 
-    testWidgets('der Einstellungs-Knopf führt in die App-Einstellungen',
-        (tester) async {
-      debugDefaultTargetPlatformOverride = TargetPlatform.android;
-      var geoeffnet = false;
-      await zeige(
-        tester,
-        code: MobileScannerErrorCode.permissionDenied,
-        ausweg: 'Tipp den Barcode ein.',
-        einstellungen: () async {
-          geoeffnet = true;
-          return true;
-        },
-      );
-      await tester.tap(find.text('Einstellungen öffnen'));
-      await tester.pump();
-      expect(geoeffnet, isTrue);
-      debugDefaultTargetPlatformOverride = null;
-    });
+    // Nur auf der VM: `_einstellungenMoeglich` fragt neben `imBrowser`
+    // auch `kIsWeb` ab, und das lässt sich nicht überschreiben. Im
+    // Browser-Lauf gäbe es den Knopf also nie — und das ist richtig so,
+    // dort führte er ins Leere. Der Fall darunter prüft genau das.
+    if (!kIsWeb) {
+      testWidgets('der Einstellungs-Knopf führt in die App-Einstellungen',
+          (tester) async {
+        debugDefaultTargetPlatformOverride = TargetPlatform.android;
+        var geoeffnet = false;
+        await zeige(
+          tester,
+          code: MobileScannerErrorCode.permissionDenied,
+          ausweg: 'Tipp den Barcode ein.',
+          einstellungen: () async {
+            geoeffnet = true;
+            return true;
+          },
+        );
+        await tester.tap(find.text('Einstellungen öffnen'));
+        await tester.pump();
+        expect(geoeffnet, isTrue);
+        debugDefaultTargetPlatformOverride = null;
+      });
+    }
 
     testWidgets('kein Einstellungs-Knopf, wo er nirgends hinführt',
         (tester) async {

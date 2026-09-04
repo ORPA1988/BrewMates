@@ -1,3 +1,11 @@
+// Diese Datei baut ihre Daten mit `AppDatabase.memory()` auf. Die gibt
+// es nur auf der VM: Im Browser wirft `data/db/connection/web.dart`
+// dort `UnsupportedError` — dort läuft Drift über sqlite3.wasm, und
+// eine In-Memory-Variante davon müsste der Testlauf erst laden.
+// Begründung und nächster Schritt: docs/features/18-plattformen.md.
+@TestOn('vm')
+library;
+
 import 'dart:convert';
 
 import 'package:drift/drift.dart' show Value;

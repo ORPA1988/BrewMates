@@ -1,3 +1,9 @@
+// Wächter über Dateien im Repo: liest sie mit `dart:io`. Ein Browser
+// hat kein Dateisystem, und geprüft wird hier ohnehin das Repo und
+// nicht die App. Siehe docs/features/18-plattformen.md.
+@TestOn('vm')
+library;
+
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
