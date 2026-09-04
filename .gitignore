@@ -6,3 +6,6 @@
 # .temp/start-secrets enthält die Schlüssel der lokalen Instanz.
 supabase/.temp/
 supabase/.branches/
+
+# Arbeitsverzeichnisse paralleler Agenten — lokal, nie Teil des Repos.
+.claude/worktrees/

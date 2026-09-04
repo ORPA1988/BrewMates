@@ -1,17 +1,26 @@
 /// Auswertung der eigenen Check-ins.
 ///
-/// Bewusst ohne Flutter und ohne Datenbank: Die Funktionen bekommen eine
-/// Liste und geben Zahlen zurück. Das macht sie vollständig testbar — und
+/// Bewusst ohne Flutter und ohne Datenbank: Die Funktion bekommt eine
+/// Liste und gibt Zahlen zurück. Das macht sie vollständig testbar — und
 /// erlaubt es später, die Summenbildung nach SQL zu verlagern, ohne die
 /// Darstellung anzufassen.
 ///
 /// **Grundsatz:** Ausgewertet wird Vielfalt und Erinnerung, nicht
 /// Leistung. Liter erscheinen, weil die Frage naheliegt — nie als
 /// Rangliste gegen andere und nie mit einer Zielvorgabe.
+///
+/// **Seit 0.10.14 sind Aufteilungen und Kennzahlen Daten**, keine Felder:
+/// `statistics/dimensions.dart` und `statistics/measures.dart`. Wer eine
+/// neue Auswertung will, trägt sie dort ein — hier ist nichts zu ändern.
 library;
 
 import '../core/checkin_facts.dart';
 import '../core/serving_style.dart';
+import 'statistics/dimensions.dart';
+import 'statistics/measures.dart';
+
+export 'statistics/dimensions.dart';
+export 'statistics/measures.dart';
 
 /// Geschätzte Füllmenge je Gebinde, wenn der Check-in keine Angabe hat.
 ///
@@ -29,7 +38,7 @@ const Map<ServingStyle, int> estimatedVolumeMl = {
 /// Fallback, wenn nicht einmal das Gebinde bekannt ist.
 const int defaultVolumeMl = 500;
 
-/// Zeitraum der Auswertung.
+/// Vorgefertigter Zeitraum.
 enum StatsRange { month, year, all }
 
 extension StatsRangeLabel on StatsRange {
@@ -38,13 +47,93 @@ extension StatsRangeLabel on StatsRange {
         StatsRange.year => 'Dieses Jahr',
         StatsRange.all => 'Alles',
       };
+}
 
-  /// Frühester Zeitpunkt, der noch zählt (null = keine Grenze).
-  DateTime? startFrom(DateTime now) => switch (this) {
+/// Der Zeitraum einer Auswertung — als Wertobjekt, nicht als Enum.
+///
+/// Der Unterschied trägt: Ein Enum kann „dieser Monat" sagen, aber weder
+/// „1.–14. Juli" noch „der Zeitraum davor". Beides braucht die Auswertung
+/// (freier Zeitraum, Vergleich zum Vorzeitraum), und beides wäre mit
+/// einem Enum eine Sonderbehandlung an jeder Aufrufstelle.
+class StatsPeriod {
+  const StatsPeriod.preset(StatsRange range)
+      : _range = range,
+        _from = null,
+        _to = null;
+
+  /// Von-bis, jeweils einschließlich des Tages.
+  const StatsPeriod.custom(DateTime from, DateTime to)
+      : _range = null,
+        _from = from,
+        _to = to;
+
+  final StatsRange? _range;
+  final DateTime? _from;
+  final DateTime? _to;
+
+  /// Der vorgefertigte Zeitraum, oder `null` bei einem freien.
+  StatsRange? get preset => _range;
+
+  bool get isCustom => _range == null;
+
+  /// Frühester Zeitpunkt, der noch zählt. `null` = keine Grenze.
+  DateTime? startAt(DateTime now) => switch (_range) {
         StatsRange.month => DateTime(now.year, now.month),
         StatsRange.year => DateTime(now.year),
         StatsRange.all => null,
+        null => DateTime(_from!.year, _from.month, _from.day),
       };
+
+  /// Spätester Zeitpunkt, der noch zählt. `null` = keine Grenze.
+  ///
+  /// Beim freien Zeitraum ist der Endtag **eingeschlossen** — wer „bis
+  /// 14. Juli" wählt, meint den ganzen 14., nicht dessen Mitternacht.
+  DateTime? endAt(DateTime now) => _range != null
+      ? null
+      : DateTime(_to!.year, _to.month, _to.day).add(const Duration(days: 1));
+
+  String get label => switch (_range) {
+        StatsRange.month => 'Dieser Monat',
+        StatsRange.year => 'Dieses Jahr',
+        StatsRange.all => 'Alles',
+        null => '${_datum(_from!)} – ${_datum(_to!)}',
+      };
+
+  /// Beschriftung des Vergleichszeitraums, für „gegenüber …".
+  String get previousLabel => switch (_range) {
+        StatsRange.month => 'Vormonat',
+        StatsRange.year => 'Vorjahr',
+        StatsRange.all => '',
+        null => 'davor',
+      };
+
+  /// Der gleich lange Zeitraum davor — oder `null`, wenn es keinen gibt.
+  ///
+  /// „Alles" hat kein Davor. Bei Monat und Jahr ist es der volle
+  /// Vormonat bzw. das volle Vorjahr; beim freien Zeitraum die gleiche
+  /// Anzahl Tage unmittelbar davor.
+  StatsPeriod? previous(DateTime now) => switch (_range) {
+        StatsRange.all => null,
+        StatsRange.month => StatsPeriod.custom(
+            DateTime(now.year, now.month - 1),
+            DateTime(now.year, now.month).subtract(const Duration(days: 1)),
+          ),
+        StatsRange.year => StatsPeriod.custom(
+            DateTime(now.year - 1),
+            DateTime(now.year).subtract(const Duration(days: 1)),
+          ),
+        null => () {
+            final tage = _to!.difference(_from!).inDays + 1;
+            final bis = _from.subtract(const Duration(days: 1));
+            return StatsPeriod.custom(
+              bis.subtract(Duration(days: tage - 1)),
+              bis,
+            );
+          }(),
+      };
+
+  static String _datum(DateTime d) =>
+      '${d.day}.${d.month}.${d.year}';
 }
 
 /// Ein Balken in einer Aufteilung.
@@ -59,24 +148,25 @@ class StatSlice {
 class CheckinStats {
   const CheckinStats({
     required this.checkins,
-    required this.distinctBeers,
-    required this.distinctBreweries,
-    required this.distinctVenues,
     required this.totalMl,
     required this.estimatedCount,
-    required this.byCountry,
-    required this.byStyle,
-    required this.byServing,
-    required this.byBrewery,
+    required this.byDimension,
+    required this.values,
     required this.byMonth,
-    required this.averageRating,
-    required this.alcoholFree,
+    this.previous,
   });
 
+  /// Die leere Auswertung — kein Sonderfall im Aufrufer.
+  static const empty = CheckinStats(
+    checkins: 0,
+    totalMl: 0,
+    estimatedCount: 0,
+    byDimension: {},
+    values: {},
+    byMonth: [],
+  );
+
   final int checkins;
-  final int distinctBeers;
-  final int distinctBreweries;
-  final int distinctVenues;
 
   /// Gesamtmenge in Millilitern, inklusive geschätzter Anteile.
   final int totalMl;
@@ -84,18 +174,24 @@ class CheckinStats {
   /// Wie viele Check-ins dabei geschätzt wurden — die Anzeige sagt es dazu.
   final int estimatedCount;
 
-  final List<StatSlice> byCountry;
-  final List<StatSlice> byStyle;
-  final List<StatSlice> byServing;
-  final List<StatSlice> byBrewery;
+  /// Alle Aufteilungen, nach dem Schlüssel aus [dimensions].
+  final Map<String, List<StatSlice>> byDimension;
+
+  /// Alle Kennzahlen, nach dem Schlüssel aus [measures]. Enthält nur, was
+  /// tatsächlich einen Wert hat — eine fehlende Bewertung steht hier
+  /// nicht als 0.
+  final Map<String, double> values;
 
   /// Check-ins je Monat, älteste zuerst (Beschriftung „08/2026").
+  ///
+  /// Bleibt eine eigene Größe statt einer Aufteilung: Sie ist die
+  /// Zeitachse, wird chronologisch statt nach Menge sortiert und anders
+  /// dargestellt.
   final List<StatSlice> byMonth;
 
-  /// Durchschnittsbewertung über die bewerteten Check-ins (null = keine).
-  final double? averageRating;
-
-  final int alcoholFree;
+  /// Dieselbe Auswertung über den Zeitraum davor — für den Maßstab.
+  /// `null` bei „Alles" und in der Vergleichsauswertung selbst.
+  final CheckinStats? previous;
 
   bool get isEmpty => checkins == 0;
 
@@ -104,6 +200,13 @@ class CheckinStats {
 
   /// Ist ein nennenswerter Teil der Menge geschätzt?
   bool get volumeIsRough => estimatedCount > 0;
+
+  /// Die Balken einer Aufteilung; leer, wenn es sie nicht gibt.
+  List<StatSlice> slices(String dimensionKey) =>
+      byDimension[dimensionKey] ?? const [];
+
+  /// Der Wert einer Kennzahl, oder `null`, wenn sie hier nichts sagt.
+  double? value(String measureKey) => values[measureKey];
 }
 
 /// Menge eines einzelnen Check-ins — gemessen, sonst nach Gebinde
@@ -114,16 +217,12 @@ int volumeMlOf(CheckinFacts e) =>
         ? defaultVolumeMl
         : estimatedVolumeMl[e.serving] ?? defaultVolumeMl);
 
-String _servingLabel(ServingStyle? s) => switch (s) {
-      ServingStyle.draft => 'vom Fass',
-      ServingStyle.bottle => 'Flasche',
-      ServingStyle.can => 'Dose',
-      ServingStyle.growler => 'Growler',
-      null => 'ohne Angabe',
-    };
-
-/// Zählt [values] und gibt die häufigsten zuerst zurück.
-List<StatSlice> _tally(Iterable<String> values, {int? top}) {
+/// Zählt [values] und sortiert: häufigste zuerst, oder nach [fixedOrder].
+List<StatSlice> _tally(
+  Iterable<String> values, {
+  int? top,
+  List<String>? fixedOrder,
+}) {
   final counts = <String, int>{};
   for (final v in values) {
     if (v.trim().isEmpty) continue;
@@ -131,67 +230,91 @@ List<StatSlice> _tally(Iterable<String> values, {int? top}) {
   }
   final slices = [
     for (final e in counts.entries) StatSlice(e.key, e.value),
-  ]..sort((a, b) {
+  ];
+
+  if (fixedOrder != null) {
+    // Werte außerhalb der festen Reihenfolge hinten anhängen, statt sie
+    // zu verlieren — eine Aufteilung, die still etwas unterschlägt, ist
+    // schlimmer als eine unordentliche.
+    slices.sort((a, b) {
+      final ia = fixedOrder.indexOf(a.label);
+      final ib = fixedOrder.indexOf(b.label);
+      if (ia == -1 && ib == -1) return a.label.compareTo(b.label);
+      if (ia == -1) return 1;
+      if (ib == -1) return -1;
+      return ia.compareTo(ib);
+    });
+  } else {
+    slices.sort((a, b) {
       final byCount = b.count.compareTo(a.count);
       // Bei Gleichstand alphabetisch — sonst springt die Reihenfolge
       // zwischen zwei Aufrufen.
       return byCount != 0 ? byCount : a.label.compareTo(b.label);
     });
-  return top == null || slices.length <= top
-      ? slices
-      : slices.sublist(0, top);
+  }
+
+  return top == null || slices.length <= top ? slices : slices.sublist(0, top);
 }
 
-/// Wertet [all] aus, eingeschränkt auf [range] (gerechnet ab [now]) und
+/// Wertet [all] aus, eingeschränkt auf [period] (gerechnet ab [now]) und
 /// optional auf ein Land bzw. einen Stil.
+///
+/// [withPrevious] steuert nur, ob der Vergleichszeitraum mitgerechnet
+/// wird — die Vergleichsauswertung selbst braucht keinen eigenen
+/// Vergleich, sonst liefe das endlos.
 CheckinStats computeStats(
   List<CheckinFacts> all, {
   required DateTime now,
-  StatsRange range = StatsRange.all,
+  StatsPeriod period = const StatsPeriod.preset(StatsRange.all),
   String? country,
   String? style,
+  bool withPrevious = true,
 }) {
-  final from = range.startFrom(now);
+  final from = period.startAt(now);
+  final to = period.endAt(now);
+
+  bool imZeitraum(CheckinFacts d) =>
+      (from == null || !d.createdAt.isBefore(from)) &&
+      (to == null || d.createdAt.isBefore(to));
+
   final rows = [
     for (final d in all)
-      if ((from == null || !d.createdAt.isBefore(from)) &&
+      if (imZeitraum(d) &&
           (country == null || d.breweryCountry == country) &&
           (style == null || d.beerStyle == style))
         d,
   ];
 
+  final vorher = withPrevious && period.previous(now) != null
+      ? computeStats(
+          all,
+          now: now,
+          period: period.previous(now)!,
+          country: country,
+          style: style,
+          withPrevious: false,
+        )
+      : null;
+
   if (rows.isEmpty) {
-    return const CheckinStats(
+    // Der Vergleichszeitraum bleibt erhalten: „diesen Monat noch nichts,
+    // im Vormonat waren es 12" ist eine Aussage, „nichts" allein nicht.
+    return CheckinStats(
       checkins: 0,
-      distinctBeers: 0,
-      distinctBreweries: 0,
-      distinctVenues: 0,
       totalMl: 0,
       estimatedCount: 0,
-      byCountry: [],
-      byStyle: [],
-      byServing: [],
-      byBrewery: [],
-      byMonth: [],
-      averageRating: null,
-      alcoholFree: 0,
+      byDimension: const {},
+      values: const {},
+      byMonth: const [],
+      previous: vorher,
     );
   }
 
   var totalMl = 0;
   var estimated = 0;
-  var ratingSum = 0.0;
-  var ratingCount = 0;
-  var alcoholFree = 0;
   for (final d in rows) {
     totalMl += volumeMlOf(d);
     if (d.volumeMl == null) estimated++;
-    final r = d.rating;
-    if (r != null) {
-      ratingSum += r;
-      ratingCount++;
-    }
-    if (d.isAlcoholFree) alcoholFree++;
   }
 
   // Monate lückenlos wäre schöner, aber irreführend: Ein Monat ohne
@@ -204,25 +327,64 @@ CheckinStats computeStats(
   }
   final months = monthCounts.keys.toList()..sort();
 
+  // „Neu" heißt neu — unabhängig davon, welcher Filter gerade gesetzt
+  // ist. Deshalb wird hier über `all` gerechnet, nicht über `rows`.
+  final earlier = from == null
+      ? null
+      : {
+          for (final d in all)
+            if (d.createdAt.isBefore(from)) d.beerId,
+        };
+
+  final eingabe = MeasureInput(
+    rows: rows,
+    earlierBeerIds: earlier,
+    weeks: _weeksIn(rows, from, to, now),
+    totalMl: totalMl,
+  );
+
   return CheckinStats(
     checkins: rows.length,
-    distinctBeers: {for (final d in rows) d.beerId}.length,
-    distinctBreweries: {for (final d in rows) d.breweryId}.length,
-    distinctVenues: {
-      for (final d in rows)
-        if (d.venueName != null) d.venueName!,
-    }.length,
     totalMl: totalMl,
     estimatedCount: estimated,
-    byCountry: _tally([for (final d in rows) d.breweryCountry]),
-    byStyle: _tally([for (final d in rows) d.beerStyle], top: 10),
-    byServing: _tally([for (final d in rows) _servingLabel(d.serving)]),
-    byBrewery: _tally([for (final d in rows) d.breweryName], top: 10),
+    byDimension: {
+      for (final d in dimensions)
+        d.key: _tally(
+          [
+            for (final r in rows)
+              if (d.valueOf(r) != null) d.valueOf(r)!,
+          ],
+          top: d.top,
+          fixedOrder: d.fixedOrder,
+        ),
+    },
+    values: {
+      for (final m in measures)
+        if (m.valueOf(eingabe) != null) m.key: m.valueOf(eingabe)!,
+    },
     byMonth: [
       for (final m in months)
         StatSlice('${m.substring(5)}/${m.substring(0, 4)}', monthCounts[m]!),
     ],
-    averageRating: ratingCount == 0 ? null : ratingSum / ratingCount,
-    alcoholFree: alcoholFree,
+    previous: vorher,
   );
+}
+
+/// Länge des ausgewerteten Zeitraums in Wochen.
+///
+/// Bei „Alles" gibt es keine Grenze — dann zählt die Spanne vom ersten
+/// Check-in bis heute. Bei einem laufenden Monat oder Jahr zählt nur die
+/// **vergangene** Zeit: „Ø je Woche" über einen Monat, der erst zwei Tage
+/// alt ist, wäre sonst künstlich klein.
+double _weeksIn(
+  List<CheckinFacts> rows,
+  DateTime? from,
+  DateTime? to,
+  DateTime now,
+) {
+  final beginn = from ??
+      rows.map((r) => r.createdAt).reduce((a, b) => a.isBefore(b) ? a : b);
+  final ende = to == null || to.isAfter(now) ? now : to;
+  final tage = ende.difference(beginn).inDays;
+  return tage <= 0 ? 1 : tage / 7;
 }

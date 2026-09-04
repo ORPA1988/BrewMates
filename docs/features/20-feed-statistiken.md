@@ -1,9 +1,11 @@
 # 20 Statistiken & Auswertung
 
-> **Status:** 🟢 Stufe 1 fertig — eigener Bereich mit Mengen,
-> Aufteilungen, Zeitraum und Filtern. **Stufe 2 geplant** (siehe unten):
-> mehr Dimensionen, freier Zeitraum, Export.
-> **Seit:** 0.9.15-beta · **Zuletzt geprüft:** 2026-09-04
+> **Status:** 🟢 Stufe 2 zum größten Teil gebaut — acht Aufteilungen per
+> Chip, neun Kennzahlen, freier Zeitraum und Vergleich mit dem Zeitraum
+> davor. **Offen bleiben** Reinalkohol (Entscheidung des Menschen),
+> CSV-Export und die Crew-Auswertung auf derselben Maschinerie.
+> **Seit:** 0.9.15-beta (Stufe 1) · 0.10.14-beta (Stufe 2) ·
+> **Zuletzt geprüft:** 2026-09-04
 >
 > **Hier steht die gesamte Auswertung.** [Funktion 13](13-statistiken-und-tagebuch.md)
 > ist das Tagebuch — die Liste zum Nachlesen — und die Wochen-Serie. Die
@@ -125,21 +127,28 @@ Die Menge wird beim Check-in über Auswahlchips gesetzt (0,2 · 0,25 ·
 wählt. Sie wandert mit dem Check-in in die Cloud und kehrt bei der
 Wiederherstellung zurück — sonst wäre sie beim Gerätewechsel weg.
 
-Abgesichert durch `test/statistics_test.dart` (15 Tests): Summen,
+Abgesichert durch `test/statistics_test.dart` (34 Tests): Summen,
 Schätzung fehlender Mengen, Zeiträume, Filter einzeln und kombiniert,
 Sortierung samt Gleichstand, Zählung verschiedener Biere/Brauereien/Orte,
-Durchschnitt nur über Bewertetes, Monatsverlauf, Formatierung.
+Durchschnitt nur über Bewertetes, Monatsverlauf, Formatierung — dazu seit
+Stufe 2 die neuen Aufteilungen und Kennzahlen, der Vergleichszeitraum und
+der freie Zeitraum. `test/stats_screen_test.dart` prüft den Bildschirm
+selbst, den es bis 0.10.13 gar nicht geprüft hatte.
 
 ---
 
-# Ausbaustufe 2 — der Plan (2026-09-04)
+# Ausbaustufe 2 — gebaut am 2026-09-04
 
-Stufe 1 beantwortet „wie viel und wovon". Sie tut das gut, aber sie ist
+> Dieser Abschnitt war bis 0.10.13 ein Plan. Er bleibt stehen, weil die
+> Begründungen weiter gelten — ergänzt um **was davon gebaut ist**
+> (Abschnitt 10) und was bewusst offen blieb.
+
+Stufe 1 beantwortete „wie viel und wovon". Sie tat das gut, aber sie war
 **starr**: Vier Aufteilungen, drei Zeiträume, zwei Filter — alles fest
-verdrahtet. Jede neue Frage kostet heute eine Änderung an vier Stellen
+verdrahtet. Jede neue Frage kostete eine Änderung an vier Stellen
 (Eingabetyp, Auswertung, Ergebnisklasse, Bildschirm) plus Tests.
 
-Deshalb steht am Anfang von Stufe 2 kein neues Diagramm, sondern **ein
+Deshalb stand am Anfang von Stufe 2 kein neues Diagramm, sondern **ein
 Umbau, der jedes weitere Diagramm billig macht**.
 
 ## 1. Der Befund
@@ -384,3 +393,70 @@ Umsetzungshinweise:
   Grundlage dafür
 - Gespeicherte Ansichten („mein Standardblick": Zeitraum + Filter +
   Aufteilung) — sinnvoll erst ab Schritt 6
+
+---
+
+## 10. Was davon gebaut ist (0.10.14-beta)
+
+**Der Umbau aus Punkt 2 steht.** Aufteilungen und Kennzahlen sind Listen
+statt Felder:
+
+- `domain/statistics/dimensions.dart` — acht Aufteilungen als `const`-Liste
+- `domain/statistics/measures.dart` — neun Kennzahlen, ebenso
+- `domain/statistics.dart` — `computeStats` liefert
+  `Map<String, List<StatSlice>>` und `Map<String, double>` statt benannter
+  Felder; `CheckinStats.slices(key)` und `.value(key)` sind der Zugriff
+
+Eine neue Aufteilung ist damit tatsächlich **eine Zeile**: Der Bildschirm
+zeigt sie, ohne dass jemand ihn anfasst.
+
+| Schritt aus Punkt 8 | Stand |
+|---|---|
+| 1 — `abv`, `breweryCity` in `CheckinFacts` | ✅ dazu `sessionId`; **keine Migration nötig**, alle drei Spalten gab es lokal längst |
+| 2 — Registry für Aufteilungen und Kennzahlen | ✅ |
+| 3 — Bildschirm auf Chip-Auswahl | ✅ eine Aufteilung zur Zeit |
+| 4 — Wochentag, Region, Bewertung, allein/Runde | ✅ alle vier |
+| 5 — neue Biere, Ø je Woche, Vergleich zum Vorzeitraum | ✅ |
+| 6 — freier Zeitraum von–bis | ✅ `StatsPeriod` als Wertobjekt |
+| 7 — Reinalkohol | ⏸ **wartet auf die Entscheidung** (Punkt 6) |
+| 8 — CSV-Export | ⏸ nachrangig, wie geplant |
+| 9 — Crew-Auswertung auf dieselbe Maschinerie | ⏸ offen |
+
+### Was beim Bauen anders kam als gedacht
+
+**`StatsRange` ist nicht verschwunden, sondern eingewickelt.** Der Plan
+sagte „Zeitraum als Wertobjekt statt Enum". Das Enum trägt aber weiterhin
+die drei Knöpfe, die 95 % der Aufrufe ausmachen; `StatsPeriod` umschließt
+es und kann zusätzlich von–bis. So bleibt `StatsPeriod.preset(…)` const
+und die Segmented-Button-Auswahl einfach.
+
+**Der Vergleichszeitraum rechnet sich selbst.** `computeStats` ruft sich
+einmal für das Davor auf (`withPrevious: false`, sonst liefe es endlos in
+die Vergangenheit). Ein leerer Zeitraum **behält** seinen Vergleich:
+„diesen Monat noch nichts, im Vormonat waren es zwölf" ist eine Aussage,
+„nichts" allein nicht.
+
+**„Neu" wird ungefiltert bestimmt.** Ein Bier ist nicht dadurch neu, dass
+man gerade den Stilfilter gesetzt hat. Die Menge der früher getrunkenen
+Biere entsteht deshalb über **alle** Check-ins vor dem Zeitraum, nicht
+über die gefilterten. Ohne eingegrenzten Zeitraum blendet sich die
+Kennzahl ganz aus — über die gesamte Zeit war jedes Bier einmal neu, die
+Zahl wäre eine Dublette von „verschiedene Biere".
+
+**Deutsche Material-Dialoge.** Der freie Zeitraum braucht
+`showDateRangePicker`, und der sprach Englisch: Die App hatte nie
+`flutter_localizations` eingebunden. Jetzt schon — ein SDK-Paket, keine
+Fremdabhängigkeit. Nebenwirkung ist erwünscht: Alle Material-Dialoge der
+App sind damit deutsch.
+
+**Der Bildschirm hatte keinen Test.** Geprüft war nur die Rechnung
+darunter. Das trug, solange vier feste Blöcke untereinander standen; seit
+die Aufteilung per Chip gewählt wird, ist die Verbindung zwischen Auswahl
+und Anzeige selbst eine Behauptung. `test/stats_screen_test.dart` prüft
+sie — und gleich mit, ob Trefferflächen, Beschriftungen und Kontrast
+stimmen (siehe [docs/14](../14-barrierefreiheit.md)).
+
+**Widget-Tests laufen auf 800×600.** Auf dieser Fläche liegen die Chips
+außerhalb des Ausschnitts: Der erste Tipp darauf ging ins Leere, und der
+Test meldete einen Fehler, den es in der App nicht gibt. Beide
+Statistik-Tests setzen deshalb ein Telefonformat.

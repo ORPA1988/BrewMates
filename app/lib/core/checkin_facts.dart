@@ -30,6 +30,9 @@ class CheckinFacts {
     required this.breweryId,
     required this.breweryName,
     required this.breweryCountry,
+    this.abv,
+    this.breweryCity,
+    this.sessionId,
     this.venueId,
     this.venueName,
     this.note,
@@ -47,6 +50,24 @@ class CheckinFacts {
   final String breweryId;
   final String breweryName;
   final String breweryCountry;
+
+  /// Alkoholgehalt des Biers in Volumenprozent, wenn die Datenbank ihn
+  /// kennt. Bei nutzererstellten Bieren fehlt er oft.
+  ///
+  /// Die Auswertung **zeigt** ihn heute nicht: Reinalkohol ist die einzige
+  /// Zahl in diesem Bereich, die einen Menschen unangenehm treffen kann,
+  /// und ob sie erscheint, ist eine Produktentscheidung (Regel K,
+  /// docs/features/20, Punkt 6). Das Feld steht hier, damit die
+  /// Entscheidung nicht an fehlenden Daten scheitert.
+  final double? abv;
+
+  /// Stadt der Brauerei. In der lokalen Tabelle nie `null`, aber häufig
+  /// leer — für die Aufteilung „Region" zählt Leer wie Fehlend.
+  final String? breweryCity;
+
+  /// Beacon/Session, zu der dieser Check-in gehört. `null` heißt: allein
+  /// getrunken, nicht in einer Runde.
+  final String? sessionId;
 
   /// Gasthaus aus der gemeinsamen Datenbank, wenn eines gewählt wurde.
   final String? venueId;

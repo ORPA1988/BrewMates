@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -35,6 +36,12 @@ class BrewMatesApp extends ConsumerWidget {
     if (ref.watch(updatePflichtProvider).valueOrNull ?? false) {
       return MaterialApp(
         title: 'BrewMates',
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [Locale('de'), Locale('en')],
         theme: BrewTheme.light,
         darkTheme: BrewTheme.dark,
         themeMode: ThemeMode.system,
@@ -46,6 +53,12 @@ class BrewMatesApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'BrewMates',
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('de'), Locale('en')],
       theme: BrewTheme.light,
       darkTheme: BrewTheme.dark,
       themeMode: ThemeMode.system,
