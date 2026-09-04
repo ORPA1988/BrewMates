@@ -7,7 +7,7 @@
 -- Ausführen: `supabase test db` (braucht die lokale Instanz).
 
 begin;
-select plan(8);
+select plan(10);
 
 create or replace function pg_temp.mkuser(p_id uuid, p_name text)
 returns void language plpgsql as $$
@@ -156,6 +156,30 @@ select is(
     where checkin_id = 'cc000000-0000-0000-0000-000000000001'),
   3,
   'Der Gastgeber sieht die Zuordnung seines eigenen Check-ins'
+);
+
+-- ============================================================================
+-- Tabellenrechte (0052) — nachgezogen, nachdem 0051 sie nur behauptet hat.
+-- ============================================================================
+
+reset role;
+
+select is(
+  (select count(*)::int from information_schema.table_privileges
+    where table_schema = 'public' and table_name = 'checkin_crews'
+      and grantee = 'authenticated'
+      and privilege_type in ('INSERT', 'UPDATE', 'DELETE')),
+  0,
+  'authenticated hat kein Schreibrecht auf der Tabelle — nicht nur keine '
+  'Policy dafür'
+);
+
+select is(
+  (select count(*)::int from information_schema.table_privileges
+    where table_schema = 'public' and table_name = 'checkin_crews'
+      and grantee = 'anon'),
+  0,
+  'anon hat gar kein Recht auf der Tabelle'
 );
 
 select * from finish();
