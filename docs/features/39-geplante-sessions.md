@@ -1,9 +1,8 @@
 # 39 Geplante Sessions
 
-> **Status:** 🔴 geplant — noch nichts gebaut. Dieses Dokument ist der
-> Entwurf. **Schritt 1 des Umsetzungsplans ist allerdings schon
-> erledigt** — und hat den Entwurf an einer Stelle umgeworfen, siehe
-> „Technische Umsetzung“, `sessions_select`.
+> **Status:** 🟡 teilweise — **das Server-Fundament steht**
+> (0048/0049, Schritte 1–3). Die App kennt noch keine Verabredungen:
+> Anlegen, „Demnächst“ und die Erinnerungen sind Schritte 4–8.
 > **Seit:** — · **Zuletzt geprüft:** 2026-09-04
 >
 > Baut auf [Funktion 07 (Sessions & Beacons)](07-sessions-und-beacons.md)
@@ -209,15 +208,35 @@ Migration, sonst ist es ein Full Scan pro Minute.
 
 ## Umsetzungsstatus
 
-Noch nichts. Dieses Dokument ist der Entwurf.
+**Server: fertig.** Migrationen `0048` (Enum-Wert `planned`, Spalte
+`scheduled_for`) und `0049` (Checks, erweiterte `sessions_select`,
+partieller Index, erweitertes `end_expired_sessions()`), abgesichert
+durch `supabase/tests/geplante_sessions.test.sql` — elf pgTAP-Tests
+gegen die Policy, die Constraints und das Aufräumen.
+
+**App: noch nichts.** Es gibt keinen Weg, eine Verabredung anzulegen, und
+keine Liste „Demnächst“.
+
+**Die Karte ist trotzdem schon sicher — geprüft, nicht angenommen.**
+`friendSessionsStream()` in `data/online/api/sessions_api.dart` verwirft
+jede Zeile mit `row['status'] != 'active'`, bevor sie überhaupt zu einer
+`RemoteSession` wird. Schritt 3 des Plans war damit bereits erfüllt,
+bevor er anfing.
+
+**Eine offene Stelle ist benannt, nicht übersehen:** `byId()` filtert
+bewusst **nicht** nach Status — sie soll auch beendete eigene Sessions
+liefern, damit eine alte Benachrichtigung noch etwas zeigt. Sobald die
+App Verabredungen anlegt, würde eine davon dort als laufender Beacon
+erscheinen. `RemoteSession` braucht dafür `status` und `scheduledFor`.
+Das steht als Kommentar an der Methode und gehört zu Schritt 5.
 
 ## Umsetzungsplan
 
 | Schritt | Was | Prüfkriterium |
 |---|---|---|
 | ~~1~~ | ~~Belegen, wie `sessions_select` mit geplanten Sessions umgeht~~ — **erledigt am 2026-09-04, siehe oben.** Ergebnis: Die Policy schließt alles aus, was nicht `active` ist; sie **muss** angefasst werden. Der Kartenzähler dagegen nicht | — |
-| 2 | Migration `0048`: Enum-Wert, `scheduled_for`, Index, beide Checks, `end_expired_sessions()` erweitert **und `sessions_select` um den `planned`-Zweig** | pgTAP-Test in `supabase/tests/`; die CI baut die DB aus `migrations/` neu auf (Regel C) |
-| 3 | `remoteSessionsProvider` hält geplante heraus | Widget-Test: eine geplante Session erscheint **nicht** auf der Karte und **nicht** im Zähler |
+| ~~2~~ | ~~Migration~~ — **erledigt:** `0048` (Enum-Wert, Spalte) und `0049` (Checks, Policy, Index, Aufräumen). **Zwei Dateien**, weil Postgres einen frisch angelegten Enum-Wert in derselben Transaktion nicht benutzen lässt | ✅ `supabase/tests/geplante_sessions.test.sql`, elf Tests |
+| ~~3~~ | ~~`remoteSessionsProvider` hält geplante heraus~~ — **war schon so:** `friendSessionsStream()` verwirft alles, was nicht `active` ist. Der Kartenzähler ist doppelt geschützt, weil er zusätzlich einen Ort verlangt | ✅ im pgTAP-Test mitgeprüft |
 | 4 | Anlegen-Formular mit *jetzt/später* | Test: Termin in der Vergangenheit wird abgelehnt; ohne Verbindung erscheint ein Fehlschlag und die Eingaben bleiben |
 | 5 | „Demnächst" auf der Startseite, Antworten daran | Test: Zusage und Absage wirken vor dem Termin genauso wie währenddessen |
 | 6 | Erinnerung beim Anlegen (Empfängerregel = `sessions_select`) | Wie 0039: niemand bekommt eine Meldung über etwas, das er nicht sehen darf |
@@ -243,9 +262,13 @@ gehört ein pgTAP-Test dazu, der beide Zweige einzeln belegt.
 
 ## Offene Punkte / Ideen
 
-- **Wie lang ist die Karenz?** Bis wann bleibt eine nicht gestartete
-  Verabredung stehen — eine Stunde nach dem Termin? Bis Mitternacht?
-  Vorschlag: drei Stunden, wie die Beacon-Laufzeit. Zu klären beim Bauen
+- ~~**Wie lang ist die Karenz?**~~ **Entschieden mit 0049: drei
+  Stunden**, dieselbe Spanne, nach der ein laufender Beacon von selbst
+  endet. Kürzer wäre unfreundlich (wer eine halbe Stunde zu spät
+  startet, will die Runde noch haben), länger ließe tote Verabredungen
+  im Weg stehen. Die Zahl steht bewusst an **zwei** Stellen —
+  Sichtbarkeit und Aufräumen —, und sie müssen gleich bleiben:
+  Begründung im Kopf von `0049`
 - **Wiederkehrende Termine** („jeden ersten Donnerstag") — reizvoll für
   Stammtische, aber eine eigene Funktion mit eigenen Fragen
   (Ausnahmen, Absage einzelner Termine). Nicht in dieser Stufe

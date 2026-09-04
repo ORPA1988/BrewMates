@@ -204,6 +204,16 @@ class SessionsApi extends OnlineApi {
   /// der Server sagt bewusst nicht, welches von beidem. Das ist kein
   /// Mangel dieser Methode, sondern der Zweck der Regel: Sonst wäre
   /// „gibt es nicht“ von „darfst du nicht“ unterscheidbar.
+  ///
+  /// **Offen für geplante Sessions (0048/0049):** Anders als
+  /// [friendSessionsStream] filtert diese Methode **nicht** auf
+  /// `status = 'active'` — sie liefert bewusst auch beendete eigene
+  /// Sessions, damit die Detailansicht aus einer alten Benachrichtigung
+  /// heraus noch etwas zeigt. Sobald die App Verabredungen anlegt, wird
+  /// eine davon hier als laufender Beacon dargestellt. `RemoteSession`
+  /// braucht dafür `status` und `scheduledFor`; heute ist das folgenlos,
+  /// weil die App keine geplanten Sessions erzeugt. Siehe
+  /// docs/features/39, Schritt 5.
   Future<RemoteSession?> byId(String sessionId) async {
     if (currentUser == null) return null;
     try {
