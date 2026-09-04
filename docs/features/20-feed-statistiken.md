@@ -2,8 +2,9 @@
 
 > **Status:** 🟢 Stufe 2 zum größten Teil gebaut — acht Aufteilungen per
 > Chip, neun Kennzahlen, freier Zeitraum und Vergleich mit dem Zeitraum
-> davor. **Offen bleiben** Reinalkohol (Entscheidung des Menschen),
-> CSV-Export und die Crew-Auswertung auf derselben Maschinerie.
+> davor. Reinalkohol ist **entschieden und gebaut** (siehe Punkt 6).
+> **Offen bleiben** CSV-Export und die Crew-Auswertung auf derselben
+> Maschinerie.
 > **Seit:** 0.9.15-beta (Stufe 1) · 0.10.14-beta (Stufe 2) ·
 > **Zuletzt geprüft:** 2026-09-04
 >
@@ -327,8 +328,29 @@ ist auch keine Erinnerung. Sie ist ein Spiegel.
 - Der Schätzanteil muss dabeistehen: Wo `volumeMl` geschätzt ist, ist die
   Alkoholzahl es auch.
 
-⚠️ **Das ist eine Produktentscheidung, keine technische.** Sie wird
+⚠️ **Das ist eine Produktentscheidung, keine technische.** Sie wurde
 vorgelegt, nicht getroffen (Regel K in `CLAUDE.md`).
+
+### ✅ Entschieden am 2026-09-04: anzeigen, wie oben vorgeschlagen
+
+Umgesetzt in `domain/statistics/alcohol.dart` und der Karte
+`_AlcoholCard` in `stats_screen.dart`:
+
+- **Eigene Karte unter den Aufteilungen**, nicht bei den Kennzahl-Kacheln.
+- **Milliliter und Gramm** reiner Alkohol, dazu ein Satz, wie die Zahl
+  entsteht („Füllmenge mal Alkoholgehalt").
+- **Kein Vergleich mit dem Vorzeitraum**, keine Farbe, kein Pfeil, keine
+  Einordnung, keine Warnung.
+- **Beide Lücken stehen dabei:** wie viele Füllmengen geschätzt sind und
+  bei wie vielen Check-ins gar kein Alkoholgehalt hinterlegt ist. Ab
+  einem Drittel Lücke sagt die Karte deutlicher, dass die Zahl eher eine
+  Untergrenze als eine Summe ist.
+- **Bewusst keine „Standardgläser".** Die Normierung auf 10–20 g stammt
+  aus der Suchtprävention; sie macht aus einer Angabe eine Bewertung.
+  Milliliter und Gramm sind nachvollziehbar und sagen nichts über den
+  Menschen.
+- Fehlt der Alkoholgehalt bei **allen** Check-ins des Zeitraums,
+  erscheint die Karte gar nicht.
 
 ## 7. Export (nachrangig, aber vorgedacht)
 
@@ -418,7 +440,7 @@ zeigt sie, ohne dass jemand ihn anfasst.
 | 4 — Wochentag, Region, Bewertung, allein/Runde | ✅ alle vier |
 | 5 — neue Biere, Ø je Woche, Vergleich zum Vorzeitraum | ✅ |
 | 6 — freier Zeitraum von–bis | ✅ `StatsPeriod` als Wertobjekt |
-| 7 — Reinalkohol | ⏸ **wartet auf die Entscheidung** (Punkt 6) |
+| 7 — Reinalkohol | ✅ entschieden am 2026-09-04 und gebaut (Punkt 6) |
 | 8 — CSV-Export | ⏸ nachrangig, wie geplant |
 | 9 — Crew-Auswertung auf dieselbe Maschinerie | ⏸ offen |
 
