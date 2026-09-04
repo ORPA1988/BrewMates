@@ -2,7 +2,8 @@
 
 > **Status:** 🟡 teilweise — die **Sichtbarkeit** steht (0050), die
 > Zuordnung beim Einchecken und die Crew-Ansicht folgen.
-> **Seit:** 0.10.15-beta · **Zuletzt geprüft:** 2026-09-04
+> **Seit:** Server 2026-09-04 (0050); **ohne App-Änderung**, deshalb
+> kein Versionsbump · **Zuletzt geprüft:** 2026-09-04
 >
 > Erweitert [Funktion 07 (Sessions)](07-sessions-und-beacons.md),
 > [09 (Crews)](09-crews.md) und [10 (Feed)](10-feed.md). Kein eigener
