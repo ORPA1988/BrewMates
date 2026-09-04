@@ -385,13 +385,18 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           ],
         ),
         const SizedBox(height: 8),
-        OutlinedButton.icon(
-          onPressed: _busy ? null : () async => _googleSignIn(online),
-          icon: const Text('G',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          label: const Text('Mit Google anmelden'),
-        ),
-        const SizedBox(height: 12),
+        // Nur, was der Server auch eingerichtet hat (0046). Solange die
+        // Liste lädt, steht Google da — der Weg, den es seit 0.9.2 gibt.
+        for (final verfahren in ref.watch(anmeldeverfahrenProvider).valueOrNull ??
+            const [Anmeldeverfahren.google]) ...[
+          OutlinedButton.icon(
+            onPressed: _busy ? null : () async => _oauthAnmeldung(online, verfahren),
+            icon: _verfahrensZeichen(verfahren),
+            label: Text(verfahren.knopfText),
+          ),
+          const SizedBox(height: 8),
+        ],
+        const SizedBox(height: 4),
         Text(
           '🔒 Deine Check-ins sind nur für bestätigte Freunde sichtbar.',
           textAlign: TextAlign.center,
@@ -509,10 +514,27 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     }
   }
 
-  Future<void> _googleSignIn(OnlineService online) async {
+  /// Das Zeichen auf dem Knopf.
+  ///
+  /// Apple und Facebook haben ein Material-Symbol, die übrigen nicht —
+  /// für die steht der Anfangsbuchstabe. **Kein Logo aus dem Netz:** Die
+  /// App lädt zur Laufzeit nichts von fremden Servern (Leitplanke aus
+  /// `docs/11`), und ein Markenlogo mitzuliefern brauchte die Erlaubnis
+  /// des Markeninhabers. Ein Buchstabe braucht sie nicht.
+  Widget _verfahrensZeichen(Anmeldeverfahren verfahren) => switch (verfahren) {
+        Anmeldeverfahren.apple => const Icon(Icons.apple),
+        Anmeldeverfahren.facebook => const Icon(Icons.facebook),
+        _ => Text(
+            verfahren.name.substring(0, 1),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+      };
+
+  Future<void> _oauthAnmeldung(
+      OnlineService online, Anmeldeverfahren verfahren) async {
     setState(() => _busy = true);
     try {
-      final err = await online.signInWithGoogle();
+      final err = await online.signInWithProvider(verfahren);
       if (!mounted) return;
       if (err != null) {
         ScaffoldMessenger.of(context)

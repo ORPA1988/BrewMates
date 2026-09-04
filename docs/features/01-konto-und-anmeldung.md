@@ -1,8 +1,11 @@
 # 01 Konto & Anmeldung
 
 > **Status:** 🟢 fertig — Google und E-Mail funktionieren, Konto ist
-> in-App löschbar, Daten kehren nach Neuanmeldung zurück.
-> **Seit:** 0.9.2 (Kontopflicht) · **Zuletzt geprüft:** 2026-08-15
+> in-App löschbar, Daten kehren nach Neuanmeldung zurück. Weitere
+> Anmeldewege (Apple, Microsoft, Facebook, Discord, GitHub) sind in der
+> App fertig und warten je auf ihre Einrichtung beim Anbieter.
+> **Seit:** 0.9.2 (Kontopflicht); weitere Anbieter 0.10.13 ·
+> **Zuletzt geprüft:** 2026-09-04
 
 ## Zielsetzung
 
@@ -16,6 +19,9 @@ und ein ehrlicher Weg wieder hinaus.
 - Anmeldung per Google (ein Tipp) oder E-Mail und Passwort — ohne
   Bestätigungsmail, weil die Hürde sonst die Hälfte der Interessierten
   kostet
+- **Weitere Anbieter erscheinen, sobald sie eingerichtet sind** — Apple,
+  Microsoft, Facebook, Discord, GitHub. Der Anmeldebildschirm zeigt
+  ausschließlich Knöpfe, die auch funktionieren
 - Einmal anmelden, dauerhaft eingeloggt
 - Nach der Anmeldung holt die Wiederherstellung eigene Check-ins,
   Abzeichen und Wunschliste zurück
@@ -28,7 +34,8 @@ und ein ehrlicher Weg wieder hinaus.
 
 - **Dateien:** `features/account/account_screen.dart`,
   `data/online/online_service.dart` (Abschnitt „Auth"),
-  `core/supabase_config.dart`
+  `core/anmeldeverfahren.dart` (welche Wege es gibt, rein Dart),
+  `data/providers/anmeldung.dart`, `core/supabase_config.dart`
 - **Server:** Supabase Auth; `profiles` (0001), Trigger
   `handle_new_user` (0004/0006/0019), RPC `delete_my_account` (0017)
 - **Sicherheit:** RLS auf `profiles`; fremde Profile nur sichtbar, wenn
@@ -63,10 +70,39 @@ und ein ehrlicher Weg wieder hinaus.
   (local-first), aber das Konto ist die Grundlage aller sozialen
   Funktionen.
 
+### Warum die Liste der Anmeldewege vom Server kommt
+
+Ein zweiter Anmeldeweg ist nicht mit einem Knopf getan. Jeder Anbieter
+braucht am Server ein eingerichtetes Konto — Client-ID, Geheimnis,
+hinterlegte Rück-URL —, und einrichten kann das nur ein Mensch beim
+Anbieter selbst. Fehlt es, antwortet Supabase mit „provider is not
+enabled".
+
+Stünde die Liste im App-Code, hätte jede ausgelieferte Fassung genau die
+Knöpfe, die beim Bauen bekannt waren: entweder Knöpfe für Anbieter, die es
+noch nicht gibt, oder keinen Knopf für den, der inzwischen da ist. Beides
+ist falsch, und **das erste ist schlimmer** — wer sich nicht anmelden
+kann, kommt nicht wieder.
+
+Deshalb steht in `app_config.auth_providers` (0046), was wirklich
+eingerichtet ist; die App zeigt genau das. Ein freigeschalteter Anbieter
+erscheint damit **ohne neues Release**, auch auf Geräten, die nie wieder
+aktualisiert werden. Dieselbe Stelle und dieselbe Begründung wie beim
+Riegel (0029) und beim Testphasen-Schalter (0037).
+
+**E-Mail und Passwort stehen bewusst nicht in der Liste.** Das ist kein
+OAuth-Weg, braucht keine Freischaltung und ist immer da — ein Schalter
+dafür wäre einer, mit dem man sich selbst aussperrt.
+
+**Kein Anbieterlogo auf den Knöpfen.** Apple und Facebook haben ein
+Material-Symbol, die übrigen tragen ihren Anfangsbuchstaben. Zur Laufzeit
+lädt die App nichts von fremden Servern (Leitplanke aus `docs/11`), und
+ein Markenlogo mitzuliefern brauchte die Erlaubnis des Markeninhabers.
+
 ## Plattformen
 
-Alle. Google-Login braucht je Plattform eigene Client-IDs; eingerichtet
-sind Android und Web.
+Alle. Jeder OAuth-Anbieter braucht je Plattform eigene Client-IDs und die
+hinterlegte Rück-URL; für Google sind Android und Web eingerichtet.
 
 ## Skalierung
 
@@ -75,17 +111,37 @@ höchstens fünf Einfügeversuche für den Nutzernamen (0019).
 
 ## Umsetzungsstatus
 
-Vollständig. Offen ist nur die Selbstbedienung beim Nutzernamen: Er wird
-einmal abgeleitet und kann danach nicht geändert werden.
+In der App vollständig. Was fehlt, fehlt **außerhalb** des Codes: Jeder
+weitere Anbieter braucht ein Konto bei ihm und einen Eintrag im
+Supabase-Dashboard. Bei **Apple** kostet das die Mitgliedschaft im Apple
+Developer Program (99 $/Jahr) — ohne die geht es nicht, mit Programmieren
+ist da nichts zu machen. Facebook verlangt zusätzlich eine App-Prüfung
+für die Berechtigung `email`; Microsoft, Discord und GitHub sind
+kostenlos und in Minuten erledigt.
+
+Abgesichert durch `test/anmeldeverfahren_test.dart` (6 Tests: Reihenfolge
+bleibt die des Servers, unbekannter Anbieter wird übergangen statt alles
+mitzureißen, `azure` ≠ `microsoft`) und
+`supabase/tests/auth_providers.test.sql` (4 Prüfungen, darunter die
+wichtigste: ohne Anmeldung lesbar).
+
+Offen bleibt die Selbstbedienung beim Nutzernamen: Er wird einmal
+abgeleitet und kann danach nicht geändert werden.
 
 ## Umsetzungsplan
 
-1. Nutzernamen ändern können (einmal je Zeitraum, Eindeutigkeit geprüft)
-2. Passwort zurücksetzen prüfen — der Weg existiert bei Supabase, ist in
-   der App aber nicht angeboten
+1. ~~Weitere Anmeldewege in der App~~ — erledigt in 0.10.13 (0046)
+2. Einrichtung je Anbieter im Dashboard — Schritte in
+   `docs/07-release-playbook.md`
+3. Nutzernamen ändern können (einmal je Zeitraum, Eindeutigkeit geprüft)
 
 ## Offene Punkte / Ideen
 
-- Apple-Anmeldung, sobald iOS ernsthaft ansteht (App-Store-Pflicht, wenn
-  Google-Login angeboten wird)
+- **Apple ist Pflicht, sobald es eine iOS-Fassung gibt** und dort ein
+  anderer Fremdanbieter angeboten wird — App-Store-Regel, nicht unsere
+  Entscheidung. Auf Android und im Web ist Apple freiwillig
+- Magic Link (Anmeldung per E-Mail-Link statt Passwort) wäre der einzige
+  weitere Weg, der überhaupt kein fremdes Konto braucht — hängt aber am
+  E-Mail-Versand: Der eingebaute SMTP von Supabase ist auf wenige
+  Nachrichten je Stunde gedeckelt und für echten Betrieb nicht gedacht
 - Die Redirect-URLs in Supabase müssen für neue Plattformen ergänzt werden
