@@ -122,7 +122,7 @@ nicht nachlesen.
 
 ## 5. Der Stand
 
-- **Version:** `0.10.13-beta+31` (Beta 0.x bis zum Play-Store-1.0; der
+- **Version:** `0.10.14-beta+32` (Beta 0.x bis zum Play-Store-1.0; der
   Android-`versionCode` zählt immer weiter hoch).
 - **Backend:** Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
   **`0001–0047` sind live, lückenlos.** Details: docs/13.

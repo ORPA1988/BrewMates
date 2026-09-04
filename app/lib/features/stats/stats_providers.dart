@@ -8,9 +8,18 @@ import '../../domain/statistics.dart';
 /// Provider dieser Funktion — eigene Datei statt Anbau an die
 /// Sammelstelle `data/providers.dart` (siehe docs/11).
 
-/// Gewählter Zeitraum.
-final statsRangeProvider =
-    StateProvider<StatsRange>((ref) => StatsRange.year);
+/// Gewählter Zeitraum: einer der drei Vorgaben oder ein freier von–bis.
+final statsPeriodProvider = StateProvider<StatsPeriod>(
+  (ref) => const StatsPeriod.preset(StatsRange.year),
+);
+
+/// Gewählte Aufteilung — der Schlüssel aus `domain/statistics/dimensions.dart`.
+///
+/// Es wird **eine zur Zeit** gezeigt, per Chip gewählt. Vier
+/// untereinander gingen noch; bei acht wäre der Bildschirm eine Rolle,
+/// durch die niemand mehr scrollt.
+final statsDimensionProvider =
+    StateProvider<String>((ref) => dimensions.first.key);
 
 /// Filter: Land der Brauerei (null = alle).
 final statsCountryProvider = StateProvider<String?>((ref) => null);
@@ -36,7 +45,7 @@ final statsProvider = Provider<CheckinStats>((ref) {
   return computeStats(
     all.facts,
     now: ref.watch(clockProvider).valueOrNull ?? DateTime.now(),
-    range: ref.watch(statsRangeProvider),
+    period: ref.watch(statsPeriodProvider),
     country: ref.watch(statsCountryProvider),
     style: ref.watch(statsStyleProvider),
   );

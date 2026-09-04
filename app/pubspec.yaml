@@ -2,13 +2,21 @@ name: brewmates
 description: "BrewMates – Bier entdecken, Freunde treffen. Untappd × Beer with Me."
 publish_to: "none"
 # Beta-Phase: 0.x bis zum offiziellen 1.0-Store-Release (versionCode zählt weiter)
-version: 0.10.13-beta+31
+version: 0.10.14-beta+32
 
 environment:
   sdk: ^3.5.0
 
 dependencies:
   flutter:
+    sdk: flutter
+
+  # Deutsche Beschriftungen in den Material-Dialogen. Kommt aus dem SDK,
+  # ist also keine Fremdabhängigkeit und kein Pinning-Risiko. Nötig
+  # geworden mit der Zeitraumauswahl in der Statistik: Ein Datumsdialog,
+  # der „Cancel" und „Save" sagt, während die App durchgehend deutsch
+  # spricht, sieht aus wie ein Fehler.
+  flutter_localizations:
     sdk: flutter
 
   # State-Management & Navigation
