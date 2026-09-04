@@ -475,7 +475,7 @@ class OnlineService {
 
   // --------------------------------------------------------------------------
   // Crews (Gruppen, Tabellen seit 0001; Beitritt per Einladungscode =
-  // Crew-UUID — bewusst kein Kontakte-Import, wie bei Beer With Me).
+  // Crew-UUID — bewusst kein Kontakte-Import).
   // --------------------------------------------------------------------------
 
   /// Eigene Crews (RLS zeigt nur Crews, in denen man Mitglied ist).

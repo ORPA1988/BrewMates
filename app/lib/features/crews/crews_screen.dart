@@ -8,7 +8,7 @@ import '../../data/online/online_service.dart' show CrewInvite, OnlineApi;
 import '../../data/providers.dart';
 
 /// 👥 Crews: feste Gruppen (Stammtisch, Verein, WG …) — der größte
-/// Differenzierer gegenüber Beer With Me.
+/// Das Merkmal, das feste Runden von losen Freundeslisten trennt.
 ///
 /// Drei Wege hinein, und der dritte unterscheidet sich grundsätzlich:
 /// Code scannen und Code tippen entscheidet der Beitretende selbst; eine

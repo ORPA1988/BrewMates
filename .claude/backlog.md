@@ -37,7 +37,7 @@ KI-Unterstützung deutlich weniger).
 | # | Punkt | Aufwand | Warum |
 |---|---|---|---|
 | C-1 | Community-DB serverseitig durchsuchbar statt acht Volldateien im Bundle | L | Erst ab ~50.000 Nutzern nötig. Vorher wäre der Umbau verfrüht. |
-| C-2 | Push-Benachrichtigungen (FCM) für Session-Start, mit Spam-Bremse | M | Der virale Kern von Beer With Me. **Extern blockiert:** braucht ein Firebase-Projekt. |
+| C-2 | Push-Benachrichtigungen (FCM) für Session-Start, mit Spam-Bremse | M | Der virale Kern der Treffen-Hälfte. **Extern blockiert:** braucht ein Firebase-Projekt. |
 | C-3 | Homescreen-Widget (`home_widget`) | M | Sichtbares Alleinstellungsmerkmal, aber kein Fundament. |
 | C-4 | Crew-Feed | M | Letzte offene Lücke der Crew-Funktion. |
 | C-5 | Heatmap zur Wochen-Serie | S | Nice-to-have aus der Wettbewerbsanalyse. |

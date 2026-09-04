@@ -26,8 +26,8 @@ neuen Kern: Der Startbildschirm hat **zwei Hero-Aktionen** –
 2. **🍻 Zusammenkommen!** – Ein-Tap-Beacon mit echtem GPS: Die Session startet
    sofort, Freunde sehen den Standort auf der Karte, Botschaft: **„Alle willkommen!"**
 
-Alle Untappd-Funktionen (Check-ins, Bewertungen, Bier-Datenbank, Abzeichen,
-Statistiken, Wunschliste) und alle Beer-with-Me-Funktionen (Beacon, Live-Karte,
+Alle Tagebuch-Funktionen (Check-ins, Bewertungen, Bier-Datenbank, Abzeichen,
+Statistiken, Wunschliste) und alle Treffen-Funktionen (Beacon, Live-Karte,
 Sessions) gruppieren sich um diese zwei Hauptfunktionen – sie sind Vertiefungen,
 keine gleichrangigen Einstiege mehr.
 
@@ -208,10 +208,10 @@ eigenes Dokument mit Umsetzungsplan.
 
 ---
 
-## Prioritäten aus der Wettbewerbsanalyse (2026-08, Untappd × Beer With Me)
+## Prioritäten aus der Wettbewerbsanalyse (2026-08)
 
 Quelle: Wettbewerbsanalyse-Dokument (Google Docs, 14.08.2026). Kernbefund:
-BrewMates ist strukturell bereits die Synthese beider Vorbilder; die
+BrewMates verbindet beide Hälften strukturell bereits; die
 Maßnahmen sind überwiegend Aktivierung des Vorhandenen.
 
 **Bereits umgesetzt (Stand 0.9.11):**
@@ -220,7 +220,7 @@ Maßnahmen sind überwiegend Aktivierung des Vorhandenen.
       loggen in unter zwei Sekunden, Details später ergänzbar)
 - [x] **„Bierlaune"-Status** (0018): Lust signalisieren, ohne zu trinken —
       Chip auf Home (4 Stunden), Freunde mit Bierlaune erscheinen als
-      Home-Karte. Das meistgewünschte fehlende Beer-With-Me-Feature.
+      Home-Karte. Die meistgewünschte fehlende Funktion der Treffen-Hälfte.
 - [x] **Badges sichtbar feiern** (Vollbild-Celebration, Galerie mit
       Fortschritt), **EAN-Scan als Katalog-Motor** (0010),
       **Foto-Feed dosiert** (Freunde-only, 0009-Moderation),
@@ -230,7 +230,7 @@ Maßnahmen sind überwiegend Aktivierung des Vorhandenen.
 
 **Nächste Schritte (priorisiert):**
 
-- [x] **Session-Push mit Spam-Bremse** — der virale Kern von Beer With Me.
+- [x] **Session-Push mit Spam-Bremse** — der virale Kern der Treffen-Hälfte.
       *Erledigt mit 0039 (0.10.10): Push nur beim Session-Start, eine
       Meldung je Gastgeber und Stunde, und die Empfängerliste ist
       wortwörtlich die Sichtbarkeitsregel der Session. Antworten seit

@@ -146,7 +146,7 @@ create table venues (
 create index venues_location_idx on venues using gist (location);
 
 -- ============================================================================
--- Sessions (Beer-with-Me-Herzstück)
+-- Sessions (Herzstück der Treffen)
 -- ============================================================================
 
 create table sessions (
@@ -183,7 +183,7 @@ returns void language sql security definer set search_path = public as $$
 $$;
 
 -- ============================================================================
--- Check-ins (Untappd-Herzstück) + Interaktion
+-- Check-ins (Herzstück des Tagebuchs) + Interaktion
 -- ============================================================================
 
 create table checkins (

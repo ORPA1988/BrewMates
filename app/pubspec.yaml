@@ -1,5 +1,5 @@
 name: brewmates
-description: "BrewMates – Bier entdecken, Freunde treffen. Untappd × Beer with Me."
+description: "BrewMates – Bier entdecken, Freunde treffen."
 publish_to: "none"
 # Beta-Phase: 0.x bis zum offiziellen 1.0-Store-Release (versionCode zählt weiter)
 version: 0.10.14-beta+32

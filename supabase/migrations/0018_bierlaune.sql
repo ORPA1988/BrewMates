@@ -1,5 +1,5 @@
 -- 0018: „Bierlaune"-Status (Wettbewerbsanalyse: meistgewünschtes
--- Beer-With-Me-Feature — signalisieren, dass man Lust auf ein Bier
+-- Treffen-Funktion — signalisieren, dass man Lust auf ein Bier
 -- hätte, ohne schon zu trinken).
 --
 -- profiles.thirsty_until: Zeitpunkt, bis zu dem die Bierlaune gilt
