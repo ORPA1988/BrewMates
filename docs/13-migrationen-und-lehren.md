@@ -96,7 +96,7 @@ sich die Frage nicht.
 
 ## Teil 2 — Die Migrationen
 
-**`0001–0047` sind live, lückenlos** (Stand 2026-09-04). Die Nummern ohne
+**`0001–0049` sind live, lückenlos** (Stand 2026-09-04). Die Nummern ohne
 eigenen Abschnitt sind unauffällig: Sie haben getan, was ihr Name sagt.
 
 | # | Name | Wofür |
@@ -122,6 +122,8 @@ eigenen Abschnitt sind unauffällig: Sie haben getan, was ihr Name sagt.
 | 0045 | rechte_reste | TRUNCATE entzogen — siehe unten |
 | 0046 | auth_providers | Welche Anmeldewege die App zeigen darf |
 | 0047 | beacon_zusagen | Zusagen **und Absagen** auf einen Beacon |
+| 0048 | geplante_sessions_typ | Enum-Wert `planned`, Spalte `scheduled_for` |
+| 0049 | geplante_sessions_regeln | Checks, `sessions_select` um Verabredungen erweitert, Aufräumen |
 
 ### 0025 — Tabellenrechte, oder: das Repo konnte das Projekt nicht wiederherstellen
 
@@ -213,6 +215,48 @@ Zusage und Absage schließen einander aus (der **Client** räumt die andere
 Zeile weg, weil der Schlüssel `(session, profil, art)` sonst beide
 stehen ließe); Prost steht daneben, denn „kann heute nicht, trink eins auf
 mich" ist der häufigste Fall.
+
+### 0048/0049 — Lehre 1 hat sich selbst bestätigt
+
+Zwei Dateien statt einer, und der Grund ist eine Postgres-Eigenheit:
+`alter type ... add value` legt den Wert an, aber **dieselbe Transaktion
+darf ihn nicht mehr benutzen** („unsafe use of new value of enum type").
+Jede Migrationsdatei ist eine Transaktion. `0047` hat dieselbe Klippe mit
+`k::text` umschifft — dort richtig, weil es eine Funktion war, die je
+Trigger einmal läuft. Hier wäre es falsch gewesen: Die Bedingung landet
+in `sessions_select` und damit in **jeder** Abfrage, die die Karte alle
+30 Sekunden stellt. Also `0048` legt an, `0049` benutzt.
+
+**Der eigentliche Fund kam vorher.** Der Entwurf zu
+[Funktion 39](features/39-geplante-sessions.md) nahm an,
+`sessions_select` filtere nur nach Sichtbarkeit, und notierte das
+ausdrücklich als *zu belegende Vermutung* — mit dem Hinweis, dass sie zu
+überspringen genau Lehre 1 wäre. Die Probe kostete eine Abfrage und
+ergab: **falsch.** Die Policy verlangte
+
+```sql
+status = 'active' and expires_at > now()
+```
+
+Eine Verabredung mit `status = 'planned'` wäre für **niemanden außer dem
+Gastgeber** sichtbar gewesen. Auf der Annahme gebaut, wäre die Funktion
+fertig geworden und hätte nichts getan — und die Suche hätte in der App
+begonnen, während die Ursache hier saß. Dieselbe Form von Fehler wie
+Lehre 1, nur eine Ebene tiefer: nicht ein Absatz, der einen Vorbehalt
+behauptete, den es nicht gab, sondern ein Entwurf, der eine Bedingung
+verschwieg, die es gab.
+
+**Was dabei ausdrücklich richtig war**, ebenfalls geprüft statt
+angenommen: `count_other_active_sessions` verlangt neben dem Status
+`latitude is not null` — und eine geplante Session trägt per Constraint
+keinen Ort. Der Kartenzähler brauchte deshalb keine Änderung. Dieselbe
+Doppelbedingung, die `0024` aus einem anderen Grund eingeführt hat,
+deckt diesen Fall mit ab.
+
+**Und eine dritte Probe nach dem Einspielen:** `create or replace
+function` behält die ACL. `end_expired_sessions()` ist weiterhin für
+`anon` und `authenticated` gesperrt (`0005`) — nachgesehen, nicht
+gehofft, denn ein Neuanlegen hätte die Rechte zurückgesetzt.
 
 ---
 
