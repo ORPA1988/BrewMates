@@ -23,7 +23,7 @@
       // Toolchain) und liefe nur ins Leere.
       "label": "Prüfen wie die CI",
       "type": "shell",
-      "command": "flutter analyze && flutter test --coverage && dart ../tools/coverage_report.dart --min 43 && dart ../tools/validate_data.dart && flutter build web --release",
+      "command": "flutter analyze && flutter test --coverage && dart ../tools/coverage_report.dart --min 46 && dart ../tools/validate_data.dart && flutter build web --release",
       "options": { "cwd": "${workspaceFolder}/app" },
       "problemMatcher": [],
       "group": { "kind": "build", "isDefault": true },
