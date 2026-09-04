@@ -124,6 +124,19 @@ class BrewActions {
     return (online != null && online.currentUser != null) ? online : null;
   }
 
+  /// Die fremde Runde, an der ich gerade teilnehme — mit dem
+  /// `remote-`-Präfix, wie alle fremden IDs in der lokalen Datenbank.
+  ///
+  /// `null` offline, abgemeldet, oder wenn ich nirgends zugesagt habe:
+  /// Zusagen leben ausschließlich am Server. Der Check-in entsteht auch
+  /// dann, nur ohne Zuordnung (docs/features/40).
+  Future<String?> _fremdeRunde() async {
+    final online = await _online();
+    if (online == null) return null;
+    final id = await online.sessions.myJoinedRoundId();
+    return id == null ? null : '$remotePrefix$id';
+  }
+
   /// Abzeichen auswerten (inkl. Datenpflege-Badges, die die Supabase-UUID
   /// brauchen). Auch von Screens nutzbar, z. B. nach dem Anlegen eines
   /// Gasthauses.
@@ -163,12 +176,17 @@ class BrewActions {
     final me = await _me();
     final now = DateTime.now();
     final session = await _db.getMyActiveSession(me.id, now);
+    // Die eigene Runde hat Vorrang; erst wenn keine läuft, kommt die
+    // fremde in Frage, an der ich zugesagt habe. Letztere weiß nur der
+    // Server — Zusagen leben nirgendwo lokal. Offline bleibt die
+    // Zuordnung deshalb aus, der Check-in nicht (docs/features/40).
+    final sessionId = session?.id ?? await _fremdeRunde();
     final checkinId = _uuid.v4();
     await _db.into(_db.checkins).insert(CheckinsCompanion.insert(
           id: checkinId,
           profileId: me.id,
           beerId: beerId,
-          sessionId: Value(session?.id),
+          sessionId: Value(sessionId),
           venueId: Value(venueId ?? session?.venueId),
           venueName: Value(venueName ?? session?.venueName),
           rating: Value(rating),

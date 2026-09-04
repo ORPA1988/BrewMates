@@ -3,7 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:brewmates/data/db/database.dart';
 import 'package:brewmates/data/online/online_service.dart';
 
-CheckinDetails _details({required String checkinId, double? rating}) {
+CheckinDetails _details({
+  required String checkinId,
+  double? rating,
+  String? sessionId,
+}) {
   const brewery = Brewery(
     id: 'at-stiegl',
     name: 'Stieglbrauerei zu Salzburg',
@@ -41,7 +45,7 @@ CheckinDetails _details({required String checkinId, double? rating}) {
       profileId: 'me',
       dirty: false,
       beerId: beer.id,
-      sessionId: null,
+      sessionId: sessionId,
       venueName: 'Bierlokal',
       rating: rating,
       note: 'Prost!',
@@ -81,8 +85,66 @@ void main() {
     expect(row['note'], 'Prost!');
     expect(row['venue_name'], 'Bierlokal');
     expect(row['visibility'], 'friends');
-    expect(row['session_id'], isNull);
+    expect(row['session_id'], isNull, reason: 'ohne Runde bleibt es leer');
     expect(row['created_at'], '2026-08-01T18:30:00.000Z');
+  });
+
+  group('Die Runde geht mit hoch', () {
+    // Bis 0.10.14 stand hier `'session_id': null`, hart verdrahtet. Damit
+    // kam die Zuordnung **nie** am Server an — auch die zur eigenen Runde
+    // nicht. Alles, was darauf aufbaut, lief ins Leere: die Crew-Bilanz
+    // fand nichts, und der Runden-Zweig in `checkins_select` (0050) griff
+    // nie, weil `session_id is not null` nie zutraf.
+    test('Die eigene Runde trägt am Server dieselbe UUID', () {
+      final row = CheckinsApi.uploadRow(
+        _details(
+          checkinId: '4fa4b620-9f1c-4e2b-8f63-1c2d3e4f5a6b',
+          sessionId: '7c9e6679-7425-40de-944b-e07fc1f90ae7',
+        ),
+        'profil-uuid',
+      );
+      expect(row!['session_id'], '7c9e6679-7425-40de-944b-e07fc1f90ae7');
+    });
+
+    test('Eine fremde Runde verliert ihr remote-Präfix', () {
+      // Lokal tragen fremde IDs ein Präfix; der Server kennt nur die
+      // blanke UUID.
+      final row = CheckinsApi.uploadRow(
+        _details(
+          checkinId: '4fa4b620-9f1c-4e2b-8f63-1c2d3e4f5a6b',
+          sessionId: 'remote-7c9e6679-7425-40de-944b-e07fc1f90ae7',
+        ),
+        'profil-uuid',
+      );
+      expect(row!['session_id'], '7c9e6679-7425-40de-944b-e07fc1f90ae7');
+    });
+
+    test('Eine sprechende Demo-ID geht NICHT mit', () {
+      // Sie existiert am Server nicht und verlöre über den Fremdschlüssel
+      // den ganzen Check-in — nicht nur seine Zuordnung.
+      final row = CheckinsApi.uploadRow(
+        _details(
+          checkinId: '4fa4b620-9f1c-4e2b-8f63-1c2d3e4f5a6b',
+          sessionId: 'demo-session-1',
+        ),
+        'profil-uuid',
+      );
+      expect(row!['session_id'], isNull);
+    });
+
+    test('serverSessionId beantwortet alle drei Fälle einzeln', () {
+      expect(CheckinsApi.serverSessionId(null), isNull);
+      expect(
+        CheckinsApi.serverSessionId('7c9e6679-7425-40de-944b-e07fc1f90ae7'),
+        '7c9e6679-7425-40de-944b-e07fc1f90ae7',
+      );
+      expect(
+        CheckinsApi.serverSessionId(
+            'remote-7c9e6679-7425-40de-944b-e07fc1f90ae7'),
+        '7c9e6679-7425-40de-944b-e07fc1f90ae7',
+      );
+      expect(CheckinsApi.serverSessionId('local-abc'), isNull);
+    });
   });
 
   test('Demo-/Seed-Check-ins ohne UUID werden nicht übertragen', () {

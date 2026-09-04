@@ -12,6 +12,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../db/database.dart' as local;
 import '../models.dart';
+import '../remote_mapping.dart';
 import 'online_api.dart';
 
 class CheckinsApi extends OnlineApi {
@@ -104,7 +105,18 @@ class CheckinsApi extends OnlineApi {
     try {
       await client.from('checkins').upsert(row);
     } catch (_) {
-      return false;
+      // Häufigster Grund für einen Fehlschlag mit Runde: Der Server kennt
+      // sie nicht, weil ihr eigener Upload scheiterte. Der Fremdschlüssel
+      // ließe dann den **ganzen** Check-in liegen — und der ist wichtiger
+      // als seine Zuordnung. Also einmal ohne, statt gar nicht.
+      if (row['session_id'] == null) return false;
+      try {
+        await client
+            .from('checkins')
+            .upsert({...row, 'session_id': null});
+      } catch (_) {
+        return false;
+      }
     }
     return true;
   }
@@ -121,6 +133,28 @@ class CheckinsApi extends OnlineApi {
   static bool isUploadable(local.CheckinDetails details) =>
       OnlineApi.uuidPattern.hasMatch(details.checkin.id);
 
+  /// Die Runde, wie der Server sie kennt — oder `null`.
+  ///
+  /// **Warum das lange gar nicht mitging.** `uploadRow` schickte
+  /// `session_id: null`, hart verdrahtet. Damit kam die Zuordnung **nie**
+  /// am Server an, auch die zur eigenen Runde nicht — und alles, was
+  /// darauf aufbaut, lief ins Leere: die Crew-Bilanz fand nichts, und der
+  /// Runden-Zweig in `checkins_select` (0050) griff nie, weil
+  /// `session_id is not null` nie zutraf.
+  ///
+  /// Warum es trotzdem eine Prüfung braucht: Lokal stehen dort dreierlei
+  /// IDs. Eigene Runden tragen dieselbe UUID wie am Server
+  /// (`upsertSession` schickt `id` unverändert), fremde tragen sie mit
+  /// `remote-`-Präfix, und Demo-/Seed-Einträge tragen sprechende Namen.
+  /// Nur die ersten beiden existieren am Server; eine sprechende ID
+  /// verletzt dort den Fremdschlüssel und ließe den ganzen Check-in
+  /// scheitern.
+  static String? serverSessionId(String? localId) {
+    if (localId == null) return null;
+    final blank = stripRemote(localId);
+    return OnlineApi.uuidPattern.hasMatch(blank) ? blank : null;
+  }
+
   /// Upsert-Zeile für einen lokalen Check-in (denormalisiert, identisch zum
   /// Live-Spiegeln in [insertCheckin]). Statisch und pur, damit der
   /// Assistent ohne Supabase testbar bleibt. null = nicht übertragbar.
@@ -131,7 +165,7 @@ class CheckinsApi extends OnlineApi {
     return {
       'id': c.id,
       'profile_id': profileId,
-      'session_id': null,
+      'session_id': serverSessionId(c.sessionId),
       // `local-…`-Pseudo-IDs (Offline-Gasthaus-Queue) nie hochschicken —
       // der Server kennt sie nicht (FK); der Name reicht bis zum Replay.
       'venue_id':
