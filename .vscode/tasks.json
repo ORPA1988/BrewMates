@@ -13,9 +13,17 @@
       // Web-Build. Der Web-Build steht bewusst drin: Er ist der Wächter
       // gegen `dart:io` in `app/lib/` (Regel G) und fällt sonst erst im
       // PR auf.
+      //
+      // Die Ratsche muss zu ci.yml passen — sie stand hier auf 32,
+      // während die CI längst 43 verlangte. Ein Task, der grün meldet, wo
+      // die CI rot wird, ist schlimmer als keiner.
+      //
+      // Der sechste CI-Schritt (`flutter test --platform chrome`) fehlt
+      // hier bewusst: Er hängt lokal unter Windows (siehe CLAUDE.md,
+      // Toolchain) und liefe nur ins Leere.
       "label": "Prüfen wie die CI",
       "type": "shell",
-      "command": "flutter analyze && flutter test --coverage && dart ../tools/coverage_report.dart --min 32 && dart ../tools/validate_data.dart && flutter build web --release",
+      "command": "flutter analyze && flutter test --coverage && dart ../tools/coverage_report.dart --min 43 && dart ../tools/validate_data.dart && flutter build web --release",
       "options": { "cwd": "${workspaceFolder}/app" },
       "problemMatcher": [],
       "group": { "kind": "build", "isDefault": true },

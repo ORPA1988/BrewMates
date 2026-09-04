@@ -12,21 +12,30 @@ import 'package:brewmates/core/theme.dart';
 /// bereits das Gegenteil („Android rendert Emojis ohnehin nativ in
 /// Farbe").
 ///
-/// Im Widget-Test meldet `defaultTargetPlatform` Android, `kIsWeb` ist
-/// false — wir prüfen also genau den App-Fall.
+/// Die Kette hängt an `kIsWeb`, und das lässt sich nicht überschreiben —
+/// also braucht jede Seite ihren eigenen Lauf. `testOn` teilt die beiden
+/// Fälle auf: Der VM-Lauf prüft das Gerät, der Browser-Lauf das Web.
 void main() {
-  test('Auf dem Gerät steht keine monochrome Emoji-Schrift im Weg', () {
-    final fallback =
-        BrewTheme.light.textTheme.bodyMedium?.fontFamilyFallback ??
-            const <String>[];
+  List<String> fallback() =>
+      BrewTheme.light.textTheme.bodyMedium?.fontFamilyFallback ??
+      const <String>[];
 
+  test('Auf dem Gerät steht keine monochrome Emoji-Schrift im Weg', () {
     expect(
-      fallback.contains('NotoEmoji'),
+      fallback().contains('NotoEmoji'),
       isFalse,
       reason: 'Das monochrome Bundle würde vor Androids farbiger '
           'Systemschrift greifen — 🍺 erschiene als blasser Umriss.',
     );
-  });
+  }, testOn: 'vm');
+
+  test('Im Browser liegt das gebündelte Emoji-Bundle bereit', () {
+    // Umgekehrter Fall: Der Browser bringt keine verlässliche
+    // Emoji-Schrift mit, deshalb liefert die App sie dort selbst mit —
+    // farbig zuerst, monochrom als Rückfall.
+    expect(fallback().contains('NotoColorEmoji'), isTrue);
+    expect(fallback().contains('NotoEmoji'), isTrue);
+  }, testOn: 'browser');
 
   test('Symbolschrift bleibt, sie ersetzt keine Emojis', () {
     // ● und ○ hat keine Systemschrift zuverlässig; NotoSansSymbols2

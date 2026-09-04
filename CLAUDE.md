@@ -206,6 +206,13 @@ nicht nachlesen.
   hängen) — in eine Datei umleiten und diese lesen. In Git Bash braucht
   `flutter build web --base-href /BrewMates/` ein vorangestelltes
   `MSYS_NO_PATHCONV=1`.
+- **`flutter test --platform chrome` läuft lokal nicht.** Unter Windows
+  hängt jede Suite zwölf Minuten in einer Ladezeitüberschreitung, auch
+  ein `expect(1, 1)` — eine Unstimmigkeit in der gepinnten Toolchain, kein
+  Fehler dieser App. **Auf dem CI-Läufer läuft derselbe Befehl durch**,
+  und dort steht er seit 2026-09-04 in `ci.yml`. Wer den Browser-Lauf
+  sehen muss, schiebt einen Branch. Einzelheiten und Zahlen:
+  [Funktion 18](docs/features/18-plattformen.md).
 - **In Widget-Tests** meldet `defaultTargetPlatform` Android;
   Desktop-Tests setzen `debugDefaultTargetPlatformOverride`. Nach einem
   Tipp, der die Datenbank anfasst, reicht `pumpAndSettle` nicht —
