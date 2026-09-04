@@ -51,6 +51,9 @@ class FakeOnlineService extends OnlineService {
   /// Mitrundigen, die lokal gar nicht vorliegen.
   List<RemoteCheckin> rundenCheckins = const [];
 
+  /// Verabredungen, die der „Server" kennt.
+  List<RemoteSession> verabredungen = const [];
+
   /// Ein angemeldeter Nutzer muss vorgetäuscht werden: Die Provider
   /// prüfen `currentUser != null`, bevor sie überhaupt etwas versuchen.
   @override
@@ -301,6 +304,25 @@ class _FakeSessionsApi extends SessionsApi {
   @override
   Stream<List<RemoteSession>> friendSessionsStream() =>
       Stream.value(_fake.freundesSessions);
+
+  @override
+  Future<List<RemoteSession>> plannedSessions({int limit = 20}) async {
+    _fake.aufrufe.add('plannedSessions');
+    return List.of(_fake.verabredungen);
+  }
+
+  @override
+  Future<String?> planSession({
+    required DateTime scheduledFor,
+    String? venueId,
+    String? venueName,
+    String? message,
+    String? crewId,
+  }) async {
+    _fake.aufrufe.add('planSession:${scheduledFor.toIso8601String()}');
+    if (_fake.schlaegtFehl) return null;
+    return 'neue-verabredung';
+  }
 
   @override
   Future<List<RemoteCheckin>> sessionCheckins(String sessionId,

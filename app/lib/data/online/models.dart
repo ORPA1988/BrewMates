@@ -206,6 +206,7 @@ class RemoteSession {
     this.longitude,
     required this.startedAt,
     required this.expiresAt,
+    this.scheduledFor,
   });
 
   final String id;
@@ -216,6 +217,18 @@ class RemoteSession {
   final double? longitude;
   final DateTime startedAt;
   final DateTime expiresAt;
+
+  /// Der geplante Termin — gesetzt, solange die Runde noch bevorsteht
+  /// (0048/0049). `null` bei einer laufenden.
+  ///
+  /// Statt eines `status`-Feldes, weil genau eine Frage zählt: Läuft die
+  /// Runde schon oder ist sie erst verabredet? Ein Enum mit drei Werten
+  /// würde `ended` mitschleppen, das hier nie ankommt — die Sichtbarkeit
+  /// zeigt beendete Runden Fremden gar nicht.
+  final DateTime? scheduledFor;
+
+  /// Eine Verabredung, noch keine laufende Runde.
+  bool get isPlanned => scheduledFor != null;
 }
 
 /// Community-Bier aus der Supabase-Datenbank (per Barcode gefunden).

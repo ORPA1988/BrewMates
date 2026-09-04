@@ -1,8 +1,8 @@
 # 39 Geplante Sessions
 
-> **Status:** 🟡 teilweise — **das Server-Fundament steht**
-> (0048/0049, Schritte 1–3). Die App kennt noch keine Verabredungen:
-> Anlegen, „Demnächst“ und die Erinnerungen sind Schritte 4–8.
+> **Status:** 🟡 größtenteils — Server (0048/0049), **Anlegen und
+> „Demnächst” stehen**. Offen sind die beiden Erinnerungen und der Knopf
+> „Runde starten” (Schritte 6–8).
 > **Seit:** — · **Zuletzt geprüft:** 2026-09-04
 >
 > Baut auf [Funktion 07 (Sessions & Beacons)](07-sessions-und-beacons.md)
@@ -214,8 +214,22 @@ partieller Index, erweitertes `end_expired_sessions()`), abgesichert
 durch `supabase/tests/geplante_sessions.test.sql` — elf pgTAP-Tests
 gegen die Policy, die Constraints und das Aufräumen.
 
-**App: noch nichts.** Es gibt keinen Weg, eine Verabredung anzulegen, und
-keine Liste „Demnächst“.
+**App: Anlegen und Anzeigen stehen.** Im Beacon-Formular schaltet ein
+gewählter Termin den Weg um (`_TerminZeile` in
+`start_session_screen.dart`); auf der Startseite steht „Demnächst" unter
+„Gerade unterwegs" — was jetzt läuft, ist dringender als was am Freitag
+ansteht.
+
+**Verabredungen leben nur am Server, mit Absicht.** Ein Beacon ergibt
+auch offline Sinn: Er ist ein Zustand, den das Gerät kennt. Eine
+Verabredung, von der niemand erfährt, ist dagegen keine. Sie steht
+deshalb **nicht** in der lokalen Drift-Datenbank — was nebenbei eine
+Schema-Erweiterung erspart hat — und ein Fehlschlag beim Anlegen wird
+sofort gesagt, statt in einer Warteschlange zu landen.
+
+**Offen:** die beiden Erinnerungen und der Knopf „Runde starten" aus der
+Erinnerung heraus. Beides braucht wieder Server-Arbeit: einen Trigger
+und einen Cron-Lauf.
 
 **Die Karte ist trotzdem schon sicher — geprüft, nicht angenommen.**
 `friendSessionsStream()` in `data/online/api/sessions_api.dart` verwirft
@@ -237,8 +251,8 @@ Das steht als Kommentar an der Methode und gehört zu Schritt 5.
 | ~~1~~ | ~~Belegen, wie `sessions_select` mit geplanten Sessions umgeht~~ — **erledigt am 2026-09-04, siehe oben.** Ergebnis: Die Policy schließt alles aus, was nicht `active` ist; sie **muss** angefasst werden. Der Kartenzähler dagegen nicht | — |
 | ~~2~~ | ~~Migration~~ — **erledigt:** `0048` (Enum-Wert, Spalte) und `0049` (Checks, Policy, Index, Aufräumen). **Zwei Dateien**, weil Postgres einen frisch angelegten Enum-Wert in derselben Transaktion nicht benutzen lässt | ✅ `supabase/tests/geplante_sessions.test.sql`, elf Tests |
 | ~~3~~ | ~~`remoteSessionsProvider` hält geplante heraus~~ — **war schon so:** `friendSessionsStream()` verwirft alles, was nicht `active` ist. Der Kartenzähler ist doppelt geschützt, weil er zusätzlich einen Ort verlangt | ✅ im pgTAP-Test mitgeprüft |
-| 4 | Anlegen-Formular mit *jetzt/später* | Test: Termin in der Vergangenheit wird abgelehnt; ohne Verbindung erscheint ein Fehlschlag und die Eingaben bleiben |
-| 5 | „Demnächst" auf der Startseite, Antworten daran | Test: Zusage und Absage wirken vor dem Termin genauso wie währenddessen |
+| ~~4~~ | ~~Anlegen-Formular mit *jetzt/später*~~ — **erledigt.** Ein gewählter Termin schaltet den Weg um; ohne Termin bleibt alles wie bisher | ✅ drei Tests: ohne Verbindung, Serverfehler, Erfolg |
+| ~~5~~ | ~~„Demnächst" auf der Startseite~~ — **erledigt**, unter „Gerade unterwegs". Antworten laufen über die vorhandene Runden-Ansicht | ✅ zwei Widget-Tests |
 | 6 | Erinnerung beim Anlegen (Empfängerregel = `sessions_select`) | Wie 0039: niemand bekommt eine Meldung über etwas, das er nicht sehen darf |
 | 7 | Erinnerung kurz vorher, Cron auf `scheduled_for` | Test gegen den Index; kein Full Scan |
 | 8 | „Runde starten" aus der Erinnerung heraus | Der Standort wird dabei frisch geholt, nicht aus der Planung übernommen |

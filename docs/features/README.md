@@ -68,7 +68,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 |---|---|---|---|
 | [25](25-brauerei-besitz.md) | Brauerei-Besitz | 🔴 | Verifizierte Inhaber pflegen ihre Daten |
 | [26](26-bier-angebote.md) | Bier-Angebote | 🔴 | Sehr späte Ausbaustufe |
-| [39](39-geplante-sessions.md) | Geplante Sessions | 🟡 | „Freitag 19 Uhr“ — **Server-Fundament steht** (0048/0049), App-Teil offen |
+| [39](39-geplante-sessions.md) | Geplante Sessions | 🟡 | „Freitag 19 Uhr“ — anlegen und sehen geht; Erinnerungen offen |
 
 ## Querschnitt
 

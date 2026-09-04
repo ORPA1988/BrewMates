@@ -5,7 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../core/format.dart' show formatDuration;
+import '../../core/format.dart'
+    show formatDuration, formatDate, formatTime;
 import '../../data/db/database.dart';
 import '../../data/location_service.dart';
 import '../../data/providers.dart';
@@ -38,6 +39,13 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
 
   /// Gewähltes Gasthaus aus der gemeinsamen DB (null = Freitext).
   String? _venueId;
+
+  /// Termin einer Verabredung. `null` = jetzt losgehen (der Normalfall).
+  ///
+  /// Ein Beacon behauptet Anwesenheit, eine Verabredung nur eine Absicht
+  /// — deshalb sind es zwei Wege durch dasselbe Formular und nicht ein
+  /// Beacon mit Datumsfeld (docs/features/39).
+  DateTime? _termin;
 
   /// „Bist du hier?" – nächstgelegenes Gasthaus aus dem Cache (< 150 m).
   Venue? _nearbySuggestion;
@@ -90,7 +98,73 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
     super.dispose();
   }
 
+  /// Datum und Uhrzeit wählen. Abbruch an einer der beiden Stellen lässt
+  /// den bisherigen Termin stehen — wer die Uhrzeit wegtippt, wollte
+  /// nicht die ganze Verabredung zurücknehmen.
+  Future<void> _terminWaehlen() async {
+    final jetzt = DateTime.now();
+    final tag = await showDatePicker(
+      context: context,
+      initialDate: _termin ?? jetzt.add(const Duration(days: 1)),
+      firstDate: jetzt,
+      lastDate: jetzt.add(const Duration(days: 365)),
+      helpText: 'Wann trefft ihr euch?',
+    );
+    if (tag == null || !mounted) return;
+    final zeit = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: _termin?.hour ?? 19, minute: _termin?.minute ?? 0),
+      helpText: 'Um wie viel Uhr?',
+    );
+    if (zeit == null || !mounted) return;
+    setState(() => _termin =
+        DateTime(tag.year, tag.month, tag.day, zeit.hour, zeit.minute));
+  }
+
+  /// Eine Verabredung anlegen statt eines Beacons.
+  Future<void> _plan() async {
+    final venue = _venueController.text.trim();
+    final termin = _termin;
+    if (termin == null) return;
+    if (termin.isBefore(DateTime.now())) {
+      setState(() => _venueError = null);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Der Termin liegt in der Vergangenheit.'),
+      ));
+      return;
+    }
+    if (_submitting) return;
+    setState(() => _submitting = true);
+
+    try {
+      final ok = await ref.read(actionsProvider).planSession(
+            scheduledFor: termin,
+            venueName: venue.isEmpty ? null : venue,
+            venueId: _venueId,
+            message: _messageController.text,
+            crewId:
+                _visibility == SessionVisibility.crew ? _crewId : null,
+          );
+      if (!mounted) return;
+      final messenger = ScaffoldMessenger.of(context);
+      if (ok) context.pop();
+      // Kein „deine Freunde wissen Bescheid", das der Server nicht
+      // bestätigt hat — und ohne Verbindung entsteht hier gar nichts,
+      // weil eine Verabredung, von der niemand erfährt, keine ist.
+      messenger.showSnackBar(SnackBar(
+        content: Text(ok
+            ? 'Verabredung steht — deine Freunde sehen sie 🍻'
+            : 'Das hat nicht geklappt. Ohne Verbindung lässt sich keine '
+                'Verabredung anlegen — sonst würde niemand davon erfahren.'),
+        duration: Duration(seconds: ok ? 4 : 7),
+      ));
+    } finally {
+      if (mounted) setState(() => _submitting = false);
+    }
+  }
+
   Future<void> _start() async {
+    if (_termin != null) return _plan();
     final venue = _venueController.text.trim();
     if (venue.isEmpty) {
       setState(() => _venueError = 'Sag deinen Freunden, wo du bist.');
@@ -158,11 +232,17 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          _TerminZeile(
+            termin: _termin,
+            onWaehlen: _terminWaehlen,
+            onZuruecknehmen: () => setState(() => _termin = null),
+          ),
+          const SizedBox(height: 12),
           TextField(
             controller: _venueController,
             textCapitalization: TextCapitalization.sentences,
             decoration: InputDecoration(
-              labelText: 'Wo bist du?',
+              labelText: _termin == null ? 'Wo bist du?' : 'Wo trefft ihr euch?',
               errorText: _venueError,
               prefixIcon: const Icon(Icons.place_outlined),
               border: const OutlineInputBorder(),
@@ -304,8 +384,9 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
             style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16)),
             onPressed: _submitting ? null : _start,
-            icon: const Text('🍻', style: TextStyle(fontSize: 20)),
-            label: const Text('Los geht\'s!'),
+            icon: Text(_termin == null ? '🍻' : '📅',
+                style: const TextStyle(fontSize: 20)),
+            label: Text(_termin == null ? 'Los geht\'s!' : 'Verabreden'),
           ),
           const SizedBox(height: 12),
           Text(
@@ -315,6 +396,56 @@ class _StartSessionScreenState extends ConsumerState<StartSessionScreen> {
             textAlign: TextAlign.center,
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Der Schalter zwischen „jetzt losgehen“ und „später verabreden“.
+///
+/// Bewusst kein Umschalter mit zwei Zuständen: Der Normalfall ist der
+/// Beacon, und der soll keinen zusätzlichen Tipp kosten. Wer einen Termin
+/// wählt, hat damit schon umgeschaltet — und sieht das auch.
+class _TerminZeile extends StatelessWidget {
+  const _TerminZeile({
+    required this.termin,
+    required this.onWaehlen,
+    required this.onZuruecknehmen,
+  });
+
+  final DateTime? termin;
+  final VoidCallback onWaehlen;
+  final VoidCallback onZuruecknehmen;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    if (termin == null) {
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: OutlinedButton.icon(
+          onPressed: onWaehlen,
+          icon: const Icon(Icons.event_outlined, size: 18),
+          label: const Text('Erst später? Termin wählen'),
+        ),
+      );
+    }
+    return Card(
+      margin: EdgeInsets.zero,
+      child: ListTile(
+        leading: const Text('📅', style: TextStyle(fontSize: 22)),
+        title: Text('${formatDate(termin!)}, ${formatTime(termin!)} Uhr'),
+        subtitle: Text(
+          'Deine Freunde können zusagen. Die Runde startest du selbst, '
+          'wenn du da bist.',
+          style: theme.textTheme.bodySmall,
+        ),
+        trailing: IconButton(
+          tooltip: 'Termin zurücknehmen — dann geht es jetzt los',
+          icon: const Icon(Icons.close),
+          onPressed: onZuruecknehmen,
+        ),
+        onTap: onWaehlen,
       ),
     );
   }

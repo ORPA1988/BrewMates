@@ -323,6 +323,32 @@ class BrewActions {
   /// sass der Mensch dann mit gutem Gewissen im Wirtshaus und war fuer
   /// niemanden sichtbar. Sichtbarkeit ist der Kern der App — ueber sie
   /// darf nichts behauptet werden, was der Server nicht bestaetigt hat.
+  /// Eine Verabredung für später anlegen.
+  ///
+  /// Gibt zurück, ob der Server sie hat. **Ohne Warteschlange**, anders
+  /// als bei Gasthaus-Änderungen: Nachgereicht könnte eine Verabredung
+  /// Stunden später bei Leuten landen, für die der Termin längst vorbei
+  /// ist. Ein Fehlschlag muss deshalb sofort sichtbar sein (Regel A,
+  /// docs/features/39).
+  Future<bool> planSession({
+    required DateTime scheduledFor,
+    String? venueName,
+    String? venueId,
+    String? message,
+    String? crewId,
+  }) async {
+    final online = await _online();
+    if (online == null) return false;
+    final id = await online.sessions.planSession(
+      scheduledFor: scheduledFor,
+      venueId: venueId,
+      venueName: venueName,
+      message: message,
+      crewId: crewId,
+    );
+    return id != null;
+  }
+
   Future<({List<BadgeDef> earned, bool synced})> startSession({
     String? venueName,
     String? venueId,
