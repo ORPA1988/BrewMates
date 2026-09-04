@@ -116,6 +116,8 @@ nicht nachlesen.
 | Wo verlaufen die Architekturgrenzen? | [docs/11 — Modularität](docs/11-modularitaet-und-portierbarkeit.md) |
 | Wie vollständig und skalierbar ist der Bestand? | [docs/12 — Funktionsaudit](docs/12-funktionsaudit.md) |
 | Wie erkläre ich es einem Laien? | [docs/08 — Funktionsweise für alle](docs/08-funktionsweise-fuer-alle.md) |
+| Welche Fundstellen sind priorisiert offen? | `.claude/backlog.md` (A-1, A-7 …) — ergänzt die Roadmap, ersetzt sie nicht |
+| Welche Konventionen gelten beim Schreiben? | `.claude/conventions.md`, `.claude/architecture.md` |
 
 ## 5. Der Stand
 
@@ -172,11 +174,14 @@ nicht nachlesen.
   (@zxing/library 0.19.1 — muss zur `scriptUrl` in `mobile_scanner`
   passen). CanvasKit wird selbst gehostet
   (`web/flutter_bootstrap.js`).
+- **Arbeitsverzeichnis:** `F:\KI\selfmadeapps\BrewMates`. Bis 2026-09-04
+  lag das Repo in einem **OneDrive**-Ordner; dort scheiterten lokale
+  `flutter build apk` regelmäßig an Dateisperren des Sync-Dienstes
+  (`Unable to delete directory`) — das war nie ein Codefehler. Seit dem
+  Umzug auf F: entfällt der Grund; verbindlich bleibt trotzdem der
+  Release-Build in der CI.
 - **Fallstricke:** `flutter test` nie nach `tail` pipen (scheint zu
-  hängen) — in eine Datei umleiten und diese lesen. Lokale
-  `flutter build apk` scheitern auf OneDrive oft an Dateisperren
-  (`Unable to delete directory`) — kein Codefehler; verbindlich ist der
-  Release-Build in der CI. In Git Bash braucht
+  hängen) — in eine Datei umleiten und diese lesen. In Git Bash braucht
   `flutter build web --base-href /BrewMates/` ein vorangestelltes
   `MSYS_NO_PATHCONV=1`.
 - **In Widget-Tests** meldet `defaultTargetPlatform` Android;
