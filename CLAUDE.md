@@ -17,7 +17,7 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   Versions-Bump = IMMER beide Stellen: `app/pubspec.yaml` UND
   `AppConfig.appVersion` in `core/config.dart` (Test erzwingt Gleichstand).
 - **Backend**: Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0046` sind LIVE, lückenlos** (Stand 2026-09-03; 0039 und 0040
+  **`0001–0047` sind LIVE, lückenlos** (Stand 2026-09-03; 0039 und 0040
   am selben Tag eingespielt und gegengeprüft: Trigger, Index, Rechte und
   Policies über `information_schema`/`pg_catalog` bestätigt, Advisor ohne
   Neubefund — nur die bekannte Baseline plus `unused_index` (INFO), was
@@ -47,6 +47,28 @@ Fokus DACH-Raum (Herz: Österreich + Bayern). Antworte dem Nutzer auf Deutsch.
   hängt, prüft sie in der Rolle, die sie betrifft (`set local role
   authenticated` + `request.jwt.claims`); auch die MCP-Probe läuft als
   `postgres`.
+  **0047 Zu- und Absagen auf einen Beacon:** `participant_kind` heißt
+  jetzt `joined | toast | declined`. Grund: Wer nicht kann, hatte keinen
+  Knopf — und damit fehlte dem Gastgeber die halbe Information.
+  „Drei haben zugesagt“ heißt nichts, solange offen ist, ob die anderen
+  noch überlegen oder längst abgesagt haben. Zusage und Absage schließen
+  einander aus (der **Client** räumt die andere Zeile weg — der Schlüssel
+  ist `(session, profil, art)`), Prost steht daneben: „kann heute nicht,
+  trink eins auf mich“. Der Trigger aus 0037 behandelte alles, was nicht
+  `toast` war, als Zusage — eine Absage wäre als „ist dabei“ gemeldet
+  worden; die Zuordnung liegt jetzt in `participant_notification_type()`
+  an **einer** Stelle. ⚠️ Der Helfer vergleicht `k::text` und nicht `k`:
+  Ein Enum-Literal in einer `language sql`-Funktion wird beim Anlegen
+  aufgelöst und scheiterte an „unsafe use of new value of enum type“ —
+  der Wert entsteht in derselben Transaktion. Live als `authenticated`
+  gegengeprüft (neun Proben in einer zurückgerollten Transaktion, echte
+  Konten). `notify` ist dafür **neu deployt** (Version 7).
+  **Dazu der gemeldete Fehler:** „Session nicht gefunden“ beim Klick auf
+  einen fremden Beacon. Die Detailansicht kannte nur die lokale Datenbank
+  und die Liste laufender Freundes-Beacons; eine Benachrichtigung trägt
+  aber die **blanke UUID** ohne `remote-`, landete im Zweig für eigene
+  Sessions und fragte die lokale Datenbank nach einer fremden Session.
+  Jetzt `SessionsApi.byId()` als dritte Quelle.
   **0046 Anmeldewege:** `app_config.auth_providers` (Startwert `google`)
   sagt, welche OAuth-Anbieter der Anmeldebildschirm zeigen darf. Die App
   kann Apple, Microsoft (`azure`), Facebook, Discord und GitHub — ob ein
