@@ -1,0 +1,62 @@
+{
+  // Start- und Debug-Konfigurationen. Ohne diese Datei bietet F5 nur
+  // Raten an: Die App liegt in `app/`, der geöffnete Ordner ist das
+  // Repo-Wurzelverzeichnis — deshalb steht bei jeder Konfiguration ein
+  // ausdrückliches `cwd`.
+  //
+  // Zugangsdaten braucht keine davon: `core/supabase_config.dart` bringt
+  // URL und anon-Key als `defaultValue` mit (der Key ist per Design
+  // öffentlich, es schützt RLS). `--dart-define` ist nur nötig, wer gegen
+  // ein anderes Projekt startet.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // Der Normalfall: angeschlossenes Android-Gerät oder Emulator.
+      // Hot Reload, Flutter-Inspector, DevTools.
+      "name": "App: Gerät (Debug)",
+      "type": "dart",
+      "request": "launch",
+      "program": "${workspaceFolder}/app/lib/main.dart",
+      "cwd": "${workspaceFolder}/app",
+      "flutterMode": "debug"
+    },
+    {
+      // Regel J: Web ist Zweitgerät mit vollem Funktionsumfang. Was hier
+      // nicht läuft, ist ein Fehler — kein „nur mobil".
+      //
+      // Ohne `--base-href`: der Entwicklungsserver liefert auf `/`, den
+      // Unterpfad `/BrewMates/` gibt es erst auf GitHub Pages.
+      "name": "App: Web (Chrome)",
+      "type": "dart",
+      "request": "launch",
+      "program": "${workspaceFolder}/app/lib/main.dart",
+      "cwd": "${workspaceFolder}/app",
+      "deviceId": "chrome",
+      "flutterMode": "debug"
+    },
+    {
+      // Profil-Modus: der einzige ehrliche Weg, Ruckeln zu messen. Im
+      // Debug-Modus ist jede Zeitmessung wertlos — der Debug-Build ist um
+      // ein Vielfaches langsamer, und genau daran sind schon
+      // Performance-„Befunde" gescheitert, die es gar nicht gab.
+      //
+      // Für Listen: in DevTools „Performance" aufzeichnen und scrollen.
+      "name": "App: Gerät (Profil, für Performance-Messung)",
+      "type": "dart",
+      "request": "launch",
+      "program": "${workspaceFolder}/app/lib/main.dart",
+      "cwd": "${workspaceFolder}/app",
+      "flutterMode": "profile"
+    },
+    {
+      // Haltepunkt in einem Test setzen und diesen einen Test fahren.
+      // Der Test-Explorer der Dart-Erweiterung kann das auch — diese
+      // Konfiguration ist der Weg über F5, wenn die Testdatei offen ist.
+      "name": "Test: geöffnete Datei",
+      "type": "dart",
+      "request": "launch",
+      "program": "${file}",
+      "cwd": "${workspaceFolder}/app"
+    }
+  ]
+}

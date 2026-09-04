@@ -27,7 +27,19 @@
 
     // tools/*.py pflegen die Community-Datenbestände.
     "ms-python.python",
-    "ms-python.vscode-pylance"
+    "ms-python.vscode-pylance",
+
+    // Testen: Die CI misst die Abdeckung und hält sie mit einer Ratsche
+    // (--min 32) unten fest — aber sie meldet nur eine Zahl. Coverage
+    // Gutters färbt die ungeprüften Zeilen im Editor ein, nachdem der
+    // Task „Tests mit Abdeckung" gelaufen ist.
+    "ryanluker.vscode-coverage-gutters",
+
+    // Oberfläche: `core/theme.dart` beschreibt die Palette „Abend in der
+    // Bar" als Color(0xFFE8A33D) & Co. Ohne Vorschau rät man, welcher
+    // Bernstein gemeint ist; diese Erweiterung legt die Farbfläche
+    // daneben und macht sie anklickbar.
+    "circlecodesolution.ccs-flutter-color"
   ],
 
   // Beansprucht .dart-Dateien und kollidiert mit dart-code.

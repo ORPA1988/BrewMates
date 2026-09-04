@@ -125,6 +125,11 @@ nicht nachlesen.
   Android-`versionCode` zählt immer weiter hoch).
 - **Backend:** Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
   **`0001–0047` sind live, lückenlos.** Details: docs/13.
+  `list_migrations` zeigt **48** Einträge, das Repo hat 47 Dateien —
+  **das ist kein Drift.** `0024_friend_tiers.sql` wurde live in zwei
+  Schritten eingespielt (`friend_tiers` + `friend_tiers_thirsty_friends`);
+  inhaltlich steht beides in der einen Repo-Datei. Wer nur zählt, meldet
+  einen Fehler, den es nicht gibt (geprüft 2026-09-04).
 - **Riegel:** `app_config.min_supported_version` steht auf `0.10.4`.
   Anheben ist eine Aussperr-Entscheidung (Regel K); Einzeiler im
   Release-Playbook.
@@ -187,6 +192,15 @@ nicht nachlesen.
   streitet mit der Dart-Analyse. Deno selbst ist **nicht** global
   installiert. Kein `formatOnSave` für Dart: die CI erzwingt keine
   Formatierung, ein Autoformat zieht nur fremde Zeilen in Diffs.
+  `.vscode/launch.json` startet App (Gerät/Web/Profil) und Einzeltests —
+  jeweils mit `cwd` auf `app/`, weil der geöffnete Ordner das
+  Wurzelverzeichnis ist. `.vscode/tasks.json` bildet die CI-Kette nach;
+  **Strg+Umschalt+B ist „Prüfen wie die CI"** und läuft dieselben fünf
+  Schritte wie `ci.yml`. Der Abdeckungs-Task ruft zusätzlich
+  `tools/lcov_for_vscode.dart` — es hebt die lcov-Pfade von `lib/…` auf
+  `app/lib/…` in eine **zweite** Datei, damit Coverage Gutters die
+  Quellen findet und `lcov.info` für CI und `coverage_report.dart`
+  unverändert bleibt.
 - **Fallstricke:** `flutter test` nie nach `tail` pipen (scheint zu
   hängen) — in eine Datei umleiten und diese lesen. In Git Bash braucht
   `flutter build web --base-href /BrewMates/` ein vorangestelltes
