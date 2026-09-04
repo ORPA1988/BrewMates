@@ -2,7 +2,7 @@
 
 > **Status:** 🟢 fertig — Kamera auf Android/iOS/Web, manuelle Eingabe
 > überall.
-> **Seit:** 0.3.0 · **Zuletzt geprüft:** 2026-09-03
+> **Seit:** 0.3.0 · **Zuletzt geprüft:** 2026-09-04
 
 ## Zielsetzung
 
@@ -126,6 +126,14 @@ weiß keine Regel — das wusste nur der Abgleich gegen eine zweite Quelle.
 - **Web:** ZXing liegt als `web/zxing.js` im eigenen Bundle; die
   Script-URL wird in `initState` umgebogen — geladen von unpkg.com
   scheiterte still an VPN und Werbeblockern
+- **Web-Auflösung:** `features/scan/kamera/aufloesung*.dart` bittet die
+  laufende Kamera um Full HD (siehe unten). Plattform-Weiche wie bei der
+  Drift-Verbindung: nativ ein No-op
+- **Ein Steuergerät, kein neues je Bild.** Der `MobileScannerController`
+  ist ein Feld und wird in `dispose` geschlossen. Vorher entstand er in
+  `build()`; `MobileScanner` löst sein `controller`-Feld aber nur einmal
+  auf (`late final`), also benutzte der Scanner weiter das erste und
+  jedes weitere Bauen ließ ein Gerät zurück, das niemand schließt
 - **Wenn die Kamera nicht liefert:** `widgets/kamera_hinweis.dart` als
   `errorBuilder` beider Scanner (Bier und QR). Ohne ihn zeigt
   `mobile_scanner` ein schwarzes Rechteck mit weißem Warndreieck — und
@@ -136,6 +144,47 @@ weiß keine Regel — das wusste nur der Abgleich gegen eine zweite Quelle.
 Biere schlicht „Bier" als Produktnamen. Wird das übernommen, entstehen
 Einträge namens „Bier" — genau das ist passiert.
 `isGenericProductName` filtert das heute heraus.
+
+### Warum der EAN-Scanner im Browser nichts erkannte (2026-09-04)
+
+Gemeldet: „Der Scanner öffnet, erkennt aber den EAN nicht bzw. löst beim
+Scannen nicht aus.“ Der QR-Scanner derselben App lief im selben Browser.
+
+**Der Befund:** `MobileScannerController` nimmt eine `cameraResolution`
+entgegen — der Web-Teil von `mobile_scanner` liest sie **nirgends**.
+Nachgeprüft in 5.2.3 (unsere Fassung) und in 6.0.11 (die nächste, die
+mit Flutter 3.24 überhaupt auflösbar wäre): `grep cameraResolution
+lib/src/web/` findet in beiden **null** Treffer. Der `getUserMedia`-Aufruf
+dort setzt ausschließlich `facingMode`. Ein Paket-Upgrade hätte es also
+nicht behoben — gut zu wissen, bevor man die gepinnte Toolchain anfasst.
+
+Ohne Vorgabe liefert der Browser seine Voreinstellung, auf Android-Chrome
+typischerweise **640×480**. Und hier trennen sich die beiden Scanner:
+
+- Ein **QR-Code** ist zweidimensional und grob; 640×480 ist reichlich.
+  Deshalb funktionieren Funktion 22 und der Crew-Beitritt.
+- Ein **EAN-13** hat 95 Module nebeneinander. Füllt der Code die halbe
+  Bildbreite, bleiben knapp drei Pixel je Modul — und davon frisst jede
+  Unschärfe die Hälfte. Der Scanner sieht ein Bild und erkennt nie etwas.
+
+**Die Abhilfe:** Sobald die Kamera läuft, wird dieselbe Videospur um
+1920×1080 gebeten (`applyConstraints`, `ideal` statt `exact` — eine
+Kamera, die es nicht kann, soll weiterlaufen statt mit
+`OverconstrainedError` stehenzubleiben). ZXing berechnet seine
+Arbeitsfläche bei jedem Bild neu aus `videoWidth`/`videoHeight` und
+übernimmt die neue Größe dadurch von selbst.
+
+**Und die Zahl steht im Bild.** Unter dem Rahmen zeigt der Browser-Scanner
+„Kamera 1920×1080“ — was die Kamera *tatsächlich* liefert, nicht was
+erbeten wurde. Das ist kein Selbstzweck: Bleibt der Scanner stumm,
+unterscheidet genau diese Zahl „die Bitte ist verpufft“ von „auflösend
+genug und trotzdem nichts“ — zwei Befunde mit völlig verschiedenen
+nächsten Schritten. Ohne sie beginnt die nächste Runde wieder bei null.
+
+⚠️ **Nicht im Browser gegengeprüft.** Eine Kamera lässt sich hier nicht
+bedienen; die Analyse ist belegt (die Paketquellen sind eindeutig), die
+Wirkung ist es nicht. Sie zeigt sich beim nächsten Scan — und die
+Zahl unter dem Rahmen sagt dann, woran man ist.
 
 ## Modularität
 
@@ -185,8 +234,9 @@ den Pflegeskripten.
 
 ## Umsetzungsstatus
 
-Vollständig. Die drei bekannten Fallstricke — CDN-Abhängigkeit,
-generische Namen, mehrdeutige Barcodes — sind behoben.
+Vollständig. Die bekannten Fallstricke — CDN-Abhängigkeit, generische
+Namen, mehrdeutige Barcodes — sind behoben. Die Kamera-Auflösung im
+Browser ist behoben, aber **noch nicht am Gerät bestätigt** (siehe oben).
 
 ## Umsetzungsplan
 
@@ -196,5 +246,7 @@ ergänzen; beim ersten Scan die
 
 ## Offene Punkte / Ideen
 
+- Bestätigen, dass der EAN-Scanner im Browser wieder auslöst — und mit
+  welcher Auflösung (steht unter dem Rahmen)
 - Etikett-Erkennung per Foto, wenn kein Barcode vorhanden ist
 - Barcodes je Bier in eine eigene Tabelle statt kommagetrennt

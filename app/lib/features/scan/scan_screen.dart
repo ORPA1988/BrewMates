@@ -12,6 +12,7 @@ import '../../widgets/beer_thumbnail.dart';
 import '../../widgets/rating_stars.dart';
 import '../../widgets/story_sheet.dart';
 import 'barcode_lookup.dart';
+import 'kamera/aufloesung.dart';
 
 /// Hero-Funktion „🍺 Bier scannen": Kamera-Scan auf Android/iOS und im
 /// Browser (mobile_scanner lädt die zxing-Bibliothek zur Laufzeit nach —
@@ -30,6 +31,16 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
   bool _busy = false;
   String? _error;
 
+  /// Ein Steuergerät, das den Bildschirm überlebt.
+  ///
+  /// Vorher entstand es **in `build()`**. `MobileScanner` löst sein
+  /// `controller`-Feld aber nur ein einziges Mal auf (`late final`), also
+  /// benutzte der Scanner weiter das erste und jedes weitere Bauen legte
+  /// ein Gerät an, das niemand mehr anfasste und niemand schließt.
+  MobileScannerController? _scanner;
+  bool _aufloesungAngefragt = false;
+  String? _kameraAufloesung;
+
   bool get _cameraSupported =>
       kIsWeb ||
       defaultTargetPlatform == TargetPlatform.android ||
@@ -45,11 +56,35 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
     // URL löst über <base href> korrekt auf; auf Android/iOS ist der
     // Aufruf ein No-op.
     MobileScannerPlatform.instance.setBarcodeLibraryScriptUrl('zxing.js');
+
+    if (_cameraSupported) {
+      _scanner = MobileScannerController(
+        formats: const [BarcodeFormat.ean13, BarcodeFormat.ean8],
+      )..addListener(_beiKameraStart);
+    }
+  }
+
+  /// Sobald die Kamera läuft, im Browser um mehr Auflösung bitten.
+  ///
+  /// Nativ ist das ein No-op. Warum es im Browser nötig ist — und warum
+  /// ein EAN dort ohne es praktisch nie erkannt wird — steht in
+  /// `kamera/aufloesung_web.dart`.
+  Future<void> _beiKameraStart() async {
+    if (_aufloesungAngefragt || !(_scanner?.value.isRunning ?? false)) return;
+    _aufloesungAngefragt = true;
+    final aufloesung = await erhoeheKameraAufloesung();
+    if (mounted && aufloesung != null) {
+      setState(() => _kameraAufloesung = aufloesung);
+    }
   }
 
   @override
   void dispose() {
     _eanController.dispose();
+    _scanner?.removeListener(_beiKameraStart);
+    // Das Gerät gehört uns, also schließen wir es auch: `MobileScanner`
+    // entsorgt nur den Controller, den es selbst angelegt hat.
+    _scanner?.dispose();
     super.dispose();
   }
 
@@ -266,12 +301,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
                 fit: StackFit.expand,
                 children: [
                   MobileScanner(
-                    controller: MobileScannerController(
-                      formats: const [
-                        BarcodeFormat.ean13,
-                        BarcodeFormat.ean8,
-                      ],
-                    ),
+                    controller: _scanner,
                     // Ohne diesen Bauer zeigt mobile_scanner ein schwarzes
                     // Rechteck mit weißem Warndreieck. Der Weg unten —
                     // EAN tippen — ist gleichwertig und steht ohnehin da;
@@ -313,8 +343,13 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
                           color: theme.colorScheme.surface.withOpacity(0.85),
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: const Text(
-                            'Barcode der Flasche/Dose in den Rahmen halten'),
+                        // Die Auflösung steht dabei, wo es eine gibt (nur
+                        // im Browser). Wer meldet „erkennt nichts", kann
+                        // damit sagen, ob es an der Bildgröße liegt.
+                        child: Text(_kameraAufloesung == null
+                            ? 'Barcode der Flasche/Dose in den Rahmen halten'
+                            : 'Barcode in den Rahmen halten '
+                                '· Kamera $_kameraAufloesung'),
                       ),
                     ),
                   ),
