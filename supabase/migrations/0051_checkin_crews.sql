@@ -90,7 +90,7 @@ create or replace function public.fill_checkin_crews(p_checkin uuid,
 returns void
 language sql security definer set search_path = public as $$
   insert into checkin_crews (checkin_id, crew_id)
-  select distinct cm.crew_id
+  select distinct p_checkin, cm.crew_id
     from crew_members cm
    where cm.profile_id in (
            select s.host_id from sessions s where s.id = p_session
