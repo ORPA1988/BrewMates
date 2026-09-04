@@ -343,6 +343,110 @@ class SessionsApi extends OnlineApi {
     }
   }
 
+  /// Eine Verabredung anlegen („Freitag 19 Uhr").
+  ///
+  /// **Nur am Server, ohne lokale Spiegelung.** Eine Verabredung, von der
+  /// niemand erfährt, ist keine — anders als ein Beacon, der auch offline
+  /// als lokaler Zustand Sinn ergibt. Deshalb gibt es sie in der Drift-
+  /// Datenbank gar nicht, und deshalb sagt der Rückgabewert die Wahrheit
+  /// statt „gespeichert" (Regel A).
+  ///
+  /// Ohne Standort, und das erzwingt der Server (0049): Ein Beacon
+  /// behauptet Anwesenheit, eine Verabredung nur eine Absicht.
+  Future<String?> planSession({
+    required DateTime scheduledFor,
+    String? venueId,
+    String? venueName,
+    String? message,
+    String? crewId,
+  }) async {
+    final me = currentUser;
+    if (me == null) return null;
+    try {
+      final row = await client
+          .from('sessions')
+          .insert({
+            'host_id': me.id,
+            'venue_id': venueId,
+            'venue_name': venueName,
+            'message': (message ?? '').trim().isEmpty ? null : message!.trim(),
+            'visibility': crewId != null ? 'crew' : 'friends',
+            'crew_id': crewId,
+            'status': 'planned',
+            'scheduled_for': scheduledFor.toUtc().toIso8601String(),
+            // `expires_at` ist `not null` mit Vorgabe „in drei Stunden".
+            // Für eine Verabredung ist das die falsche Größe, aber die
+            // Spalte gehört dem laufenden Beacon — also setzen wir sie auf
+            // den Termin plus dieselbe Karenz, die 0049 kennt. So steht
+            // dort nie ein Datum aus der Vergangenheit.
+            'expires_at': scheduledFor
+                .toUtc()
+                .add(const Duration(hours: 3))
+                .toIso8601String(),
+          })
+          .select('id')
+          .maybeSingle();
+      return row?['id'] as String?;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Verabredungen, die ich sehen darf — meine eigenen und die von
+  /// Freunden bzw. der Crew.
+  ///
+  /// Was zurückkommt, entscheidet `sessions_select` (0049): kommende
+  /// Termine und solche innerhalb der dreistündigen Karenz.
+  Future<List<RemoteSession>> plannedSessions({int limit = 20}) async {
+    if (currentUser == null) return const [];
+    try {
+      final rows = await client
+          .from('sessions')
+          .select('id, host_id, venue_name, message, scheduled_for, '
+              'started_at, expires_at')
+          .eq('status', 'planned')
+          .order('scheduled_for')
+          .limit(limit);
+      final profile = <String, RemoteProfile>{};
+      final result = <RemoteSession>[];
+      for (final row in rows) {
+        final hostId = row['host_id'] as String;
+        final host = profile[hostId] ??= await _fetchProfile(hostId);
+        result.add(RemoteSession(
+          id: row['id'] as String,
+          host: host,
+          venueName: row['venue_name'] as String?,
+          message: row['message'] as String?,
+          startedAt: DateTime.parse(row['started_at'] as String).toLocal(),
+          expiresAt: DateTime.parse(row['expires_at'] as String).toLocal(),
+          scheduledFor:
+              DateTime.parse(row['scheduled_for'] as String).toLocal(),
+        ));
+      }
+      return result;
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Eine Verabredung streichen.
+  ///
+  /// Kein `delete`: Wer zugesagt hat, soll erfahren, dass sie nicht
+  /// stattfindet — und eine gelöschte Zeile erzählt nichts. `ended` ist
+  /// derselbe Zustand, in dem auch eine abgelaufene Verabredung endet.
+  Future<bool> cancelPlanned(String sessionId) async {
+    if (currentUser == null) return false;
+    try {
+      await client.from('sessions').update({
+        'status': 'ended',
+        'ended_at': DateTime.now().toUtc().toIso8601String(),
+      }).eq('id', sessionId);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Alle Check-ins einer Runde, die ich sehen darf.
   ///
   /// Nötig, weil die lokale Datenbank nur die **eigenen** Check-ins

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/format.dart';
 import '../../data/db/database.dart';
+import '../../data/online/models.dart' show RemoteSession;
 import '../../data/providers.dart';
 import '../../widgets/badge_celebration.dart';
 import '../../widgets/glocke.dart';
@@ -105,6 +106,9 @@ class HomeScreen extends ConsumerWidget {
         const <SessionDetails>[];
     final feed =
         ref.watch(feedProvider).valueOrNull ?? const <CheckinDetails>[];
+    final verabredungen =
+        ref.watch(plannedSessionsProvider).valueOrNull ??
+            const <RemoteSession>[];
     // Persönliche Begrüßung, sobald das Online-Profil da ist —
     // offline/abgemeldet bleibt es beim App-Namen.
     final profile = ref.watch(myRemoteProfileProvider).valueOrNull;
@@ -431,6 +435,23 @@ class HomeScreen extends ConsumerWidget {
           ],
 
           // ------------------------------------------------------------------
+          // Demnächst
+          //
+          // Unter „Gerade unterwegs“, nicht darüber: Was jetzt läuft, ist
+          // dringender als was am Freitag ansteht. Und auf der Karte
+          // taucht hier nichts auf — eine Verabredung hat keinen Ort, an
+          // dem jemand ist (docs/features/39).
+          // ------------------------------------------------------------------
+          if (verabredungen.isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+              child: Text('Demnächst 📅',
+                  style: theme.textTheme.titleMedium),
+            ),
+            for (final v in verabredungen) _Verabredung(session: v),
+          ],
+
+          // ------------------------------------------------------------------
           // Letzte Aktivität
           // ------------------------------------------------------------------
           if (feed.isNotEmpty) ...[
@@ -565,6 +586,41 @@ class _ActiveBeaconCard extends ConsumerWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Eine Verabredung in „Demnächst“.
+///
+/// Bewusst schlichter als eine [SessionCard]: Dort steht, wer **jetzt**
+/// wo ist — hier nur, dass etwas ansteht. Kein Ortspunkt, keine
+/// Restlaufzeit, kein „ist unterwegs“.
+class _Verabredung extends StatelessWidget {
+  const _Verabredung({required this.session});
+
+  final RemoteSession session;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final termin = session.scheduledFor!;
+    final wo = session.venueName;
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: ListTile(
+        leading: Text(session.host.avatarEmoji,
+            style: const TextStyle(fontSize: 26)),
+        title: Text(wo == null
+            ? session.host.displayName
+            : '${session.host.displayName} · $wo'),
+        subtitle: Text(
+          '${formatDate(termin)}, ${formatTime(termin)} Uhr'
+          '${session.message == null ? '' : '\n${session.message}'}',
+          style: theme.textTheme.bodySmall,
+        ),
+        isThreeLine: session.message != null,
+        onTap: () => context.push('/session/${session.id}'),
       ),
     );
   }

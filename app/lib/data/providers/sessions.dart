@@ -95,6 +95,24 @@ Future<SessionDetails?> _vomServer(Ref ref, String uuid) async {
   return session == null ? null : remoteSessionToDetails(session);
 }
 
+/// Verabredungen, die ich sehen darf — meine und die von Freunden.
+///
+/// **Nur vom Server**, weil es sie lokal nicht gibt: Eine Verabredung,
+/// von der niemand erfährt, ist keine (anders als ein Beacon, der auch
+/// offline als Zustand Sinn ergibt). Ohne Verbindung ist die Liste leer,
+/// und das ist die Wahrheit, nicht ein Fehler.
+///
+/// Am 30-Sekunden-Takt: Eine Zusage oder eine neue Verabredung soll nicht
+/// bis zum nächsten Bildschirmwechsel warten.
+final plannedSessionsProvider =
+    FutureProvider<List<RemoteSession>>((ref) async {
+  ref.watch(onlineUserProvider);
+  ref.watch(clockProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null || online.currentUser == null) return const [];
+  return online.sessions.plannedSessions();
+});
+
 /// Die Check-ins einer Runde, wie der Server sie kennt.
 ///
 /// Auffrischung am 30-Sekunden-Takt: Eine Runde ist ein laufender Abend,
