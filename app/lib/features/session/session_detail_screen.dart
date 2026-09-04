@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../domain/badges.dart' show BadgeDef;
 import '../../core/format.dart';
 import '../../data/db/database.dart';
-import '../../data/online/online_service.dart' show RemoteParticipant;
+import '../../data/online/online_service.dart'
+    show RemoteParticipant, Teilnahme;
 import '../../data/providers.dart';
 import '../../widgets/badge_celebration.dart';
 import '../../widgets/checkin_card.dart';
@@ -32,16 +34,6 @@ class SessionDetailScreen extends ConsumerWidget {
         .showSnackBar(ok ? toastSentSnackBar : reactionNotSentSnackBar);
   }
 
-  Future<void> _join(BuildContext context, WidgetRef ref) async {
-    final ergebnis = await ref.read(actionsProvider).joinSession(sessionId);
-    if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-        ergebnis.synced ? joinedSnackBar : reactionNotSentSnackBar);
-    if (ergebnis.earned.isNotEmpty && context.mounted) {
-      await showBadgeCelebration(context, ergebnis.earned);
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Uhr mitbeobachten, damit Restzeit und Aktiv-Status frisch bleiben.
@@ -58,9 +50,36 @@ class SessionDetailScreen extends ConsumerWidget {
       ),
       data: (d) {
         if (d == null) {
+          // Nicht „nicht gefunden“: Der Server unterscheidet bewusst nicht
+          // zwischen „vorbei“ und „nicht für dich“ (RLS aus 0024) — sonst
+          // wäre aus einer Fehlermeldung ablesbar, wer wo unterwegs ist.
+          // Der Satz muss deshalb beides zugleich abdecken, und er darf
+          // nicht so klingen, als sei die App kaputt.
           return Scaffold(
             appBar: AppBar(),
-            body: const Center(child: Text('Session nicht gefunden')),
+            body: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('📡', style: TextStyle(fontSize: 48)),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Dieser Beacon ist nicht mehr zu sehen.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Beacons enden nach höchstens drei Stunden. Danach zeigt '
+                    'niemand mehr, wo er war — auch dir nicht.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  ),
+                ],
+              ),
+            ),
           );
         }
         final active = d.isActiveAt(DateTime.now());
@@ -70,6 +89,7 @@ class SessionDetailScreen extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(vertical: 12),
             children: [
               _HeaderCard(details: d, active: active),
+              if (active && !d.host.isMe) _Zusagekarte(details: d),
               _ParticipantsRow(details: d),
               if (active) _ActionRow(details: d, screen: this),
               Padding(
@@ -189,23 +209,36 @@ class _ParticipantsRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Eigene Session: Reaktionen kommen vom Server. Die lokale Datenbank
-    // kennt nur lokale Teilnehmer — bis 2026-09-03 sah der Gastgeber
-    // deshalb nie, wer zugeprostet hatte.
-    final remote = details.host.isMe
-        ? (ref.watch(remoteParticipantsProvider(details.session.id)).valueOrNull ??
-            const <RemoteParticipant>[])
-        : const <RemoteParticipant>[];
+    // Die Antworten kommen vom Server — und zwar bei **jeder** Session,
+    // nicht nur der eigenen. Bis 0.10.13 wurden sie nur für die eigene
+    // geholt; wer den Beacon eines Freundes öffnete, sah deshalb nie, wer
+    // sonst noch kommt. Genau das ist aber die Frage, wegen der man
+    // draufklickt. Sehen darf sie ohnehin nur, wer die Session sehen darf
+    // — dafür sorgt `session_participants_select` (0001).
+    final remote =
+        ref.watch(remoteParticipantsProvider(details.session.id)).valueOrNull ??
+            const <RemoteParticipant>[];
     final lokalIds = {for (final p in details.participants) p.id};
     final people = [details.host, ...details.participants];
-    final dabei = [for (final r in remote) if (r.joined && !lokalIds.contains(r.profile.id)) r];
-    final prosts = [for (final r in remote) if (!r.joined) r];
+    final dabei = [
+      for (final r in remote)
+        if (r.art == Teilnahme.dabei && !lokalIds.contains(r.profile.id)) r,
+    ];
+    final abgesagt = [
+      for (final r in remote)
+        if (r.art == Teilnahme.abgesagt) r,
+    ];
+    final prosts = [
+      for (final r in remote)
+        if (r.art == Teilnahme.prost) r,
+    ];
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Mit dabei', style: Theme.of(context).textTheme.titleSmall),
+          Text('Mit dabei', style: theme.textTheme.titleSmall),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -223,15 +256,178 @@ class _ParticipantsRow extends ConsumerWidget {
                 ),
             ],
           ),
+          // Absagen stehen daneben, nicht versteckt: „drei sind dabei“
+          // heißt wenig, solange offen ist, ob die anderen noch überlegen
+          // oder längst abgesagt haben. Wer weiß, dass Anna nicht kommt,
+          // wartet nicht auf sie.
+          if (abgesagt.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text('Kann heute nicht', style: theme.textTheme.titleSmall),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final r in abgesagt)
+                  Chip(
+                    avatar: Text(r.profile.avatarEmoji),
+                    label: Text(r.profile.displayName),
+                    backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                  ),
+              ],
+            ),
+          ],
           if (prosts.isNotEmpty) ...[
             const SizedBox(height: 8),
             Text(
               '🍻 Zugeprostet: '
               '${prosts.map((r) => r.profile.displayName).join(', ')}',
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: theme.textTheme.bodyMedium,
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+/// „Kommst du vorbei?“ — die Frage, wegen der man auf einen Beacon klickt.
+///
+/// **Warum das eine Karte ist und kein Dialog.** Ein Dialog beim Öffnen
+/// verlangt eine Antwort, bevor man weiß, worauf man antwortet: Wo ist er,
+/// seit wann, wer ist schon da, wie lange läuft das noch. Die Frage gehört
+/// deshalb an den Anfang des Bildschirms, nicht davor.
+///
+/// **Warum Absagen ein eigener Knopf ist und nicht Wegklicken.** Wer
+/// schweigt, sagt nichts — der Gastgeber weiß dann nicht, ob noch jemand
+/// kommt, und wartet womöglich. Eine Absage ist eine Information, kein
+/// Verzicht auf eine.
+///
+/// Die eigene Antwort bleibt änderbar: Ein Abend ist keine Buchung.
+class _Zusagekarte extends ConsumerStatefulWidget {
+  const _Zusagekarte({required this.details});
+
+  final SessionDetails details;
+
+  @override
+  ConsumerState<_Zusagekarte> createState() => _ZusagekarteState();
+}
+
+class _ZusagekarteState extends ConsumerState<_Zusagekarte> {
+  bool _laeuft = false;
+
+  Future<void> _antworten(Teilnahme? art) async {
+    setState(() => _laeuft = true);
+    final messenger = ScaffoldMessenger.of(context);
+    final id = widget.details.session.id;
+    final aktionen = ref.read(actionsProvider);
+    var verdient = const <BadgeDef>[];
+    final bool ok;
+    if (art == null) {
+      ok = await aktionen.antwortZuruecknehmen(id);
+    } else {
+      final ergebnis = await aktionen.antwortAufBeacon(id, art);
+      ok = ergebnis.synced;
+      verdient = ergebnis.earned;
+    }
+    if (!mounted) return;
+    setState(() => _laeuft = false);
+
+    // Regel A-8: Eine Zusage, die den Server nie erreicht hat, lässt
+    // jemanden warten. Das ist der eine Fall, in dem stilles Scheitern
+    // wirklich Schaden anrichtet.
+    messenger.showSnackBar(SnackBar(
+      content: Text(!ok
+          ? 'Hat nicht geklappt — keine Verbindung? Deine Antwort ist nicht '
+              'angekommen.'
+          : switch (art) {
+              Teilnahme.dabei => 'Zugesagt — sie wissen Bescheid 🍻',
+              Teilnahme.abgesagt => 'Abgesagt — sie warten nicht auf dich.',
+              _ => 'Antwort zurückgenommen.',
+            }),
+    ));
+
+    if (verdient.isNotEmpty && mounted) {
+      await showBadgeCelebration(context, verdient);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final meineId = ref.watch(onlineUserProvider).valueOrNull?.id;
+    final teilnehmer =
+        ref.watch(remoteParticipantsProvider(widget.details.session.id))
+                .valueOrNull ??
+            const <RemoteParticipant>[];
+
+    Teilnahme? meineAntwort;
+    for (final t in teilnehmer) {
+      if (t.profile.id == meineId && t.art != Teilnahme.prost) {
+        meineAntwort = t.art;
+      }
+    }
+
+    return Card(
+      margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      color: meineAntwort == null
+          ? theme.colorScheme.primaryContainer
+          : theme.colorScheme.surfaceContainerHighest,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              switch (meineAntwort) {
+                Teilnahme.dabei => 'Du kommst vorbei 🍻',
+                Teilnahme.abgesagt => 'Du hast abgesagt',
+                _ => 'Kommst du vorbei?',
+              },
+              style: theme.textTheme.titleMedium,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              meineAntwort == null
+                  ? '${widget.details.host.displayName} sieht deine Antwort '
+                      'sofort — und alle, die den Beacon auch sehen.'
+                  : 'Kannst du jederzeit ändern.',
+              style: theme.textTheme.bodySmall,
+            ),
+            const SizedBox(height: 4),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (meineAntwort != null)
+                  TextButton(
+                    onPressed: _laeuft ? null : () => _antworten(null),
+                    child: const Text('Doch nicht'),
+                  )
+                else
+                  TextButton(
+                    onPressed: _laeuft
+                        ? null
+                        : () => _antworten(Teilnahme.abgesagt),
+                    child: const Text('Ich hab keine Zeit'),
+                  ),
+                const SizedBox(width: 4),
+                if (meineAntwort != Teilnahme.dabei)
+                  FilledButton(
+                    onPressed:
+                        _laeuft ? null : () => _antworten(Teilnahme.dabei),
+                    child: const Text('Ich komme vorbei'),
+                  )
+                else
+                  OutlinedButton(
+                    onPressed: _laeuft
+                        ? null
+                        : () => _antworten(Teilnahme.abgesagt),
+                    child: const Text('Ich hab keine Zeit'),
+                  ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -265,18 +461,15 @@ class _ActionRow extends ConsumerWidget {
                   ),
                 ),
               ]
+            // Zu- und Absage stehen oben in der Zusagekarte — sie sind die
+            // Frage des Abends und gehören nicht in eine Knopfleiste unter
+            // die Teilnehmer. Hier bleibt der Prost, der etwas anderes ist:
+            // Man kann zuprosten UND absagen.
             : [
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () => screen._toast(context, ref),
                     child: const Text('Prost! 🍻'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: FilledButton(
-                    onPressed: () => screen._join(context, ref),
-                    child: const Text('Bin dabei!'),
                   ),
                 ),
               ],

@@ -35,5 +35,8 @@ final remoteParticipantsProvider = FutureProvider.autoDispose
   ref.watch(incomingNotificationsProvider);
   final online = await ref.watch(onlineServiceProvider.future);
   if (online == null || online.currentUser == null) return const [];
-  return online.sessions.participantsOf(sessionId);
+  // `stripRemote`, weil fremde Sessions hier mit `remote-` ankommen. Ohne
+  // das fragte die Abfrage nach einer ID, die es am Server nicht gibt —
+  // für eigene Sessions fiel es nie auf, weil die keinen Präfix tragen.
+  return online.sessions.participantsOf(stripRemote(sessionId));
 });

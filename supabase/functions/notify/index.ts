@@ -46,6 +46,10 @@ const TEXTE: Record<string, { title: string; body: string }> = {
     title: "BrewMates",
     body: "Jemand ist bei deinem Beacon dabei 🍻",
   },
+  session_declined: {
+    title: "BrewMates",
+    body: "Jemand kann heute nicht",
+  },
   crew_invite: {
     title: "BrewMates",
     body: "Du bist in eine Crew eingeladen 👥",

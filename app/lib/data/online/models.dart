@@ -183,6 +183,10 @@ class RemoteNotification {
         return '$wer hat dir zugeprostet 🍻';
       case 'session_joined':
         return '$wer ist bei deinem Beacon dabei 🍻';
+      case 'session_declined':
+        // Auch das weckt den Gastgeber, und das ist Absicht:
+        // „warte nicht auf mich“ ist die nützlichste Nachricht des Abends.
+        return '$wer kann heute nicht';
       case 'crew_invite':
         return '$wer möchte dich in eine Crew holen 👥';
       default:
@@ -360,11 +364,44 @@ class CrewInvite {
 ///   Nutzer eine Antwort erwartet (Login, Anfragen).
 
 /// Wer bei einer Session mitmacht — vom Server, nicht aus der lokalen DB.
+/// Was jemand auf einen Beacon geantwortet hat (0047).
+///
+/// Bis 0.10.13 gab es dafür ein `bool joined` — dabei oder zugeprostet.
+/// Damit fehlte die Hälfte der Information: „drei haben zugesagt“ heißt
+/// nichts, solange offen ist, ob die anderen noch überlegen oder längst
+/// abgesagt haben. Schweigen ist mehrdeutig, und Mehrdeutigkeit ist bei
+/// einer Verabredung teuer: Man wartet auf jemanden, der nie kommt.
+enum Teilnahme {
+  dabei('joined', 'kommt vorbei'),
+  abgesagt('declined', 'kann nicht'),
+  prost('toast', 'prostet zu');
+
+  const Teilnahme(this.schluessel, this.satz);
+
+  /// So heißt die Art in `session_participants.kind`.
+  final String schluessel;
+
+  /// So steht sie in der Teilnehmerliste.
+  final String satz;
+}
+
+/// Unbekanntes wird zu „Prost“ statt zu einem Absturz: Ein Server, der
+/// eine Art nennt, die diese App-Fassung nicht kennt, darf die Liste nicht
+/// mitreißen. Prost ist dabei die harmloseste Deutung — sie verspricht
+/// niemandem, dass jemand kommt.
+Teilnahme teilnahmeAus(String? schluessel) {
+  for (final art in Teilnahme.values) {
+    if (art.schluessel == schluessel) return art;
+  }
+  return Teilnahme.prost;
+}
+
 class RemoteParticipant {
-  const RemoteParticipant({required this.profile, required this.joined});
+  const RemoteParticipant({required this.profile, required this.art});
   final RemoteProfile profile;
-  /// true = „Bin dabei", false = nur zugeprostet.
-  final bool joined;
+  final Teilnahme art;
+
+  bool get joined => art == Teilnahme.dabei;
 }
 
 enum FeedbackKind { bug, wish }

@@ -127,6 +127,11 @@ class FakeOnlineService extends OnlineService {
   /// Reaktionen anderer auf eigene Sessions: sessionId -> Teilnehmer.
   Map<String, List<RemoteParticipant>> teilnehmer = const {};
 
+  /// Sessions, die der Server auf Nachfrage einzeln herausgibt — also
+  /// solche, die NICHT in `freundesSessions` stehen. Genau dieser Fall
+  /// endete bis 0.10.13 bei „Session nicht gefunden".
+  Map<String, RemoteSession> sessionsAmServer = const {};
+
   @override
   CheckinsApi get checkins => _checkins;
 
@@ -330,8 +335,20 @@ class _FakeSessionsApi extends SessionsApi {
   }
 
   @override
-  Future<bool> joinSession(String sessionId, {required bool joined}) async {
-    _fake.aufrufe.add('joinSession:$sessionId:$joined');
+  Future<RemoteSession?> byId(String sessionId) async {
+    _fake.aufrufe.add('sessions.byId:$sessionId');
+    return _fake.sessionsAmServer[sessionId];
+  }
+
+  @override
+  Future<bool> antworten(String sessionId, Teilnahme art) async {
+    _fake.aufrufe.add('antworten:$sessionId:${art.schluessel}');
+    return !_fake.schlaegtFehl;
+  }
+
+  @override
+  Future<bool> antwortZuruecknehmen(String sessionId) async {
+    _fake.aufrufe.add('antwortZuruecknehmen:$sessionId');
     return !_fake.schlaegtFehl;
   }
 

@@ -185,6 +185,50 @@ class SessionsApi extends OnlineApi {
     }
   }
 
+  /// **Eine** Session am Server nachschlagen — unabhängig davon, ob sie
+  /// gerade in der Freundesliste steht.
+  ///
+  /// **Warum das gefehlt hat.** Die Detailansicht kannte nur zwei Quellen:
+  /// die lokale Datenbank (eigene Sessions) und die Liste der laufenden
+  /// Freundes-Beacons. Alles andere endete bei „Session nicht gefunden“ —
+  /// und „alles andere“ war mehr, als es klingt: die Session aus einer
+  /// Benachrichtigung (die trägt eine blanke UUID, keinen `remote-`-Namen),
+  /// eine Session aus dem Feed eines Freundes, und jede Session in den
+  /// Sekunden, in denen der Realtime-Strom nach dem Bildschirmwechsel neu
+  /// aufbaut und die Liste kurz leer ist.
+  ///
+  /// Was der Aufrufer sehen darf, entscheidet weiterhin allein die RLS
+  /// (`sessions_select`, 0024): eigene Sessions immer, fremde nur
+  /// **laufende** und nur für Freunde ab Kreis „Freund“ bzw. die Crew.
+  /// `null` heißt deshalb zweierlei — vorbei oder nicht für dich —, und
+  /// der Server sagt bewusst nicht, welches von beidem. Das ist kein
+  /// Mangel dieser Methode, sondern der Zweck der Regel: Sonst wäre
+  /// „gibt es nicht“ von „darfst du nicht“ unterscheidbar.
+  Future<RemoteSession?> byId(String sessionId) async {
+    if (currentUser == null) return null;
+    try {
+      final row = await client
+          .from('sessions')
+          .select('id, host_id, venue_name, message, latitude, longitude, '
+              'started_at, expires_at')
+          .eq('id', sessionId)
+          .maybeSingle();
+      if (row == null) return null;
+      return RemoteSession(
+        id: row['id'] as String,
+        host: await _fetchProfile(row['host_id'] as String),
+        venueName: row['venue_name'] as String?,
+        message: row['message'] as String?,
+        latitude: (row['latitude'] as num?)?.toDouble(),
+        longitude: (row['longitude'] as num?)?.toDouble(),
+        startedAt: DateTime.parse(row['started_at'] as String).toLocal(),
+        expiresAt: DateTime.parse(row['expires_at'] as String).toLocal(),
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<RemoteProfile> _fetchProfile(String id) async {
     try {
       final row = await client
@@ -237,7 +281,7 @@ class SessionsApi extends OnlineApi {
         for (final r in rows)
           RemoteParticipant(
             profile: RemoteProfile.fromRow(r['profile'] as Map<String, dynamic>),
-            joined: r['kind'] == 'joined',
+            art: teilnahmeAus(r['kind'] as String?),
           ),
       ];
     } catch (_) {
@@ -251,15 +295,55 @@ class SessionsApi extends OnlineApi {
   /// Teilnahme vermerkt, es geht nichts verloren, und niemand trifft auf
   /// dieser Grundlage eine Entscheidung über Sichtbarkeit. Der Rückgabewert
   /// steht trotzdem zur Verfügung, damit ein Aufrufer es wissen KANN.
-  Future<bool> joinSession(String sessionId, {required bool joined}) async {
+  Future<bool> joinSession(String sessionId, {required bool joined}) =>
+      antworten(sessionId, joined ? Teilnahme.dabei : Teilnahme.prost);
+
+  /// Auf einen Beacon antworten: dabei, keine Zeit oder nur Prost (0047).
+  ///
+  /// **Zusage und Absage schließen einander aus, Prost steht daneben.**
+  /// Man kann aus der Ferne zuprosten *und* absagen — das ist sogar der
+  /// häufigste Fall („kann heute nicht, trink eins auf mich“). Deshalb
+  /// räumt eine Zu- oder Absage nur die jeweils andere weg, nie den Prost.
+  ///
+  /// Der Schlüssel der Tabelle ist `(session_id, profile_id, kind)`; ein
+  /// bloßes `upsert` legte also eine **zweite** Zeile an, statt die alte zu
+  /// ersetzen. Genau daran wäre „ich komme doch nicht“ gescheitert: Beide
+  /// Antworten stünden nebeneinander und der Gastgeber sähe weiter eine
+  /// Zusage.
+  Future<bool> antworten(String sessionId, Teilnahme art) async {
     final me = currentUser;
     if (me == null) return false;
     try {
+      if (art != Teilnahme.prost) {
+        await client
+            .from('session_participants')
+            .delete()
+            .eq('session_id', sessionId)
+            .eq('profile_id', me.id)
+            .inFilter('kind', ['joined', 'declined']);
+      }
       await client.from('session_participants').upsert({
         'session_id': sessionId,
         'profile_id': me.id,
-        'kind': joined ? 'joined' : 'toast',
+        'kind': art.schluessel,
       });
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Die eigene Antwort auf einen Beacon zurücknehmen („doch nicht“).
+  Future<bool> antwortZuruecknehmen(String sessionId) async {
+    final me = currentUser;
+    if (me == null) return false;
+    try {
+      await client
+          .from('session_participants')
+          .delete()
+          .eq('session_id', sessionId)
+          .eq('profile_id', me.id)
+          .inFilter('kind', ['joined', 'declined']);
       return true;
     } catch (_) {
       return false;
