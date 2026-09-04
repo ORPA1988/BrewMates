@@ -13,7 +13,7 @@
 | 1 | **Geplante Sessions** („morgen 19 Uhr") | Die Zu- und Absage gibt es seit 0.10.13 — es fehlt nur der Termin in der Zukunft |
 | 2 | **Anmeldeverfahren freischalten** | Die App kann fünf weitere Anbieter; drei davon kosten nichts. Schritte im [Release-Playbook](07-release-playbook.md) |
 | 3 | **[Crew-Challenges und Rollen](features/09-crews.md)** | Sinnvoll, sobald es mehr als eine aktive Crew gibt |
-| 4 | **[Statistik: Reinalkohol und CSV-Export](features/20-feed-statistiken.md)** | Die Maschinerie steht seit 0.10.14; Reinalkohol wartet auf eine Entscheidung (Regel K), der Export fällt danach fast heraus |
+| 4 | **[Statistik: CSV-Export](features/20-feed-statistiken.md)** | Die Maschinerie steht seit 0.10.14, Reinalkohol ist entschieden und gebaut; der Export fällt aus der Trennung Auswahl/Aufteilung/Zahlen fast heraus |
 | 5 | **[Play Store](https://github.com/ORPA1988/BrewMates/issues/67)** | Braucht Konto, Ausweisprüfung und Store-Prozess — Menschenarbeit |
 
 ---

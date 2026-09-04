@@ -443,6 +443,93 @@ void main() {
     });
   });
 
+  group('Reinalkohol', () {
+    // Vom Menschen entschieden am 2026-09-04 (Regel K): anzeigen, aber
+    // sachlich und mit ausgewiesener Lücke. Die Rechnung darf deshalb
+    // nichts beschönigen — weder nach oben noch nach unten.
+    test('Menge mal Alkoholgehalt, aufsummiert', () {
+      final stats = computeStats([
+        detail(id: '1', at: now, volumeMl: 500, abv: 5),
+        detail(id: '2', at: now, volumeMl: 330, abv: 4.8),
+      ], now: now, period: alles);
+
+      // 25 ml + 15,84 ml
+      expect(stats.alcohol.pureMl, closeTo(40.84, 0.001));
+      expect(stats.alcohol.countedCheckins, 2);
+      expect(stats.alcohol.withoutAbv, 0);
+    });
+
+    test('Gramm folgen der Dichte von Ethanol', () {
+      final stats = computeStats([
+        detail(id: '1', at: now, volumeMl: 1000, abv: 10),
+      ], now: now, period: alles);
+
+      expect(stats.alcohol.pureMl, closeTo(100, 0.001));
+      expect(stats.alcohol.pureGrams, closeTo(78.9, 0.001));
+    });
+
+    test('Ohne Alkoholgehalt trägt ein Check-in nichts bei — und das wird '
+        'gezählt', () {
+      final stats = computeStats([
+        detail(id: '1', at: now, volumeMl: 500, abv: 5),
+        detail(id: '2', at: now, volumeMl: 500), // kein abv hinterlegt
+      ], now: now, period: alles);
+
+      expect(stats.alcohol.pureMl, closeTo(25, 0.001));
+      expect(stats.alcohol.countedCheckins, 1);
+      expect(stats.alcohol.withoutAbv, 1,
+          reason: 'die Lücke muss sichtbar bleiben, nicht verschwinden');
+    });
+
+    test('Geschätzte Füllmengen werden als solche mitgezählt', () {
+      // Wo die Menge geschätzt ist, ist die Alkoholzahl es auch.
+      final stats = computeStats([
+        detail(id: '1', at: now, abv: 5), // keine Menge -> geschätzt
+        detail(id: '2', at: now, volumeMl: 500, abv: 5),
+      ], now: now, period: alles);
+
+      expect(stats.alcohol.estimatedVolume, 1);
+      expect(stats.alcohol.countedCheckins, 2);
+    });
+
+    test('Ab einem Drittel Lücke gilt die Zahl als löchrig', () {
+      final wenigLuecke = computeStats([
+        for (var i = 0; i < 9; i++)
+          detail(id: '$i', at: now, volumeMl: 500, abv: 5),
+        detail(id: 'x', at: now, volumeMl: 500),
+      ], now: now, period: alles);
+      expect(wenigLuecke.alcohol.isPatchy, isFalse);
+
+      final vielLuecke = computeStats([
+        detail(id: '1', at: now, volumeMl: 500, abv: 5),
+        detail(id: '2', at: now, volumeMl: 500),
+        detail(id: '3', at: now, volumeMl: 500),
+      ], now: now, period: alles);
+      expect(vielLuecke.alcohol.isPatchy, isTrue);
+    });
+
+    test('Ohne einen einzigen Alkoholgehalt gibt es nichts zu zeigen', () {
+      final stats = computeStats([
+        detail(id: '1', at: now, volumeMl: 500),
+      ], now: now, period: alles);
+
+      expect(stats.alcohol.hasValue, isFalse);
+    });
+
+    test('Alkoholfreies mit hinterlegter 0 zählt mit und trägt nichts bei',
+        () {
+      // Kein Sonderfall: 0 % von 500 ml sind 0 ml. Als Lücke zu zählen,
+      // was tatsächlich bekannt ist, wäre falsch.
+      final stats = computeStats([
+        detail(id: '1', at: now, volumeMl: 500, abv: 0, alcoholFree: true),
+      ], now: now, period: alles);
+
+      expect(stats.alcohol.pureMl, 0);
+      expect(stats.alcohol.countedCheckins, 1);
+      expect(stats.alcohol.withoutAbv, 0);
+    });
+  });
+
   group('Formatierung', () {
     test('Füllmengen in deutscher Schreibweise', () {
       expect(formatVolume(330), '0,33 l');

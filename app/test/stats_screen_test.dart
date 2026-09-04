@@ -79,6 +79,18 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  /// Zieht die Liste ans Ende.
+  ///
+  /// Nötig, weil `ListView` nur baut, was sichtbar ist: Ein `find.text`
+  /// auf etwas weiter unten findet nichts — und ein `findsNothing` wäre
+  /// dort wertlos, weil es auch bei vorhandenem Inhalt zutrifft.
+  Future<void> ansEnde(WidgetTester tester) async {
+    for (var i = 0; i < 6; i++) {
+      await tester.drag(find.byType(ListView), const Offset(0, -400));
+      await tester.pumpAndSettle();
+    }
+  }
+
   Future<void> abbauen(WidgetTester tester) async {
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 1));
@@ -139,6 +151,55 @@ void main() {
           ].contains(w.data)),
       findsWidgets,
     );
+
+    await abbauen(tester);
+  });
+
+  testWidgets('Die Alkoholzahl steht unten und nennt ihre Lücken',
+      (tester) async {
+    // Vom Menschen entschieden (Regel K): anzeigen, sachlich, mit
+    // ausgewiesenem Schätzanteil — nie als Vergleich oder Warnung.
+    final mitAbv = beers.firstWhere((b) => b.abv != null);
+    await db.into(db.checkins).insert(CheckinsCompanion.insert(
+          id: 'alk1',
+          profileId: myId,
+          beerId: mitAbv.id,
+          createdAt: DateTime(2026, 8, 14),
+        ));
+    await oeffnen(tester);
+    await ansEnde(tester);
+
+    expect(find.text('Reinalkohol im Zeitraum'), findsOneWidget);
+    // Die Füllmenge fehlt an diesem Check-in — das muss dastehen.
+    expect(find.textContaining('geschätzt'), findsWidgets);
+    // Kein Vergleich, keine Einordnung, keine Warnung.
+    expect(find.textContaining('zu viel'), findsNothing);
+    expect(find.textContaining('Standardgl'), findsNothing);
+
+    await abbauen(tester);
+  });
+
+  testWidgets('Ohne hinterlegten Alkoholgehalt fehlt die Karte ganz',
+      (tester) async {
+    final ohneAbv = beers.where((b) => b.abv == null).toList();
+    if (ohneAbv.isEmpty) {
+      // Der gebündelte Bestand hat überall einen Wert — dann ist dieser
+      // Fall in der App nicht erreichbar und der Test hat nichts zu
+      // prüfen.
+      return;
+    }
+    await db.into(db.checkins).insert(CheckinsCompanion.insert(
+          id: 'ohne1',
+          profileId: myId,
+          beerId: ohneAbv.first.id,
+          createdAt: DateTime(2026, 8, 14),
+        ));
+    await oeffnen(tester);
+    await ansEnde(tester);
+
+    expect(find.text('Reinalkohol im Zeitraum'), findsNothing);
+    // Die Liste ist wirklich am Ende — sonst prüfte der Satz oben nichts.
+    expect(find.textContaining('kein Wettbewerb'), findsOneWidget);
 
     await abbauen(tester);
   });

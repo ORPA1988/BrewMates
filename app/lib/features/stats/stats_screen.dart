@@ -80,6 +80,7 @@ class StatsScreen extends ConsumerWidget {
               slices: stats.slices(dimensionKey),
             ),
             _BarSection(title: 'Check-ins je Monat', slices: stats.byMonth),
+            if (stats.alcohol.hasValue) _AlcoholCard(alcohol: stats.alcohol),
           ],
           const SizedBox(height: 24),
           Text(
@@ -405,6 +406,79 @@ class _BarSection extends StatelessWidget {
                 ),
               ),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Reinalkohol — die eine Zahl hier, die einen Menschen unangenehm
+/// treffen kann.
+///
+/// Deshalb steht sie unten statt oben, sachlich statt hervorgehoben, und
+/// ohne jede Wertung: keine Farbe, kein Vergleich mit dem Vormonat, keine
+/// Einordnung, keine Warnung. Die App ist kein Gesundheitsdienst und soll
+/// auch nicht so tun.
+///
+/// Bewusst **keine** „Standardgläser": Diese Normierung stammt aus der
+/// Suchtprävention und macht aus einer Angabe eine Bewertung. Milliliter
+/// und Gramm sind nachvollziehbar und sagen nichts über den Menschen.
+class _AlcoholCard extends StatelessWidget {
+  const _AlcoholCard({required this.alcohol});
+
+  final AlcoholSummary alcohol;
+
+  static String _ganz(double v) => v.round().toString();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final leise = theme.textTheme.bodySmall
+        ?.copyWith(color: theme.colorScheme.onSurfaceVariant);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Reinalkohol im Zeitraum', style: theme.textTheme.titleSmall),
+          const SizedBox(height: 8),
+          Text(
+            '${_ganz(alcohol.pureMl)} ml · ${_ganz(alcohol.pureGrams)} g',
+            style: theme.textTheme.titleMedium
+                ?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Füllmenge mal Alkoholgehalt, aufsummiert über deine '
+            'Check-ins.',
+            style: leise,
+          ),
+          if (alcohol.estimatedVolume > 0) ...[
+            const SizedBox(height: 4),
+            Text(
+              'Bei ${alcohol.estimatedVolume} davon ist die Füllmenge '
+              'geschätzt — dann ist auch diese Zahl geschätzt.',
+              style: leise,
+            ),
+          ],
+          if (alcohol.withoutAbv > 0) ...[
+            const SizedBox(height: 4),
+            Text(
+              alcohol.isPatchy
+                  ? 'Bei ${alcohol.withoutAbv} Check-ins ist beim Bier kein '
+                      'Alkoholgehalt hinterlegt. Das ist ein großer Teil — '
+                      'die Zahl oben ist deshalb eher eine Untergrenze als '
+                      'eine Summe.'
+                  : '${alcohol.withoutAbv} Check-ins fehlen hier, weil beim '
+                      'Bier kein Alkoholgehalt hinterlegt ist.',
+              style: leise,
+            ),
+          ],
         ],
       ),
     );

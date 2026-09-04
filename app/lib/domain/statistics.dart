@@ -16,9 +16,11 @@ library;
 
 import '../core/checkin_facts.dart';
 import '../core/serving_style.dart';
+import 'statistics/alcohol.dart';
 import 'statistics/dimensions.dart';
 import 'statistics/measures.dart';
 
+export 'statistics/alcohol.dart';
 export 'statistics/dimensions.dart';
 export 'statistics/measures.dart';
 
@@ -153,6 +155,7 @@ class CheckinStats {
     required this.byDimension,
     required this.values,
     required this.byMonth,
+    required this.alcohol,
     this.previous,
   });
 
@@ -164,6 +167,7 @@ class CheckinStats {
     byDimension: {},
     values: {},
     byMonth: [],
+    alcohol: AlcoholSummary.empty,
   );
 
   final int checkins;
@@ -188,6 +192,10 @@ class CheckinStats {
   /// Zeitachse, wird chronologisch statt nach Menge sortiert und anders
   /// dargestellt.
   final List<StatSlice> byMonth;
+
+  /// Reinalkohol im Zeitraum — steht bewusst neben den Kennzahlen statt
+  /// unter ihnen, siehe `statistics/alcohol.dart`.
+  final AlcoholSummary alcohol;
 
   /// Dieselbe Auswertung über den Zeitraum davor — für den Maßstab.
   /// `null` bei „Alles" und in der Vergleichsauswertung selbst.
@@ -306,6 +314,7 @@ CheckinStats computeStats(
       byDimension: const {},
       values: const {},
       byMonth: const [],
+      alcohol: AlcoholSummary.empty,
       previous: vorher,
     );
   }
@@ -366,6 +375,7 @@ CheckinStats computeStats(
       for (final m in months)
         StatSlice('${m.substring(5)}/${m.substring(0, 4)}', monthCounts[m]!),
     ],
+    alcohol: computeAlcohol(rows, volumeMlOf),
     previous: vorher,
   );
 }
