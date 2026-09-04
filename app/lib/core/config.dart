@@ -5,12 +5,13 @@ class AppConfig {
   /// Grundlage für den automatischen Update-Check gegen GitHub-Releases.
   static const appVersion = '0.10.13-beta+31';
 
-  static const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
-  static const supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
-
-  /// Ohne Zugangsdaten läuft die App im Offline-Demo-Modus mit Platzhalterdaten.
-  static bool get hasSupabase =>
-      supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty;
+  // Die Supabase-Zugangsdaten stehen **nicht** hier, sondern in
+  // `core/supabase_config.dart` — dort mit `defaultValue`, weshalb die App
+  // auch ohne `--dart-define` verbunden ist. Bis 2026-09-04 standen sie
+  // zusätzlich hier, ohne Vorgabewert und von niemandem benutzt: Ein
+  // `AppConfig.hasSupabase` hätte in jedem normalen Build `false` gemeldet,
+  // während die App längst online war. Wer „ist das Backend da?" fragen
+  // will, fragt `SupabaseConfig.isConfigured`.
 
   /// Standard-Dauer bis zum Auto-Ende einer Session.
   static const defaultSessionDuration = Duration(hours: 3);

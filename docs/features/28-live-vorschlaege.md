@@ -97,7 +97,7 @@ Alle. Keine plattformspezifische Technik.
 
 ## Skalierung
 
-Die lokale Suche läuft gegen die gebündelte Datenbank (699 Biere) —
+Die lokale Suche läuft gegen die gebündelte Datenbank (660 Biere) —
 unkritisch. Die Serversuche nutzt `ilike '%begriff%'` auf `beers.name`
 und ist auf 10 Treffer begrenzt. Ein `pg_trgm`-Index fehlt dort noch;
 bei wenigen tausend Bieren ist das unmessbar, aber es ist derselbe

@@ -1,6 +1,6 @@
 # 04 Bier- & Brauerei-Datenbank
 
-> **Status:** 🟢 fertig — 659 Biere und 137 Brauereien aus dem DACH-Raum,
+> **Status:** 🟢 fertig — 660 Biere und 137 Brauereien aus dem DACH-Raum,
 > kuratiert im Repository, per GitHub aktualisiert.
 > **Seit:** 0.4.0 (AT), DACH seit 0.9.13 · **Zuletzt geprüft:** 2026-09-03
 
@@ -135,7 +135,7 @@ technische Daten, und die OFF-Abdeckung ist dünn.
 - **Daten:** `app/assets/data/` — acht Dateien
   (`beers|breweries` × `at|by|de|ch`), verknüpft über `brewery_id`.
   Bestand (gezählt 2026-09-02, nach der Österreich-Überarbeitung):
-  659 Biere (AT 447, BY 72, DE 95, CH 45) und 137 Brauereien
+  660 Biere (AT 447, BY 73, DE 95, CH 45) und 137 Brauereien
   (AT 46, BY 33, DE 40, CH 18)
 - **Abgleich:** `data/community_sync.dart` — gebündelt beim ersten Start,
   danach von `raw.githubusercontent.com`; fehlende Dateien werden
@@ -150,7 +150,7 @@ technische Daten, und die OFF-Abdeckung ist dünn.
 
 Im Bündel steckt **kein einziges Produktbild** — die Datensätze führen
 nur Adressen. Geladen wird erst, wenn ein Bild gebraucht wird: In einer
-`ListView.builder` also für die sichtbaren Zeilen, nicht für alle 659
+`ListView.builder` also für die sichtbaren Zeilen, nicht für alle 660
 Biere. `widgets/beer_thumbnail.dart` entschlüsselt zusätzlich in
 Vorschaugröße (`cacheWidth`) statt in voller Auflösung; ein
 1000×1000-Etikett belegt sonst 4 MB Speicher für 40 Bildpunkte auf dem
@@ -189,7 +189,7 @@ Alle. Reine Daten.
 ## Skalierung
 
 Acht JSON-Dateien werden beim Start **vollständig** gelesen und in die
-lokale DB geschrieben; die Assets sind zusammen rund 490 KB (659 Biere,
+lokale DB geschrieben; die Assets sind zusammen rund 490 KB (660 Biere,
 137 Brauereien). Das trägt gut bis etwa zum Dreifachen. Darüber hinaus — oder mit
 [Hintergrundgeschichten](21-hintergrundgeschichten.md) — gehört der
 Bestand serverseitig durchsucht statt vollständig mitgeliefert.

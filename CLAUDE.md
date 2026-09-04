@@ -116,6 +116,7 @@ nicht nachlesen.
 | Wo verlaufen die Architekturgrenzen? | [docs/11 — Modularität](docs/11-modularitaet-und-portierbarkeit.md) |
 | Wie vollständig und skalierbar ist der Bestand? | [docs/12 — Funktionsaudit](docs/12-funktionsaudit.md) |
 | Wie erkläre ich es einem Laien? | [docs/08 — Funktionsweise für alle](docs/08-funktionsweise-fuer-alle.md) |
+| Was ist an Barrierefreiheit zugesichert? | [docs/14 — Barrierefreiheit](docs/14-barrierefreiheit.md) |
 | Welche Fundstellen sind priorisiert offen? | `.claude/backlog.md` (A-1, A-7 …) — ergänzt die Roadmap, ersetzt sie nicht |
 | Welche Konventionen gelten beim Schreiben? | `.claude/conventions.md`, `.claude/architecture.md` |
 

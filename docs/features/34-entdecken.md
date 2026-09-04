@@ -59,7 +59,7 @@ ohne) — dann alphabetisch, wie angezeigt.
 
 ## Skalierung
 
-Lokale Streams über Drift; 699 Biere und 162 Brauereien sind unkritisch.
+Lokale Streams über Drift; 660 Biere und 137 Brauereien sind unkritisch.
 Bei Gasthäusern wächst der Cache mit der Community; die Liste ist faul
 (`ListView.builder`).
 

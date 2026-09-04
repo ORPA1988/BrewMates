@@ -25,7 +25,13 @@ jobs:
       # Die Zahl steht in der Job-Zusammenfassung, damit sie im PR sichtbar
       # ist, ohne Logs zu öffnen. `--min` ist eine Ratsche: Sie darf steigen,
       # nie sinken. Wer sie senkt, muss das im Diff begründen.
-      - run: dart ../tools/coverage_report.dart --min 32
+      #
+      # Von 32 auf 43 am 2026-09-04: Tatsächlich waren es 44,5 %. Elf Punkte
+      # Luft heißt, dass ein halbes Dutzend Bildschirme ungetestet werden
+      # könnten, ohne dass hier etwas aufleuchtet — eine Ratsche, die nicht
+      # greift, ist Dekoration. Der Abstand von 1,5 Punkten fängt normale
+      # Schwankung ab, nicht mehr.
+      - run: dart ../tools/coverage_report.dart --min 43
       # Die acht JSON-Dateien sind der Inhalt der App und werden
       # redaktionell gepflegt — künftig auch von Menschen, die den Code
       # nicht kennen. Ein doppelter Barcode schickt den Scanner auf das
