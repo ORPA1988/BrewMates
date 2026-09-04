@@ -53,7 +53,10 @@ Verabredung nur eine Absicht.
 - **Wer kommt und wer nicht, sehen alle**, die den Beacon sehen dürfen —
   nicht nur der Gastgeber
 - Zuprosten geht unabhängig davon: „kann heute nicht, trink eins auf mich"
-- Check-ins während der Session werden ihr zugeordnet
+- Check-ins während der Session werden ihr zugeordnet — **bis 0.10.14 nur
+  beim Gastgeber**; wer mittrank, dessen Check-in trug keine Session.
+  Seit 0050 sehen alle Mitrundigen die Check-ins der Runde, die
+  Zuordnung für Teilnehmer folgt: [Funktion 40](40-runden-checkins.md)
 - Beenden jederzeit; sonst endet sie nach 3 Stunden von selbst
 
 ## Technische Umsetzung
