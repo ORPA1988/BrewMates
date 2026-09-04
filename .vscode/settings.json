@@ -25,7 +25,12 @@
     // Gelegentliches HTML in docs/ ist gewollt.
     "MD033": false,
     // Gleichnamige Überschriften nur innerhalb derselben Ebene beanstanden.
-    "MD024": { "siblings_only": true }
+    "MD024": { "siblings_only": true },
+    // Tabellen-Trennzeilen stehen im ganzen Repo als `|---|---|`. MD060
+    // will Leerzeichen daneben und meldet sonst jede Tabelle in jeder der
+    // 76 Doku-Dateien — eine Stilfrage, für die es keinen Grund gibt,
+    // hunderte Zeilen anzufassen.
+    "MD060": false
   },
 
   // ---- Dart ------------------------------------------------------------
@@ -35,6 +40,19 @@
     "editor.rulers": [80],
     "editor.selectionHighlight": false
   },
+
+  // ---- Abdeckung -------------------------------------------------------
+  // `flutter test --coverage` läuft in `app/` und schreibt die Pfade
+  // deshalb als `lib\…`. Der geöffnete Ordner ist aber das
+  // Wurzelverzeichnis — dort gibt es kein `lib/`, und Coverage Gutters
+  // fände die Datei, aber keine einzige Quelle. Der Task „Tests mit
+  // Abdeckung" erzeugt darum zusätzlich `lcov.vscode.info` mit
+  // gehobenen Pfaden; `lcov.info` bleibt unangetastet, weil CI und
+  // tools/coverage_report.dart daraus lesen.
+  "coverage-gutters.coverageFileNames": ["lcov.vscode.info"],
+  "coverage-gutters.coverageBaseDir": "app/coverage",
+  "coverage-gutters.showGutterCoverage": true,
+  "coverage-gutters.showLineCoverage": false,
 
   // ---- Suche -----------------------------------------------------------
   "search.exclude": {

@@ -1,0 +1,91 @@
+{
+  // Was die CI tut, auf einen Tastendruck — bevor der PR es rot meldet.
+  // Ausführen über „Terminal → Task ausführen…" oder Strg+Umschalt+B
+  // (das ist der Standard-Build-Task „Prüfen wie die CI").
+  //
+  // `flutter` liegt im PATH (C:\Users\patri\toolchain\flutter\bin); ein
+  // fester Pfad stünde hier nur einem zweiten Rechner im Weg.
+  "version": "2.0.0",
+  "tasks": [
+    {
+      // Die vollständige Flutter-Kette aus ci.yml, in derselben
+      // Reihenfolge: analyze → test+Abdeckung → Ratsche → Datenprüfung →
+      // Web-Build. Der Web-Build steht bewusst drin: Er ist der Wächter
+      // gegen `dart:io` in `app/lib/` (Regel G) und fällt sonst erst im
+      // PR auf.
+      "label": "Prüfen wie die CI",
+      "type": "shell",
+      "command": "flutter analyze && flutter test --coverage && dart ../tools/coverage_report.dart --min 32 && dart ../tools/validate_data.dart && flutter build web --release",
+      "options": { "cwd": "${workspaceFolder}/app" },
+      "problemMatcher": [],
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Analyse",
+      "type": "shell",
+      "command": "flutter analyze",
+      "options": { "cwd": "${workspaceFolder}/app" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      // Ohne Umleitung in eine Datei: der Standard-Task-Ausgabekanal
+      // puffert nicht wie `tail` und bleibt lesbar. Die Falle aus
+      // CLAUDE.md („nie nach tail pipen") betrifft die Kommandozeile.
+      "label": "Tests",
+      "type": "shell",
+      "command": "flutter test",
+      "options": { "cwd": "${workspaceFolder}/app" },
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      // Erzeugt die Abdeckung UND die VS-Code-Fassung davon. Danach in
+      // der Statusleiste „Watch" (Coverage Gutters) einschalten: ungeprüfte
+      // Zeilen werden am linken Rand rot. Die CI meldet nur eine Zahl —
+      // hier sieht man, welche Zeilen sie meint.
+      "label": "Tests mit Abdeckung (für Coverage Gutters)",
+      "type": "shell",
+      "command": "flutter test --coverage && dart ../tools/coverage_report.dart && dart ../tools/lcov_for_vscode.dart",
+      "options": { "cwd": "${workspaceFolder}/app" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      // Genau der Build, den pages.yml veröffentlicht — samt Unterpfad.
+      // In Git Bash bräuchte er ein vorangestelltes MSYS_NO_PATHCONV=1;
+      // VS Code startet Tasks unter Windows in PowerShell, dort nicht.
+      "label": "Web-Build (wie GitHub Pages)",
+      "type": "shell",
+      "command": "flutter build web --release --base-href /BrewMates/",
+      "options": { "cwd": "${workspaceFolder}/app" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      // Nur zum Nachsehen, ob die Android-Kette lokal steht. Der
+      // ausgelieferte Release-Build läuft verbindlich in der CI
+      // (release.yml) — nur dort liegt der Upload-Keystore, und nur eine
+      // stabile Signatur erlaubt Updates ohne Datenverlust.
+      "label": "APK bauen (nur lokale Probe)",
+      "type": "shell",
+      "command": "flutter build apk --debug",
+      "options": { "cwd": "${workspaceFolder}/app" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      // Die acht JSON-Bestände in app/assets/data/. Prüft unter anderem
+      // doppelte Barcodes — ein doppelter schickt den Scanner auf das
+      // falsche Bier, und das fällt beim Lesen nicht auf.
+      "label": "Community-Daten prüfen",
+      "type": "shell",
+      "command": "dart tools/validate_data.dart",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    }
+  ]
+}
