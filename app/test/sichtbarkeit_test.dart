@@ -7,12 +7,10 @@
 @TestOn('vm')
 library;
 
-import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:brewmates/core/sichtbarkeit.dart';
 import 'package:brewmates/data/db/database.dart';
 import 'package:brewmates/data/providers.dart';
 import 'package:brewmates/features/checkin/checkin_screen.dart';

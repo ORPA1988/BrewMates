@@ -9,7 +9,7 @@
 -- Ausführen: `supabase test db` (braucht die lokale Instanz).
 
 begin;
-select plan(5);
+select plan(7);
 
 create or replace function pg_temp.mkuser(p_id uuid, p_name text)
 returns void language plpgsql as $$
@@ -41,6 +41,25 @@ select is(
       and column_name = 'default_visibility'),
   '''friends''::visibility',
   'und zwar als Spaltenvorgabe, nicht nur zufaellig');
+
+-- ============================================================================
+-- Die Rechte auf der Spalte
+--
+-- Der erste Entwurf dieser Migration hatte sie vergessen: Seit 0025/0026
+-- gelten auf `profiles` **Spaltenrechte**, und eine neue Spalte erbt
+-- davon nichts. Ohne diese beiden Proben faellt das erst auf, wenn ein
+-- Mensch die Voreinstellung nicht speichern kann.
+-- ============================================================================
+
+select ok(
+  has_column_privilege('authenticated', 'public.profiles',
+                       'default_visibility', 'select'),
+  'authenticated darf die Voreinstellung lesen');
+
+select ok(
+  has_column_privilege('authenticated', 'public.profiles',
+                       'default_visibility', 'update'),
+  'und sie schreiben');
 
 -- ============================================================================
 -- Wer sie aendern darf

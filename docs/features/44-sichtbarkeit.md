@@ -81,6 +81,35 @@ zu behaupten, die die Datenbank nicht hält.
   statt der festen Zeichenkette. Das ist die eigentliche Zeile, um die es
   geht.
 
+## Was beim Bauen schiefging (2026-09-05)
+
+**Die neue Spalte hatte keine Rechte.** Der erste Entwurf von 0058 endete
+nach dem `alter table` — mit der Begründung, `profiles_update` decke ja
+jede Spalte ab. Die CI hat das in Sekunden widerlegt:
+
+```
+ERROR: permission denied for table profiles
+```
+
+Seit 0025/0026 hat `authenticated` auf `profiles` **keine
+Tabellenrechte, sondern Spaltenrechte** — so wurde `thirsty_until`
+entzogen, ohne die Tabelle zu sperren. Eine neu angelegte Spalte erbt
+davon nichts: Sie ist für die App unsichtbar und unbeschreibbar, bis sie
+ausdrücklich freigegeben wird.
+
+Das ist wörtlich das Muster von 0051/0052 („entzieht, was 0051 nur
+behauptet hatte"), nur diesmal vor dem Livegang bemerkt. Beides steht
+jetzt in einer Datei, und der pgTAP-Test prüft **die Rechte mit**, nicht
+nur das Verhalten:
+
+```sql
+select ok(has_column_privilege('authenticated', 'public.profiles',
+                               'default_visibility', 'update'), …);
+```
+
+Ohne diese zwei Zeilen wäre es erst aufgefallen, wenn ein Mensch seine
+Voreinstellung nicht speichern kann.
+
 ## Modularität
 
 - **Hängt ab von:** Check-ins (02), Konto (01), Runden (40)
