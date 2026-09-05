@@ -54,16 +54,23 @@ class FakeOnlineService extends OnlineService {
   /// Verabredungen, die der „Server" kennt.
   List<RemoteSession> verabredungen = const [];
 
+  /// Soll der „Server" niemanden angemeldet sehen? Für die Wege, die
+  /// ohne Konto etwas anderes tun müssen als mit.
+  bool abgemeldet = false;
+
   /// Ein angemeldeter Nutzer muss vorgetäuscht werden: Die Provider
   /// prüfen `currentUser != null`, bevor sie überhaupt etwas versuchen.
   @override
-  User? get currentUser => User(
-        id: '11111111-1111-1111-1111-111111111111',
-        appMetadata: const {},
-        userMetadata: const {},
-        aud: 'authenticated',
-        createdAt: DateTime(2026).toIso8601String(),
-      );
+  User? get currentUser => abgemeldet
+      ? null
+      : User(
+          id: '11111111-1111-1111-1111-111111111111',
+          appMetadata: const {},
+          userMetadata: const {},
+          aud: 'authenticated',
+          createdAt: DateTime(2026).toIso8601String(),
+        );
+
 
   /// Was der „Server" an nutzererstellten Bieren zur Namenssuche liefert.
   List<RemoteBeer> serverBiere = const [];
@@ -83,7 +90,11 @@ class FakeOnlineService extends OnlineService {
   @override
   Future<bool> upsertBeerBarcode(String ean, String beerId,
       {int? volumeMl}) async {
-    aufrufe.add('upsertBeerBarcode:$ean:$beerId');
+    // Die Groesse gehoert in die Aufzeichnung: Ohne sie koennte ein Test
+    // nicht belegen, dass die gemeldete auch abgeschickt wurde.
+    aufrufe.add('upsertBeerBarcode:$ean:$beerId:$volumeMl');
+    // Wie am Server: ohne Konto passiert nichts.
+    if (currentUser == null) return false;
     return !schlaegtFehl;
   }
 

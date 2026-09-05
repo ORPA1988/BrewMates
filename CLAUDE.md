@@ -29,6 +29,9 @@ Diese vier Punkte gehören zu jeder Sitzung, unabhängig vom Auftrag:
 3. **Offene Meldungen ansehen:**
    `gh issue list --label feedback --state open`. Eine Antwort für den
    Melder ist ein Kommentar, der mit **„Antwort:"** beginnt.
+   Das Label **`datenpflege`** sind gemeldete Gebindegrößen: Der Wert
+   steht schon in der Datenbank, zu prüfen ist nur, ob etwas
+   widerspricht (docs/10, Abschnitt 5a).
 4. **Doku mitziehen** — im selben Commit wie der Code, nie danach.
 
 ## 2. Unverhandelbare Regeln
@@ -122,7 +125,7 @@ nicht nachlesen.
 
 ## 5. Der Stand
 
-- **Version:** `0.10.17-beta+35` (Beta 0.x bis zum Play-Store-1.0; der
+- **Version:** `0.10.18-beta+36` (Beta 0.x bis zum Play-Store-1.0; der
   Android-`versionCode` zählt immer weiter hoch).
 - **Rückfallpunkte:** `git tag -l "stand/*"` — mindestens zehn lauffähige
   Stände, jeder nach grüner CI getaggt und mit einem Satz beschrieben.

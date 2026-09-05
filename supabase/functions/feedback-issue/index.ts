@@ -23,7 +23,7 @@ const REPO = "BrewMates";
 
 type Meldung = {
   id: string;
-  kind: "bug" | "wish";
+  kind: "bug" | "wish" | "data";
   body: string;
   app_version: string | null;
   platform: string | null;
@@ -41,20 +41,37 @@ function ghHeaders(token: string): HeadersInit {
   };
 }
 
+/// Wie die drei Arten heissen — an einer Stelle, damit Titel, Text und
+/// Label nicht auseinanderlaufen.
+///
+/// `data` kam mit 0.10.18 dazu: eine gemeldete Datenluecke (heute die
+/// Gebindegroesse zu einer EAN). Sie wirkt sofort in der Datenbank; das
+/// Issue ist die Nachpruefung, nicht die Freigabe — siehe
+/// docs/features/43.
+const ARTEN = {
+  bug: { titel: "[Fehler]", wort: "Fehler", label: "bug" },
+  wish: { titel: "[Wunsch]", wort: "Wunsch", label: "wunsch" },
+  data: { titel: "[Daten]", wort: "Datenpflege", label: "datenpflege" },
+} as const;
+
+function art(m: Meldung) {
+  return ARTEN[m.kind] ?? ARTEN.wish;
+}
+
 function titel(m: Meldung): string {
   const erste = m.body.split("\n").map((z) => z.trim()).find((z) => z) ??
     "";
   const kurz = erste.replace(/\s+/g, " ").slice(0, 70);
   const rest = erste.length > 70 ? "…" : "";
-  return `${m.kind === "bug" ? "[Fehler]" : "[Wunsch]"} ${kurz}${rest}`;
+  return `${art(m).titel} ${kurz}${rest}`;
 }
 
 function issueBody(m: Meldung): string {
-  const art = m.kind === "bug" ? "Fehler" : "Wunsch";
+  const wort = art(m).wort;
   const datum = m.created_at.slice(0, 10);
   const zitat = m.body.trim().split("\n").map((z) => `> ${z}`).join("\n");
   return [
-    `**Art:** ${art} · **Version:** ${m.app_version ?? "?"} · ` +
+    `**Art:** ${wort} · **Version:** ${m.app_version ?? "?"} · ` +
     `**Plattform:** ${m.platform ?? "?"} · **Gemeldet:** ${datum}`,
     "",
     zitat,
@@ -80,7 +97,7 @@ async function issueAnlegen(token: string, m: Meldung): Promise<number> {
       body: JSON.stringify({
         title: titel(m),
         body: issueBody(m),
-        labels: ["feedback", m.kind === "bug" ? "bug" : "wunsch"],
+        labels: ["feedback", art(m).label],
       }),
     },
   );

@@ -3,7 +3,7 @@ class AppConfig {
   /// Laufende App-Version — MUSS mit `version:` in pubspec.yaml
   /// übereinstimmen (Test pubspec_version_sync_test.dart erzwingt das).
   /// Grundlage für den automatischen Update-Check gegen GitHub-Releases.
-  static const appVersion = '0.10.17-beta+35';
+  static const appVersion = '0.10.18-beta+36';
 
   // Die Supabase-Zugangsdaten stehen **nicht** hier, sondern in
   // `core/supabase_config.dart` — dort mit `defaultValue`, weshalb die App

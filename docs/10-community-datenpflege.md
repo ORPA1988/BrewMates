@@ -158,6 +158,40 @@ Hängen Check-ins daran (`ON DELETE RESTRICT`), stattdessen
 `hidden = true` setzen; dann verschwindet der Eintrag für alle außer
 Admins, ohne fremde Check-ins zu zerstören.
 
+## 5a. Gemeldete Gebindegrößen gegenprüfen (seit 0.10.18)
+
+Nutzer können eine fehlende Gebindegröße direkt nach dem Scannen
+nachtragen ([Funktion 43](features/43-fehlende-angaben-melden.md)). Jede
+solche Meldung erzeugt ein Issue mit dem Label **`datenpflege`**:
+
+```
+gh issue list --label datenpflege --state open
+```
+
+**Der Wert steht zu diesem Zeitpunkt schon in der Datenbank.** Das Issue
+ist die Nachprüfung, nicht die Freigabe — wer die Flasche in der Hand
+hatte, war die bessere Quelle als jede Recherche. Zu prüfen ist deshalb
+nur, **ob etwas widerspricht**:
+
+| Ergebnis der Recherche | Was zu tun ist |
+|---|---|
+| kein Widerspruch | Issue schließen, Wert bleibt. Das ist der Normalfall |
+| Widerspruch belegt (Herstellerseite, Handel, Foto) | Wert korrigieren, Issue mit der Quelle schließen |
+| nichts zu finden | Issue schließen. **Unbelegt ist kein Widerspruch** |
+
+Ein Kommentar, der mit **„Antwort:"** beginnt, erreicht den Melder in der
+App.
+
+**Zwei Fallen bei genau dieser Prüfung:**
+
+1. **Ein Barcode kann ein Tragerl bezeichnen.** Open Food Facts führt zu
+   einer Stiegl-EAN „3000 ml, 6er-Tragerl". Gemeint ist hier immer die
+   **Trinkmenge**, also die einzelne Flasche. Die Datenbank nimmt seit
+   0055 nichts über 1000 ml mehr an.
+2. **Open Food Facts kennt Gebindegrößen meistens nicht.** Von 110
+   abgefragten EANs kamen vier verwertbare Antworten. Findet sich dort
+   nichts, ist das kein Argument gegen die Meldung.
+
 ## 6. Wohin gehört der Eintrag? Die Brauerei entscheidet
 
 Es gibt zwei Speicher, und ein Bier darf nur in einem stehen:

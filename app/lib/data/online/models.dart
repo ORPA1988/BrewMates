@@ -423,7 +423,13 @@ class RemoteParticipant {
   bool get joined => art == Teilnahme.dabei;
 }
 
-enum FeedbackKind { bug, wish }
+/// Art einer Meldung.
+///
+/// `data` kam mit 0.10.18 dazu: eine ergänzte Datenlücke — heute die
+/// Gebindegröße zu einer EAN (Funktion 43). Sie unterscheidet sich von
+/// den anderen beiden darin, dass sie **schon gewirkt hat**, wenn das
+/// Issue entsteht: Das Issue ist die Nachprüfung, nicht die Freigabe.
+enum FeedbackKind { bug, wish, data }
 
 enum FeedbackStatus { open, planned, done, declined }
 
@@ -444,7 +450,11 @@ class FeedbackItem {
     final rm = r['roadmap'];
     return FeedbackItem(
       id: r['id'] as String,
-      kind: r['kind'] == 'wish' ? FeedbackKind.wish : FeedbackKind.bug,
+      // Über die Werte statt über eine Kette von Vergleichen: Vorher
+      // wurde alles, was nicht 'wish' war, zu 'bug' — eine
+      // Datenmeldung stand dem Melder damit als „Fehler" in der Liste.
+      kind: FeedbackKind.values.firstWhere((k) => k.name == r['kind'],
+          orElse: () => FeedbackKind.bug),
       body: r['body'] as String,
       status: FeedbackStatus.values.firstWhere(
           (s) => s.name == r['status'],
