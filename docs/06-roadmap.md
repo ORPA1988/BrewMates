@@ -17,7 +17,7 @@ lebte nur in dieser Datei.
 
 | Rang | Vorhaben | Warum jetzt |
 |---|---|---|
-| 1 | **Anmeldeverfahren freischalten** ([#131](https://github.com/ORPA1988/BrewMates/issues/131)) | Die App kann fünf weitere Anbieter; drei davon kosten nichts. **Braucht Menschenarbeit im Browser** — Schritte im [Release-Playbook](07-release-playbook.md) |
+| ~~1~~ | ~~**Anmeldeverfahren freischalten**~~ ([#131](https://github.com/ORPA1988/BrewMates/issues/131)) — **erledigt am 2026-09-06**: acht Wege plus E-Mail, freigeschaltet über `app_config.auth_providers` ohne Release ([Funktion 01](features/01-konto-und-anmeldung.md)). Apple bleibt offen, es kostet 99 $/Jahr | — |
 | 2 | **[Kalender-Export für Verabredungen](features/39-geplante-sessions.md)** ([#165](https://github.com/ORPA1988/BrewMates/issues/165)) | Der letzte offene Punkt einer sonst fertigen Funktion: „Freitag 19 Uhr" gehört in den Kalender, nicht nur in die App |
 | 3 | **Heatmap zur Wochen-Serie** ([#166](https://github.com/ORPA1988/BrewMates/issues/166)) | Klein, rein lokal, und macht aus einer Zahl ein Bild ([Backlog C-5](../.claude/backlog.md)) |
 | 4 | **[Jahresrückblick](features/20-feed-statistiken.md)** („Dein Bierjahr", [#167](https://github.com/ORPA1988/BrewMates/issues/167)) | Teilbar — das einzige Marketing, das diese App je hätte |

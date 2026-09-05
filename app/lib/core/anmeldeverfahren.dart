@@ -22,7 +22,14 @@ enum Anmeldeverfahren {
   microsoft('azure', 'Microsoft'),
   facebook('facebook', 'Facebook'),
   discord('discord', 'Discord'),
-  github('github', 'GitHub');
+  github('github', 'GitHub'),
+  // Seit 2026-09-06 beim Anbieter eingerichtet. LinkedIn heißt bei
+  // Supabase `linkedin_oidc` — die alte Variante `linkedin` ist dort
+  // abgekündigt, und wer den falschen Schlüssel schreibt, bekommt
+  // „provider is not enabled".
+  linkedin('linkedin_oidc', 'LinkedIn'),
+  twitch('twitch', 'Twitch'),
+  spotify('spotify', 'Spotify');
 
   const Anmeldeverfahren(this.schluessel, this.name);
 
