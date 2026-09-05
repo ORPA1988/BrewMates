@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../data/db/database.dart';
+import '../../core/beer_suche.dart';
 import '../../core/format.dart' show volumeChoicesMl, formatVolume;
 import '../../core/foto_verkleinern.dart';
 import '../../data/providers.dart';
@@ -369,21 +370,67 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
     );
   }
 
+  /// Die Bier-Auswahl: Vorschläge, sobald das Feld leer ist, sonst
+  /// Treffer in einer Reihenfolge, die im Wirtshaus etwas nützt.
+  ///
+  /// Der häufigste Fall hier ist das Bier **ohne Barcode** — vom Fass,
+  /// im Glas serviert. Dann ist diese Suche der einzige Weg, und sie
+  /// muss in Sekunden ans Ziel führen (Wunsch #139).
   List<Widget> _buildSearch() {
+    final theme = Theme.of(context);
+    final suche = _search.trim();
     final results =
         ref.watch(beersProvider((search: _search, style: null))).valueOrNull ??
             const <BeerWithBrewery>[];
+
+    // Leeres Feld: nicht 660 Biere alphabetisch, sondern die eigenen
+    // letzten. Wer im Wirtshaus eincheckt, trinkt meistens etwas, das
+    // schon einmal im Tagebuch stand — das ist ein Tipp statt zehn.
+    final vorschlaege = suche.isEmpty ? _zuletztGetrunken() : const <String>[];
+    final liste = suche.isEmpty
+        ? [
+            for (final id in vorschlaege)
+              ...results.where((b) => b.beer.id == id),
+          ]
+        : (results.toList()
+          ..sort((a, b) {
+            final rang = trefferRang(
+                  name: a.beer.name,
+                  brauerei: a.brewery.name,
+                  stil: a.beer.style,
+                  suche: suche,
+                ).compareTo(trefferRang(
+                  name: b.beer.name,
+                  brauerei: b.brewery.name,
+                  stil: b.beer.style,
+                  suche: suche,
+                ));
+            // Bei gleichem Rang bleibt es alphabetisch: Die Datenbank
+            // liefert schon so, und `sort` ist in Dart nicht stabil.
+            return rang != 0 ? rang : a.beer.name.compareTo(b.beer.name);
+          }));
+
     return [
       TextField(
+        // Ohne Autofokus kostet das Nachschlagen einen Tipp mehr, und
+        // zwar genau den, den niemand erwartet: Der Bildschirm ist ja
+        // aufgegangen, um ein Bier zu suchen.
+        autofocus: true,
         onChanged: (value) => setState(() => _search = value),
         decoration: const InputDecoration(
           labelText: 'Bier suchen',
+          hintText: 'Anfangsbuchstaben genügen',
           prefixIcon: Icon(Icons.search),
           border: OutlineInputBorder(),
         ),
       ),
       const SizedBox(height: 8),
-      for (final item in results.take(15))
+      if (suche.isEmpty && liste.isNotEmpty)
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 4),
+          child: Text('Zuletzt getrunken', style: theme.textTheme.labelMedium),
+        ),
+      for (final item in liste.take(15))
         ListTile(
           dense: true,
           leading: BeerThumbnail(
@@ -398,6 +445,47 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
             _searchMode = false;
           }),
         ),
+      // Kein Treffer heißt nicht „Pech gehabt": Das Bier fehlt dann
+      // wirklich, und der Weg dorthin gehört an diese Stelle — sonst
+      // endet das Einchecken hier.
+      if (suche.length >= 2 && liste.isEmpty)
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Nichts gefunden zu „$suche".',
+                  style: theme.textTheme.bodyMedium),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: () =>
+                    context.push('/beers/add?name=${Uri.encodeComponent(suche)}'),
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text('Bier anlegen'),
+              ),
+            ],
+          ),
+        ),
+      if (liste.length > 15)
+        Padding(
+          padding: const EdgeInsets.only(top: 8, left: 4),
+          child: Text(
+            'Noch ${liste.length - 15} weitere — tippe mehr Buchstaben.',
+            style: theme.textTheme.bodySmall,
+          ),
+        ),
     ];
+  }
+
+  /// Bier-IDs des eigenen Tagebuchs, jüngste zuerst, ohne Wiederholung.
+  List<String> _zuletztGetrunken() {
+    final diary =
+        ref.watch(myDiaryProvider).valueOrNull ?? const <CheckinDetails>[];
+    final gesehen = <String>{};
+    for (final eintrag in diary) {
+      gesehen.add(eintrag.checkin.beerId);
+      if (gesehen.length == 6) break;
+    }
+    return gesehen.toList();
   }
 }

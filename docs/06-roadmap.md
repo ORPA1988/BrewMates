@@ -1,6 +1,6 @@
 # 06 – Roadmap
 
-> **Stand: 2026-09-04, Version 0.10.13-beta.**
+> **Stand: 2026-09-05, Version 0.10.15-beta.**
 > Diese Datei sagt **wann** etwas kommt und in welcher Reihenfolge.
 > **Was** eine Funktion ist und wie sie gebaut ist, steht je Funktion in
 > [docs/features/](features/README.md) — hier wird nur verlinkt, nicht
@@ -17,7 +17,7 @@ lebte nur in dieser Datei.
 
 | Rang | Vorhaben | Warum jetzt |
 |---|---|---|
-| 1 | **[Geplante Sessions](features/39-geplante-sessions.md)** („Freitag 19 Uhr", [#134](https://github.com/ORPA1988/BrewMates/issues/134)) | Anlegen und „Demnächst" stehen seit 2026-09-04. **Offen sind die Erinnerungen** — und eine Verabredung, an die niemand erinnert wird, ist eine Notiz |
+| 1 | **[Einchecken ohne Barcode](features/02-check-ins.md)** ([#139](https://github.com/ORPA1988/BrewMates/issues/139)) | Aus dem Test gemeldet: Im Wirtshaus kommt das Bier vom Fass, es gibt nichts zu scannen — und genau dort wird am häufigsten eingecheckt |
 | 2 | **Anmeldeverfahren freischalten** ([#131](https://github.com/ORPA1988/BrewMates/issues/131)) | Die App kann fünf weitere Anbieter; drei davon kosten nichts. Schritte im [Release-Playbook](07-release-playbook.md) |
 | 3 | **Sichtbarkeits-Konzept** ([#130](https://github.com/ORPA1988/BrewMates/issues/130)) — wer sieht meinen Namen, meine Check-ins, meine Daten | Steht seit dem Anfang als [v1]-Ziel in [docs/02](02-funktionsspezifikation.md), Abschnitt 10, und ist nie gebaut worden. Die `visibility`-Spalte am Check-in gibt es (`friends`/`crew`/`private`), die Bedienung fehlt — die App schreibt hart `friends`. **Seit 0050 hängt eine Voreinstellung daran, die niemand abwählen kann:** Rundenteilnehmer sehen meine Check-ins. Das ist gewollt, aber es gehört in die Hand des Menschen. Fasst zusammen, was heute an fünf Stellen einzeln geregelt ist (Check-in, Beacon, Bierlaune, Profil, Karte) |
 | 4 | **[Crew-Challenges und Rollen](features/09-crews.md)** ([#132](https://github.com/ORPA1988/BrewMates/issues/132)) | Sinnvoll, sobald es mehr als eine aktive Crew gibt |
@@ -145,11 +145,11 @@ Kosten trägt (siehe [docs/09](09-wachstum-und-geschaeftsmodell.md)).
       Pflege (Drift v8) und strukturierten Öffnungszeiten inkl.
       „Jetzt geöffnet"-Filter (0015); Tap-Listen und
       Betreiber-Verifizierung stehen noch aus*
-- [ ] **Geplante Sessions & Events** (Termin in der Zukunft, Erinnerungen,
-      Kalender-Export) — *die Zu- und Absage samt sichtbarer Antwortliste
-      ist seit 0.10.13 fertig (0047,
-      [Funktion 07](features/07-sessions-und-beacons.md)); es fehlt der
-      Termin*
+- [x] **Geplante Sessions** (Termin in der Zukunft, Erinnerungen) —
+      *seit 0.10.14 vollständig: Anlegen, „Demnächst", beide Erinnerungen
+      (0053) und „Runde starten" aus der Verabredung heraus
+      ([Funktion 39](features/39-geplante-sessions.md)). Offen bleibt nur
+      der **Kalender-Export** (.ics) — plattformabhängig und nachrangig*
 - [ ] **Empfehlungen**: „Das könnte dir schmecken" auf Basis eigener Bewertungen
 - [ ] **Jahresrückblick** („Dein Bierjahr") mit teilbarem Bild-Export
 - [ ] **Etikett-Foto-KI** als Ausbau des Scanners: Kein Barcode? Foto vom

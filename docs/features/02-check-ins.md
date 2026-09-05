@@ -3,7 +3,7 @@
 > **Status:** 🟢 fertig — löschbar seit 0.9.14
 > ([Funktion 19](19-feed-eintraege-loeschen.md)), bearbeitbar seit 0.10.1
 > ([Funktion 27](27-check-ins-bearbeiten.md)).
-> **Seit:** 0.1.0 · **Zuletzt geprüft:** 2026-09-03
+> **Seit:** 0.1.0 · **Zuletzt geprüft:** 2026-09-05
 >
 > **Eine Bewertung entsteht seit 0.10.12 nur durch einen Tipp.** Vorher
 > stand der Schieberegler auf 3,5, und dieser Wert wurde bei **jedem**
@@ -25,7 +25,8 @@ Wirtshaus drei Minuten braucht, macht ihn beim nächsten Mal nicht mehr.
 
 ## Funktion (Nutzersicht)
 
-- Bier wählen (Suche, Scan oder „nochmal das letzte")
+- Bier wählen (Suche, Scan oder „nochmal das letzte") — der Weg
+  ohne Barcode steht unten
 - Bewertung in 0,25-Schritten — feiner als Sterne, ohne Scheingenauigkeit
 - Optional: Geschmacks-Tags, Gebinde (Fass/Flasche/Dose/Growler),
   Gasthaus, Notiz, Foto
@@ -45,6 +46,46 @@ Wirtshaus drei Minuten braucht, macht ihn beim nächsten Mal nicht mehr.
   Brauereinamen, damit der Feed ohne Verknüpfungen auskommt
 - **Fotos:** Bucket `beer-photos`, Pfad je Nutzer; vor dem Hochladen auf
   **höchstens 500 KB** gerechnet (`core/foto_verkleinern.dart`)
+
+### Der Weg ohne Barcode (2026-09-05, Wunsch [#139](https://github.com/ORPA1988/BrewMates/issues/139))
+
+Im Wirtshaus gibt es **nichts zu scannen**: Das Bier kommt vom Fass, im
+Glas. Der Scanner — die erste Hero-Aktion der App — läuft dort ins
+Leere, und das ist genau die Lage, in der am häufigsten eingecheckt
+wird. Ein Tester hat das gemeldet; der Weg existierte, taugte aber
+nicht.
+
+Drei Dinge standen im Weg, alle drei behoben:
+
+1. **Der Einstieg war unsichtbar.** „Ohne Scannen einchecken" stand als
+   kleiner Textknopf zwischen zwei großen Karten. Jetzt ist es ein
+   vollbreiter Knopf „Ohne Barcode einchecken" direkt darunter.
+2. **Das Suchfeld hatte keinen Fokus.** Der Bildschirm geht auf, um ein
+   Bier zu suchen — die Tastatur gehört dorthin, ohne einen Tipp extra.
+3. **Die Reihenfolge der Treffer war alphabetisch.** Die Abfrage sucht
+   mit `like '%wort%'` über Name, Brauerei und Stil; wer `gö` tippt,
+   bekam deshalb „Aaa Zwickl Gösser Art" vor „Gösser Märzen". Sortiert
+   wird jetzt nach `trefferRang` (`core/beer_suche.dart`): Name am
+   Anfang, dann ein Wort darin, dann dasselbe für die Brauerei, dann
+   irgendwo enthalten, zuletzt der Stil. Bei gleichem Rang bleibt es
+   alphabetisch — `sort` ist in Dart nicht stabil, das muss dastehen.
+
+Dazu zwei Ergänzungen, die aus derselben Lage folgen:
+
+- **Leeres Feld zeigt „Zuletzt getrunken"** (höchstens sechs, aus dem
+  eigenen Tagebuch, ohne Wiederholung) statt 660 Bieren alphabetisch.
+  Wer im Wirtshaus eincheckt, trinkt meistens etwas, das dort schon
+  einmal stand — ein Tipp statt zehn.
+- **Kein Treffer endet nicht.** Ab zwei Zeichen ohne Fund steht der
+  Knopf „Bier anlegen" da, mit dem Getippten als Namen. Sonst bricht
+  das Einchecken genau hier ab.
+
+Die Rangfolge liegt in `core/`, weil sie nur Zeichenketten kennt: keine
+Datenbanktypen, kein Widget, und ohne Datenbank prüfbar
+(`test/schnelles_einchecken_test.dart`). Eine **Serversuche** wie beim
+Anlegen ([Funktion 28](28-live-vorschlaege.md)) gibt es hier bewusst
+nicht: Einchecken muss offline gehen, und ein Bier, das nur ein anderer
+Nutzer angelegt hat, liegt nach dem Abgleich ohnehin lokal.
 
 ### Warum die 500 KB nachgerechnet werden (2026-09-03)
 
