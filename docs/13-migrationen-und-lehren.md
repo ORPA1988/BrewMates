@@ -96,7 +96,7 @@ sich die Frage nicht.
 
 ## Teil 2 — Die Migrationen
 
-**`0001–0057` sind live, lückenlos** (Stand 2026-09-05). Die Nummern ohne
+**`0001–0058` sind live, lückenlos** (Stand 2026-09-05). Die Nummern ohne
 eigenen Abschnitt sind unauffällig: Sie haben getan, was ihr Name sagt.
 
 | # | Name | Wofür |
