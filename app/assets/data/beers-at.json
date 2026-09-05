@@ -2684,7 +2684,8 @@
       "is_alcohol_free": false,
       "barcodes": [],
       "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/austrianamber_close.png",
-      "image_source": "https://www.loncium.at/"
+      "image_source": "https://www.loncium.at/",
+      "description_community": "Mehrfach mit Gold als bestes saisonales Lagerbier bei den World Beer Awards in London ausgezeichnet — das bekannteste Glas aus Kötschach-Mauthen."
     },
     {
       "id": "at-loncium-bio-classic",
@@ -2732,7 +2733,8 @@
       "is_alcohol_free": false,
       "barcodes": [],
       "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/helles_close.png",
-      "image_source": "https://www.loncium.at/"
+      "image_source": "https://www.loncium.at/",
+      "description_community": "Naturtrübes Bio-Kellerbier: feinherb im Antrunk und angenehm abgerundet durch die frische Hefe."
     },
     {
       "id": "at-loncium-bio-schwarze-gams",
@@ -2744,7 +2746,8 @@
       "is_alcohol_free": false,
       "barcodes": [],
       "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/schwarzegams_close.png",
-      "image_source": "https://www.loncium.at/"
+      "image_source": "https://www.loncium.at/",
+      "description_community": "Schwarzes Bockbier aus 720 Metern Seehöhe; die Brauerei beschreibt es selbst als „edel und fein, verspielt und ernst, dominant und zurückhaltend\" — und genau so trinkt es sich auch."
     },
     {
       "id": "at-loncium-carinthi-p-a",
@@ -2840,7 +2843,8 @@
       "is_alcohol_free": false,
       "barcodes": [],
       "image_url": "https://www.loncium.at/rte/upload/2024/flaschenfooter/roggnroll_close.png",
-      "image_source": "https://www.loncium.at/"
+      "image_source": "https://www.loncium.at/",
+      "description_community": "Winterbier mit wärmenden Aromen; die Hopfenblume kommt vom Aurora-Hopfen, dazu fruchtige Anklänge und feurig funkelndes Bernstein im Glas."
     },
     {
       "id": "at-loncium-rose",
@@ -4183,7 +4187,8 @@
       "barcodes": [],
       "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2023/10/Boehmerwald-Zwickl-220x683-c-default.png",
       "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
-      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/",
+      "description_community": "Naturtrübes Zwickl aus derselben Granitquelle; ungefiltert, deshalb weicher und voller als das filtrierte Sortiment des Stifts."
     },
     {
       "id": "at-stiftsbrauerei-chorherren-pils",
@@ -4356,7 +4361,8 @@
       "barcodes": [],
       "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2023/10/Roggen-Gold-220x683-c-default.png",
       "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
-      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/",
+      "description_community": "Obergäriges Bio-Roggenbier, das im Glas wie ein Schmuckstück schimmert; eigenwillig im Geschmack und mit fruchtigem Charakter — in Österreich braut das sonst kaum jemand."
     },
     {
       "id": "at-stiftsbrauerei-stifter-bier",
@@ -4369,7 +4375,8 @@
       "barcodes": [],
       "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2023/10/Stifter-Bier-220x683-c-default.png",
       "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
-      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/",
+      "description_community": "Hell bernsteinfarben und obergärig, mit dem fruchtigen Charakter, den diese Führung mitbringt — benannt nach dem Dichter, der im Mühlviertel zu Hause war."
     },
     {
       "id": "at-stiftsbrauerei-unbeschwert",
@@ -4395,7 +4402,8 @@
       "barcodes": [],
       "image_url": "https://www.stiftsbrauerei-schlaegl.at/wp-content/uploads/2023/10/Urquell-220x683-c-default.png",
       "image_source": "https://www.stiftsbrauerei-schlaegl.at/product-category/biere-getraenke/",
-      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/"
+      "image_license": "Presse: https://www.stiftsbrauerei-schlaegl.at/presse/",
+      "description_community": "Das ausgewogene Märzen des Hauses, geprägt vom seidig-weichen Granitquellwasser des Böhmerwalds; leicht gehalten, mit dezenter Hopfenbittere."
     },
     {
       "id": "at-stiftsbrauerei-zitronen-radler",
