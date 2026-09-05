@@ -191,7 +191,7 @@ void main() {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Ohne Scannen einchecken'));
+    await tester.tap(find.text('Ohne Barcode einchecken'));
     await tester.pumpAndSettle();
 
     // Bier suchen und auswählen (aus der gebündelten Community-DB).

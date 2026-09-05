@@ -25,7 +25,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | # | Funktion | Status | Kurz |
 |---|---|---|---|
 | [01](01-konto-und-anmeldung.md) | Konto & Anmeldung | 🟢 | Google + E-Mail, Kontolöschung, Cloud-Wiederherstellung |
-| [02](02-check-ins.md) | Check-ins | 🟢 | Bewertung, Tags, Foto, Notiz, Gasthaus |
+| [02](02-check-ins.md) | Check-ins | 🟢 | Bewertung, Tags, Foto, Notiz, Gasthaus; ohne Barcode in Sekunden |
 | [03](03-barcode-scanner.md) | Barcode-Scanner | 🟢 | EAN-Scan, Lookup-Kette, Neuanlage mit Foto |
 | [04](04-bier-und-brauerei-datenbank.md) | Bier- & Brauerei-DB | 🟢 | 660 Biere / 137 Brauereien DACH, GitHub-Sync |
 | [05](05-gasthaeuser.md) | Gasthäuser | 🟢 | Gemeinsame DB, Öffnungszeiten, Offline-Queue |

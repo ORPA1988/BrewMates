@@ -249,11 +249,21 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
           const SizedBox(height: 8),
-          Center(
-            child: TextButton.icon(
-              onPressed: () => context.push('/checkin'),
-              icon: const Icon(Icons.edit_outlined, size: 18),
-              label: const Text('Ohne Scannen einchecken'),
+          // Der Weg für Bier ohne Barcode — vom Fass, im Glas serviert.
+          // Er stand als kleiner Textknopf zwischen zwei großen Karten
+          // und wurde übersehen (Wunsch #139): Gerade im Wirtshaus, wo
+          // am häufigsten eingecheckt wird, gibt es nichts zu scannen.
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SizedBox(
+              width: double.infinity,
+              child: FilledButton.tonalIcon(
+                onPressed: () => context.push('/checkin'),
+                icon: const Icon(Icons.edit_outlined, size: 18),
+                label: const Text('Ohne Barcode einchecken'),
+                style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 12)),
+              ),
             ),
           ),
 
