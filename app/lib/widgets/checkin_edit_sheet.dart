@@ -50,6 +50,10 @@ class _CheckinEditSheetState extends ConsumerState<_CheckinEditSheet> {
   late final _noteController =
       TextEditingController(text: widget.details.checkin.note ?? '');
   late ServingStyle? _serving = widget.details.checkin.servingStyle;
+
+  /// Sichtbarkeit — nachträglich änderbar, weil ein Check-in oft erst
+  /// später privat werden soll (Funktion 44).
+  late SessionVisibility _sichtbarkeit = widget.details.checkin.visibility;
   late int? _volumeMl = widget.details.checkin.volumeMl;
   bool _speichert = false;
 
@@ -73,6 +77,7 @@ class _CheckinEditSheetState extends ConsumerState<_CheckinEditSheet> {
           clearNote: notiz.isEmpty,
           servingStyle: _serving,
           clearServingStyle: _serving == null,
+          visibility: _sichtbarkeit,
           volumeMl: _volumeMl,
           clearVolume: _volumeMl == null,
         );
@@ -121,6 +126,25 @@ class _CheckinEditSheetState extends ConsumerState<_CheckinEditSheet> {
               hintText: 'Wie war es?',
               border: OutlineInputBorder(),
             ),
+          ),
+          const SizedBox(height: 16),
+
+          Text('Wer sieht das?', style: theme.textTheme.titleSmall),
+          const SizedBox(height: 8),
+          SegmentedButton<SessionVisibility>(
+            segments: [
+              for (final v in SessionVisibility.values)
+                ButtonSegment(value: v, label: Text(visibilityLabel(v))),
+            ],
+            selected: {_sichtbarkeit},
+            onSelectionChanged: (auswahl) =>
+                setState(() => _sichtbarkeit = auswahl.first),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            visibilityHint(_sichtbarkeit),
+            style: theme.textTheme.bodySmall
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
           ),
           const SizedBox(height: 16),
 

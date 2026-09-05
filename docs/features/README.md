@@ -64,6 +64,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [41](41-sortieren-in-entdecken.md) | Sortieren in Entdecken | 🟡 | Biere und Brauereien nach Nähe, Name, Alkohol, Sorte |
 | [42](42-vergleich-mit-anderen.md) | Vergleich mit anderen | 🟡 | Anonymer Schnitt aller anderen, erst ab 20 Personen |
 | [43](43-fehlende-angaben-melden.md) | Fehlende Angaben melden | 🟡 | Rot markiert, ein Tipp trägt nach — sofort gültig, Punkte, Issue zur Nachprüfung |
+| [44](44-sichtbarkeit.md) | Wer sieht meine Check-ins | 🟢 | Voreinstellung im Konto, je Check-in änderbar, auch nachträglich |
 
 ## Geplante Funktionen
 

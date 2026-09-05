@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/anmeldeverfahren.dart';
+import '../../core/sichtbarkeit.dart';
 import '../../core/supabase_config.dart';
 
 import 'api/checkins_api.dart';
@@ -96,7 +97,7 @@ class OnlineService {
   final StatsApi stats;
 
   static const _profileCols =
-      'id, username, display_name, avatar_emoji, account_no';
+      'id, username, display_name, avatar_emoji, account_no, default_visibility';
 
   /// Deep-Link, über den OAuth-Anmeldungen in die App zurückkehren.
   static const oauthRedirect = 'de.brewmates.app://login-callback';
@@ -337,8 +338,13 @@ class OnlineService {
     });
   }
 
-  /// Anzeigename und Avatar am Server aendern (nur eigene Zeile, RLS).
-  Future<bool> updateMyProfile({String? displayName, String? avatarEmoji}) async {
+  /// Anzeigename, Avatar und Sichtbarkeits-Voreinstellung am Server
+  /// aendern (nur eigene Zeile, RLS).
+  Future<bool> updateMyProfile({
+    String? displayName,
+    String? avatarEmoji,
+    SessionVisibility? defaultVisibility,
+  }) async {
     final me = currentUser;
     if (me == null) return false;
     final patch = <String, dynamic>{
@@ -346,6 +352,11 @@ class OnlineService {
         'display_name': displayName.trim(),
       if (avatarEmoji != null && avatarEmoji.isNotEmpty)
         'avatar_emoji': avatarEmoji,
+      // Die Voreinstellung liegt am Profil und nicht am Geraet: Sie ist
+      // eine Aussage ueber einen Menschen, und das zweite Geraet soll
+      // sie kennen (0058, Funktion 44).
+      if (defaultVisibility != null)
+        'default_visibility': defaultVisibility.name,
     };
     if (patch.isEmpty) return true;
     try {

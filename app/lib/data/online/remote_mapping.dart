@@ -18,6 +18,10 @@ Profile remoteProfileToLocal(RemoteProfile p) => Profile(
       username: p.username,
       displayName: p.displayName,
       avatarEmoji: p.avatarEmoji,
+      // Fremde Profile: Die Voreinstellung eines anderen geht uns nichts
+      // an und wird auch nicht ausgeliefert — der Platzhalter steht nur,
+      // weil die Zeile eine Spalte hat.
+      defaultVisibility: SessionVisibility.friends,
       bio: null,
       favoriteStyles: '',
       isMe: false,
@@ -66,6 +70,10 @@ CheckinDetails remoteCheckinToDetails(RemoteCheckin c) {
       // Fremde Check-ins kommen vom Server — nichts nachzureichen.
       dirty: false,
       beerId: '$remotePrefix-beer',
+      // Dass wir diesen fremden Check-in sehen, heißt: Die Regel am
+      // Server hat ihn freigegeben. Sein tatsaechlicher Wert wird nicht
+      // mitgeliefert und wird hier auch nicht gebraucht.
+      visibility: SessionVisibility.friends,
       sessionId: c.sessionId,
       venueName: c.venueName,
       rating: c.rating,

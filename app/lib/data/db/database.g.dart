@@ -57,9 +57,28 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("is_me" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _defaultVisibilityMeta =
+      const VerificationMeta('defaultVisibility');
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, username, displayName, avatarEmoji, bio, favoriteStyles, isMe];
+  late final GeneratedColumnWithTypeConverter<SessionVisibility, String>
+      defaultVisibility = GeneratedColumn<String>(
+              'default_visibility', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: const Constant('friends'))
+          .withConverter<SessionVisibility>(
+              $ProfilesTable.$converterdefaultVisibility);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        username,
+        displayName,
+        avatarEmoji,
+        bio,
+        favoriteStyles,
+        isMe,
+        defaultVisibility
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -109,6 +128,7 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
       context.handle(
           _isMeMeta, isMe.isAcceptableOrUnknown(data['is_me']!, _isMeMeta));
     }
+    context.handle(_defaultVisibilityMeta, const VerificationResult.success());
     return context;
   }
 
@@ -132,6 +152,9 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
           DriftSqlType.string, data['${effectivePrefix}favorite_styles'])!,
       isMe: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_me'])!,
+      defaultVisibility: $ProfilesTable.$converterdefaultVisibility.fromSql(
+          attachedDatabase.typeMapping.read(DriftSqlType.string,
+              data['${effectivePrefix}default_visibility'])!),
     );
   }
 
@@ -139,6 +162,10 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
   $ProfilesTable createAlias(String alias) {
     return $ProfilesTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<SessionVisibility, String, String>
+      $converterdefaultVisibility =
+      const EnumNameConverter<SessionVisibility>(SessionVisibility.values);
 }
 
 class Profile extends DataClass implements Insertable<Profile> {
@@ -149,6 +176,11 @@ class Profile extends DataClass implements Insertable<Profile> {
   final String? bio;
   final String favoriteStyles;
   final bool isMe;
+
+  /// Voreinstellung für neue Check-ins (Funktion 44). Die Wahrheit steht
+  /// am Server (`profiles.default_visibility`, 0058); hier liegt sie,
+  /// damit auch ein offline angelegter Check-in sie kennt.
+  final SessionVisibility defaultVisibility;
   const Profile(
       {required this.id,
       required this.username,
@@ -156,7 +188,8 @@ class Profile extends DataClass implements Insertable<Profile> {
       required this.avatarEmoji,
       this.bio,
       required this.favoriteStyles,
-      required this.isMe});
+      required this.isMe,
+      required this.defaultVisibility});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -169,6 +202,10 @@ class Profile extends DataClass implements Insertable<Profile> {
     }
     map['favorite_styles'] = Variable<String>(favoriteStyles);
     map['is_me'] = Variable<bool>(isMe);
+    {
+      map['default_visibility'] = Variable<String>(
+          $ProfilesTable.$converterdefaultVisibility.toSql(defaultVisibility));
+    }
     return map;
   }
 
@@ -181,6 +218,7 @@ class Profile extends DataClass implements Insertable<Profile> {
       bio: bio == null && nullToAbsent ? const Value.absent() : Value(bio),
       favoriteStyles: Value(favoriteStyles),
       isMe: Value(isMe),
+      defaultVisibility: Value(defaultVisibility),
     );
   }
 
@@ -195,6 +233,8 @@ class Profile extends DataClass implements Insertable<Profile> {
       bio: serializer.fromJson<String?>(json['bio']),
       favoriteStyles: serializer.fromJson<String>(json['favoriteStyles']),
       isMe: serializer.fromJson<bool>(json['isMe']),
+      defaultVisibility: $ProfilesTable.$converterdefaultVisibility
+          .fromJson(serializer.fromJson<String>(json['defaultVisibility'])),
     );
   }
   @override
@@ -208,6 +248,8 @@ class Profile extends DataClass implements Insertable<Profile> {
       'bio': serializer.toJson<String?>(bio),
       'favoriteStyles': serializer.toJson<String>(favoriteStyles),
       'isMe': serializer.toJson<bool>(isMe),
+      'defaultVisibility': serializer.toJson<String>(
+          $ProfilesTable.$converterdefaultVisibility.toJson(defaultVisibility)),
     };
   }
 
@@ -218,7 +260,8 @@ class Profile extends DataClass implements Insertable<Profile> {
           String? avatarEmoji,
           Value<String?> bio = const Value.absent(),
           String? favoriteStyles,
-          bool? isMe}) =>
+          bool? isMe,
+          SessionVisibility? defaultVisibility}) =>
       Profile(
         id: id ?? this.id,
         username: username ?? this.username,
@@ -227,6 +270,7 @@ class Profile extends DataClass implements Insertable<Profile> {
         bio: bio.present ? bio.value : this.bio,
         favoriteStyles: favoriteStyles ?? this.favoriteStyles,
         isMe: isMe ?? this.isMe,
+        defaultVisibility: defaultVisibility ?? this.defaultVisibility,
       );
   Profile copyWithCompanion(ProfilesCompanion data) {
     return Profile(
@@ -241,6 +285,9 @@ class Profile extends DataClass implements Insertable<Profile> {
           ? data.favoriteStyles.value
           : this.favoriteStyles,
       isMe: data.isMe.present ? data.isMe.value : this.isMe,
+      defaultVisibility: data.defaultVisibility.present
+          ? data.defaultVisibility.value
+          : this.defaultVisibility,
     );
   }
 
@@ -253,14 +300,15 @@ class Profile extends DataClass implements Insertable<Profile> {
           ..write('avatarEmoji: $avatarEmoji, ')
           ..write('bio: $bio, ')
           ..write('favoriteStyles: $favoriteStyles, ')
-          ..write('isMe: $isMe')
+          ..write('isMe: $isMe, ')
+          ..write('defaultVisibility: $defaultVisibility')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, username, displayName, avatarEmoji, bio, favoriteStyles, isMe);
+  int get hashCode => Object.hash(id, username, displayName, avatarEmoji, bio,
+      favoriteStyles, isMe, defaultVisibility);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -271,7 +319,8 @@ class Profile extends DataClass implements Insertable<Profile> {
           other.avatarEmoji == this.avatarEmoji &&
           other.bio == this.bio &&
           other.favoriteStyles == this.favoriteStyles &&
-          other.isMe == this.isMe);
+          other.isMe == this.isMe &&
+          other.defaultVisibility == this.defaultVisibility);
 }
 
 class ProfilesCompanion extends UpdateCompanion<Profile> {
@@ -282,6 +331,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
   final Value<String?> bio;
   final Value<String> favoriteStyles;
   final Value<bool> isMe;
+  final Value<SessionVisibility> defaultVisibility;
   final Value<int> rowid;
   const ProfilesCompanion({
     this.id = const Value.absent(),
@@ -291,6 +341,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     this.bio = const Value.absent(),
     this.favoriteStyles = const Value.absent(),
     this.isMe = const Value.absent(),
+    this.defaultVisibility = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ProfilesCompanion.insert({
@@ -301,6 +352,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     this.bio = const Value.absent(),
     this.favoriteStyles = const Value.absent(),
     this.isMe = const Value.absent(),
+    this.defaultVisibility = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         username = Value(username),
@@ -313,6 +365,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     Expression<String>? bio,
     Expression<String>? favoriteStyles,
     Expression<bool>? isMe,
+    Expression<String>? defaultVisibility,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -323,6 +376,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
       if (bio != null) 'bio': bio,
       if (favoriteStyles != null) 'favorite_styles': favoriteStyles,
       if (isMe != null) 'is_me': isMe,
+      if (defaultVisibility != null) 'default_visibility': defaultVisibility,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -335,6 +389,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
       Value<String?>? bio,
       Value<String>? favoriteStyles,
       Value<bool>? isMe,
+      Value<SessionVisibility>? defaultVisibility,
       Value<int>? rowid}) {
     return ProfilesCompanion(
       id: id ?? this.id,
@@ -344,6 +399,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
       bio: bio ?? this.bio,
       favoriteStyles: favoriteStyles ?? this.favoriteStyles,
       isMe: isMe ?? this.isMe,
+      defaultVisibility: defaultVisibility ?? this.defaultVisibility,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -372,6 +428,11 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     if (isMe.present) {
       map['is_me'] = Variable<bool>(isMe.value);
     }
+    if (defaultVisibility.present) {
+      map['default_visibility'] = Variable<String>($ProfilesTable
+          .$converterdefaultVisibility
+          .toSql(defaultVisibility.value));
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -388,6 +449,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
           ..write('bio: $bio, ')
           ..write('favoriteStyles: $favoriteStyles, ')
           ..write('isMe: $isMe, ')
+          ..write('defaultVisibility: $defaultVisibility, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3780,6 +3842,16 @@ class $CheckinsTable extends Checkins with TableInfo<$CheckinsTable, Checkin> {
   late final GeneratedColumn<String> photoUrl = GeneratedColumn<String>(
       'photo_url', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _visibilityMeta =
+      const VerificationMeta('visibility');
+  @override
+  late final GeneratedColumnWithTypeConverter<SessionVisibility, String>
+      visibility = GeneratedColumn<String>('visibility', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: const Constant('friends'))
+          .withConverter<SessionVisibility>(
+              $CheckinsTable.$convertervisibility);
   static const VerificationMeta _volumeMlMeta =
       const VerificationMeta('volumeMl');
   @override
@@ -3814,6 +3886,7 @@ class $CheckinsTable extends Checkins with TableInfo<$CheckinsTable, Checkin> {
         flavorTags,
         servingStyle,
         photoUrl,
+        visibility,
         volumeMl,
         dirty,
         createdAt
@@ -3876,6 +3949,7 @@ class $CheckinsTable extends Checkins with TableInfo<$CheckinsTable, Checkin> {
       context.handle(_photoUrlMeta,
           photoUrl.isAcceptableOrUnknown(data['photo_url']!, _photoUrlMeta));
     }
+    context.handle(_visibilityMeta, const VerificationResult.success());
     if (data.containsKey('volume_ml')) {
       context.handle(_volumeMlMeta,
           volumeMl.isAcceptableOrUnknown(data['volume_ml']!, _volumeMlMeta));
@@ -3922,6 +3996,9 @@ class $CheckinsTable extends Checkins with TableInfo<$CheckinsTable, Checkin> {
               DriftSqlType.string, data['${effectivePrefix}serving_style'])),
       photoUrl: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}photo_url']),
+      visibility: $CheckinsTable.$convertervisibility.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}visibility'])!),
       volumeMl: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}volume_ml']),
       dirty: attachedDatabase.typeMapping
@@ -3942,6 +4019,9 @@ class $CheckinsTable extends Checkins with TableInfo<$CheckinsTable, Checkin> {
   static JsonTypeConverter2<ServingStyle?, String?, String?>
       $converterservingStylen =
       JsonTypeConverter2.asNullable($converterservingStyle);
+  static JsonTypeConverter2<SessionVisibility, String, String>
+      $convertervisibility =
+      const EnumNameConverter<SessionVisibility>(SessionVisibility.values);
 }
 
 class Checkin extends DataClass implements Insertable<Checkin> {
@@ -3960,6 +4040,15 @@ class Checkin extends DataClass implements Insertable<Checkin> {
 
   /// Foto des Check-ins (öffentliche URL im beer-photos-Bucket).
   final String? photoUrl;
+
+  /// Wer diesen Check-in sehen darf (Funktion 44).
+  ///
+  /// Steht am Server seit 0001 und wurde bis 0.10.19 hart auf `friends`
+  /// geschrieben — die lokale Datenbank kannte den Wert deshalb gar
+  /// nicht. Er gehört hierher, weil ein offline entstandener Check-in
+  /// seine Sichtbarkeit mitbringen muss: Der Abgleich kommt vielleicht
+  /// erst Stunden später.
+  final SessionVisibility visibility;
 
   /// Füllmenge in Millilitern. Ohne sie gibt es keine Literangabe — und
   /// genau danach fragt man als erstes, wenn man ein Jahr zurückblickt.
@@ -3989,6 +4078,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
       required this.flavorTags,
       this.servingStyle,
       this.photoUrl,
+      required this.visibility,
       this.volumeMl,
       required this.dirty,
       required this.createdAt});
@@ -4020,6 +4110,10 @@ class Checkin extends DataClass implements Insertable<Checkin> {
     }
     if (!nullToAbsent || photoUrl != null) {
       map['photo_url'] = Variable<String>(photoUrl);
+    }
+    {
+      map['visibility'] = Variable<String>(
+          $CheckinsTable.$convertervisibility.toSql(visibility));
     }
     if (!nullToAbsent || volumeMl != null) {
       map['volume_ml'] = Variable<int>(volumeMl);
@@ -4053,6 +4147,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
       photoUrl: photoUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(photoUrl),
+      visibility: Value(visibility),
       volumeMl: volumeMl == null && nullToAbsent
           ? const Value.absent()
           : Value(volumeMl),
@@ -4077,6 +4172,8 @@ class Checkin extends DataClass implements Insertable<Checkin> {
       servingStyle: $CheckinsTable.$converterservingStylen
           .fromJson(serializer.fromJson<String?>(json['servingStyle'])),
       photoUrl: serializer.fromJson<String?>(json['photoUrl']),
+      visibility: $CheckinsTable.$convertervisibility
+          .fromJson(serializer.fromJson<String>(json['visibility'])),
       volumeMl: serializer.fromJson<int?>(json['volumeMl']),
       dirty: serializer.fromJson<bool>(json['dirty']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -4098,6 +4195,8 @@ class Checkin extends DataClass implements Insertable<Checkin> {
       'servingStyle': serializer.toJson<String?>(
           $CheckinsTable.$converterservingStylen.toJson(servingStyle)),
       'photoUrl': serializer.toJson<String?>(photoUrl),
+      'visibility': serializer.toJson<String>(
+          $CheckinsTable.$convertervisibility.toJson(visibility)),
       'volumeMl': serializer.toJson<int?>(volumeMl),
       'dirty': serializer.toJson<bool>(dirty),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -4116,6 +4215,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
           String? flavorTags,
           Value<ServingStyle?> servingStyle = const Value.absent(),
           Value<String?> photoUrl = const Value.absent(),
+          SessionVisibility? visibility,
           Value<int?> volumeMl = const Value.absent(),
           bool? dirty,
           DateTime? createdAt}) =>
@@ -4132,6 +4232,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
         servingStyle:
             servingStyle.present ? servingStyle.value : this.servingStyle,
         photoUrl: photoUrl.present ? photoUrl.value : this.photoUrl,
+        visibility: visibility ?? this.visibility,
         volumeMl: volumeMl.present ? volumeMl.value : this.volumeMl,
         dirty: dirty ?? this.dirty,
         createdAt: createdAt ?? this.createdAt,
@@ -4152,6 +4253,8 @@ class Checkin extends DataClass implements Insertable<Checkin> {
           ? data.servingStyle.value
           : this.servingStyle,
       photoUrl: data.photoUrl.present ? data.photoUrl.value : this.photoUrl,
+      visibility:
+          data.visibility.present ? data.visibility.value : this.visibility,
       volumeMl: data.volumeMl.present ? data.volumeMl.value : this.volumeMl,
       dirty: data.dirty.present ? data.dirty.value : this.dirty,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
@@ -4172,6 +4275,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
           ..write('flavorTags: $flavorTags, ')
           ..write('servingStyle: $servingStyle, ')
           ..write('photoUrl: $photoUrl, ')
+          ..write('visibility: $visibility, ')
           ..write('volumeMl: $volumeMl, ')
           ..write('dirty: $dirty, ')
           ..write('createdAt: $createdAt')
@@ -4192,6 +4296,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
       flavorTags,
       servingStyle,
       photoUrl,
+      visibility,
       volumeMl,
       dirty,
       createdAt);
@@ -4210,6 +4315,7 @@ class Checkin extends DataClass implements Insertable<Checkin> {
           other.flavorTags == this.flavorTags &&
           other.servingStyle == this.servingStyle &&
           other.photoUrl == this.photoUrl &&
+          other.visibility == this.visibility &&
           other.volumeMl == this.volumeMl &&
           other.dirty == this.dirty &&
           other.createdAt == this.createdAt);
@@ -4227,6 +4333,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
   final Value<String> flavorTags;
   final Value<ServingStyle?> servingStyle;
   final Value<String?> photoUrl;
+  final Value<SessionVisibility> visibility;
   final Value<int?> volumeMl;
   final Value<bool> dirty;
   final Value<DateTime> createdAt;
@@ -4243,6 +4350,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
     this.flavorTags = const Value.absent(),
     this.servingStyle = const Value.absent(),
     this.photoUrl = const Value.absent(),
+    this.visibility = const Value.absent(),
     this.volumeMl = const Value.absent(),
     this.dirty = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -4260,6 +4368,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
     this.flavorTags = const Value.absent(),
     this.servingStyle = const Value.absent(),
     this.photoUrl = const Value.absent(),
+    this.visibility = const Value.absent(),
     this.volumeMl = const Value.absent(),
     this.dirty = const Value.absent(),
     required DateTime createdAt,
@@ -4280,6 +4389,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
     Expression<String>? flavorTags,
     Expression<String>? servingStyle,
     Expression<String>? photoUrl,
+    Expression<String>? visibility,
     Expression<int>? volumeMl,
     Expression<bool>? dirty,
     Expression<DateTime>? createdAt,
@@ -4297,6 +4407,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
       if (flavorTags != null) 'flavor_tags': flavorTags,
       if (servingStyle != null) 'serving_style': servingStyle,
       if (photoUrl != null) 'photo_url': photoUrl,
+      if (visibility != null) 'visibility': visibility,
       if (volumeMl != null) 'volume_ml': volumeMl,
       if (dirty != null) 'dirty': dirty,
       if (createdAt != null) 'created_at': createdAt,
@@ -4316,6 +4427,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
       Value<String>? flavorTags,
       Value<ServingStyle?>? servingStyle,
       Value<String?>? photoUrl,
+      Value<SessionVisibility>? visibility,
       Value<int?>? volumeMl,
       Value<bool>? dirty,
       Value<DateTime>? createdAt,
@@ -4332,6 +4444,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
       flavorTags: flavorTags ?? this.flavorTags,
       servingStyle: servingStyle ?? this.servingStyle,
       photoUrl: photoUrl ?? this.photoUrl,
+      visibility: visibility ?? this.visibility,
       volumeMl: volumeMl ?? this.volumeMl,
       dirty: dirty ?? this.dirty,
       createdAt: createdAt ?? this.createdAt,
@@ -4376,6 +4489,10 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
     if (photoUrl.present) {
       map['photo_url'] = Variable<String>(photoUrl.value);
     }
+    if (visibility.present) {
+      map['visibility'] = Variable<String>(
+          $CheckinsTable.$convertervisibility.toSql(visibility.value));
+    }
     if (volumeMl.present) {
       map['volume_ml'] = Variable<int>(volumeMl.value);
     }
@@ -4405,6 +4522,7 @@ class CheckinsCompanion extends UpdateCompanion<Checkin> {
           ..write('flavorTags: $flavorTags, ')
           ..write('servingStyle: $servingStyle, ')
           ..write('photoUrl: $photoUrl, ')
+          ..write('visibility: $visibility, ')
           ..write('volumeMl: $volumeMl, ')
           ..write('dirty: $dirty, ')
           ..write('createdAt: $createdAt, ')
@@ -6363,6 +6481,7 @@ typedef $$ProfilesTableCreateCompanionBuilder = ProfilesCompanion Function({
   Value<String?> bio,
   Value<String> favoriteStyles,
   Value<bool> isMe,
+  Value<SessionVisibility> defaultVisibility,
   Value<int> rowid,
 });
 typedef $$ProfilesTableUpdateCompanionBuilder = ProfilesCompanion Function({
@@ -6373,6 +6492,7 @@ typedef $$ProfilesTableUpdateCompanionBuilder = ProfilesCompanion Function({
   Value<String?> bio,
   Value<String> favoriteStyles,
   Value<bool> isMe,
+  Value<SessionVisibility> defaultVisibility,
   Value<int> rowid,
 });
 
@@ -6517,6 +6637,11 @@ class $$ProfilesTableFilterComposer
 
   ColumnFilters<bool> get isMe => $composableBuilder(
       column: $table.isMe, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<SessionVisibility, SessionVisibility, String>
+      get defaultVisibility => $composableBuilder(
+          column: $table.defaultVisibility,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   Expression<bool> sessionsRefs(
       Expression<bool> Function($$SessionsTableFilterComposer f) f) {
@@ -6696,6 +6821,10 @@ class $$ProfilesTableOrderingComposer
 
   ColumnOrderings<bool> get isMe => $composableBuilder(
       column: $table.isMe, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get defaultVisibility => $composableBuilder(
+      column: $table.defaultVisibility,
+      builder: (column) => ColumnOrderings(column));
 }
 
 class $$ProfilesTableAnnotationComposer
@@ -6727,6 +6856,10 @@ class $$ProfilesTableAnnotationComposer
 
   GeneratedColumn<bool> get isMe =>
       $composableBuilder(column: $table.isMe, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SessionVisibility, String>
+      get defaultVisibility => $composableBuilder(
+          column: $table.defaultVisibility, builder: (column) => column);
 
   Expression<T> sessionsRefs<T extends Object>(
       Expression<T> Function($$SessionsTableAnnotationComposer a) f) {
@@ -6915,6 +7048,7 @@ class $$ProfilesTableTableManager extends RootTableManager<
             Value<String?> bio = const Value.absent(),
             Value<String> favoriteStyles = const Value.absent(),
             Value<bool> isMe = const Value.absent(),
+            Value<SessionVisibility> defaultVisibility = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ProfilesCompanion(
@@ -6925,6 +7059,7 @@ class $$ProfilesTableTableManager extends RootTableManager<
             bio: bio,
             favoriteStyles: favoriteStyles,
             isMe: isMe,
+            defaultVisibility: defaultVisibility,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -6935,6 +7070,7 @@ class $$ProfilesTableTableManager extends RootTableManager<
             Value<String?> bio = const Value.absent(),
             Value<String> favoriteStyles = const Value.absent(),
             Value<bool> isMe = const Value.absent(),
+            Value<SessionVisibility> defaultVisibility = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ProfilesCompanion.insert(
@@ -6945,6 +7081,7 @@ class $$ProfilesTableTableManager extends RootTableManager<
             bio: bio,
             favoriteStyles: favoriteStyles,
             isMe: isMe,
+            defaultVisibility: defaultVisibility,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -9307,6 +9444,7 @@ typedef $$CheckinsTableCreateCompanionBuilder = CheckinsCompanion Function({
   Value<String> flavorTags,
   Value<ServingStyle?> servingStyle,
   Value<String?> photoUrl,
+  Value<SessionVisibility> visibility,
   Value<int?> volumeMl,
   Value<bool> dirty,
   required DateTime createdAt,
@@ -9324,6 +9462,7 @@ typedef $$CheckinsTableUpdateCompanionBuilder = CheckinsCompanion Function({
   Value<String> flavorTags,
   Value<ServingStyle?> servingStyle,
   Value<String?> photoUrl,
+  Value<SessionVisibility> visibility,
   Value<int?> volumeMl,
   Value<bool> dirty,
   Value<DateTime> createdAt,
@@ -9425,6 +9564,11 @@ class $$CheckinsTableFilterComposer
 
   ColumnFilters<String> get photoUrl => $composableBuilder(
       column: $table.photoUrl, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<SessionVisibility, SessionVisibility, String>
+      get visibility => $composableBuilder(
+          column: $table.visibility,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<int> get volumeMl => $composableBuilder(
       column: $table.volumeMl, builder: (column) => ColumnFilters(column));
@@ -9555,6 +9699,9 @@ class $$CheckinsTableOrderingComposer
   ColumnOrderings<String> get photoUrl => $composableBuilder(
       column: $table.photoUrl, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get visibility => $composableBuilder(
+      column: $table.visibility, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<int> get volumeMl => $composableBuilder(
       column: $table.volumeMl, builder: (column) => ColumnOrderings(column));
 
@@ -9641,6 +9788,10 @@ class $$CheckinsTableAnnotationComposer
 
   GeneratedColumn<String> get photoUrl =>
       $composableBuilder(column: $table.photoUrl, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SessionVisibility, String> get visibility =>
+      $composableBuilder(
+          column: $table.visibility, builder: (column) => column);
 
   GeneratedColumn<int> get volumeMl =>
       $composableBuilder(column: $table.volumeMl, builder: (column) => column);
@@ -9769,6 +9920,7 @@ class $$CheckinsTableTableManager extends RootTableManager<
             Value<String> flavorTags = const Value.absent(),
             Value<ServingStyle?> servingStyle = const Value.absent(),
             Value<String?> photoUrl = const Value.absent(),
+            Value<SessionVisibility> visibility = const Value.absent(),
             Value<int?> volumeMl = const Value.absent(),
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
@@ -9786,6 +9938,7 @@ class $$CheckinsTableTableManager extends RootTableManager<
             flavorTags: flavorTags,
             servingStyle: servingStyle,
             photoUrl: photoUrl,
+            visibility: visibility,
             volumeMl: volumeMl,
             dirty: dirty,
             createdAt: createdAt,
@@ -9803,6 +9956,7 @@ class $$CheckinsTableTableManager extends RootTableManager<
             Value<String> flavorTags = const Value.absent(),
             Value<ServingStyle?> servingStyle = const Value.absent(),
             Value<String?> photoUrl = const Value.absent(),
+            Value<SessionVisibility> visibility = const Value.absent(),
             Value<int?> volumeMl = const Value.absent(),
             Value<bool> dirty = const Value.absent(),
             required DateTime createdAt,
@@ -9820,6 +9974,7 @@ class $$CheckinsTableTableManager extends RootTableManager<
             flavorTags: flavorTags,
             servingStyle: servingStyle,
             photoUrl: photoUrl,
+            visibility: visibility,
             volumeMl: volumeMl,
             dirty: dirty,
             createdAt: createdAt,

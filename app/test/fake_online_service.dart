@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:brewmates/core/sichtbarkeit.dart';
 import 'package:brewmates/data/db/database.dart' as local;
 import 'package:brewmates/data/online/online_service.dart';
 
@@ -162,7 +163,11 @@ class FakeOnlineService extends OnlineService {
   ({int teilnehmer, double? checkins, double? biere})? communityStats;
 
   @override
-  Future<bool> updateMyProfile({String? displayName, String? avatarEmoji}) async {
+  Future<bool> updateMyProfile({
+    String? displayName,
+    String? avatarEmoji,
+    SessionVisibility? defaultVisibility,
+  }) async {
     aufrufe.add('updateMyProfile:${displayName ?? ''}:${avatarEmoji ?? ''}');
     return !schlaegtFehl;
   }

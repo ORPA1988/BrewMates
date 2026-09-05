@@ -2,7 +2,7 @@ name: brewmates
 description: "BrewMates – Bier entdecken, Freunde treffen."
 publish_to: "none"
 # Beta-Phase: 0.x bis zum offiziellen 1.0-Store-Release (versionCode zählt weiter)
-version: 0.10.19-beta+38
+version: 0.10.20-beta+39
 
 environment:
   sdk: ^3.5.0

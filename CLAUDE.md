@@ -125,7 +125,7 @@ nicht nachlesen.
 
 ## 5. Der Stand
 
-- **Version:** `0.10.19-beta+38` (Beta 0.x bis zum Play-Store-1.0; der
+- **Version:** `0.10.20-beta+39` (Beta 0.x bis zum Play-Store-1.0; der
   Android-`versionCode` zählt immer weiter hoch).
 - **Rückfallpunkte:** `git tag -l "stand/*"` — mindestens zehn lauffähige
   Stände, jeder nach grüner CI getaggt und mit einem Satz beschrieben.
@@ -146,9 +146,10 @@ nicht nachlesen.
   Facebook, Discord und GitHub — welche Knöpfe erscheinen, sagt
   `app_config.auth_providers` (0046), nicht das Release. Einrichtung je
   Anbieter im Release-Playbook; **Apple kostet 99 $/Jahr.**
-- **Drift-Stand v15** (v10 Löschwarteschlange, v11 `checkins.volumeMl`,
+- **Drift-Stand v16** (v10 Löschwarteschlange, v11 `checkins.volumeMl`,
   v12 `story`, v13 `checkins.dirty`, v14 `barcode_volumes`, v15
-  `imageSource`/`imageLicense`). Schreibende Aktionen, die offline
+  `imageSource`/`imageLicense`, v16 `checkins.visibility` +
+  `profiles.defaultVisibility`). Schreibende Aktionen, die offline
   funktionieren sollen, folgen dem Muster `venue_queue.dart` /
   `checkin_delete_queue.dart` (FIFO, idempotent, Verbindungsfehler bricht
   ab, fachlicher Fehler verwirft).

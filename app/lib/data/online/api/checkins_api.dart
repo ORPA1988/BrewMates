@@ -184,7 +184,9 @@ class CheckinsApi extends OnlineApi {
       'volume_ml': c.volumeMl,
       'photo_url': c.photoUrl,
       'venue_name': c.venueName,
-      'visibility': 'friends',
+      // Bis 0.10.19 stand hier fest `'friends'` — die Spalte gab es am
+      // Server seit 0001, die Wahl in der App nie (Funktion 44).
+      'visibility': c.visibility.name,
       'created_at': c.createdAt.toUtc().toIso8601String(),
     };
   }
