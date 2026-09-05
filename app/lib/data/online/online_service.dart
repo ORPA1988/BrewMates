@@ -16,6 +16,7 @@ import 'api/friends_api.dart';
 import 'api/moderation_api.dart';
 import 'api/notifications_api.dart';
 import 'api/sessions_api.dart';
+import 'api/stats_api.dart';
 import 'api/venues_api.dart';
 import 'models.dart';
 
@@ -28,6 +29,7 @@ export 'api/crews_api.dart';
 export 'api/friends_api.dart';
 export 'api/moderation_api.dart';
 export 'api/sessions_api.dart';
+export 'api/stats_api.dart';
 export 'api/venues_api.dart';
 
 // Aus demselben Grund weitergereicht: Wer die Anmeldewege anzeigt,
@@ -44,6 +46,7 @@ class OnlineService {
         sessions = SessionsApi(_client, () => _client.auth.currentUser),
         checkins = CheckinsApi(_client, () => _client.auth.currentUser),
         venues = VenuesApi(_client, () => _client.auth.currentUser),
+        stats = StatsApi(_client, () => _client.auth.currentUser),
         notifications =
             NotificationsApi(_client, () => _client.auth.currentUser),
         devices = DevicesApi(_client, () => _client.auth.currentUser),
@@ -87,6 +90,10 @@ class OnlineService {
 
   /// Gasthäuser der gemeinsamen Datenbank.
   final VenuesApi venues;
+
+  /// Anonyme Zahlen ueber alle anderen — fuer den Vergleich in der
+  /// Statistik (Wunsch #146, Migration 0054).
+  final StatsApi stats;
 
   static const _profileCols =
       'id, username, display_name, avatar_emoji, account_no';

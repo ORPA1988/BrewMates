@@ -207,7 +207,9 @@ void main() {
 
     expect(find.text('Reinalkohol im Zeitraum'), findsNothing);
     // Die Liste ist wirklich am Ende — sonst prüfte der Satz oben nichts.
-    expect(find.textContaining('kein Wettbewerb'), findsOneWidget);
+    // (Der Fußtext heißt seit 0.10.16 anders: Er sagt jetzt, was der
+    // Vergleich mit anderen ist und was nicht, siehe Funktion 42.)
+    expect(find.textContaining('keine Rangliste'), findsOneWidget);
 
     await abbauen(tester);
   });

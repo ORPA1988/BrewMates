@@ -72,6 +72,8 @@ class StatsScreen extends ConsumerWidget {
             )
           else ...[
             _Totals(stats: stats, period: period),
+            const SizedBox(height: 12),
+            _CommunityVergleich(stats: stats, period: period),
             const SizedBox(height: 24),
             _DimensionChips(selected: dimensionKey),
             const SizedBox(height: 12),
@@ -84,8 +86,9 @@ class StatsScreen extends ConsumerWidget {
           ],
           const SizedBox(height: 24),
           Text(
-            'Ausgewertet werden deine eigenen Check-ins. Die Zahlen sind '
-            'ein Rückblick — kein Wettbewerb.',
+            'Ausgewertet werden deine eigenen Check-ins. Der Vergleich mit '
+            'den anderen ist anonym und zusammengezählt — es gibt keine '
+            'Rangliste und keine Namen.',
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
           ),
@@ -294,6 +297,71 @@ class _Comparison extends StatelessWidget {
           ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
     );
   }
+}
+
+/// „Du 12, die anderen im Schnitt 7" — der zweite Maßstab neben dem
+/// Vorzeitraum (Wunsch [#146]).
+///
+/// **Bewusst kein Wettbewerb.** Kein Rang, kein Perzentil, kein „besser
+/// als 80 %", keine Namen. Mehr Bier ist nicht mehr wert; die Zahl sagt
+/// nur, wo man im Feld steht. Die Roadmap hat einen Vergleich mit
+/// anderen Nutzern lange ausgeschlossen — die Entscheidung, ihn in
+/// dieser Form zuzulassen, hat der Mensch am 2026-09-05 getroffen und
+/// steht in docs/06.
+///
+/// Ob überhaupt etwas dasteht, entscheidet der **Server**: Unter genug
+/// beitragenden Personen liefert `community_stats` keine Durchschnitte,
+/// weil ein Mittelwert über wenige eine Auskunft über sie wäre.
+class _CommunityVergleich extends ConsumerWidget {
+  const _CommunityVergleich({required this.stats, required this.period});
+
+  final CheckinStats stats;
+  final StatsPeriod period;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final vergleich = ref.watch(communityStatsProvider).valueOrNull;
+    // Abgemeldet, offline oder Aufruf gescheitert: Der Vergleich ist ein
+    // Zusatz und darf nichts erklären müssen.
+    if (vergleich == null) return const SizedBox.shrink();
+
+    final text = vergleich.checkins == null
+        ? 'Für einen Vergleich sind es noch zu wenige: '
+            '${vergleich.teilnehmer} andere haben in diesem Zeitraum etwas '
+            'eingetragen.'
+        : 'Die anderen BrewMates haben in diesem Zeitraum im Schnitt '
+            '${_zahl(vergleich.checkins!)} Check-ins und '
+            '${_zahl(vergleich.biere!)} verschiedene Biere — du '
+            '${stats.checkins} und ${_meine(stats)}.';
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Im Vergleich', style: theme.textTheme.titleSmall),
+          const SizedBox(height: 4),
+          Text(text, style: theme.textTheme.bodySmall),
+        ],
+      ),
+    );
+  }
+
+  /// Die eigene Bier-Vielfalt kommt aus derselben Kennzahl, die auch die
+  /// Kachel zeigt — nicht aus einer zweiten Rechnung, die auseinanderlaufen
+  /// könnte.
+  static String _meine(CheckinStats stats) =>
+      (stats.value('beers') ?? 0).round().toString();
+
+  /// Eine Nachkommastelle, und die nur, wenn sie etwas sagt.
+  static String _zahl(double v) =>
+      v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toStringAsFixed(1);
 }
 
 class _StatTile extends StatelessWidget {

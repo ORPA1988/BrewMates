@@ -61,6 +61,8 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [37](37-meldungen-bearbeiten.md) | Meldungen bearbeiten | 🟢 | Moderatoren sehen gemeldete Profile und schließen sie mit Befund ab |
 | [38](38-benachrichtigungen-im-browser.md) | Benachrichtigungen im Browser | 🟢 | Systemmeldung bzw. Nachreichen, solange die Web-App offen ist |
 | [40](40-runden-checkins.md) | Check-ins in einer Runde | 🟢 | Mitrundige sehen sie, Zuordnung läuft automatisch, Crew-Bilanz zählt jede beteiligte Crew |
+| [41](41-sortieren-in-entdecken.md) | Sortieren in Entdecken | 🟡 | Biere und Brauereien nach Nähe, Name, Alkohol, Sorte |
+| [42](42-vergleich-mit-anderen.md) | Vergleich mit anderen | 🟡 | Anonymer Schnitt aller anderen, erst ab 20 Personen |
 
 ## Geplante Funktionen
 

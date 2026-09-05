@@ -122,6 +122,7 @@ class FakeOnlineService extends OnlineService {
   NotificationsApi get notifications => _notifications;
 
   late final _checkins = _FakeCheckinsApi(this);
+  late final _stats = _FakeStatsApi(this);
   late final _feedback = _FakeFeedbackApi(this);
 
   @override
@@ -141,6 +142,13 @@ class FakeOnlineService extends OnlineService {
 
   @override
   CheckinsApi get checkins => _checkins;
+
+  @override
+  StatsApi get stats => _stats;
+
+  /// Was der „Server" als Vergleich liefert. `null` = kein Vergleich
+  /// (abgemeldet, offline oder gescheitert).
+  ({int teilnehmer, double? checkins, double? biere})? communityStats;
 
   @override
   Future<bool> updateMyProfile({String? displayName, String? avatarEmoji}) async {
@@ -618,4 +626,19 @@ class _FakeCrewsApi extends CrewsApi {
   Future<List<RemoteCheckin>> crewCheckins(String crewId,
           {int limit = 50}) async =>
       const [];
+}
+
+class _FakeStatsApi extends StatsApi {
+  _FakeStatsApi(this._fake) : super(_fake.client, (() => _fake.currentUser));
+
+  final FakeOnlineService _fake;
+
+  @override
+  Future<({int teilnehmer, double? checkins, double? biere})?> community({
+    required DateTime von,
+    required DateTime bis,
+  }) async {
+    _fake.aufrufe.add('community');
+    return _fake.communityStats;
+  }
 }

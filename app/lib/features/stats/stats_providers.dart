@@ -63,3 +63,31 @@ final statsFilterOptionsProvider = Provider<({
   final styles = {for (final d in all) d.beer.style}.toList()..sort();
   return (countries: countries, styles: styles);
 });
+
+
+/// Der Vergleich mit allen anderen BrewMates (Wunsch #146).
+///
+/// Kommt vom Server (`community_stats`, Migration 0054) und ist bewusst
+/// **anonym und aggregiert**: nie eine Zeile, nie eine Identität, und
+/// Durchschnitte erst ab genug beitragenden Personen. Wie viele „genug"
+/// sind, entscheidet die Datenbank — eine Schwelle, die die Oberfläche
+/// zieht, ist keine.
+///
+/// `null` heißt: abgemeldet, offline oder der Aufruf ist gescheitert.
+/// Der Vergleich ist ein Zusatz; ohne ihn bleibt die Statistik ganz.
+final communityStatsProvider =
+    FutureProvider<({int teilnehmer, double? checkins, double? biere})?>(
+        (ref) async {
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) return null;
+
+  final now = ref.watch(clockProvider).valueOrNull ?? DateTime.now();
+  final period = ref.watch(statsPeriodProvider);
+  // „Alles" hat keinen Anfang; für den Vergleich nehmen wir dann alles,
+  // was es geben kann — die Datenbank rechnet ohnehin nur über Zeilen,
+  // die da sind.
+  final von = period.startAt(now) ?? DateTime(2000);
+  final bis = period.endAt(now) ?? now.add(const Duration(days: 1));
+
+  return online.stats.community(von: von, bis: bis);
+});
