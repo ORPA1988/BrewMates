@@ -15,9 +15,37 @@ Verbindlich für jede Code-Änderung. Ergänzt `CLAUDE.md` (Projektstand) und
 - Namensschema: `feat/<kurz>`, `fix/<kurz>`, `chore/<kurz>`, `docs/<kurz>`.
 - Ein Branch = ein Thema. Findet sich unterwegs etwas anderes: nach
   `.claude/backlog.md`, nicht in den laufenden Commit.
-- Branches nach dem Merge löschen. Länger als zwei Wochen offene Branches
-  sind ein Fehler — sie verlieren den Anschluss (siehe Vorfall 08/2026:
-  17 Commits ungemerged).
+- **Gemergte Branches nicht pauschal löschen** (Entscheidung des Menschen,
+  2026-09-05). Aufräumen ist billig, ein verlorener Rückfallpunkt nicht.
+  Wer einen Branch entfernt, tut es einzeln und mit Grund — nicht als
+  Schlusshandlung nach dem Merge.
+- Länger als zwei Wochen **offene, ungemergte** Branches sind trotzdem ein
+  Fehler: Sie verlieren den Anschluss (Vorfall 08/2026, 17 Commits
+  ungemerged). Das ist eine andere Frage als das Aufheben gemergter.
+
+## Wiederherstellungspunkte
+
+**Mindestens zehn lauffähige Stände sind jederzeit vorzuhalten**
+(Entscheidung des Menschen, 2026-09-05). Nach jeder substantiellen
+Änderung — Migration, Schema, geänderte öffentliche API, alles, was ein
+Zurück teuer macht — bekommt der Merge-Commit einen Tag:
+
+```
+stand/JJJJ-MM-TT-NN-kurzname
+```
+
+Annotiert, mit einem Satz, **was dieser Stand kann und was an ihm
+besonders ist**. Ein Tag namens „stand vor Änderung X" nützt niemandem,
+der ihn ein Jahr später sucht; „Statistik Stufe 2, BREAKING: computeStats
+liefert Maps" schon. Wo ein Stand eine bekannte Schwäche hat, gehört sie
+in die Nachricht — der Punkt soll ehrlich sein, nicht schön.
+
+Der Namensraum `stand/` steht neben den Release-Tags (`v0.10.x-beta`) und
+ersetzt sie nicht: Ein Release ist etwas, das Menschen bekommen haben, ein
+Stand nur ein Ort, an den man zurückkann.
+
+Getaggt wird **nach grüner CI**, nie davor — ein Rückfallpunkt, der nicht
+baut, ist keiner.
 
 ## Commits (Conventional Commits)
 
