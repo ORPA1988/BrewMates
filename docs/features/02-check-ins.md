@@ -46,6 +46,32 @@ Wirtshaus drei Minuten braucht, macht ihn beim nächsten Mal nicht mehr.
   Brauereinamen, damit der Feed ohne Verknüpfungen auskommt
 - **Fotos:** Bucket `beer-photos`, Pfad je Nutzer; vor dem Hochladen auf
   **höchstens 500 KB** gerechnet (`core/foto_verkleinern.dart`)
+- **Anzeigefläche:** `widgets/foto_flaeche.dart` — die eine Stelle, an der
+  ein Foto seine Größe bekommt (Feed-Karte und beide Vorschauen)
+
+### Wie groß ein Foto angezeigt wird (2026-09-06, Meldung [#171](https://github.com/ORPA1988/BrewMates/issues/171))
+
+Ein Tester meldete, dass im Browser vom Foto fast nichts zu sehen ist,
+sobald man das Fenster breit zieht. Der Grund war an drei Stellen
+derselbe: **feste Höhe, freie Breite.** Auf dem Telefon ergibt
+`height: 200, width: double.infinity` ein vernünftiges Bild; auf einem
+900 Punkte breiten Fenster ein Verhältnis von 4,5 : 1 — einen Streifen.
+Eine feste Höhe neben einer freien Breite ist kein Format, sondern ein
+Zufall, der auf einer Gerätebreite zufällig gut ausgeht.
+
+`FotoFlaeche` dreht das um: **Die Breite ist gedeckelt (480 Punkte), die
+Höhe folgt daraus** (Verhältnis 1,6). Auf Telefonbreite kommt dabei fast
+genau die alte Höhe heraus, im Feed ändert sich dort also nichts
+Sichtbares; auf dem Bildschirm wird das Foto nicht breiter, sondern hört
+auf, flacher zu werden.
+
+Der Knopf „Foto entfernen" ist mit umgezogen und sitzt jetzt **an der
+Ecke des Fotos statt an der Ecke der Spalte** — sobald das Foto schmaler
+ist als die Spalte, sind das zwei verschiedene Orte.
+
+`test/foto_flaeche_test.dart` hält das Verhältnis über drei Breiten fest.
+Nicht getestet wird, ob das Foto schön aussieht — getestet wird die eine
+Eigenschaft, deren Fehlen den Fehler ausgemacht hat.
 
 ### Der Weg ohne Barcode (2026-09-05, Wunsch [#139](https://github.com/ORPA1988/BrewMates/issues/139))
 

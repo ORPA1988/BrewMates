@@ -15,6 +15,7 @@ import '../../data/online/online_service.dart' show RemoteBeer;
 import '../../data/providers.dart';
 import '../../widgets/beer_picker.dart';
 import '../../widgets/beer_thumbnail.dart';
+import '../../widgets/foto_flaeche.dart';
 import '../../widgets/suggest_list.dart';
 
 /// Häufigste Stile als Schnellauswahl.
@@ -454,24 +455,13 @@ class _AddBeerScreenState extends ConsumerState<AddBeerScreen> {
             // Foto vom Bier/Etikett – landet mit dem Eintrag in der
             // Community-DB (angemeldet), damit alle das Bier erkennen.
             if (_photoBytes != null) ...[
-              Stack(
-                alignment: Alignment.topRight,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.memory(
-                      _photoBytes!,
-                      height: 180,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  IconButton.filledTonal(
-                    tooltip: 'Foto entfernen',
-                    icon: const Icon(Icons.close),
-                    onPressed: () => setState(() => _photoBytes = null),
-                  ),
-                ],
+              FotoFlaeche(
+                ecke: IconButton.filledTonal(
+                  tooltip: 'Foto entfernen',
+                  icon: const Icon(Icons.close),
+                  onPressed: () => setState(() => _photoBytes = null),
+                ),
+                child: Image.memory(_photoBytes!, fit: BoxFit.cover),
               ),
               const SizedBox(height: 12),
             ] else ...[
