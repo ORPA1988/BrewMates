@@ -1,6 +1,6 @@
 # 06 – Roadmap
 
-> **Stand: 2026-09-05, Version 0.10.15-beta.**
+> **Stand: 2026-09-06, Version 0.10.22-beta.**
 > Diese Datei sagt **wann** etwas kommt und in welcher Reihenfolge.
 > **Was** eine Funktion ist und wie sie gebaut ist, steht je Funktion in
 > [docs/features/](features/README.md) — hier wird nur verlinkt, nicht
@@ -17,12 +17,21 @@ lebte nur in dieser Datei.
 
 | Rang | Vorhaben | Warum jetzt |
 |---|---|---|
-| 1 | **[Einchecken ohne Barcode](features/02-check-ins.md)** ([#139](https://github.com/ORPA1988/BrewMates/issues/139)) | Aus dem Test gemeldet: Im Wirtshaus kommt das Bier vom Fass, es gibt nichts zu scannen — und genau dort wird am häufigsten eingecheckt |
-| 2 | **Anmeldeverfahren freischalten** ([#131](https://github.com/ORPA1988/BrewMates/issues/131)) | Die App kann fünf weitere Anbieter; drei davon kosten nichts. Schritte im [Release-Playbook](07-release-playbook.md) |
-| ~~3~~ | ~~**Sichtbarkeits-Konzept**~~ ([#130](https://github.com/ORPA1988/BrewMates/issues/130)) — **erledigt mit 0.10.20**: Voreinstellung im Konto, je Check-in übersteuerbar, nachträglich änderbar. Die Regel gab es seit 0001, die Bedienung nie ([Funktion 44](features/44-sichtbarkeit.md)) | — |
-| ~~4~~ | ~~**Crew-Challenges und Rollen**~~ ([#132](https://github.com/ORPA1988/BrewMates/issues/132)) — **erledigt**: Verwalter mit 0.10.21, gemeinsame Challenges mit 0.10.22 ([Funktion 09](features/09-crews.md)) | — |
-| ~~5~~ | ~~**Statistik: CSV-Export**~~ ([#133](https://github.com/ORPA1988/BrewMates/issues/133)) — **erledigt mit 0.10.19**: Rohdaten und Auswertung, im Browser als Download, sonst über die Zwischenablage ([Funktion 20, Punkt 7](features/20-feed-statistiken.md)) | — |
-| 6 | **[Play Store](https://github.com/ORPA1988/BrewMates/issues/67)** | Braucht Konto, Ausweisprüfung und Store-Prozess — Menschenarbeit |
+| 1 | **Anmeldeverfahren freischalten** ([#131](https://github.com/ORPA1988/BrewMates/issues/131)) | Die App kann fünf weitere Anbieter; drei davon kosten nichts. **Braucht Menschenarbeit im Browser** — Schritte im [Release-Playbook](07-release-playbook.md) |
+| 2 | **[Kalender-Export für Verabredungen](features/39-geplante-sessions.md)** ([#165](https://github.com/ORPA1988/BrewMates/issues/165)) | Der letzte offene Punkt einer sonst fertigen Funktion: „Freitag 19 Uhr" gehört in den Kalender, nicht nur in die App |
+| 3 | **Heatmap zur Wochen-Serie** ([#166](https://github.com/ORPA1988/BrewMates/issues/166)) | Klein, rein lokal, und macht aus einer Zahl ein Bild ([Backlog C-5](../.claude/backlog.md)) |
+| 4 | **[Jahresrückblick](features/20-feed-statistiken.md)** („Dein Bierjahr", [#167](https://github.com/ORPA1988/BrewMates/issues/167)) | Teilbar — das einzige Marketing, das diese App je hätte |
+| 5 | **[Play Store](https://github.com/ORPA1988/BrewMates/issues/67)** | Braucht Konto, Ausweisprüfung und Store-Prozess — Menschenarbeit |
+
+**Erledigt seit dieser Liste** (2026-09-05, alles in 0.10.15–0.10.22):
+Einchecken ohne Barcode ([#139](https://github.com/ORPA1988/BrewMates/issues/139)),
+redaktionelle Einschätzung ohne Sterne ([#143](https://github.com/ORPA1988/BrewMates/issues/143)),
+Gebinde am Barcode ([#144](https://github.com/ORPA1988/BrewMates/issues/144)),
+Sortieren in Entdecken ([#145](https://github.com/ORPA1988/BrewMates/issues/145)),
+anonymer Vergleich ([#146](https://github.com/ORPA1988/BrewMates/issues/146)),
+CSV-Export ([#133](https://github.com/ORPA1988/BrewMates/issues/133)),
+Sichtbarkeit ([#130](https://github.com/ORPA1988/BrewMates/issues/130)),
+Crew-Rollen und -Challenges ([#132](https://github.com/ORPA1988/BrewMates/issues/132)).
 
 ---
 
