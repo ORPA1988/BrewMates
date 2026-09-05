@@ -170,7 +170,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/912/005/328/2558/front_fr.4.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9120053282558",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Doppelt kalthopfter Hazy IPA mit Strata, Idaho 7 und einer Prise Chinook; Mango, Ananas und Litschi neben Pfirsich und Zitrus, dazu ein ausgesprochen weiches, seidiges Mundgefühl."
     },
     {
       "id": "at-bevog-cao-vit-gibbon",
@@ -196,7 +197,8 @@
         "9120053280295"
       ],
       "image_url": "https://bevog.com/cdn/shop/files/IMG_8793_1200x1200.jpg?v=1726656148",
-      "image_source": "https://bevog.com/collections/regular-beer/products/deetz-golden-ale"
+      "image_source": "https://bevog.com/collections/regular-beer/products/deetz-golden-ale",
+      "description_community": "Schlankes Golden Ale, fruchtig ohne aufdringlich zu sein; in der Nase Traube, Zitrus, Limette und Passionsfrucht über frischem Stroh und leichter Brotnote."
     },
     {
       "id": "at-bevog-grape-ale-ii-0-75l",
@@ -249,7 +251,8 @@
         "9120053282138": 500
       },
       "image_url": "https://bevog.com/cdn/shop/files/IMG_5726_1200x1200.jpg?v=1766140116",
-      "image_source": "https://bevog.com/collections/regular-beer/products/helles-0-33l"
+      "image_source": "https://bevog.com/collections/regular-beer/products/helles-0-33l",
+      "description_community": "Bevogs Verbeugung vor dem Klassischen: rezent und schlank, schön malzig mit einer zurückhaltenden Hopfennote — das ruhige Glas im sonst hopfenlauten Sortiment."
     },
     {
       "id": "at-bevog-kramah-ipa",
@@ -529,7 +532,8 @@
         "9120070490820"
       ],
       "image_url": "https://bierol.at/cdn/shop/files/bierol_dosen_sunn-seiterl_front_white_rz.jpg?v=1722330510",
-      "image_source": "https://bierol.at/products/sunn-seiterl-bio-golden-ale-0-33l-dose"
+      "image_source": "https://bierol.at/products/sunn-seiterl-bio-golden-ale-0-33l-dose",
+      "description_community": "Naturtrübes Bio-Golden-Ale aus Tirol, mit Bio-Spalter-Select aus dem Mühlviertel sowie Bio-Hafer und -Gerstenmalz; ausgewogen, hopfig und ausgesprochen leicht zu trinken."
     },
     {
       "id": "at-bierol-the-padawan-pale-ale",
@@ -579,13 +583,14 @@
         "9120070490837"
       ],
       "image_url": "https://bierol.at/cdn/shop/files/bierol_dosen_zapfn_front_white_rz.jpg?v=1722330611",
-      "image_source": "https://bierol.at/products/zapfn-bio-zirbenradler-0-33l-dose-1"
+      "image_source": "https://bierol.at/products/zapfn-bio-zirbenradler-0-33l-dose-1",
+      "description_community": "Bio-Zwicklbier mit Zirbensirup statt Limonade; frisch und leicht malzig im Antrunk, in der Mitte harzig-würzig, im Abgang zirbig, mild bitter und leicht süß."
     },
     {
       "id": "at-brauerei-egg-egger-waelder",
       "brewery_id": "at-brauerei-egg",
       "name": "Wälder Bier",
-      "style": "Bier",
+      "style": "Export",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
@@ -594,7 +599,8 @@
       ],
       "image_url": "https://brauereiegg.imgix.net/media/pages/produkte/bier/egger-walder/f05636be3e-1741699515/egger-walder-033-beerstar.png?auto=compress,format&fit=crop&h=600&quality=40",
       "image_source": "https://www.brauerei-egg.at/produkte/bier/egger-walder",
-      "image_license": "Downloadbereich: https://www.brauerei-egg.at/downloads"
+      "image_license": "Downloadbereich: https://www.brauerei-egg.at/downloads",
+      "description_community": "Das Bregenzerwälder Glas aus Egg, traditionell gebraut und nicht kurzzeitig erhitzt; in der Nase Malz, Getreide und Brot, im Körper malzig-süß mit Karamell und dunklem Brot, im Abgang mild."
     },
     {
       "id": "at-brauerei-egg-egger-edel-pils",
@@ -640,7 +646,7 @@
       "brewery_id": "at-brewage",
       "name": "Brew Age Alphatier",
       "style": "IPA",
-      "abv": null,
+      "abv": 5.6,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
@@ -648,7 +654,8 @@
       ],
       "image_url": "https://brewage.at/wp-content/uploads/2020/03/Brew-Age-Alphatier-New-England-IPA-600x750.jpg",
       "image_source": "https://brewage.at/produkt/alphatier/",
-      "image_license": "Pressebereich: https://brewage.at/presse/"
+      "image_license": "Pressebereich: https://brewage.at/presse/",
+      "description_community": "Das Wiener IPA, gebraut im Gusswerk bei Salzburg; vier Hopfensorten (Amarillo, Centennial, Citra, Mosaic) bringen 45 Bittereinheiten und reichlich Frucht über Pilsner-, Wiener- und Münchner Malz mit Hafer."
     },
     {
       "id": "at-brewage-hopfenauflauf",
@@ -696,7 +703,8 @@
       ],
       "image_url": "https://images.openfoodfacts.org/images/products/912/006/522/0746/front_fr.3.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9120065220746",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Das Original der Salzburger Weißbierbrauerei seit 1901; bernsteinfarben und naturtrüb, in der Nase sofort reife Banane, drei Malzsorten geben den vollen Körper, Hallertauer Hopfen die Bittere. Offene Gärung und Flaschenreifung im Bügelverschluss machen das feine Spiel aus."
     },
     {
       "id": "at-eggenberg-classic-maerzen",
@@ -710,7 +718,8 @@
         "90091148"
       ],
       "image_url": "https://schloss-eggenberg.at/wp-content/uploads/2024/05/egg_05_Maerzen_betaut_LowRes_504x890px.png",
-      "image_source": "https://schloss-eggenberg.at/biere/"
+      "image_source": "https://schloss-eggenberg.at/biere/",
+      "description_community": "Märzen aus hundert Prozent österreichischen Rohstoffen, mit Mühlviertler Hopfen der Sorte Malling und Wasser aus der eigenen Quelle im Salzkammergut."
     },
     {
       "id": "at-eggenberg-freibier-naturtrueb-alkoholfrei",
@@ -729,7 +738,7 @@
       "brewery_id": "at-eggenberg",
       "name": "Eggenberger Freibier Original alkoholfrei",
       "style": "Alkoholfreies Bier",
-      "abv": null,
+      "abv": 0.0,
       "ibu": null,
       "is_alcohol_free": true,
       "barcodes": [
@@ -737,7 +746,8 @@
       ],
       "image_url": "https://schloss-eggenberg.at/wp-content/uploads/2024/05/Website_Freibier-504x890px.png",
       "image_source": "https://schloss-eggenberg.at/biere/",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Alkoholfreies helles Lager mit vollmundiger Malznote und feiner Hopfenbittere; angenehm erfrischend ausbalanciert — ganz ohne Alkohol, aber mit vollem Biergeschmack."
     },
     {
       "id": "at-eggenberg-gold",
@@ -978,13 +988,14 @@
       },
       "image_url": "https://egger-bier.at/site/assets/files/1510/egger-zisch-0-33.1200x630.png",
       "image_source": "https://egger-bier.at/sortiment/egger-zisch/",
-      "image_license": "Pressebereich: https://egger-bier.at/presse/"
+      "image_license": "Pressebereich: https://egger-bier.at/presse/",
+      "description_community": "Süß und malzig mit erfrischender Spritzigkeit; alkoholfrei und isotonisch, von der Brauerei ausdrücklich für nach dem Sport gedacht."
     },
     {
       "id": "at-privatbrauerei-egger-zitrusradler",
       "brewery_id": "at-egger",
       "name": "Egger Zitrusradler",
-      "style": "Bier",
+      "style": "Radler",
       "abv": 2.5,
       "ibu": null,
       "is_alcohol_free": false,
@@ -1046,7 +1057,8 @@
       ],
       "barcode_volumes": {
         "9120041151071": 330
-      }
+      },
+      "description_community": "Kräftig und süffig mit dezenter feinherber Note; anders als die Münchner Festbiere mit obergäriger Ale-Hefe gebraut, die ihm ein klassisch hefig-fruchtiges Aroma gibt."
     },
     {
       "id": "at-engelszell-gregorius",
@@ -1102,14 +1114,15 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/912/004/115/0869/front_de.4.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9120041150869",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Helles Weizenvollbier aus der Trappistenbrauerei; sattes Gold mit leichter Trübung, Hopfenaromen neben den üblichen Weißbierfrüchten, schlanker Körper und angenehme Rezenz."
     },
     {
       "id": "at-stift-engelszell-zwickl-trappisten",
       "brewery_id": "at-engelszell",
       "name": "Engelszell Zwickl Trappisten",
       "style": "Zwickl",
-      "abv": null,
+      "abv": 4.7,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
@@ -1120,7 +1133,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/912/004/115/0906/front_de.4.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9120041150906",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Unfiltriert und unpasteurisiert aus einer der wenigen Trappistenbrauereien; bernsteinfarben, fruchtige Aromen der obergärigen Hefe, dazu die feinherbe Note von Mühlviertler Hopfen — vollmundig, ohne schwer zu wirken."
     },
     {
       "id": "at-brauerei-fohrenburger-alkoholfrei",
@@ -1203,7 +1217,8 @@
         "90165078"
       ],
       "image_url": "https://www.fohrenburger.at/media/stiftle-stift_group.png",
-      "image_source": "https://www.fohrenburger.at/sortiment/"
+      "image_source": "https://www.fohrenburger.at/sortiment/",
+      "description_community": "Das Bludenzer Leichtbier nach neuer Rezeptur, mit weniger Malz auf 4,8 Prozent gebracht; malzig-getreidig mit leiser Hopfenwürze, mittlerer Süße und leichter Bittere — frisch und ausgesprochen süffig."
     },
     {
       "id": "at-brauerei-fohrenburger-weizen",
@@ -1401,7 +1416,8 @@
       ],
       "image_url": "https://www.frastanzer.at/sites/default/files/2024-04/frastanzer-bier-sklenne_small.png",
       "image_source": "https://www.frastanzer.at/produkt/sklenne",
-      "image_license": "Pressebereich: https://frastanzer.at/presse-downloads - Copyright Brauerei Frastanz eGen, Verwendung nur mit Hinweis '© frastanzer', Produktbilder auf Anfrage"
+      "image_license": "Pressebereich: https://frastanzer.at/presse-downloads - Copyright Brauerei Frastanz eGen, Verwendung nur mit Hinweis '© frastanzer', Produktbilder auf Anfrage",
+      "description_community": "Der kleine Frastanzer; in der Nase klare Malzsüße nach Kleehonig und Cornflakes, am Gaumen kühl mit Zitrusschale über schlankem Malzkörper."
     },
     {
       "id": "at-braucommune-freistaedter-alkoholfrei-grapefruit-radler",
@@ -1432,7 +1448,8 @@
       },
       "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2025/10/Alkoholfreies_Bier_Flasche_05l_korkenNEU_ohneSchatten.png",
       "image_source": "https://www.freistaedter-bier.at/produkte/",
-      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/",
+      "description_community": "Die alkoholfreie Ausgabe des Freistädter Hopfencharakters — gedacht für alle, die den Geschmack wollen und die Heimfahrt."
     },
     {
       "id": "at-braucommune-freistaedter-bio-zwickl",
@@ -1450,7 +1467,8 @@
       },
       "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2022/02/FREISTAEDTER_Flasche_Bio-Zwickl.png",
       "image_source": "https://www.freistaedter-bier.at/produkte/",
-      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/",
+      "description_community": "Unfiltriertes Kellerbier in orangem Ton mit schöner Zwickl-Trübung; volles Aroma mit süßen Noten und Hefe, im Abgang Röstaromen und feine Hopfenbittere."
     },
     {
       "id": "at-braucommune-freistaedter-imperator",
@@ -1465,7 +1483,8 @@
       ],
       "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2022/02/FREISTAEDTER_Flasche_Imperator.png",
       "image_source": "https://www.freistaedter-bier.at/produkte/",
-      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/",
+      "description_community": "Oberösterreichischer Bock, gebraut zum 250. Jahr der Braucommune; mit 8,2 Prozent das schwerste Glas des Hauses und entsprechend zum Nippen statt zum Durst."
     },
     {
       "id": "at-braucommune-freistaedter-imperial-stout",
@@ -1609,7 +1628,8 @@
         "9028800150634": 500
       },
       "image_url": "https://www.goesser.at/wp-content/uploads/2024/02/GOe-Biostoff-Uebersicht_v3.png",
-      "image_source": "https://www.goesser.at/produkte/"
+      "image_source": "https://www.goesser.at/produkte/",
+      "description_community": "Das Bio-Lager der Grünen Brauerei, mit Bio-Hopfen aus dem Mühlviertel; sattes Goldgelb mit kupfernen Reflexen, feine Malztöne unter einer zurückhaltenden Hopfennote, harmonisch und leicht im Abgang."
     },
     {
       "id": "at-goesser-goesser-bock",
@@ -1728,7 +1748,8 @@
         "9028800641286": 330
       },
       "image_url": "https://www.goesser.at/wp-content/uploads/2021/05/Go_NaturRadler_AF_00_Himbeer_Rhabarber-1.png",
-      "image_source": "https://www.goesser.at/produkte/"
+      "image_source": "https://www.goesser.at/produkte/",
+      "description_community": "Naturtrüb und leuchtend himbeerfarben; die milde Süße reifer Himbeeren trifft die Säure von frischem Rhabarber über fruchtiger Zitronenlimonade — alkoholfrei."
     },
     {
       "id": "at-goesser-goesser-naturradler-0-0-alkoholfrei-zitrone",
@@ -1755,7 +1776,8 @@
         "90288647": 330
       },
       "image_url": "https://www.goesser.at/wp-content/uploads/2019/03/Go_NaturRadler_AF_00.png",
-      "image_source": "https://www.goesser.at/produkte/"
+      "image_source": "https://www.goesser.at/produkte/",
+      "description_community": "Die alkoholfreie Ausgabe des NaturRadlers, seit 2019 im Sortiment; dieselbe naturtrübe Zitronenfrische, nur ohne den Alkohol."
     },
     {
       "id": "at-goesser-goesser-naturradler-extra-frisch-zitrus-mix",
@@ -1769,7 +1791,8 @@
         "9028800142950"
       ],
       "image_url": "https://www.goesser.at/wp-content/uploads/2022/04/Go_NaturRadler_ZitrusMix-1.png",
-      "image_source": "https://www.goesser.at/produkte/"
+      "image_source": "https://www.goesser.at/produkte/",
+      "description_community": "Die spitzere Variante des NaturRadlers: mehrere Zitrusfrüchte statt nur Zitrone, entsprechend frischer im Antrunk."
     },
     {
       "id": "at-goesser-goesser-naturradler-zitrone",
@@ -1807,7 +1830,8 @@
         "90288470": 500
       },
       "image_url": "https://www.goesser.at/wp-content/uploads/2017/02/Go_NaturRadler.png",
-      "image_source": "https://www.goesser.at/produkte/"
+      "image_source": "https://www.goesser.at/produkte/",
+      "description_community": "Der Radler des Hauses Göss mit naturtrüber Zitronenlimonade; spritzig und zitronig, mit der Malzbasis noch deutlich im Hintergrund."
     },
     {
       "id": "at-goesser-spezial",
@@ -1933,8 +1957,8 @@
       "id": "at-gusswerk-bio-brotbier",
       "brewery_id": "at-gusswerk",
       "name": "Gusswerk Bio Brotbier",
-      "style": "Bier",
-      "abv": null,
+      "style": "Brotbier",
+      "abv": 5.5,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
@@ -1945,7 +1969,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/912/006/022/2714/front_de.3.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9120060222714",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Aus Brot gebraut: Ein Teil des Gerstenmalzes wird durch Bio-Backwaren ersetzt, die sonst weggeworfen würden. Bernsteinfarben und naturtrüb, im Geschmack die malzige Note knuspriger Brotkruste — von Bio Austria zum Bio-Produkt des Jahres gewählt."
     },
     {
       "id": "at-gusswerk-citra-beach",
@@ -2318,7 +2343,8 @@
         "9002803021139"
       ],
       "image_url": "https://www.hirterbier.at/wp-content/uploads/Hirter_Maerzen_Flasche.webp",
-      "image_source": "https://www.hirterbier.at/produkt/hirter-maerzen/"
+      "image_source": "https://www.hirterbier.at/produkt/hirter-maerzen/",
+      "description_community": "Das Kärntner Märzen aus Micheldorf; mild in der Kohlensäure und kräftig im Extrakt, mit Zitrusnoten und reifem Getreide, im Abgang rund und glatt durch den hohen Vergärungsgrad."
     },
     {
       "id": "at-hirter-privat-pils",
@@ -2556,8 +2582,8 @@
       "id": "at-kaltenhausen-edelweiss-alkoholfrei",
       "brewery_id": "at-kaltenhausen",
       "name": "Edelweiss Alkoholfrei",
-      "style": "Alkoholfreies Bier",
-      "abv": null,
+      "style": "Alkoholfreies Weißbier",
+      "abv": 0.5,
       "ibu": null,
       "is_alcohol_free": true,
       "barcodes": [
@@ -2569,14 +2595,15 @@
       },
       "image_url": "https://www.edelweissbier.at/wp-content/uploads/2019/01/alkoholfrei.png",
       "image_source": "https://www.edelweissbier.at/wp-json/wp/v2/media?search=alkoholfrei&per_page=2&status=inherit",
-      "image_license": "Presse & Service: https://www.edelweissbier.at/presse-service/"
+      "image_license": "Presse & Service: https://www.edelweissbier.at/presse-service/",
+      "description_community": "Die alkoholfreie Ausgabe des Kaltenhausener Weißbiers; fruchtig-weizig im Charakter, gedacht für alle, die das Weißbierglas ohne Alkohol wollen."
     },
     {
       "id": "at-kaltenhausen-edelweiss-dunkel",
       "brewery_id": "at-kaltenhausen",
       "name": "Edelweiss Dunkel",
-      "style": "Dunkles",
-      "abv": null,
+      "style": "Dunkles Weißbier",
+      "abv": 5.3,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
@@ -2587,7 +2614,8 @@
       },
       "image_url": "https://www.edelweissbier.at/wp-content/uploads/2016/12/dunkel-139x380.png",
       "image_source": "https://www.edelweissbier.at/wp-json/wp/v2/media?search=dunkel&per_page=2&status=inherit",
-      "image_license": "Presse & Service: https://www.edelweissbier.at/presse-service/"
+      "image_license": "Presse & Service: https://www.edelweissbier.at/presse-service/",
+      "description_community": "Dunkles Weißbier in Kastanienbraun unter mächtiger Krone; in der Nase Weizenmalz mit leiser Banane und rauchiger Malznote, im Mund malzig-cremige Süße, im langen Abgang Hefe und Hopfen nebeneinander."
     },
     {
       "id": "at-kaltenhausen-edelweiss-gamsbock",
@@ -2606,7 +2634,7 @@
       "id": "at-kaltenhausen-edelweiss-hefetrueb-weizenbier",
       "brewery_id": "at-kaltenhausen",
       "name": "Edelweiss Hefetrüb Weizenbier",
-      "style": "Bier",
+      "style": "Weißbier",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
@@ -2621,7 +2649,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/900/310/012/3021/front_de.16.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9003100123021",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Österreichs meistgetrunkenes Weißbier, nach einer Rezeptur aus Kaltenhausen; naturtrüb und goldgelb, in der Nase dezente Banane, im Mund vollmundig-fruchtig mit Restsüße aus dem Malz und der erfrischenden Säure des Weizens."
     },
     {
       "id": "at-kaltenhausen-edelweiss-hofbraeu",
@@ -2880,13 +2909,14 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/000/009/013/5323/front_en.3.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/90135323",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Etwas kräftiger als das Pfiff, aber deutlich leichter als das Spezial; ein würzig-mildes Vollbier ohne Ecken."
     },
     {
       "id": "at-mohrenbrauerei-mohrenbraeu-festbock",
       "brewery_id": "at-mohrenbraeu",
       "name": "Mohrenbräu Festbock",
-      "style": "Bier",
+      "style": "Bockbier",
       "abv": 7.0,
       "ibu": null,
       "is_alcohol_free": false,
@@ -2897,13 +2927,14 @@
         "9013500011002": 330
       },
       "image_url": "https://www.mohrenbrauerei.at/wp-content/uploads/2025/03/Festbock.png",
-      "image_source": "https://www.mohrenbrauerei.at/unser-bier/mohren-biersortiment/"
+      "image_source": "https://www.mohrenbrauerei.at/unser-bier/mohren-biersortiment/",
+      "description_community": "Die saisonale Starkbierspezialität des Hauses, für besondere Anlässe gebraut; vollmundig mit angenehm milder Bittere, die harmonisch ausklingt."
     },
     {
       "id": "at-mohrenbrauerei-mohrenbraeu-gambrinus",
       "brewery_id": "at-mohrenbraeu",
       "name": "Mohrenbräu Gambrinus",
-      "style": "Bier",
+      "style": "Dunkles",
       "abv": 4.3,
       "ibu": null,
       "is_alcohol_free": false,
@@ -2914,7 +2945,8 @@
         "9013500010968": 330
       },
       "image_url": "https://www.mohrenbrauerei.at/wp-content/uploads/2025/03/Gambrinus.png",
-      "image_source": "https://www.mohrenbrauerei.at/unser-bier/mohren-biersortiment/"
+      "image_source": "https://www.mohrenbrauerei.at/unser-bier/mohren-biersortiment/",
+      "description_community": "Das Dunkle nach Münchner Art, die Farbe kommt vom Münchner Malz; leicht gehopft, aromatisch malzig und mild trinkbar."
     },
     {
       "id": "at-mohrenbrauerei-mohrenbraeu-gold",
@@ -2941,7 +2973,8 @@
       ],
       "image_url": "https://www.mohrenbrauerei.at/wp-content/uploads/2023/11/Helles.png",
       "image_source": "https://www.mohrenbrauerei.at/unser-bier/mohren-biersortiment/mohren-helles/",
-      "image_license": "Downloadcenter: https://www.mohrenbrauerei.at/downloads/"
+      "image_license": "Downloadcenter: https://www.mohrenbrauerei.at/downloads/",
+      "description_community": "Leuchtendes Gold, frisches Hopfenaroma und feine Malznoten — das unkomplizierte Glas des Hauses für jede Gelegenheit."
     },
     {
       "id": "at-mohrenbrauerei-mohrenbraeu-hopfenplotz",
@@ -3004,7 +3037,7 @@
       "id": "at-mohrenbrauerei-mohrenbraeu-pfiff",
       "brewery_id": "at-mohrenbraeu",
       "name": "Mohrenbräu Pfiff",
-      "style": "Bier",
+      "style": "Märzen",
       "abv": 4.9,
       "ibu": null,
       "is_alcohol_free": false,
@@ -3016,7 +3049,8 @@
       },
       "image_url": "https://www.mohrenbrauerei.at/wp-content/uploads/2023/11/Pfiff.png",
       "image_source": "https://www.mohrenbrauerei.at/unser-bier/mohren-biersortiment/mohren-pfiff/",
-      "image_license": "Downloadcenter: https://www.mohrenbrauerei.at/downloads/"
+      "image_license": "Downloadcenter: https://www.mohrenbrauerei.at/downloads/",
+      "description_community": "Das Dornbirner Alltagsglas; goldgelb, malzig mit leiser Hopfenwürze, die Bittere bleibt im Hintergrund und das Ganze erfrischend spritzig."
     },
     {
       "id": "at-mohrenbrauerei-mohrenbraeu-pilsner",
@@ -3034,7 +3068,8 @@
       },
       "image_url": "https://www.mohrenbrauerei.at/wp-content/uploads/2025/03/Pils.png",
       "image_source": "https://www.mohrenbrauerei.at/unser-bier/mohren-biersortiment/mohren-pilsner/",
-      "image_license": "Downloadcenter: https://www.mohrenbrauerei.at/downloads/"
+      "image_license": "Downloadcenter: https://www.mohrenbrauerei.at/downloads/",
+      "description_community": "Rezent und elegant gehopft; besondere Pilsner Malze machen es schlank, ausgesuchte Hopfensorten geben ihm ein feines, angenehmes Hopfenaroma."
     },
     {
       "id": "at-mohrenbrauerei-mohrenbraeu-radler-grapefruit",
@@ -3075,7 +3110,8 @@
         "9013500007333": 500
       },
       "image_url": "https://www.mohrenbrauerei.at/wp-content/uploads/2023/11/RadlerZitrone.png",
-      "image_source": "https://www.mohrenbrauerei.at/unser-bier/mohren-biersortiment/"
+      "image_source": "https://www.mohrenbrauerei.at/unser-bier/mohren-biersortiment/",
+      "description_community": "Sechzig Prozent Zitronenlimonade auf vierzig Prozent Spezialbier; fruchtig, frisch und zitronig, naturtrüb im Glas."
     },
     {
       "id": "at-mohrenbrauerei-mohrenbraeu-saison",
@@ -3126,7 +3162,8 @@
       },
       "image_url": "https://www.mohrenbrauerei.at/wp-content/uploads/2023/11/Weizen.png",
       "image_source": "https://www.mohrenbrauerei.at/unser-bier/mohren-biersortiment/mohrenbraeu-weizen/",
-      "image_license": "Downloadcenter: https://www.mohrenbrauerei.at/downloads/"
+      "image_license": "Downloadcenter: https://www.mohrenbrauerei.at/downloads/",
+      "description_community": "Helles Weißbier in leichtem Bernstein unter der typischen festen, weißen Krone; fruchtig-weizig, wie es die Art verlangt."
     },
     {
       "id": "at-brauerei-murauer-11-11",
@@ -3156,7 +3193,8 @@
         "9014500001789": 500
       },
       "image_url": "https://www.murauerbier.at/wp-content/uploads/2026/07/Download-71.png",
-      "image_source": "https://www.murauerbier.at/produkte/"
+      "image_source": "https://www.murauerbier.at/produkte/",
+      "description_community": "Alkoholfrei ohne dünn zu wirken; voller, ausgewogener Biergeschmack mit erfrischender Hopfennote, im Antrunk zitronig, dahinter malzig."
     },
     {
       "id": "at-brauerei-murauer-black-hill",
@@ -3185,7 +3223,8 @@
         "90145049": 500
       },
       "image_url": "https://www.murauerbier.at/wp-content/uploads/2026/07/Bockbier-033.png",
-      "image_source": "https://www.murauerbier.at/produkte/"
+      "image_source": "https://www.murauerbier.at/produkte/",
+      "description_community": "Der kräftige Jahrgang aus Murau; reinweiße Krone, im Duft getrocknete Datteln und Aprikosen, im Mund satt-vollmundig mit feinen Malzaromen."
     },
     {
       "id": "at-murauer-der-steirer",
@@ -3220,7 +3259,8 @@
         "90145032": 500
       },
       "image_url": "https://www.murauerbier.at/wp-content/uploads/2026/07/Dunkel-05-1.png",
-      "image_source": "https://www.murauerbier.at/produkte/"
+      "image_source": "https://www.murauerbier.at/produkte/",
+      "description_community": "Kräftige Malzaromen und eine feine Süße; vollmundig, malzbetont und deutlich runder als das helle Sortiment der Brauerei."
     },
     {
       "id": "at-brauerei-murauer-hm-radler",
@@ -3235,7 +3275,8 @@
       ],
       "barcode_volumes": {
         "9014500002427": 330
-      }
+      },
+      "description_community": "Murauer Märzen mit Holunder-Marillen-Limonade; das „hm\" steht für genau diese zwei, und es schmeckt sommerlich-blumig statt nur süß."
     },
     {
       "id": "at-brauerei-murauer-hoamat-weisse",
@@ -3311,7 +3352,7 @@
       "id": "at-brauerei-murauer-pils",
       "brewery_id": "at-murauer",
       "name": "Murauer Pils",
-      "style": "Märzen",
+      "style": "Pils",
       "abv": 5.1,
       "ibu": null,
       "is_alcohol_free": false,
@@ -3319,7 +3360,8 @@
         "90145025"
       ],
       "image_url": "https://www.murauerbier.at/wp-content/uploads/2026/07/Download-72.png",
-      "image_source": "https://www.murauerbier.at/produkte/"
+      "image_source": "https://www.murauerbier.at/produkte/",
+      "description_community": "Das hopfenbetonte Glas aus Murau; feiner Aromahopfen gibt ihm einen frischen, angenehm hopfigen Charakter, der ausgewogen bleibt statt kernig zu bitteln."
     },
     {
       "id": "at-brauerei-murauer-preisel-bier",
@@ -3334,7 +3376,8 @@
       ],
       "barcode_volumes": {
         "90145568": 330
-      }
+      },
+      "description_community": "Vierzig Prozent Preiselbeerlimonade auf Murauer Bier; herb-fruchtig und deutlich weniger süß als die üblichen Zitronenradler."
     },
     {
       "id": "at-brauerei-murauer-stout",
@@ -3352,7 +3395,7 @@
       "id": "at-brauerei-murauer-weissbier",
       "brewery_id": "at-murauer",
       "name": "Murauer Weissbier",
-      "style": "Märzen",
+      "style": "Weißbier",
       "abv": 5.4,
       "ibu": null,
       "is_alcohol_free": false,
@@ -3360,7 +3403,8 @@
         "9014500000430"
       ],
       "image_url": "https://www.murauerbier.at/wp-content/uploads/2026/07/Weissbier-05.png",
-      "image_source": "https://www.murauerbier.at/produkte/"
+      "image_source": "https://www.murauerbier.at/produkte/",
+      "description_community": "Obergärig aus dem Murtal; in der Nase Nelke und Banane, im Mund eine schöne Fruchtsüße, die im Abgang von feiner Hopfenbittere aufgefangen wird."
     },
     {
       "id": "at-brauerei-murauer-zitro-bier",
@@ -3376,13 +3420,14 @@
       ],
       "barcode_volumes": {
         "90145391": 500
-      }
+      },
+      "description_community": "Der Zitronenradler aus Murau, sechzig Prozent Limonade auf vierzig Prozent Bier — leicht, spritzig und mit 2,1 Prozent das Glas für zwischendurch."
     },
     {
       "id": "at-brauerei-murauer-zwickl-hell",
       "brewery_id": "at-murauer",
       "name": "Murauer Zwickl Hell",
-      "style": "Märzen",
+      "style": "Zwickl",
       "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
@@ -3390,7 +3435,8 @@
         "9014500015175"
       ],
       "image_url": "https://www.murauerbier.at/wp-content/uploads/2026/07/Zwickl-Glas.png",
-      "image_source": "https://www.murauerbier.at/produkte/"
+      "image_source": "https://www.murauerbier.at/produkte/",
+      "description_community": "Unfiltriert und hefetrüb, deshalb mit mehr Eiweiß und Hefe im Glas als das filtrierte Märzen; das macht es weich und ausgesprochen süffig."
     },
     {
       "id": "at-neufeldner-biobrauerei-citrus-radler-alkoholfrei-0-33l",
@@ -3537,7 +3583,8 @@
       ],
       "image_url": "https://www.ottakringerbrauerei.at/de/wp-content/uploads/sites/6/2021/10/Flasche05L.png",
       "image_source": "https://www.ottakringerbrauerei.at/de/produkt/ottakringer-citrus-radler/",
-      "image_license": "Pressebereich: Packshot-ZIP https://www.ottakringerbrauerei.at/de/wp-content/uploads/sites/6/2023/05/Citrus-Radler.zip"
+      "image_license": "Pressebereich: Packshot-ZIP https://www.ottakringerbrauerei.at/de/wp-content/uploads/sites/6/2023/05/Citrus-Radler.zip",
+      "description_community": "Naturtrüber Radler mit Zitrusfrüchten statt nur Zitrone — die spitzere Variante im Ottakringer Radler-Regal."
     },
     {
       "id": "at-ottakringer-falco-brew",
@@ -3637,7 +3684,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/900/760/030/4386/front_en.3.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9007600304386",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Die Hausmarke, die Ottakringer für den Diskonter Hofer braut und abfüllt; unkompliziert und hell, im Regal deutlich billiger als das Ottakringer unter eigenem Namen."
     },
     {
       "id": "at-ottakringer-null-komma-josef",
@@ -3674,7 +3722,8 @@
       ],
       "image_url": "https://images.openfoodfacts.org/images/products/900/760/030/6939/front_de.4.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9007600306939",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Die Radler-Ausgabe des alkoholfreien Null Komma Josef, mit Zitrone und Minze; der Name spielt auf „null komma nichts\" an, gemeint ist der Alkohol unter 0,5 Prozent."
     },
     {
       "id": "at-ottakringer-ottakringer-pils",
@@ -3798,7 +3847,7 @@
       "brewery_id": "at-ottakringer-brauwerk",
       "name": "Brauwerk Session IPA",
       "style": "IPA",
-      "abv": null,
+      "abv": 4.3,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
@@ -3809,7 +3858,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/900/760/030/4812/front_de.3.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9007600304812",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Das „Big Easy\" des Wiener Brauwerks: bernsteinfarbenes Session Ale mit Mango, Passionsfrucht, Litschi und Holunder in der Nase, trocken und schlank im Mund, mit anhaltender Bittere im Abgang."
     },
     {
       "id": "at-ottakringer-brauwerk-sunbeam-blonde",
@@ -3874,7 +3924,8 @@
         "9028800141052"
       ],
       "image_url": "https://www.puntigamer.at/wp-content/uploads/2013/03/bier3.png",
-      "image_source": "https://www.puntigamer.at/wp-json/wp/v2/media?parent=1064"
+      "image_source": "https://www.puntigamer.at/wp-json/wp/v2/media?parent=1064",
+      "description_community": "Würzig, fruchtig, malzig in der Nase, im Mund leicht trocken und elegant vollmundig; ein schonendes Verfahren nimmt nur den Alkohol heraus, der steirische Charakter bleibt."
     },
     {
       "id": "at-brauerei-puntigamer-winterbier",
@@ -4266,7 +4317,8 @@
       ],
       "barcode_volumes": {
         "90161018": 500
-      }
+      },
+      "description_community": "Spezialbier auf Wasser aus dem Böhmerwald; Gerstenmalz und Mühlviertler Hopfen geben Vollmundigkeit und eine edel-aromatische Hopfenbittere, der reine Glanz im Glas ist Programm."
     },
     {
       "id": "at-stiftsbrauerei-malz-koenig",
@@ -4499,7 +4551,8 @@
         "9028800142400"
       ],
       "image_url": "https://www.schwechater.at/wp-content/uploads/2025/07/SA-AF-Dose-Home.png",
-      "image_source": "https://www.schwechater.at/wp-json/wp/v2/media?search=SA&per_page=3"
+      "image_source": "https://www.schwechater.at/wp-json/wp/v2/media?search=SA&per_page=3",
+      "description_community": "Kräftiges Goldgelb, im Aroma dezent malzig mit einem Hauch Hopfen; am Gaumen frisch, angenehm vollmundig und sehr harmonisch mit feiner Hopfenbittere — Bier ohne Alkohol."
     },
     {
       "id": "at-schwechater-bier",
@@ -5184,7 +5237,8 @@
         "90139055"
       ],
       "image_url": "https://www.trumer.at/Content/uploads/freispiel/generated/freispiel_Trumer-Freispiel-mit-HG-320x461.jpg",
-      "image_source": "https://www.trumer.at/bier/"
+      "image_source": "https://www.trumer.at/bier/",
+      "description_community": "Alkoholfreies Pils mit spritziger Frische; in der Nase Stachelbeere, Limette und Holunderblüte, im Mund leichtes Malz und Zitrusfrucht über einer cremigen Textur."
     },
     {
       "id": "at-trumer-trumer-hopfenspiel",
@@ -5239,7 +5293,8 @@
       ],
       "image_url": "https://www.villacher.com/media/villacher_freilich_05_glas-1.png",
       "image_source": "https://www.villacher.com/sortiment/",
-      "image_license": "villacher-bier.at ist tot; aktive Herstellerdomain ist villacher.com"
+      "image_license": "villacher-bier.at ist tot; aktive Herstellerdomain ist villacher.com",
+      "description_community": "Kärntens erstes alkoholfreies Bier; feinporige, cremige Krone, glänzende Farbe und eine erfrischende Hopfennote, dazu fruchtige und malzbetonte Töne über milder Bittere."
     },
     {
       "id": "at-villacher-bier-villacher-glockner-pils",
@@ -5492,7 +5547,8 @@
         "90031151": 500
       },
       "image_url": "https://www.kaiserbier.at/wp-content/uploads/2013/03/bier1-1.png",
-      "image_source": "https://www.kaiserbier.at/wp-json/wp/v2/media?parent=1064&status=inherit"
+      "image_source": "https://www.kaiserbier.at/wp-json/wp/v2/media?parent=1064&status=inherit",
+      "description_community": "Weicher, schlanker Antrunk, bemerkenswert süffig; leichtes Malz, Weißbrot und Getreide als Basis, dazu feine Hopfenbittere mit zart kräuterigen und grasigen Nuancen."
     },
     {
       "id": "at-wieselburger-kaiser-goldquell",
@@ -5638,7 +5694,8 @@
         "9028800633274": 500
       },
       "image_url": "https://www.wieselburger.at/wp-content/uploads/2020/01/wieselburger-schwarzbier-flasche.png",
-      "image_source": "https://www.wieselburger.at/wp-json/wp/v2/media/10702"
+      "image_source": "https://www.wieselburger.at/wp-json/wp/v2/media/10702",
+      "description_community": "Das dunkle Glas aus Wieselburg nach deutscher Schwarzbier-Art; die Röstnoten bleiben dabei zurückhaltend statt kaffeeartig."
     },
     {
       "id": "at-brauerei-wieselburger-spezial",
@@ -5929,10 +5986,10 @@
       "id": "at-zipfer-hops-bitter-orange",
       "brewery_id": "at-zipfer",
       "name": "Zipfer HOPS Bitter Orange",
-      "style": "Radler",
-      "abv": null,
+      "style": "Hopfenlimonade",
+      "abv": 0.0,
       "ibu": null,
-      "is_alcohol_free": false,
+      "is_alcohol_free": true,
       "barcodes": [
         "9028800127605"
       ],
@@ -5941,31 +5998,33 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/902/880/012/7605/front_de.4.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9028800127605",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Hopfenlimonade mit fruchtig-herber Bitterorange über einer ausgewogenen Hopfenblume; alkoholfrei, trockener als jeder Radler."
     },
     {
       "id": "at-zipfer-hops-grapefruit",
       "brewery_id": "at-zipfer",
       "name": "Zipfer HOPS Grapefruit",
-      "style": "Radler",
-      "abv": null,
+      "style": "Hopfenlimonade",
+      "abv": 0.0,
       "ibu": null,
-      "is_alcohol_free": false,
+      "is_alcohol_free": true,
       "barcodes": [
         "9028800142899"
       ],
       "barcode_volumes": {
         "9028800142899": 330
-      }
+      },
+      "description_community": "Die Grapefruit-Ausgabe der alkoholfreien Hopfenlimonade; herb-fruchtig mit den feinen Nuancen des Aromahopfens dahinter."
     },
     {
       "id": "at-zipfer-hops-zitrone",
       "brewery_id": "at-zipfer",
       "name": "Zipfer HOPS Zitrone",
-      "style": "Bier",
-      "abv": null,
+      "style": "Hopfenlimonade",
+      "abv": 0.0,
       "ibu": null,
-      "is_alcohol_free": false,
+      "is_alcohol_free": true,
       "barcodes": [
         "9028800631096",
         "9028800737927"
@@ -5975,7 +6034,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/902/880/063/1096/front_en.3.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9028800631096",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Keine Limonade und kein Bier, sondern Hopfenlimonade: der Aromahopfen Cascade mit dezenten Zitronen- und Grünteenoten, angenehm hopfig, aber weder bitter noch süß — und alkoholfrei."
     },
     {
       "id": "at-brauerei-zipfer-josefi-bock",
@@ -6014,7 +6074,8 @@
         "9028800601181"
       ],
       "image_url": "https://www.zipfer.at/wp-content/uploads/2021/11/radler_0.3.png",
-      "image_source": "https://www.zipfer.at/unser-bier/"
+      "image_source": "https://www.zipfer.at/unser-bier/",
+      "description_community": "Goldnuancen und der Duft von Lemongras, dann vollmundiges Zipfer mit dem Saft sonnengereifter Limetten — der Radler des Hauses für den Sommer."
     },
     {
       "id": "at-brauerei-zipfer-maerzen",
@@ -6148,7 +6209,8 @@
       ],
       "image_url": "https://www.zwettler.at/wp-content/uploads/2025/06/9008300000554_Zwettler_FREI_033-removebg-preview-e1758087462424.png",
       "image_source": "https://www.zwettler.at/sortiment/",
-      "image_license": "Mediendatenbank: https://www.zwettler.at/mediendatenbank/"
+      "image_license": "Mediendatenbank: https://www.zwettler.at/mediendatenbank/",
+      "description_community": "Alkoholfrei und isotonisch, mit Hopfen und Braugerste aus Bauerngenossenschaften der Gegend und Wasser aus den eigenen Quellen — das Waldviertler Glas ohne Alkohol."
     },
     {
       "id": "at-privatbrauerei-zwettler-luftikus",
@@ -6252,7 +6314,8 @@
       },
       "image_url": "https://www.zwettler.at/wp-content/uploads/2025/09/Zwettler_Zwickl-e1757936552928.png",
       "image_source": "https://www.zwettler.at/sortiment/",
-      "image_license": "Mediendatenbank: https://www.zwettler.at/mediendatenbank/"
+      "image_license": "Mediendatenbank: https://www.zwettler.at/mediendatenbank/",
+      "description_community": "Lebendiger Hefeton in der Nase, dahinter ein vielschichtiges Bild mit vitaler Säure und feinen Bitternoten; am Gaumen seidig-weich, vollmundig und rund."
     }
   ]
 }
