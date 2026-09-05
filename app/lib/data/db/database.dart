@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 
 import '../../core/serving_style.dart';
+import '../../core/sichtbarkeit.dart';
 import '../seed.dart';
 import 'connection/connection.dart';
 
@@ -9,6 +10,7 @@ import 'connection/connection.dart';
 // weil auch `domain/` es braucht und dort nichts aus `data/` importieren
 // darf (siehe .claude/architecture.md).
 export '../../core/serving_style.dart';
+export '../../core/sichtbarkeit.dart';
 
 part 'database.g.dart';
 
@@ -16,7 +18,7 @@ part 'database.g.dart';
 // Enums (Spiegel des Supabase-Schemas, docs/04-datenmodell.md)
 // ============================================================================
 
-enum SessionVisibility { friends, crew, private }
+// SessionVisibility steht in core/sichtbarkeit.dart (oben re-exportiert).
 
 enum SessionStatus { active, ended }
 
@@ -38,6 +40,12 @@ class Profiles extends Table {
   TextColumn get bio => text().nullable()();
   TextColumn get favoriteStyles => text().withDefault(const Constant(''))();
   BoolColumn get isMe => boolean().withDefault(const Constant(false))();
+
+  /// Voreinstellung für neue Check-ins (Funktion 44). Die Wahrheit steht
+  /// am Server (`profiles.default_visibility`, 0058); hier liegt sie,
+  /// damit auch ein offline angelegter Check-in sie kennt.
+  TextColumn get defaultVisibility =>
+      textEnum<SessionVisibility>().withDefault(const Constant('friends'))();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -209,6 +217,16 @@ class Checkins extends Table {
 
   /// Foto des Check-ins (öffentliche URL im beer-photos-Bucket).
   TextColumn get photoUrl => text().nullable()();
+
+  /// Wer diesen Check-in sehen darf (Funktion 44).
+  ///
+  /// Steht am Server seit 0001 und wurde bis 0.10.19 hart auf `friends`
+  /// geschrieben — die lokale Datenbank kannte den Wert deshalb gar
+  /// nicht. Er gehört hierher, weil ein offline entstandener Check-in
+  /// seine Sichtbarkeit mitbringen muss: Der Abgleich kommt vielleicht
+  /// erst Stunden später.
+  TextColumn get visibility =>
+      textEnum<SessionVisibility>().withDefault(const Constant('friends'))();
 
   /// Füllmenge in Millilitern. Ohne sie gibt es keine Literangabe — und
   /// genau danach fragt man als erstes, wenn man ein Jahr zurückblickt.
@@ -407,7 +425,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(openInMemory());
 
   @override
-  int get schemaVersion => 15;
+  int get schemaVersion => 16;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -530,6 +548,14 @@ class AppDatabase extends _$AppDatabase {
             // v12: Hintergrundgeschichten zu Bier und Brauerei.
             await m.addColumn(beers, beers.story);
             await m.addColumn(breweries, breweries.story);
+          }
+          if (from < 16) {
+            // v16: Sichtbarkeit je Check-in und die Voreinstellung dazu
+            // (Funktion 44). Beide mit Vorgabe `friends` — genau der
+            // Wert, den die App bis dahin fest geschrieben hat, sodass
+            // sich für bestehende Zeilen nichts ändert.
+            await m.addColumn(checkins, checkins.visibility);
+            await m.addColumn(profiles, profiles.defaultVisibility);
           }
           if (from < 15) {
             // v15: Herkunft der Produktbilder (Funktion 04).
@@ -1235,9 +1261,15 @@ class AppDatabase extends _$AppDatabase {
     String? venueName,
     String? venueId,
     bool clearVenue = false,
+    /// Sichtbarkeit nachträglich ändern (Funktion 44). `null` heißt hier
+    /// wie überall „nicht anfassen" — es gibt kein „löschen", weil jeder
+    /// Check-in einen Wert hat.
+    SessionVisibility? visibility,
   }) async {
     await (update(checkins)..where((t) => t.id.equals(checkinId))).write(
       CheckinsCompanion(
+        visibility:
+            visibility == null ? const Value.absent() : Value(visibility),
         // Wie bei Notiz und Gebinde: `null` heißt „nicht anfassen",
         // gelöscht wird nur auf ausdrückliche Ansage. Ohne diese
         // Unterscheidung ließe sich eine versehentliche Bewertung nie

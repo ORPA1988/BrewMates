@@ -91,6 +91,11 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
   /// Gewähltes Foto (JPEG-Bytes); Upload passiert beim Speichern.
   Uint8List? _photoBytes;
 
+  /// Wer den Check-in sehen darf. `null` heißt: noch nicht angefasst —
+  /// dann gilt die Voreinstellung des Kontos, die erst aus der Datenbank
+  /// kommt (Funktion 44).
+  SessionVisibility? _sichtbarkeit;
+
   /// Gewähltes Gasthaus aus der gemeinsamen DB (null = Freitext).
   String? _venueId;
 
@@ -159,6 +164,7 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
             servingStyle: _serving,
             volumeMl: _volumeMl,
             photoUrl: photoUrl,
+            visibility: _sichtbarkeit,
           );
       if (!mounted) return;
       if (photoFailed) {
@@ -359,6 +365,34 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
               border: OutlineInputBorder(),
             ),
           ),
+          const SizedBox(height: 16),
+          ...() {
+            // Die Voreinstellung steht am Konto; bis sie da ist, zeigt
+            // die Auswahl `friends` — denselben Wert, den die App bis
+            // 0.10.19 fest geschrieben hat.
+            final vorgabe = ref.watch(meProvider).valueOrNull?.defaultVisibility ??
+                SessionVisibility.friends;
+            final gewaehlt = _sichtbarkeit ?? vorgabe;
+            return [
+              Text('Wer sieht das?', style: theme.textTheme.titleSmall),
+              const SizedBox(height: 8),
+              SegmentedButton<SessionVisibility>(
+                segments: [
+                  for (final v in SessionVisibility.values)
+                    ButtonSegment(value: v, label: Text(visibilityLabel(v))),
+                ],
+                selected: {gewaehlt},
+                onSelectionChanged: (auswahl) =>
+                    setState(() => _sichtbarkeit = auswahl.first),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                visibilityHint(gewaehlt),
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              ),
+            ];
+          }(),
           const SizedBox(height: 16),
           Text('Foto (optional)', style: theme.textTheme.titleSmall),
           const SizedBox(height: 8),

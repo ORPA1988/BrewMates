@@ -10,6 +10,8 @@
 /// bestehender Importeur angefasst werden muss.
 library;
 
+import '../../core/sichtbarkeit.dart';
+
 /// Freundeskreis (0024). Die Reihenfolge trägt die Vergleiche —
 /// `bekannter < freund < buddy`, genau wie im Aufzählungstyp der
 /// Datenbank.
@@ -63,6 +65,7 @@ class RemoteProfile {
     this.accountNo,
     this.thirstyUntil,
     this.tier = FriendTier.freund,
+    this.defaultVisibility = SessionVisibility.friends,
   });
 
   factory RemoteProfile.fromRow(
@@ -84,6 +87,11 @@ class RemoteProfile {
             ? null
             : DateTime.parse(row['thirsty_until'] as String).toLocal(),
         tier: tier,
+        // Nur beim eigenen Profil mitgeliefert; bei fremden fehlt die
+        // Spalte in der Auswahl, und die Vorgabe greift.
+        defaultVisibility: SessionVisibility.values.firstWhere(
+            (v) => v.name == row['default_visibility'],
+            orElse: () => SessionVisibility.friends),
       );
 
   final String id;
@@ -94,6 +102,10 @@ class RemoteProfile {
   /// Mein Kreis für diese Person (einseitig und privat — der andere
   /// erfährt ihn nie).
   final FriendTier tier;
+
+  /// Sichtbarkeit, mit der neue Check-ins vorbelegt werden (Funktion 44).
+  /// Bei fremden Profilen bedeutungslos — sie wird dort nicht geladen.
+  final SessionVisibility defaultVisibility;
 
   /// 🍺 Bierlaune (0018): bis wann Lust auf ein Bier signalisiert wird.
   final DateTime? thirstyUntil;

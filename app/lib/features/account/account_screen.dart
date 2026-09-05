@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
+import '../../core/sichtbarkeit.dart';
 import '../../core/app_update.dart';
 import '../../core/config.dart';
 import '../../data/online/online_service.dart';
@@ -655,6 +656,71 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     };
   }
 
+  /// Voreinstellung: Wer sieht neue Check-ins? (Funktion 44)
+  ///
+  /// Sie liegt am Profil und nicht am Gerät — deshalb schreibt die Wahl
+  /// **erst zum Server** und erst danach lokal. Scheitert der Server,
+  /// bleibt beides beim Alten, statt dass zwei Geräte verschiedene
+  /// Voreinstellungen behaupten (Regel A).
+  Widget _sichtbarkeitsKarte(
+    ThemeData theme,
+    ColorScheme scheme,
+    OnlineService online,
+    RemoteProfile profile,
+  ) {
+    final gewaehlt = profile.defaultVisibility;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Wer sieht neue Check-ins?', style: theme.textTheme.titleSmall),
+            const SizedBox(height: 4),
+            Text(
+              'Voreinstellung für alles Neue. Beim Einchecken kannst du sie '
+              'jedes Mal ändern.',
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(color: scheme.onSurfaceVariant),
+            ),
+            const SizedBox(height: 10),
+            SegmentedButton<SessionVisibility>(
+              segments: [
+                for (final v in SessionVisibility.values)
+                  ButtonSegment(value: v, label: Text(visibilityLabel(v))),
+              ],
+              selected: {gewaehlt},
+              onSelectionChanged: (auswahl) async =>
+                  _sichtbarkeitSetzen(online, auswahl.first),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              visibilityHint(gewaehlt),
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(color: scheme.onSurfaceVariant),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _sichtbarkeitSetzen(
+      OnlineService online, SessionVisibility gewaehlt) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final ok = await online.updateMyProfile(defaultVisibility: gewaehlt);
+    if (!ok) {
+      messenger.showSnackBar(const SnackBar(
+        content: Text('Konnte nicht gespeichert werden — keine Verbindung? '
+            'Die Voreinstellung ist unverändert.'),
+      ));
+      return;
+    }
+    // Erst jetzt lokal: Der Server hat bestätigt.
+    await ref.read(actionsProvider).setDefaultVisibility(gewaehlt);
+    ref.invalidate(myRemoteProfileProvider);
+  }
+
   Widget _buildAccount(OnlineService online, String? email) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
@@ -694,6 +760,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               ),
             ),
           ),
+        if (profile != null) ...[
+          const SizedBox(height: 20),
+          _sichtbarkeitsKarte(theme, scheme, online, profile),
+        ],
         if (profile?.accountNo != null)
           Center(
             child: Text(

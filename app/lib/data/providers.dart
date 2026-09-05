@@ -162,6 +162,16 @@ class BrewActions {
   /// er lokal gespeichert und wird nachgeliefert (Retry alle 5 Minuten),
   /// aber „gespeichert" allein liess den Menschen glauben, Freunde saehen
   /// ihn schon.
+  /// Die Voreinstellung für neue Check-ins lokal übernehmen.
+  ///
+  /// Nur lokal: Am Server steht sie schon, sonst wäre diese Methode gar
+  /// nicht aufgerufen worden (Funktion 44, `_sichtbarkeitSetzen`).
+  Future<void> setDefaultVisibility(SessionVisibility v) async {
+    final me = await _me();
+    await (_db.update(_db.profiles)..where((t) => t.id.equals(me.id)))
+        .write(ProfilesCompanion(defaultVisibility: Value(v)));
+  }
+
   Future<({List<CelebrationItem> celebrations, bool synced})> createCheckin({
     required String beerId,
     double? rating,
@@ -172,6 +182,9 @@ class BrewActions {
     ServingStyle? servingStyle,
     int? volumeMl,
     String? photoUrl,
+    /// Wer den Check-in sehen darf. `null` heißt: die Voreinstellung des
+    /// Kontos nehmen (Funktion 44) — der Aufrufer muss sie nicht kennen.
+    SessionVisibility? visibility,
   }) async {
     final me = await _me();
     final now = DateTime.now();
@@ -195,6 +208,7 @@ class BrewActions {
           servingStyle: Value(servingStyle),
           volumeMl: Value(volumeMl),
           photoUrl: Value(photoUrl),
+          visibility: Value(visibility ?? me.defaultVisibility),
           createdAt: now,
         ));
     // Online spiegeln (Freunde sehen den Check-in in ihrem Feed).
@@ -281,6 +295,7 @@ class BrewActions {
     String? venueName,
     String? venueId,
     bool clearVenue = false,
+    SessionVisibility? visibility,
   }) async {
     final me = await _me();
     final row = await _db.findCheckin(checkinId);
@@ -299,6 +314,7 @@ class BrewActions {
       venueName: venueName,
       venueId: venueId,
       clearVenue: clearVenue,
+      visibility: visibility,
     );
     return true;
   }
