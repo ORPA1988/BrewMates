@@ -264,6 +264,16 @@ Kontakte-Import (QR/Username bleibt), Spirituosen-Ausweitung,
 Verified-Venue-Komplexität, 0,25er-Rating-Fetisch als öffentliche
 Rangliste (Ratings primär privat/als Geschmacksprofil denken).
 
+**Eine dieser Leitplanken ist am 2026-09-05 gefallen — vom Menschen
+entschieden, nicht stillschweigend umgangen.** „Kein Vergleich mit
+anderen Nutzern" stand hier bis dahin ohne Einschränkung. Aus Meldung
+[#146](https://github.com/ORPA1988/BrewMates/issues/146) gibt es ihn
+jetzt, aber **nur als anonymes Aggregat**: zwei Zahlen nebeneinander,
+kein Rang, kein Perzentil, keine Namen, und Werte erst ab 20
+beitragenden Personen. Was weiter nicht kommt, ist die öffentliche
+Rangliste — die Form, an der aus Erinnerung ein Wettbewerb wird.
+Einzelheiten und die Grenzen: [Funktion 42](features/42-vergleich-mit-anderen.md).
+
 *Technik-Notiz: `spatial_ref_sys`-RLS (Advisor „critical") ist als
 PostGIS-Systemtabelle nur durch `supabase_admin` änderbar — Versuch am
 14.08. scheiterte an Ownership; bleibt dokumentierte, unkritische

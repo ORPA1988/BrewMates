@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../data/db/database.dart';
+import '../../data/beer_sort.dart';
 import '../../data/location_service.dart';
 import '../../data/providers.dart';
 import '../../widgets/beer_thumbnail.dart';
@@ -42,6 +43,12 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
   /// Sortierung der Gasthäuser. Preis und Aktualität gab es nur in der
   /// alten Liste, die nach dem Umbau von keiner Stelle mehr erreichbar war.
   VenueSort _sortierung = VenueSort.distance;
+
+  /// Sortierung von Bieren und Brauereien — **je Bereich eigen**, damit
+  /// ein Wechsel die Wahl nicht zurücksetzt: Wer bei Bieren nach Nähe
+  /// sortiert hat, findet das beim Zurückwechseln wieder (Wunsch #145).
+  BeerSort _bierSortierung = BeerSort.alphabetical;
+  BrewerySort _brauereiSortierung = BrewerySort.distance;
 
   LatLng? _hier;
 
@@ -128,7 +135,9 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
             onSelectionChanged: (s) => setState(() => _bereich = s.first),
           ),
           if (_bereich == _Bereich.gasthaeuser) _gasthausFilter(theme),
-          if (_hier == null && _bereich != _Bereich.biere)
+          if (_bereich == _Bereich.biere) _bierSortierleiste(),
+          if (_bereich == _Bereich.brauereien) _brauereiSortierleiste(),
+          if (_hier == null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: Text(
@@ -185,6 +194,65 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
         ),
       );
 
+  /// Sortierleiste für Biere. Gleiche Form wie bei den Gasthäusern:
+  /// Wer eine Chipleiste in einer Liste gelernt hat, sucht sie in der
+  /// nächsten (Wunsch #145).
+  Widget _bierSortierleiste() => _sortierleiste([
+        for (final s in BeerSort.values)
+          (
+            label: beerSortLabel(s),
+            gewaehlt: _bierSortierung == s,
+            brauchtOrt: s == BeerSort.distance,
+            waehlen: () => setState(() => _bierSortierung = s),
+          ),
+      ]);
+
+  Widget _brauereiSortierleiste() => _sortierleiste([
+        for (final s in BrewerySort.values)
+          (
+            label: brewerySortLabel(s),
+            gewaehlt: _brauereiSortierung == s,
+            brauchtOrt: s == BrewerySort.distance,
+            waehlen: () => setState(() => _brauereiSortierung = s),
+          ),
+      ]);
+
+  /// Ein Chip, der Standort braucht und keinen hat, wird **ausgegraut,
+  /// nicht ausgeblendet**: Ein verschwundener Chip sieht aus wie ein
+  /// Fehler, ein ausgegrauter mit Erklärung ist eine Auskunft.
+  Widget _sortierleiste(
+    List<
+            ({
+              String label,
+              bool gewaehlt,
+              bool brauchtOrt,
+              VoidCallback waehlen
+            })>
+        chips,
+  ) =>
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Row(
+          children: [
+            for (final c in chips)
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: ChoiceChip(
+                  label: Text(c.label),
+                  selected: c.gewaehlt,
+                  onSelected: (c.brauchtOrt && _hier == null)
+                      ? null
+                      : (_) => c.waehlen(),
+                  tooltip: (c.brauchtOrt && _hier == null)
+                      ? 'Braucht deinen Standort'
+                      : null,
+                ),
+              ),
+          ],
+        ),
+      );
+
   Widget _liste() {
     switch (_bereich) {
       case _Bereich.biere:
@@ -220,17 +288,37 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
         onAktion: _anlegen,
       );
     }
+    // Ohne Standort ist der Nähe-Chip gesperrt; steht er trotzdem noch
+    // aus einer früheren Wahl, fällt die Liste auf A–Z zurück statt auf
+    // eine willkürliche Reihenfolge.
+    final sortiert = sortBeers(
+      treffer,
+      _hier == null && _bierSortierung == BeerSort.distance
+          ? BeerSort.alphabetical
+          : _bierSortierung,
+      here: _hier,
+    );
+
     return ListView.builder(
-      itemCount: treffer.length,
+      itemCount: sortiert.length,
       itemBuilder: (_, i) {
-        final t = treffer[i];
+        final t = sortiert[i];
+        final km = breweryDistanceKm(t.brewery, _hier);
         return ListTile(
           leading: BeerThumbnail(
             imageUrl: t.beer.imageUrl,
             isAlcoholFree: t.beer.isAlcoholFree,
           ),
           title: Text(t.beer.name),
-          subtitle: Text('${t.brewery.name} · ${t.beer.style}'),
+          subtitle: Text('${t.brewery.name} · ${t.beer.style}'
+              '${t.beer.abv != null ? ' · ${t.beer.abv} %' : ''}'),
+          // „Zur Brauerei" steht dabei: Ein Bier ist nicht dort zu
+          // kaufen, wo es gebraut wird.
+          trailing: km == null || _bierSortierung != BeerSort.distance
+              ? null
+              : Text('${_entfernungText(km)}\nzur Brauerei',
+                  textAlign: TextAlign.right,
+                  style: Theme.of(context).textTheme.labelSmall),
           onTap: () => context.push('/beer/${t.beer.id}'),
         );
       },
@@ -246,17 +334,15 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
         : (ref.watch(brewerySearchProvider(_suche)).valueOrNull ??
             const <Brewery>[]);
 
-    final sortiert = [...alle];
-    sortiert.sort((a, b) {
-      final da = _entfernung(a.latitude, a.longitude);
-      final db = _entfernung(b.latitude, b.longitude);
-      if (da == null && db == null) return a.name.compareTo(b.name);
-      // Ohne Position ans Ende, statt sie zu verstecken: Eine Brauerei
-      // ohne Koordinaten ist trotzdem eine Brauerei.
-      if (da == null) return 1;
-      if (db == null) return -1;
-      return da.compareTo(db);
-    });
+    // Sortierung wählbar seit 0.10.16; die Reihenfolge selbst liegt in
+    // `data/beer_sort.dart` und ist dort ohne Widget geprüft.
+    final sortiert = sortBreweries(
+      alle,
+      _hier == null && _brauereiSortierung == BrewerySort.distance
+          ? BrewerySort.alphabetical
+          : _brauereiSortierung,
+      here: _hier,
+    );
 
     if (sortiert.isEmpty) {
       return const _Leer(text: 'Keine Brauerei gefunden.');
