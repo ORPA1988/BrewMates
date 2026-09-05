@@ -1839,7 +1839,8 @@
         "90288401": 500
       },
       "image_url": "https://www.goesser.at/wp-content/uploads/2017/02/GOe-StiftsZwickl-dunkel.png",
-      "image_source": "https://www.goesser.at/produkte/"
+      "image_source": "https://www.goesser.at/produkte/",
+      "description_community": "Ungefiltert und naturtrüb aus drei Malzsorten samt dunklem Roggenmalz; dunkles Bernstein mit chamois-farbener Krone, im Duft Honig und Röstaromen, im Mund vollmundig weich mit blumiger Hopfennote."
     },
     {
       "id": "at-goesser-zwickl",
@@ -4765,7 +4766,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/900/340/039/0208/front_de.3.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9003400390208",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Das Saisonbier zum Herbst, dunkler als das Goldbräu; vollmalzig mit Karamell- und Keksnoten über einer fein abgestimmten Hopfenbittere — gebaut für deftige Herbstküche."
     },
     {
       "id": "at-stiegl-paracelsus-bio-zwickl",
@@ -4820,7 +4822,8 @@
       ],
       "barcode_volumes": {
         "9003400304960": 500
-      }
+      },
+      "description_community": "Alkoholfreies isotonisches Weizen, gedacht für nach dem Sport und nicht für den Abend; naturtrüb, spritzig-würzig, mit malzigen Aromen, Fruchtnoten und einer feinen Säure."
     },
     {
       "id": "at-stieglbrauerei-stiegl-braukunst-edition",
@@ -4848,7 +4851,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/900/340/219/4903/front_de.4.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9003402194903",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Das Entdeckerbier der Salzburger und für viele der Einstieg ins Pale Ale; leicht trüb und strohgelb, in der Nase Zitrusgras, Pfirsich und Litschi, im Mund saftiges Malz gegen eine kernige, hopfenfrische Bittere."
     },
     {
       "id": "at-stiegl-goldbraeu",
@@ -4898,7 +4902,8 @@
       },
       "image_url": "https://www.stiegl.at/wp-content/uploads/2022/01/produktgruppe-hell-neu.png",
       "image_source": "https://www.stiegl.at/produkt/stiegl-hell/",
-      "image_license": "Mediathek/Downloads: https://www.stiegl.at/die-brauerei/service/mediathek-downloads-stiegl/"
+      "image_license": "Mediathek/Downloads: https://www.stiegl.at/die-brauerei/service/mediathek-downloads-stiegl/",
+      "description_community": "Das mildere Geschwister des Goldbräu und in Salzburg das Alltagsglas; malzbetont nach Brotkrume, mit leiser Kräuterwürze und weichem Mundgefühl, im Abgang trockener werdend, aber durchweg mild."
     },
     {
       "id": "at-stieglbrauerei-stiegl-kreativ-bio-hausbier-almrausch",
@@ -4916,7 +4921,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/900/340/019/6343/front_de.3.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9003400196343",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Rotes Zirben-Zwickl aus der Kreativ-Serie, kupferrot im Glas; in der Nase Karamell, Keks und Zirbe, im Mund herzhafte Malzsüße mit harzigen Nuancen und einem Nachhall Richtung Toffee."
     },
     {
       "id": "at-stieglbrauerei-stiegl-kreativ-bio-hausbier-christkindl",
@@ -5006,7 +5012,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/900/340/039/3063/front_de.3.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9003400393063",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Vierzig Prozent Goldbräu auf sechzig Prozent Himbeerlimonade, entsprechend leuchtend pink; säuerlich-spritziger Antrunk, süßer Abgang, in dem die Himbeere ganz aufmacht."
     },
     {
       "id": "at-stieglbrauerei-stiegl-radler-naturtrueb-grapefruit",
@@ -5026,7 +5033,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/900/340/039/3087/front_de.7.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9003400393087",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Vierzig Prozent Goldbräu auf sechzig Prozent Limonade mit echtem Grapefruitsaft, der ihm die orange Trübung gibt; angenehm fruchtig mit herber Kante — der trockenere der beiden Klassiker."
     },
     {
       "id": "at-stieglbrauerei-stiegl-radler-naturtrueb-zitrone",
@@ -5050,7 +5058,8 @@
       },
       "image_url": "https://www.stiegl.at/wp-content/uploads/2022/01/produktgruppe-radler-zitrone-dose-1.png",
       "image_source": "https://www.stiegl.at/produkt/stiegl-radler-naturtrueb-zitrone/",
-      "image_license": "Mediathek/Downloads: https://www.stiegl.at/die-brauerei/service/mediathek-downloads-stiegl/"
+      "image_license": "Mediathek/Downloads: https://www.stiegl.at/die-brauerei/service/mediathek-downloads-stiegl/",
+      "description_community": "Der Radler-Klassiker mit echtem Zitronensaft und deshalb naturtrüb; feine Zitrusnoten, frisch und harmonisch spritzig statt der Sirupsüße vieler Fertigradler."
     },
     {
       "id": "at-stieglbrauerei-stiegl-sommerbrise-rose-alkoholfrei",
@@ -5891,7 +5900,8 @@
         "9003100106505"
       ],
       "image_url": "https://www.zipfer.at/wp-content/uploads/2021/11/Zi3-05b-Sim-a-betaut-LowRes.png",
-      "image_source": "https://www.zipfer.at/unser-bier/"
+      "image_source": "https://www.zipfer.at/unser-bier/",
+      "description_community": "Leichtbier mit nur drei Prozent, das durch ein eigenes Brauverfahren trotzdem nach vollem Märzen schmeckt; vier Mühlviertler Naturhopfen würzen es, im Glas ist es von einem klassischen Märzen kaum zu unterscheiden."
     },
     {
       "id": "at-zipfer-hell-alkoholfrei",
@@ -6025,7 +6035,8 @@
         "9028800731352": 330
       },
       "image_url": "https://www.zipfer.at/wp-content/uploads/2021/11/ZiM-05b-Sim-a-MidRes-Neu.png",
-      "image_source": "https://www.zipfer.at/unser-bier/"
+      "image_source": "https://www.zipfer.at/unser-bier/",
+      "description_community": "Der Klassiker aus dem Innviertel, mit Mühlviertler Naturhopfen (Magnum, Perle) gewürzt; süßliche Malznoten über einem leichten, leicht würzigen Körper, die Bittere dezent statt kernig."
     },
     {
       "id": "at-brauerei-zipfer-naturhopfen-pils",
