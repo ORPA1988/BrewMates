@@ -1,0 +1,37 @@
+-- 0057: Der Meldungsart `data` fehlte der Enum-Wert.
+--
+-- ============================================================================
+-- WAS SCHIEFGING
+--
+-- 0.10.18 führt die dritte Meldungsart ein: eine ergänzte Datenlücke
+-- (Funktion 43). App und Edge Function kennen sie seither — die
+-- **Datenbank nicht**. `feedback.kind` ist ein Enum mit genau zwei
+-- Werten, und `insert … values ('data')` scheitert an
+--
+--   invalid input value for enum feedback_kind: "data"
+--
+-- Die Folge war keine Falschmeldung: `FeedbackApi.submit` fängt den
+-- Fehler ab, und die App sagt „die Meldung zur Gegenprüfung ging nicht
+-- raus". Die Gebindegröße stand trotzdem am Barcode, die Punkte kamen an.
+-- Wirkungslos war nur die Hälfte, die niemand sofort sieht: das Issue.
+--
+-- ============================================================================
+-- WARUM ES DIE CI NICHT GEFANGEN HAT
+--
+-- Die Widget-Tests sprechen mit `FakeOnlineService` — der nimmt jede Art
+-- an, weil er nichts über Enums weiß. Und kein pgTAP-Test hat je eine
+-- Meldung geschrieben; geprüft war nur, wer sie **lesen** darf.
+--
+-- Deshalb kommt mit dieser Migration ein Test, der genau das tut: eine
+-- Meldung jeder Art einfügen. Eine vierte Art wird damit nicht mehr
+-- still danebengehen.
+--
+-- ============================================================================
+-- WARUM DAS HIER ALLEIN STEHT
+--
+-- Postgres lässt einen frisch angelegten Enum-Wert in derselben
+-- Transaktion nicht benutzen. Diese Datei legt ihn deshalb nur an und
+-- rührt ihn nicht an — dieselbe Trennung wie 0048/0049.
+-- ============================================================================
+
+alter type public.feedback_kind add value if not exists 'data';

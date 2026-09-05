@@ -94,6 +94,30 @@ Alles Nötige gab es schon; die Arbeit ist, die Teile zu verbinden.
   und Melde-Blatt), `data/online/api/beers_api.dart` → bestehende
   `upsertBeerBarcode`, `FeedbackKind.data`.
 
+## Was beim Bauen schiefging (2026-09-05)
+
+**Die Meldung erreichte GitHub zuerst gar nicht.** App und Edge Function
+kannten die neue Art `data`, die Datenbank nicht: `feedback.kind` ist ein
+Enum mit zwei Werten, und der Insert scheiterte an
+
+```
+invalid input value for enum feedback_kind: "data"
+```
+
+Immerhin war es keine Falschmeldung — `FeedbackApi.submit` fängt den
+Fehler ab, und die App sagt „die Meldung zur Gegenprüfung ging nicht
+raus". Die Größe stand trotzdem am Barcode, die Punkte kamen an.
+Wirkungslos war die Hälfte, die niemand sofort sieht.
+
+**Warum es durchrutschte, ist der interessantere Teil:** Die Widget-Tests
+sprechen mit `FakeOnlineService`, und der nimmt jede Art an — er weiß
+nichts von Enums. Ein pgTAP-Test hätte es gefangen, aber es gab keinen,
+der eine Meldung **schreibt**; geprüft war nur, wer sie lesen darf.
+
+Behoben mit Migration 0057, und dazu `supabase/tests/feedback_arten.test.sql`:
+Er legt eine Meldung **je Art** an. Eine vierte Art kann damit nicht mehr
+still danebengehen.
+
 ## Modularität
 
 - **Hängt ab von:** Scanner (03), Bierdatenbank (04), Vertrauensstufen
