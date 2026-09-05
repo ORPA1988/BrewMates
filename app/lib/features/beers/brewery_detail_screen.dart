@@ -185,13 +185,6 @@ class _BreweryDetails extends ConsumerWidget {
               title: Text(item.beer.name),
               subtitle: Text('${item.beer.style}'
                   '${item.beer.abv != null ? ' · ${item.beer.abv} %' : ''}'),
-              trailing: item.beer.communityRating != null
-                  ? Chip(
-                      label: Text(
-                          '⭐ ${item.beer.communityRating!.toStringAsFixed(1)}'),
-                      visualDensity: VisualDensity.compact,
-                    )
-                  : null,
               onTap: () => context.push('/beer/${item.beer.id}'),
             ),
           ),

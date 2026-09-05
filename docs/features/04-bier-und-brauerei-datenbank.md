@@ -2,7 +2,7 @@
 
 > **Status:** 🟢 fertig — 660 Biere und 137 Brauereien aus dem DACH-Raum,
 > kuratiert im Repository, per GitHub aktualisiert.
-> **Seit:** 0.4.0 (AT), DACH seit 0.9.13 · **Zuletzt geprüft:** 2026-09-03
+> **Seit:** 0.4.0 (AT), DACH seit 0.9.13 · **Zuletzt geprüft:** 2026-09-05
 
 ## Zielsetzung
 
@@ -16,12 +16,51 @@ Region gut als die Welt schlecht.
 ## Funktion (Nutzersicht)
 
 - Suche über Biere **und** Brauereien, Filter nach Stil
-- Bierseite: Beschreibung (Hersteller und Community), Bewertung,
+- Bierseite: Beschreibung (Hersteller und Redaktion), echte
+  Bewertungen,
   Alkoholgehalt, Etikettfoto, Brauerei — und zurück zu allen Bieren dieser
   Brauerei
 - Brauereiseite: Ort, Gründung, Eigentümer, Kennzahlen, Karte
 - Fehlt etwas: „Korrektur vorschlagen" öffnet ein vorbefülltes
   GitHub-Issue; neue Biere legt man direkt in der App an
+
+## Sterne nur für Gemessenes (2026-09-05, Meldung [#143](https://github.com/ORPA1988/BrewMates/issues/143))
+
+Ein Tester meldete: „Die redaktionelle Einschätzung ist bei allen Bieren
+gleich." Nachgezählt stimmt das im Kern:
+
+| | |
+|---|---|
+| Österreich | **379 von 447** Bieren hatten gar keinen Wert |
+| Bayern / Deutschland / Schweiz | fast vollständig, aber alle zwischen **2,8 und 4,3** |
+
+Auf fünf Sternen ist diese Spanne nicht zu unterscheiden — jedes Bier
+sah nach „drei von fünf" aus. Dazu kommt die Herkunft: `community_rating`
+ist laut [DATENHERKUNFT.md](../../app/assets/data/DATENHERKUNFT.md) eine
+„konservative redaktionelle Schätzung auf Basis des allgemeinen Rufs" und
+**keine Messung**. Ein Sternebild behauptet aber genau das.
+
+**Deshalb sind die Sterne weg** — im Bier-Detail, in der Bierliste einer
+Brauerei und im Scanner-Treffer. Sterne zeigt die App nur noch dort, wo
+wirklich gezählt wurde: bei den echten Community-Bewertungen aus den
+Check-ins aller Nutzer (`onlineRatingStatsProvider`) und bei der eigenen.
+
+**An ihre Stelle tritt ein Satz.** Der Abschnitt heißt jetzt
+**„Redaktionelle Einschätzung"** statt „Erfahrungen aus der Community" —
+er war nie eine Erfahrung aus der Community, sondern redaktionell
+geschrieben, und ein Etikett, das eine fremde Quelle behauptet, ist
+schlimmer als ein nüchternes.
+
+Die Spalte `communityRating` bleibt in Daten und Schema: Der GitHub-Sync
+schreibt sie weiter, und sie zu entfernen wäre eine Migration ohne
+Gewinn. Sie wird nur nirgends mehr angezeigt
+(`test/redaktionelle_einschaetzung_test.dart` hält das fest).
+
+**Was daraus folgt und noch offen ist:** Die geschriebene Einschätzung
+muss es dann auch geben. Bei den 379 österreichischen Bieren ohne Text
+steht heute nichts — das ist die laufende Datenpflege
+([docs/10](../10-community-datenpflege.md)), nicht mehr eine Zahl, die
+Vollständigkeit vortäuscht.
 
 ## Anlegen ohne Pflichtfelder (2026-08-15)
 
