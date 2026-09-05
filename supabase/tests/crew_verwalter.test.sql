@@ -8,7 +8,7 @@
 -- Ausführen: `supabase test db` (braucht die lokale Instanz).
 
 begin;
-select plan(10);
+select plan(11);
 
 create or replace function pg_temp.mkuser(p_id uuid, p_name text)
 returns void language plpgsql as $$
@@ -64,6 +64,14 @@ select ok(not is_crew_admin('cccccccc-0000-0000-0000-000000000001'),
 
 set local request.jwt.claims =
   '{"sub":"22222222-2222-2222-2222-222222222222","role":"authenticated"}';
+
+-- Die Crew uebergeben kann niemand: `owner_id` ist fuer `authenticated`
+-- nicht beschreibbar. Als Policy-Bedingung war das ein Zirkel — siehe
+-- Kopf von 0061.
+select ok(
+  not has_column_privilege('authenticated', 'public.crews',
+                           'owner_id', 'update'),
+  'den Besitzer aendert niemand per Update');
 
 update public.crews set name = 'Umbenannt'
  where id = 'cccccccc-0000-0000-0000-000000000001';

@@ -69,10 +69,23 @@ grant execute on function public.is_crew_admin(uuid) to authenticated;
 
 drop policy if exists crews_update on public.crews;
 create policy crews_update on public.crews for update
-  using (is_crew_admin(id))
-  -- Der Besitzer darf nicht per Update wechseln: Das waere eine
-  -- Uebergabe der Crew und keine Aenderung an ihr.
-  with check (owner_id = (select owner_id from public.crews c2 where c2.id = id));
+  using (is_crew_admin(id));
+
+-- Der Besitzer darf nicht per Update wechseln — das waere eine Uebergabe
+-- der Crew und keine Aenderung an ihr.
+--
+-- **Als `with check` ging das nicht.** Der erste Entwurf hatte dort
+--
+--   owner_id = (select owner_id from crews c2 where c2.id = id)
+--
+-- und die CI antwortete mit `infinite recursion detected in policy for
+-- relation "crews"`: Die Unterabfrage auf `crews` loest wieder die
+-- Policy auf `crews` aus. Eine Bedingung, die die eigene Tabelle liest,
+-- ist in einer Policy ueber genau diese Tabelle ein Zirkel.
+--
+-- Ein Spaltenrecht kennt dieses Problem nicht — und ist ohnehin die
+-- schaerfere Aussage: Nicht „nur unter Bedingungen", sondern gar nicht.
+revoke update (owner_id) on public.crews from authenticated;
 
 -- Aufloesen bleibt beim Gruender — `crews_delete` bleibt unangetastet.
 
