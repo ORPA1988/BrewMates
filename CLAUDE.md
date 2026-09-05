@@ -132,8 +132,8 @@ nicht nachlesen.
   Regeln in `.claude/conventions.md`. **Gemergte Branches werden nicht
   mehr pauschal gelöscht.**
 - **Backend:** Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0057` sind live, lückenlos.** Details: docs/13.
-  `list_migrations` zeigt **58** Einträge, das Repo hat 57 Dateien —
+  **`0001–0058` sind live, lückenlos.** Details: docs/13.
+  `list_migrations` zeigt **59** Einträge, das Repo hat 58 Dateien —
   **das ist kein Drift.** `0024_friend_tiers.sql` wurde live in zwei
   Schritten eingespielt (`friend_tiers` + `friend_tiers_thirsty_friends`);
   inhaltlich steht beides in der einen Repo-Datei. Wer nur zählt, meldet
