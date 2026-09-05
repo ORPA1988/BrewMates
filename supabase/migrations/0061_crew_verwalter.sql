@@ -85,7 +85,32 @@ create policy crews_update on public.crews for update
 --
 -- Ein Spaltenrecht kennt dieses Problem nicht — und ist ohnehin die
 -- schaerfere Aussage: Nicht „nur unter Bedingungen", sondern gar nicht.
-revoke update (owner_id) on public.crews from authenticated;
+--
+-- **Aber ein Spaltenrecht laesst sich nicht aus einem Tabellenrecht
+-- herausbrechen.** 0025 vergibt `update` auf der ganzen Tabelle; ein
+-- `revoke update (owner_id)` daneben bleibt wirkungslos — auch das hat
+-- die CI gezeigt, nicht das Nachdenken. Es geht nur andersherum: die
+-- Flaeche entziehen und die erlaubten Spalten einzeln vergeben.
+--
+-- Das ist woertlich das Verfahren aus 0026 (`thirsty_until`), und die
+-- Warnung von dort gilt hier genauso: Ein spaeteres
+-- `grant update on public.crews` macht das still wieder auf. Neue
+-- Spalten brauchen ihr Recht ausdruecklich.
+do $$
+declare
+  spalten text;
+begin
+  select string_agg(format('%I', column_name), ', ' order by ordinal_position)
+    into spalten
+  from information_schema.columns
+  where table_schema = 'public'
+    and table_name = 'crews'
+    and column_name <> 'owner_id';
+
+  revoke update on public.crews from anon, authenticated;
+  execute format(
+    'grant update (%s) on public.crews to authenticated', spalten);
+end $$;
 
 -- Aufloesen bleibt beim Gruender — `crews_delete` bleibt unangetastet.
 

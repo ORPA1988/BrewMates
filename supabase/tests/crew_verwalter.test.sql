@@ -8,7 +8,7 @@
 -- Ausführen: `supabase test db` (braucht die lokale Instanz).
 
 begin;
-select plan(11);
+select plan(12);
 
 create or replace function pg_temp.mkuser(p_id uuid, p_name text)
 returns void language plpgsql as $$
@@ -72,6 +72,12 @@ select ok(
   not has_column_privilege('authenticated', 'public.crews',
                            'owner_id', 'update'),
   'den Besitzer aendert niemand per Update');
+
+-- Die Gegenprobe: Der Entzug darf nicht die ganze Tabelle treffen.
+select ok(
+  has_column_privilege('authenticated', 'public.crews', 'name', 'update')
+  and has_column_privilege('authenticated', 'public.crews', 'emoji', 'update'),
+  'Name und Emoji bleiben beschreibbar');
 
 update public.crews set name = 'Umbenannt'
  where id = 'cccccccc-0000-0000-0000-000000000001';
