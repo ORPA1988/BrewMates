@@ -2,7 +2,7 @@
 
 > **Status:** 🟢 fertig — Server (0048/0049/0053), Anlegen, „Demnächst”,
 > beide Erinnerungen und der Start aus der Verabredung heraus.
-> **Seit:** — · **Zuletzt geprüft:** 2026-09-05
+> **Seit:** — · **Zuletzt geprüft:** 2026-09-06
 >
 > Baut auf [Funktion 07 (Sessions & Beacons)](07-sessions-und-beacons.md)
 > auf. Die Zu- und Absagen, die eine Verabredung erst brauchbar machen,
@@ -285,8 +285,33 @@ gehört ein pgTAP-Test dazu, der beide Zweige einzeln belegt.
 - **Wiederkehrende Termine** („jeden ersten Donnerstag") — reizvoll für
   Stammtische, aber eine eigene Funktion mit eigenen Fragen
   (Ausnahmen, Absage einzelner Termine). Nicht in dieser Stufe
-- **Kalendereintrag exportieren** (.ics) — naheliegend, aber
-  plattformabhängig und nachrangig
+- ~~**Kalendereintrag exportieren** (.ics)~~ — **erledigt mit 0.10.23**
+  ([#165](https://github.com/ORPA1988/BrewMates/issues/165)). Zwei Wege
+  am Kalender-Symbol der Verabredung, und die Reihenfolge ist Absicht:
+
+  1. **Als Datei (.ics)** — der neutrale Weg, öffnet sich in jedem
+     Kalender. Entsteht aber nur dort, wo eine Datei ankommt: im
+     Browser.
+  2. **Im Web-Kalender öffnen** — ein Link mit vorausgefülltem Termin.
+     Auf dem Telefon der einzige Weg ohne ein weiteres Plugin, und ein
+     neues Plugin ist in dieser Toolchain die teuerste Änderung, die es
+     gibt (`CLAUDE.md`, gepinnte Pakete).
+
+  Die Logik steht in `core/kalender.dart`, die Ausgabe nimmt dieselbe
+  Plattformweiche wie der CSV-Export (`core/export/`).
+
+  **Zwei Stunden Dauer sind eine Annahme, keine Angabe.** Eine
+  Verabredung hat einen Anfang und kein Ende — niemand sagt beim
+  Ausmachen, wie lange er bleibt. Im Kalender ist das mit einem Griff
+  geändert.
+
+  **Die UID ist stabil** (`<session-id>@brewmates`): Wer denselben
+  Termin zweimal exportiert, bekommt einen aktualisierten Eintrag statt
+  eines zweiten.
+
+  **Zeiten stehen als UTC.** Eine Ortszeit ohne `VTIMEZONE`-Block ist
+  mehrdeutig, und einen solchen Block richtig zu schreiben ist mehr
+  Arbeit, als er wert ist — der Kalender rechnet ohnehin zurück.
 - **Vorschlag statt Ansage** („wann passt euch?" mit Abstimmung) — das
   ist Doodle, nicht BrewMates. Bewusst nicht geplant
 

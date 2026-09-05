@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../core/export/datei_ausgeben.dart';
 import '../../core/format.dart';
+import '../../core/kalender.dart';
 import '../../data/db/database.dart';
 import '../../data/online/models.dart' show RemoteSession;
 import '../../data/providers.dart';
@@ -630,8 +634,81 @@ class _Verabredung extends StatelessWidget {
           style: theme.textTheme.bodySmall,
         ),
         isThreeLine: session.message != null,
+        trailing: IconButton(
+          tooltip: 'In den Kalender',
+          icon: const Icon(Icons.event_available_outlined),
+          onPressed: () => _inDenKalender(context, session),
+        ),
         onTap: () => context.push('/session/${session.id}'),
       ),
     );
+  }
+
+  /// Die Verabredung in den eigenen Kalender übernehmen (#165).
+  ///
+  /// Zwei Wege, und die Reihenfolge ist Absicht: Die **Datei** ist der
+  /// neutrale — sie öffnet sich in jedem Kalender. Sie entsteht aber nur
+  /// dort, wo eine Datei ankommt; auf dem Telefon bräuchte es dafür ein
+  /// weiteres Plugin, und ein neues Plugin ist in dieser Toolchain die
+  /// teuerste Änderung, die es gibt. Deshalb daneben der Link, der den
+  /// Kalender direkt öffnet.
+  Future<void> _inDenKalender(
+      BuildContext context, RemoteSession session) async {
+    final termin = session.scheduledFor!;
+    final messenger = ScaffoldMessenger.of(context);
+
+    final wahl = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.download_outlined),
+              title: const Text('Als Termin-Datei (.ics)'),
+              subtitle: const Text('Öffnet sich in jedem Kalender'),
+              onTap: () => Navigator.pop(sheetContext, 'datei'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.open_in_new),
+              title: const Text('Im Web-Kalender öffnen'),
+              subtitle: const Text('Vorausgefüllt, du bestätigst nur'),
+              onTap: () => Navigator.pop(sheetContext, 'link'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (wahl == null) return;
+
+    if (wahl == 'link') {
+      final ziel = Uri.parse(verabredungAlsKalenderLink(
+        termin: termin,
+        gastgeber: 'Mit ${session.host.displayName}',
+        ort: session.venueName,
+        nachricht: session.message,
+      ));
+      if (!await launchUrl(ziel, mode: LaunchMode.externalApplication)) {
+        messenger.showSnackBar(const SnackBar(
+            content: Text('Der Kalender ließ sich nicht öffnen.')));
+      }
+      return;
+    }
+
+    final inhalt = verabredungAlsIcs(
+      id: session.id,
+      termin: termin,
+      gastgeber: 'Mit ${session.host.displayName}',
+      ort: session.venueName,
+      nachricht: session.message,
+    );
+    final alsDatei = await tabelleAusgeben(inhalt, 'brewmates-termin.ics');
+    messenger.showSnackBar(SnackBar(
+      content: Text(alsDatei
+          ? 'Termin heruntergeladen — im Kalender öffnen.'
+          : 'Auf diesem Gerät geht die Datei nicht direkt; nimm den '
+              'Web-Kalender oder trage den Termin von Hand ein.'),
+    ));
   }
 }

@@ -125,7 +125,7 @@ nicht nachlesen.
 
 ## 5. Der Stand
 
-- **Version:** `0.10.22-beta+42` (Beta 0.x bis zum Play-Store-1.0; der
+- **Version:** `0.10.23-beta+43` (Beta 0.x bis zum Play-Store-1.0; der
   Android-`versionCode` zählt immer weiter hoch).
 - **Rückfallpunkte:** `git tag -l "stand/*"` — mindestens zehn lauffähige
   Stände, jeder nach grüner CI getaggt und mit einem Satz beschrieben.
