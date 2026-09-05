@@ -68,6 +68,109 @@ class CrewDetailScreen extends ConsumerWidget {
     );
   }
 
+  /// Eine gemeinsame Challenge anlegen — bewusst schmal gehalten.
+  ///
+  /// Vier der sieben Regelarten stehen zur Wahl, der Zeitraum ist der
+  /// laufende Monat. Wer mehr braucht, braucht ein Formular; wer eine
+  /// Crew hat, braucht meistens „gemeinsam zwanzig Biere bis Monatsende".
+  Future<void> _challengeAnlegen(
+      BuildContext context, WidgetRef ref, String crewId) async {
+    final titel = TextEditingController();
+    final schwelle = TextEditingController(text: '20');
+    var art = 'distinct_beers';
+
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
+          title: const Text('Gemeinsame Challenge'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titel,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: 'Titel',
+                  hintText: 'z. B. Stil-Safari',
+                ),
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<String>(
+                value: art,
+                decoration: const InputDecoration(labelText: 'Was zählt?'),
+                items: const [
+                  DropdownMenuItem(
+                      value: 'distinct_beers',
+                      child: Text('Verschiedene Biere')),
+                  DropdownMenuItem(
+                      value: 'distinct_styles', child: Text('Verschiedene Sorten')),
+                  DropdownMenuItem(
+                      value: 'distinct_breweries',
+                      child: Text('Verschiedene Brauereien')),
+                  DropdownMenuItem(
+                      value: 'checkins_count', child: Text('Check-ins')),
+                ],
+                onChanged: (v) =>
+                    setDialogState(() => art = v ?? 'distinct_beers'),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: schwelle,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Ziel (Anzahl)'),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Läuft bis zum Monatsende. Es zählen die Check-ins aller '
+                'Mitglieder zusammen.',
+                style: TextStyle(fontSize: 12),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Abbrechen'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: const Text('Anlegen'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (ok != true || !context.mounted) return;
+
+    final ziel = int.tryParse(schwelle.text.trim()) ?? 0;
+    final messenger = ScaffoldMessenger.of(context);
+    if (titel.text.trim().isEmpty || ziel < 1) {
+      messenger.showSnackBar(const SnackBar(
+          content: Text('Titel und ein Ziel ab 1 werden gebraucht.')));
+      return;
+    }
+
+    final jetzt = DateTime.now();
+    final online = await ref.read(onlineServiceProvider.future);
+    if (online == null) return;
+    final fehler = await online.createChallenge(
+      title: titel.text.trim(),
+      description: 'Gemeinsam für die Crew.',
+      emoji: '🏆',
+      rule: {'type': art, 'threshold': ziel},
+      startsAt: DateTime(jetzt.year, jetzt.month),
+      // Bis zum Ersten des Folgemonats: `DateTime(jahr, monat + 1)`
+      // rollt über den Dezember hinaus von selbst ins nächste Jahr.
+      endsAt: DateTime(jetzt.year, jetzt.month + 1),
+      crewId: crewId,
+    );
+    messenger.showSnackBar(SnackBar(
+      content: Text(fehler ?? 'Challenge angelegt — viel Erfolg! 🏆'),
+    ));
+    if (fehler == null) ref.invalidate(crewChallengesProvider(crewId));
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -189,6 +292,88 @@ class CrewDetailScreen extends ConsumerWidget {
           const SizedBox(height: 16),
           _Bilanz(crewId: crewId),
           const SizedBox(height: 16),
+          // Gemeinsame Challenges — der Stand kommt vom Server, weil
+          // die Check-ins der anderen nicht hier liegen (0062).
+          ...() {
+            final challenges =
+                ref.watch(crewChallengesProvider(crewId)).valueOrNull ??
+                    const [];
+            final darfAnlegen = isOwner ||
+                (ref.watch(crewMembersProvider(crewId)).valueOrNull ?? const [])
+                    .any((m) => m.profile.id == myUid && m.role == 'admin');
+            if (challenges.isEmpty && !darfAnlegen) return const <Widget>[];
+            return [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text('Gemeinsame Challenges',
+                        style: theme.textTheme.titleSmall),
+                  ),
+                  if (darfAnlegen)
+                    TextButton.icon(
+                      onPressed: () async =>
+                          _challengeAnlegen(context, ref, crewId),
+                      icon: const Icon(Icons.add, size: 18),
+                      label: const Text('Neu'),
+                    ),
+                ],
+              ),
+              if (challenges.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Text(
+                    'Noch keine. Eine gemeinsame Challenge zählt die '
+                    'Check-ins aller Mitglieder zusammen.',
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(color: scheme.onSurfaceVariant),
+                  ),
+                ),
+              for (final c in challenges)
+                Card(
+                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(c.emoji,
+                                style: const TextStyle(fontSize: 22)),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(c.title,
+                                  style: theme.textTheme.titleSmall),
+                            ),
+                            Text('${c.progress}/${c.threshold}',
+                                style: theme.textTheme.labelLarge),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            // Über das Ziel hinaus bleibt der Balken
+                            // voll — „140 %" sagt nichts.
+                            value: c.threshold == 0
+                                ? 0
+                                : (c.progress / c.threshold).clamp(0.0, 1.0),
+                            minHeight: 6,
+                          ),
+                        ),
+                        if (c.description.isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          Text(c.description,
+                              style: theme.textTheme.bodySmall),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 16),
+            ];
+          }(),
+
           Text('Mitglieder', style: theme.textTheme.titleSmall),
           const SizedBox(height: 4),
           membersAsync.when(

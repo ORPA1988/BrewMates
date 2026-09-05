@@ -233,6 +233,44 @@ final myThirstyUntilProvider = FutureProvider<DateTime?>((ref) async {
   return online?.friends.myThirstyUntil();
 });
 
+/// Die Challenges einer Crew — mit ihrem **gemeinsamen** Stand.
+///
+/// Beides kommt vom Server: Der Fortschritt zählt die Check-ins aller
+/// Mitglieder, und die liegen nicht auf diesem Gerät (0062). Ohne
+/// Verbindung ist die Liste leer statt falsch.
+final crewChallengesProvider = FutureProvider.autoDispose
+    .family<List<({String id, String title, String emoji, String description,
+                  int threshold, int progress, DateTime endsAt})>, String>(
+        (ref, crewId) async {
+  ref.watch(_syncTickProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  if (online == null) return const [];
+  final rows = await online.crewChallenges(crewId);
+  if (rows == null) return const [];
+
+  final ergebnis = <({String id, String title, String emoji,
+                     String description, int threshold, int progress,
+                     DateTime endsAt})>[];
+  for (final r in rows) {
+    final regel = r['rule'];
+    final schwelle = regel is Map
+        ? (regel['threshold'] as num?)?.toInt() ?? 0
+        : 0;
+    if (schwelle < 1) continue;
+    final stand = await online.crewChallengeProgress(r['id'] as String) ?? 0;
+    ergebnis.add((
+      id: r['id'] as String,
+      title: (r['title'] as String?) ?? '',
+      emoji: (r['emoji'] as String?) ?? '🏆',
+      description: (r['description'] as String?) ?? '',
+      threshold: schwelle,
+      progress: stand,
+      endsAt: DateTime.parse(r['ends_at'] as String).toLocal(),
+    ));
+  }
+  return ergebnis;
+});
+
 /// Die eigene Voreinstellung für die Sichtbarkeit neuer Check-ins.
 ///
 /// Kommt über eine RPC und nicht aus der Profilzeile: Ein Spaltenrecht

@@ -20,7 +20,7 @@ lebte nur in dieser Datei.
 | 1 | **[Einchecken ohne Barcode](features/02-check-ins.md)** ([#139](https://github.com/ORPA1988/BrewMates/issues/139)) | Aus dem Test gemeldet: Im Wirtshaus kommt das Bier vom Fass, es gibt nichts zu scannen — und genau dort wird am häufigsten eingecheckt |
 | 2 | **Anmeldeverfahren freischalten** ([#131](https://github.com/ORPA1988/BrewMates/issues/131)) | Die App kann fünf weitere Anbieter; drei davon kosten nichts. Schritte im [Release-Playbook](07-release-playbook.md) |
 | ~~3~~ | ~~**Sichtbarkeits-Konzept**~~ ([#130](https://github.com/ORPA1988/BrewMates/issues/130)) — **erledigt mit 0.10.20**: Voreinstellung im Konto, je Check-in übersteuerbar, nachträglich änderbar. Die Regel gab es seit 0001, die Bedienung nie ([Funktion 44](features/44-sichtbarkeit.md)) | — |
-| 4 | **[Crew-Challenges und Rollen](features/09-crews.md)** ([#132](https://github.com/ORPA1988/BrewMates/issues/132)) | Sinnvoll, sobald es mehr als eine aktive Crew gibt |
+| ~~4~~ | ~~**Crew-Challenges und Rollen**~~ ([#132](https://github.com/ORPA1988/BrewMates/issues/132)) — **erledigt**: Verwalter mit 0.10.21, gemeinsame Challenges mit 0.10.22 ([Funktion 09](features/09-crews.md)) | — |
 | ~~5~~ | ~~**Statistik: CSV-Export**~~ ([#133](https://github.com/ORPA1988/BrewMates/issues/133)) — **erledigt mit 0.10.19**: Rohdaten und Auswertung, im Browser als Download, sonst über die Zwischenablage ([Funktion 20, Punkt 7](features/20-feed-statistiken.md)) | — |
 | 6 | **[Play Store](https://github.com/ORPA1988/BrewMates/issues/67)** | Braucht Konto, Ausweisprüfung und Store-Prozess — Menschenarbeit |
 
