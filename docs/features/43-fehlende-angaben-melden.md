@@ -32,11 +32,19 @@ die auch der Check-in anbietet. Danach:
 - es gibt **2 Punkte** auf das Datenpflege-Konto (Funktion 15/31)
 - und daraus entsteht ein **Issue zur Prüfung**
 
-**Wer korrigieren darf.** Eine leere Angabe füllen darf jeder Angemeldete.
-Eine **vorhandene** Angabe ändern darf nur, wer Vertrauensstufe 2 erreicht
-hat (Stammgast, ab 25 Punkten) — dieselbe Grenze wie bei der übrigen
-Community-Bearbeitung. Sonst genügte ein Fehltipp, um eine geprüfte
-Angabe zu überschreiben.
+**Wer korrigieren darf** — und warum hier nichts gebaut werden musste:
+
+| Fall | Wer darf |
+|---|---|
+| leere Angabe füllen | jeder Angemeldete |
+| die **eigene** Angabe richtigstellen | der, der sie eingetragen hat |
+| eine **fremde** Angabe ändern | ab Vertrauensstufe 2 (Stammgast) |
+
+Das steht seit 0028 in `beer_barcodes_update` und musste nur nachgesehen
+werden. **Der erste Entwurf hatte einen eigenen Trigger dafür** („ändern
+erst ab Stufe 2") — der pgTAP-Test hat ihn erledigt, bevor er live ging:
+Er hätte etwas verboten, das erlaubt sein muss, nämlich den eigenen
+Tippfehler zu korrigieren. Die Begründung steht im Kopf von 0056.
 
 ## Die Entscheidung: erst glauben, dann prüfen
 
@@ -78,10 +86,10 @@ Alles Nötige gab es schon; die Arbeit ist, die Teile zu verbinden.
   und die vorhandene Kette (Trigger → Edge Function `feedback-issue` →
   GitHub) macht daraus ein Issue. Neu ist nur die dritte Art `data`
   neben `bug` und `wish`; sie bekommt das Label `datenpflege`.
-- **Schutz:** Migration 0056 erlaubt das **Überschreiben** einer
-  vorhandenen Größe nur ab `account_level >= 2`. Leeres füllen darf
-  jeder. Die Regel steht im Trigger, nicht in der App — eine Grenze, die
-  nur der Client kennt, umgeht der nächste Client.
+- **Schutz:** nichts Neues nötig — `beer_barcodes_update` (0028) regelt
+  es bereits und besser, siehe oben. Die Regel steht in der Policy und
+  nicht in der App: eine Grenze, die nur der Client kennt, umgeht der
+  nächste Client.
 - **Dateien (App):** `features/scan/scan_screen.dart` (rote Markierung
   und Melde-Blatt), `data/online/api/beers_api.dart` → bestehende
   `upsertBeerBarcode`, `FeedbackKind.data`.
@@ -110,7 +118,7 @@ Issue je Tag statt je Angabe) — dann, nicht vorher.
 
 | Schritt | Was | Prüfkriterium |
 |---|---|---|
-| 1 | Migration 0056: Punkte-Trigger + Schutz vor Überschreiben | pgTAP: Punkte entstehen, Stufe 1 darf füllen, nicht überschreiben |
+| ~~1~~ | ~~Migration 0056~~ — **erledigt**, aber kleiner als geplant: nur der Punkte-Trigger. Der zweite, geplante Trigger fiel im Test durch (siehe oben) | ✅ pgTAP, 8 Tests: Punkte, eigene Korrektur erlaubt, fremde nur ab Stufe 2 |
 | 2 | Edge Function um `data` erweitern | Issue trägt Label `datenpflege` |
 | 3 | Rote Markierung im Scan-Treffer | Widget-Test: fehlt die Größe, ist die Zeile rot |
 | 4 | Melde-Blatt, das beides schreibt | Widget-Test: Größe steht danach am Barcode |

@@ -18,20 +18,24 @@
 -- dieses Bier.
 --
 -- ============================================================================
--- WARUM ÜBERSCHREIBEN ETWAS ANDERES IST ALS FÜLLEN
+-- WAS HIER BEWUSST *NICHT* STEHT: EINE REGEL GEGEN ÜBERSCHREIBEN
 --
--- Eine **leere** Angabe zu füllen kostet nichts: Vorher wusste niemand
--- etwas, nachher steht eine Vermutung da, die eine Prüfung durchläuft.
--- Eine **vorhandene** Angabe zu ändern kann dagegen eine geprüfte durch
--- einen Fehltipp ersetzen.
+-- Der erste Entwurf hatte einen zweiten Trigger: „eine vorhandene Größe
+-- ändern erst ab Vertrauensstufe 2". Der pgTAP-Test hat ihn erledigt,
+-- bevor er live ging — **die Regel gibt es längst**, und zwar besser
+-- (0028, nachgesehen in `pg_policy` am 2026-09-05):
 --
--- Deshalb dieselbe Grenze wie bei der übrigen Community-Bearbeitung
--- (0013): füllen darf jeder Angemeldete, überschreiben erst ab
--- Vertrauensstufe 2. Die Regel steht im Trigger und nicht in der App —
--- eine Grenze, die nur der Client kennt, umgeht der nächste Client.
+--   beer_barcodes_update  using (created_by = auth.uid()
+--                                or account_level(auth.uid()) >= 2)
 --
--- Die Prüfung läuft über `account_level(auth.uid())`. Die Funktion gibt
--- für fremde Konten 0 zurück, hier fragt aber jeder nach sich selbst.
+-- Eine **fremde** Angabe ändert also ohnehin nur Stufe 2 aufwärts. Der
+-- Trigger hätte darüber hinaus etwas verboten, das erlaubt sein muss:
+-- **die eigene Angabe zu korrigieren.** Wer sich beim Eintragen
+-- vertippt, hätte den Fehler stehen lassen müssen.
+--
+-- Das ist die Lehre aus docs/13, Lehre 1, noch einmal: Eine Annahme über
+-- Rechte, die niemand nachgesehen hat — diesmal in die andere Richtung.
+-- Nachgesehen hat es der Test.
 -- ============================================================================
 
 create or replace function public.beer_barcode_edit_log()
@@ -71,38 +75,3 @@ drop trigger if exists beer_barcodes_edit_log on public.beer_barcodes;
 create trigger beer_barcodes_edit_log
   after insert or update on public.beer_barcodes
   for each row execute function public.beer_barcode_edit_log();
-
--- ----------------------------------------------------------------------------
--- Ueberschreiben nur ab Vertrauensstufe 2
--- ----------------------------------------------------------------------------
-
-create or replace function public.beer_barcode_volume_guard()
-returns trigger
-language plpgsql
-security definer
-set search_path = public
-as $$
-begin
-  -- Moderatoren und Admins (Stufe 4/5) kommen ueber dieselbe Abfrage
-  -- durch; sie liefert fuer sie 4 bzw. 5.
-  if old.volume_ml is not null
-     and new.volume_ml is distinct from old.volume_ml
-     and coalesce(account_level(auth.uid()), 0) < 2 then
-    raise exception
-      'Eine vorhandene Gebindegroesse aendert erst ab Vertrauensstufe 2'
-      using errcode = '42501';
-  end if;
-  return new;
-end $$;
-
-comment on function public.beer_barcode_volume_guard() is
-  'Fuellen darf jeder, ueberschreiben erst ab Stufe 2 — eine gepruefte '
-  'Angabe soll kein Fehltipp ersetzen.';
-
-revoke execute on function public.beer_barcode_volume_guard()
-  from public, anon, authenticated;
-
-drop trigger if exists beer_barcodes_volume_guard on public.beer_barcodes;
-create trigger beer_barcodes_volume_guard
-  before update on public.beer_barcodes
-  for each row execute function public.beer_barcode_volume_guard();
