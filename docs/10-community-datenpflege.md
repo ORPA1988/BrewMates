@@ -224,6 +224,32 @@ derselben Brauerei einfügen, `version` hochzählen und `updated` setzen.
 
 ---
 
+## Wo die Beschreibungen stehen (Stand 2026-09-05)
+
+| | |
+|---|---|
+| Österreich | **166 von 447** haben eine Einschätzung |
+| davon scanbar (mit Barcode) | **126 von 129** |
+| Bayern, Deutschland, Schweiz | fast vollständig (212 von 213) |
+
+Die Reihenfolge ist Absicht: Zuerst die Biere, vor denen jemand
+tatsächlich steht. Ein Bier ohne Barcode findet man über die Suche, und
+dort ist die fehlende Beschreibung eine Lücke; ein gescanntes Bier hat
+man in der Hand, und dort ist sie ein Mangel.
+
+**Warum die übrigen 281 nicht einfach nachgezogen werden können:** Für
+die meisten gibt es keine belastbare Quelle. Das sind überwiegend Biere
+kleiner Craft-Brauereien, die ihr Sortiment jährlich wechseln —
+Loncium führt 16 Sorten plus Saisonales, Gusswerk 15, Schlägl 17. Die
+Brauereiseiten beschreiben die Brauerei, nicht jedes Glas; Open Food
+Facts kennt sie nicht (siehe Funktion 03).
+
+Was hier steht, ist deshalb recherchiert und belegt. **Ein erfundener
+Satz wäre schlimmer als eine Leerstelle** — genau das war der Befund aus
+Meldung #143, der die Sterne gekostet hat. Wer eines dieser Biere
+trinkt, weiß mehr als jede Quelle; der Weg dafür ist „Korrektur
+vorschlagen" am Bier.
+
 ## Bisherige Durchläufe
 
 - **2026-08-15** — 2 Einträge: „Bier" (EAN 90031977) → *Zipfer Märzen*
