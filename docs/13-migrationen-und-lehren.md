@@ -96,7 +96,7 @@ sich die Frage nicht.
 
 ## Teil 2 — Die Migrationen
 
-**`0001–0052` sind live, lückenlos** (Stand 2026-09-05). Die Nummern ohne
+**`0001–0053` sind live, lückenlos** (Stand 2026-09-05). Die Nummern ohne
 eigenen Abschnitt sind unauffällig: Sie haben getan, was ihr Name sagt.
 
 | # | Name | Wofür |
@@ -127,6 +127,7 @@ eigenen Abschnitt sind unauffällig: Sie haben getan, was ihr Name sagt.
 | 0050 | runden_checkins | Mitrundige sehen die Check-ins der Runde (`is_my_round`) |
 | 0051 | checkin_crews | Welche Crews bei einem Check-in dabei waren — Momentaufnahme per Trigger |
 | 0052 | checkin_crews_rechte | Entzieht, was 0051 nur behauptet hatte |
+| 0053 | verabredung_erinnerungen | Zwei Meldungen zur Verabredung; Laufzeit-Constraint gilt nur noch für laufende Runden |
 
 ### 0025 — Tabellenrechte, oder: das Repo konnte das Projekt nicht wiederherstellen
 
