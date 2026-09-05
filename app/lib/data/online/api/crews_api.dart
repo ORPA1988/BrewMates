@@ -65,6 +65,50 @@ class CrewsApi extends OnlineApi {
   /// Rückgabe: `null` bei Erfolg, sonst ein Satz für den Menschen. Die
   /// Regeln stehen am Server (nur Mitglieder, nur Freunde, nur im eigenen
   /// Namen); hier wird nur übersetzt, was er sagt.
+  /// Jemanden zum Verwalter machen oder zurückstufen (0061).
+  ///
+  /// Darf nur der Gründer — die Regel steht in `crew_members_update` und
+  /// wird hier nicht nachgebaut: Ein Client, der sie kennt, ist kein
+  /// Schutz, und ein zweiter Client kennte sie nicht.
+  ///
+  /// `true` heißt: Der Server hat es übernommen. Trifft das Update keine
+  /// Zeile — weil die Regel es nicht zulässt —, kommt `false` zurück
+  /// statt eines stillen Erfolgs (Regel A).
+  Future<bool> setRole(String crewId, String profileId, String role) async {
+    if (currentUser == null) return false;
+    try {
+      final rows = await client
+          .from('crew_members')
+          .update({'role': role})
+          .eq('crew_id', crewId)
+          .eq('profile_id', profileId)
+          .select('role');
+      return rows.isNotEmpty;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Ein Mitglied aus der Crew entfernen.
+  ///
+  /// Erlaubt für Gründer und Verwalter; den Gründer selbst entfernt
+  /// niemand (0061). Wie oben: Was der Server nicht bestätigt, gilt
+  /// nicht als getan.
+  Future<bool> removeMember(String crewId, String profileId) async {
+    if (currentUser == null) return false;
+    try {
+      final rows = await client
+          .from('crew_members')
+          .delete()
+          .eq('crew_id', crewId)
+          .eq('profile_id', profileId)
+          .select('profile_id');
+      return rows.isNotEmpty;
+    } catch (_) {
+      return false;
+    }
+  }
+
   Future<String?> invite(String crewId, String profileId) async {
     final me = currentUser;
     if (me == null) return 'Dafür musst du angemeldet sein.';

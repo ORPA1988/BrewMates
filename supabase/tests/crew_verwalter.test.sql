@@ -1,4 +1,4 @@
--- 0059/0060: Was darf ein Verwalter, was bleibt beim Gründer?
+-- 0060/0061: Was darf ein Verwalter, was bleibt beim Gründer?
 --
 -- Geprüft wird in der Rolle, die es betrifft. Die interessanten Fälle
 -- sind die Grenzen: Ein Verwalter, der die Crew auflösen oder den

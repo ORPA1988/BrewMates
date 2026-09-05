@@ -216,6 +216,20 @@ class FakeOnlineService extends OnlineService {
   @override
   CrewsApi get crews => _crews;
 
+  /// Was der „Server" an eigenen Crews und deren Mitgliedern fuehrt.
+  List<RemoteCrew> crews_ = const [];
+  List<({RemoteProfile profile, String role})> crewMitglieder = const [];
+
+  @override
+  Future<List<RemoteCrew>> myCrews() async => crews_;
+
+  @override
+  Future<List<({RemoteProfile profile, String role})>?> crewMembers(
+      String crewId) async {
+    aufrufe.add('crewMembers:$crewId');
+    return crewMitglieder;
+  }
+
   /// Meldungen, die der „Server" fuer die Moderation fuehrt.
   List<ModerationReport> meldungen = const [];
 

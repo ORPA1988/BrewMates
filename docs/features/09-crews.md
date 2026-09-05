@@ -194,10 +194,48 @@ mitverschwindet) und `test/crew_einladungen_test.dart` (6 Widget-Tests).
 4. ~~Crew-Bilanz~~ — erledigt in 0.10.12; **nicht** auf
    [Funktion 20](20-feed-statistiken.md) aufgebaut, siehe unten
 5. ~~Freunde einladen~~ — erledigt in 0.10.12 (0044)
-6. Offen: Crew-Challenges und Rollen neben dem Gründer — beides erst
+6. Offen: Crew-Challenges — Rollen gibt es seit 0.10.21 (siehe oben); erst
    sinnvoll, wenn es mehr als eine aktive Crew gibt
+
+## Verwalter neben dem Gründer (seit 0.10.21)
+
+Eine Crew hatte bis dahin genau einen Menschen mit Rechten. Wer sie
+gegründet hat und zwei Wochen nicht hineinsieht, blockierte damit alles:
+Niemand konnte jemanden entfernen, niemand den Namen richtigstellen.
+
+Der **Verwalter** bekommt deshalb die Rechte, die den Alltag betreffen —
+und keines, das die Crew als Ganzes betrifft:
+
+| | Gründer | Verwalter | Mitglied |
+|---|---|---|---|
+| Mitglieder entfernen | ✅ | ✅ | — |
+| Name und Emoji ändern | ✅ | ✅ | — |
+| Rollen vergeben | ✅ | — | — |
+| Crew auflösen | ✅ | — | — |
+| selbst gehen | ✅ | ✅ | ✅ |
+
+**Rollen vergibt nur der Gründer**, und das ist keine Kleinigkeit: Dürfte
+ein Verwalter das, könnte er sich weitere Verwalter machen und den
+Gründer aussperren — die Crew gehörte dann faktisch jemand anderem.
+
+**`owner` bleibt an `crews.owner_id`.** Die Rolle in `crew_members` ist
+eine Beschreibung, keine zweite Wahrheit; die Update-Policy lässt deshalb
+nur den Wechsel zwischen `member` und `admin` zu. Sonst gäbe es zwei
+Stellen, an denen steht, wem die Crew gehört, und die erste Uneinigkeit
+zwischen ihnen wäre ein Rätsel.
+
+**Technisch:** Migration 0060 legt den Enum-Wert an (allein, weil
+Postgres ihn in derselben Transaktion nicht benutzen lässt), 0061 bringt
+`is_crew_admin()` und die Policies. Der Helfer ist `security definer` aus
+demselben Grund wie `is_my_round` (0050): `crew_members` trägt selbst
+RLS, eine Unterabfrage in einer Policy liefe als der fragende Mensch.
+
+**Die Oberfläche baut die Regel nicht nach**, sie lässt nur die Knöpfe
+weg, die ohnehin abgewiesen würden — ein Knopf, der nichts tut, ist
+schlimmer als keiner. Und was der Server nicht bestätigt, meldet die App
+nicht als Erfolg (Regel A): `setRole` und `removeMember` geben `false`
+zurück, wenn das Update keine Zeile trifft.
 
 ## Offene Punkte / Ideen
 
 - Crew-Challenges („gemeinsam 50 Stile")
-- Rollen innerhalb der Crew (Verwalter neben dem Gründer)

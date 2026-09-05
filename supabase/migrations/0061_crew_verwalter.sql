@@ -1,4 +1,4 @@
--- 0060: Was ein Verwalter darf — und was beim Gründer bleibt.
+-- 0061: Was ein Verwalter darf — und was beim Gründer bleibt.
 --
 -- ============================================================================
 -- DER ZUSCHNITT
