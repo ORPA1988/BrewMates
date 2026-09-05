@@ -179,6 +179,12 @@ class RemoteNotification {
         return '$wer hat deine Anfrage angenommen 🍻';
       case 'beacon':
         return '$wer ist auf ein Bier unterwegs';
+      case 'session_planned':
+        return '$wer verabredet eine Runde 📅';
+      case 'session_reminder':
+        // Geht auch an den Gastgeber — er ist der Einzige, der die Runde
+        // starten kann, und genau daran soll er erinnert werden.
+        return 'Gleich geht\'s los: Runde von $wer 📅';
       case 'session_toast':
         return '$wer hat dir zugeprostet 🍻';
       case 'session_joined':

@@ -429,6 +429,39 @@ class SessionsApi extends OnlineApi {
     }
   }
 
+  /// Aus einer Verabredung eine laufende Runde machen.
+  ///
+  /// **`started_at` wird dabei neu gesetzt**, und das ist keine Feinheit:
+  /// Die Spalte bedeutet „wann es tatsächlich losging" (siehe 0048).
+  /// Beim Anlegen der Verabredung stand dort der Anlegezeitpunkt — wer am
+  /// Montag für Freitag verabredet und Freitag startet, hätte sonst eine
+  /// Runde, die laut Datenbank seit vier Tagen läuft. Die Spam-Bremse in
+  /// `sessions_notify` fragt genau dieses Feld ab, und die Statistik
+  /// rechnet damit.
+  ///
+  /// `scheduled_for` bleibt stehen: Die Differenz zu `started_at` ist die
+  /// Verspätung, und die gehört zur Geschichte des Abends.
+  Future<bool> startPlanned(String sessionId, {
+    required Duration laufzeit,
+    double? latitude,
+    double? longitude,
+  }) async {
+    if (currentUser == null) return false;
+    final jetzt = DateTime.now().toUtc();
+    try {
+      await client.from('sessions').update({
+        'status': 'active',
+        'started_at': jetzt.toIso8601String(),
+        'expires_at': jetzt.add(laufzeit).toIso8601String(),
+        'latitude': latitude,
+        'longitude': longitude,
+      }).eq('id', sessionId);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Eine Verabredung streichen.
   ///
   /// Kein `delete`: Wer zugesagt hat, soll erfahren, dass sie nicht

@@ -27,7 +27,15 @@ void Function()? benachrichtigungsZiel(
       // Server-UUID; dass die Detailansicht damit klarkommt, ist seit
       // 0.10.13 wahr — vorher fragte sie damit die lokale Datenbank und
       // meldete bei fremden Beacons „Session nicht gefunden".
-      'beacon' || 'session_toast' || 'session_joined' || 'session_declined'
+      'beacon' ||
+              'session_toast' ||
+              'session_joined' ||
+              'session_declined' ||
+              // Verabredungen führen an dieselbe Stelle: Dort steht der
+              // Termin, dort sagt man zu — und dort startet der Gastgeber
+              // die Runde.
+              'session_planned' ||
+              'session_reminder'
           when n.subjectId != null =>
         () => context.push('/session/${n.subjectId}'),
       _ => null,
