@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/checkin_facts.dart';
 import '../../data/db/database.dart';
 import '../../data/checkin_facts_mapping.dart';
 import '../../data/providers.dart';
@@ -43,6 +44,23 @@ final _allMyCheckinsProvider = StreamProvider<List<CheckinDetails>>((ref) {
 final statsProvider = Provider<CheckinStats>((ref) {
   final all = ref.watch(_allMyCheckinsProvider).valueOrNull ?? const [];
   return computeStats(
+    all.facts,
+    now: ref.watch(clockProvider).valueOrNull ?? DateTime.now(),
+    period: ref.watch(statsPeriodProvider),
+    country: ref.watch(statsCountryProvider),
+    style: ref.watch(statsStyleProvider),
+  );
+});
+
+/// Die Check-ins, über die gerade gerechnet wird — für den Datenauszug.
+///
+/// Dieselbe Auswahl wie [statsProvider], nur ungruppiert: Was auf dem
+/// Bildschirm als Balken steht, steht in der Datei als Zeilen. Eine
+/// zweite Abfrage mit eigenen Filtern liefe früher oder später
+/// auseinander.
+final statsRowsProvider = Provider<List<CheckinFacts>>((ref) {
+  final all = ref.watch(_allMyCheckinsProvider).valueOrNull ?? const [];
+  return auswahl(
     all.facts,
     now: ref.watch(clockProvider).valueOrNull ?? DateTime.now(),
     period: ref.watch(statsPeriodProvider),

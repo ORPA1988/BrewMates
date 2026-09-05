@@ -270,6 +270,32 @@ List<StatSlice> _tally(
 /// [withPrevious] steuert nur, ob der Vergleichszeitraum mitgerechnet
 /// wird — die Vergleichsauswertung selbst braucht keinen eigenen
 /// Vergleich, sonst liefe das endlos.
+/// Welche Check-ins in diese Auswertung gehören — Zeitraum und Filter.
+///
+/// Steht als eigene Funktion da, weil zwei Ausgänge sie brauchen: die
+/// Balken auf dem Bildschirm und die Zeilen im Datenauszug (Funktion 20,
+/// Punkt 7). Zwei Kopien derselben Bedingung liefen früher oder später
+/// auseinander, und der Unterschied fiele niemandem auf — die Datei
+/// sieht ja immer plausibel aus.
+List<CheckinFacts> auswahl(
+  List<CheckinFacts> all, {
+  required DateTime now,
+  StatsPeriod period = const StatsPeriod.preset(StatsRange.all),
+  String? country,
+  String? style,
+}) {
+  final from = period.startAt(now);
+  final to = period.endAt(now);
+  return [
+    for (final d in all)
+      if ((from == null || !d.createdAt.isBefore(from)) &&
+          (to == null || d.createdAt.isBefore(to)) &&
+          (country == null || d.breweryCountry == country) &&
+          (style == null || d.beerStyle == style))
+        d,
+  ];
+}
+
 CheckinStats computeStats(
   List<CheckinFacts> all, {
   required DateTime now,
@@ -278,20 +304,13 @@ CheckinStats computeStats(
   String? style,
   bool withPrevious = true,
 }) {
+  // `from`/`to` werden unten noch gebraucht (frühere Biere, Wochenzahl);
+  // die Auswahl selbst trifft `auswahl`, damit der Datenauszug dieselbe
+  // Bedingung benutzt.
   final from = period.startAt(now);
   final to = period.endAt(now);
-
-  bool imZeitraum(CheckinFacts d) =>
-      (from == null || !d.createdAt.isBefore(from)) &&
-      (to == null || d.createdAt.isBefore(to));
-
-  final rows = [
-    for (final d in all)
-      if (imZeitraum(d) &&
-          (country == null || d.breweryCountry == country) &&
-          (style == null || d.beerStyle == style))
-        d,
-  ];
+  final rows = auswahl(all, now: now, period: period, country: country,
+      style: style);
 
   final vorher = withPrevious && period.previous(now) != null
       ? computeStats(

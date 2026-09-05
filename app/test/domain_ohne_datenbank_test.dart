@@ -30,6 +30,7 @@ void main() {
       CheckinFacts(
         createdAt: at ?? now,
         beerId: beerId,
+        beerName: 'Testbier',
         beerStyle: style,
         isAlcoholFree: alkoholfrei,
         breweryId: breweryId,

@@ -78,7 +78,9 @@ const _ratingOrder = [
   '5',
 ];
 
-String _servingLabel(ServingStyle? s) => switch (s) {
+/// Wie ein Gebinde heißt — auch der CSV-Ausgang nimmt diese Stelle,
+/// damit „vom Fass" in Tabelle und Balken gleich heißt.
+String servingLabel(ServingStyle? s) => switch (s) {
       ServingStyle.draft => 'vom Fass',
       ServingStyle.bottle => 'Flasche',
       ServingStyle.can => 'Dose',
@@ -119,7 +121,7 @@ String? _styleOf(CheckinFacts c) => c.beerStyle;
 String? _countryOf(CheckinFacts c) => c.breweryCountry;
 String? _regionOf(CheckinFacts c) => c.breweryCity;
 String? _breweryOf(CheckinFacts c) => c.breweryName;
-String? _servingOf(CheckinFacts c) => _servingLabel(c.serving);
+String? _servingOf(CheckinFacts c) => servingLabel(c.serving);
 String? _weekdayOf(CheckinFacts c) => _weekdays[c.createdAt.weekday - 1];
 String? _ratingOf(CheckinFacts c) =>
     c.rating == null ? null : _ratingLabel(c.rating!);
