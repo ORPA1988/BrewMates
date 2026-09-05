@@ -1,9 +1,8 @@
 # 39 Geplante Sessions
 
-> **Status:** 🟡 größtenteils — Server (0048/0049), **Anlegen und
-> „Demnächst” stehen**. Offen sind die beiden Erinnerungen und der Knopf
-> „Runde starten” (Schritte 6–8).
-> **Seit:** — · **Zuletzt geprüft:** 2026-09-04
+> **Status:** 🟢 fertig — Server (0048/0049/0053), Anlegen, „Demnächst”,
+> beide Erinnerungen und der Start aus der Verabredung heraus.
+> **Seit:** — · **Zuletzt geprüft:** 2026-09-05
 >
 > Baut auf [Funktion 07 (Sessions & Beacons)](07-sessions-und-beacons.md)
 > auf. Die Zu- und Absagen, die eine Verabredung erst brauchbar machen,
@@ -253,9 +252,9 @@ Das steht als Kommentar an der Methode und gehört zu Schritt 5.
 | ~~3~~ | ~~`remoteSessionsProvider` hält geplante heraus~~ — **war schon so:** `friendSessionsStream()` verwirft alles, was nicht `active` ist. Der Kartenzähler ist doppelt geschützt, weil er zusätzlich einen Ort verlangt | ✅ im pgTAP-Test mitgeprüft |
 | ~~4~~ | ~~Anlegen-Formular mit *jetzt/später*~~ — **erledigt.** Ein gewählter Termin schaltet den Weg um; ohne Termin bleibt alles wie bisher | ✅ drei Tests: ohne Verbindung, Serverfehler, Erfolg |
 | ~~5~~ | ~~„Demnächst" auf der Startseite~~ — **erledigt**, unter „Gerade unterwegs". Antworten laufen über die vorhandene Runden-Ansicht | ✅ zwei Widget-Tests |
-| 6 | Erinnerung beim Anlegen (Empfängerregel = `sessions_select`) | Wie 0039: niemand bekommt eine Meldung über etwas, das er nicht sehen darf |
-| 7 | Erinnerung kurz vorher, Cron auf `scheduled_for` | Test gegen den Index; kein Full Scan |
-| 8 | „Runde starten" aus der Erinnerung heraus | Der Standort wird dabei frisch geholt, nicht aus der Planung übernommen |
+| ~~6~~ | ~~Erinnerung beim Anlegen~~ — **erledigt (0053).** Vom Menschen entschieden: wie beim Beacon, samt Spam-Bremse | ✅ pgTAP: Kreis „freund" ja, Bekannte nein, ein Nachtrag weckt niemanden erneut |
+| ~~7~~ | ~~Erinnerung kurz vorher~~ — **erledigt**, zwei Stunden vorher, Cron alle fünf Minuten | ✅ pgTAP: Gastgeber und Zusagende ja, Absagende nein — und **genau einmal**, obwohl der Cron dutzendfach läuft |
+| ~~8~~ | ~~„Runde starten"~~ — **erledigt.** `startPlanned()` setzt `started_at` neu und holt den Standort frisch | ✅ im Code begründet |
 
 **Reihenfolge ist Absicht — und Schritt 1 hat sich sofort bezahlt
 gemacht.** Er kostete eine Abfrage und hat den Entwurf an einer Stelle
