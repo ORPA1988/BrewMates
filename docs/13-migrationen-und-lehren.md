@@ -133,6 +133,7 @@ eigenen Abschnitt sind unauffällig: Sie haben getan, was ihr Name sagt.
 | 0056 | gebinde_melden | Punkte für eine nachgetragene Gebindegröße — der geplante zweite Trigger fiel im Test durch, die Regel gab es längst |
 | 0057 | feedback_kind_data | Der Enum kannte die neue Meldungsart `data` nicht — das Issue entstand nie |
 | 0058 | sichtbarkeit_voreinstellung | `profiles.default_visibility` — die Bedienung zu einer Regel, die es seit 0001 gab |
+| 0059 | voreinstellung_nur_selbst | Entzieht das Spaltenrecht aus 0058 wieder: Es hätte die Voreinstellung jedem Freund gezeigt |
 
 **Edge Function `feedback-issue` steht auf Version 3** (2026-09-05): Sie kennt seither eine dritte Meldungsart `data` mit dem Label `datenpflege` — gemeldete Gebindegrößen. Die beiden anderen Functions sind unverändert (`notify` v7, `github-sync` v3).
 

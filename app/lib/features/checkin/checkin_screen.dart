@@ -370,7 +370,10 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
             // Die Voreinstellung steht am Konto; bis sie da ist, zeigt
             // die Auswahl `friends` — denselben Wert, den die App bis
             // 0.10.19 fest geschrieben hat.
-            final vorgabe = ref.watch(meProvider).valueOrNull?.defaultVisibility ??
+            // Die lokale Zeile ist die schnelle Antwort und die einzige
+            // offline; der Server hat die Wahrheit, sobald er antwortet.
+            final vorgabe = ref.watch(myDefaultVisibilityProvider).valueOrNull ??
+                ref.watch(meProvider).valueOrNull?.defaultVisibility ??
                 SessionVisibility.friends;
             final gewaehlt = _sichtbarkeit ?? vorgabe;
             return [
