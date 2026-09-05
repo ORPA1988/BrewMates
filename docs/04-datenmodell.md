@@ -83,6 +83,13 @@ bei `crew`: Mitglied). Ein `pg_cron`-Job beendet abgelaufene Sessions serverseit
 ### `breweries` · `beers`
 Breweries: `id, name, country, city, logo_url, verified`.
 Beers: `id, brewery_id, name, style, abv, ibu, description, label_url, is_alcohol_free, verified, created_by`.
+
+Die ausgelieferte Community-Datenbank (`app/assets/data/`) führt zusätzliche
+Felder, die es serverseitig nicht gibt und die lokal in Drift landen:
+bei Brauereien `state` (Bundesland) und `type` (`grossbrauerei` ·
+`regional` · `craft` · `gasthaus` · `kloster`), bei Bieren `og_plato`
+(Stammwürze in Grad Plato). Woher sie kommen und warum sie zählen:
+[docs/15 — Bier in Österreich](15-bier-in-oesterreich.md).
 Community-Einreichungen starten mit `verified=false` (Moderations-Queue).
 Volltextsuche über `tsvector`-Index auf Name+Brauerei+Stil.
 

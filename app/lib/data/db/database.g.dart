@@ -519,6 +519,16 @@ class $BreweriesTable extends Breweries
   late final GeneratedColumn<String> ownership = GeneratedColumn<String>(
       'ownership', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _stateMeta = const VerificationMeta('state');
+  @override
+  late final GeneratedColumn<String> state = GeneratedColumn<String>(
+      'state', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+      'type', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _employeesMeta =
       const VerificationMeta('employees');
   @override
@@ -565,6 +575,8 @@ class $BreweriesTable extends Breweries
         founded,
         website,
         ownership,
+        state,
+        type,
         employees,
         annualOutputHl,
         revenueEur,
@@ -629,6 +641,14 @@ class $BreweriesTable extends Breweries
       context.handle(_ownershipMeta,
           ownership.isAcceptableOrUnknown(data['ownership']!, _ownershipMeta));
     }
+    if (data.containsKey('state')) {
+      context.handle(
+          _stateMeta, state.isAcceptableOrUnknown(data['state']!, _stateMeta));
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
+    }
     if (data.containsKey('employees')) {
       context.handle(_employeesMeta,
           employees.isAcceptableOrUnknown(data['employees']!, _employeesMeta));
@@ -688,6 +708,10 @@ class $BreweriesTable extends Breweries
           .read(DriftSqlType.string, data['${effectivePrefix}website']),
       ownership: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}ownership']),
+      state: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}state']),
+      type: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}type']),
       employees: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}employees']),
       annualOutputHl: attachedDatabase.typeMapping
@@ -720,6 +744,15 @@ class Brewery extends DataClass implements Insertable<Brewery> {
   final int? founded;
   final String? website;
   final String? ownership;
+
+  /// Bundesland und Art der Brauerei (Recherche 2026-09-05, docs/15).
+  ///
+  /// `type` ist eine grobe Einordnung — grossbrauerei, regional, craft,
+  /// gasthaus, kloster —, keine Wertung: Ein Kloster braut nicht besser
+  /// als ein Konzern, es braut anders. Beide Felder sind nullable, weil
+  /// sie außerhalb Österreichs noch nirgends gepflegt sind.
+  final String? state;
+  final String? type;
   final int? employees;
   final int? annualOutputHl;
   final int? revenueEur;
@@ -739,6 +772,8 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       this.founded,
       this.website,
       this.ownership,
+      this.state,
+      this.type,
       this.employees,
       this.annualOutputHl,
       this.revenueEur,
@@ -769,6 +804,12 @@ class Brewery extends DataClass implements Insertable<Brewery> {
     }
     if (!nullToAbsent || ownership != null) {
       map['ownership'] = Variable<String>(ownership);
+    }
+    if (!nullToAbsent || state != null) {
+      map['state'] = Variable<String>(state);
+    }
+    if (!nullToAbsent || type != null) {
+      map['type'] = Variable<String>(type);
     }
     if (!nullToAbsent || employees != null) {
       map['employees'] = Variable<int>(employees);
@@ -815,6 +856,9 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       ownership: ownership == null && nullToAbsent
           ? const Value.absent()
           : Value(ownership),
+      state:
+          state == null && nullToAbsent ? const Value.absent() : Value(state),
+      type: type == null && nullToAbsent ? const Value.absent() : Value(type),
       employees: employees == null && nullToAbsent
           ? const Value.absent()
           : Value(employees),
@@ -848,6 +892,8 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       founded: serializer.fromJson<int?>(json['founded']),
       website: serializer.fromJson<String?>(json['website']),
       ownership: serializer.fromJson<String?>(json['ownership']),
+      state: serializer.fromJson<String?>(json['state']),
+      type: serializer.fromJson<String?>(json['type']),
       employees: serializer.fromJson<int?>(json['employees']),
       annualOutputHl: serializer.fromJson<int?>(json['annualOutputHl']),
       revenueEur: serializer.fromJson<int?>(json['revenueEur']),
@@ -870,6 +916,8 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       'founded': serializer.toJson<int?>(founded),
       'website': serializer.toJson<String?>(website),
       'ownership': serializer.toJson<String?>(ownership),
+      'state': serializer.toJson<String?>(state),
+      'type': serializer.toJson<String?>(type),
       'employees': serializer.toJson<int?>(employees),
       'annualOutputHl': serializer.toJson<int?>(annualOutputHl),
       'revenueEur': serializer.toJson<int?>(revenueEur),
@@ -890,6 +938,8 @@ class Brewery extends DataClass implements Insertable<Brewery> {
           Value<int?> founded = const Value.absent(),
           Value<String?> website = const Value.absent(),
           Value<String?> ownership = const Value.absent(),
+          Value<String?> state = const Value.absent(),
+          Value<String?> type = const Value.absent(),
           Value<int?> employees = const Value.absent(),
           Value<int?> annualOutputHl = const Value.absent(),
           Value<int?> revenueEur = const Value.absent(),
@@ -907,6 +957,8 @@ class Brewery extends DataClass implements Insertable<Brewery> {
         founded: founded.present ? founded.value : this.founded,
         website: website.present ? website.value : this.website,
         ownership: ownership.present ? ownership.value : this.ownership,
+        state: state.present ? state.value : this.state,
+        type: type.present ? type.value : this.type,
         employees: employees.present ? employees.value : this.employees,
         annualOutputHl:
             annualOutputHl.present ? annualOutputHl.value : this.annualOutputHl,
@@ -927,6 +979,8 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       founded: data.founded.present ? data.founded.value : this.founded,
       website: data.website.present ? data.website.value : this.website,
       ownership: data.ownership.present ? data.ownership.value : this.ownership,
+      state: data.state.present ? data.state.value : this.state,
+      type: data.type.present ? data.type.value : this.type,
       employees: data.employees.present ? data.employees.value : this.employees,
       annualOutputHl: data.annualOutputHl.present
           ? data.annualOutputHl.value
@@ -953,6 +1007,8 @@ class Brewery extends DataClass implements Insertable<Brewery> {
           ..write('founded: $founded, ')
           ..write('website: $website, ')
           ..write('ownership: $ownership, ')
+          ..write('state: $state, ')
+          ..write('type: $type, ')
           ..write('employees: $employees, ')
           ..write('annualOutputHl: $annualOutputHl, ')
           ..write('revenueEur: $revenueEur, ')
@@ -975,6 +1031,8 @@ class Brewery extends DataClass implements Insertable<Brewery> {
       founded,
       website,
       ownership,
+      state,
+      type,
       employees,
       annualOutputHl,
       revenueEur,
@@ -995,6 +1053,8 @@ class Brewery extends DataClass implements Insertable<Brewery> {
           other.founded == this.founded &&
           other.website == this.website &&
           other.ownership == this.ownership &&
+          other.state == this.state &&
+          other.type == this.type &&
           other.employees == this.employees &&
           other.annualOutputHl == this.annualOutputHl &&
           other.revenueEur == this.revenueEur &&
@@ -1014,6 +1074,8 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
   final Value<int?> founded;
   final Value<String?> website;
   final Value<String?> ownership;
+  final Value<String?> state;
+  final Value<String?> type;
   final Value<int?> employees;
   final Value<int?> annualOutputHl;
   final Value<int?> revenueEur;
@@ -1032,6 +1094,8 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
     this.founded = const Value.absent(),
     this.website = const Value.absent(),
     this.ownership = const Value.absent(),
+    this.state = const Value.absent(),
+    this.type = const Value.absent(),
     this.employees = const Value.absent(),
     this.annualOutputHl = const Value.absent(),
     this.revenueEur = const Value.absent(),
@@ -1051,6 +1115,8 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
     this.founded = const Value.absent(),
     this.website = const Value.absent(),
     this.ownership = const Value.absent(),
+    this.state = const Value.absent(),
+    this.type = const Value.absent(),
     this.employees = const Value.absent(),
     this.annualOutputHl = const Value.absent(),
     this.revenueEur = const Value.absent(),
@@ -1073,6 +1139,8 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
     Expression<int>? founded,
     Expression<String>? website,
     Expression<String>? ownership,
+    Expression<String>? state,
+    Expression<String>? type,
     Expression<int>? employees,
     Expression<int>? annualOutputHl,
     Expression<int>? revenueEur,
@@ -1092,6 +1160,8 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
       if (founded != null) 'founded': founded,
       if (website != null) 'website': website,
       if (ownership != null) 'ownership': ownership,
+      if (state != null) 'state': state,
+      if (type != null) 'type': type,
       if (employees != null) 'employees': employees,
       if (annualOutputHl != null) 'annual_output_hl': annualOutputHl,
       if (revenueEur != null) 'revenue_eur': revenueEur,
@@ -1113,6 +1183,8 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
       Value<int?>? founded,
       Value<String?>? website,
       Value<String?>? ownership,
+      Value<String?>? state,
+      Value<String?>? type,
       Value<int?>? employees,
       Value<int?>? annualOutputHl,
       Value<int?>? revenueEur,
@@ -1131,6 +1203,8 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
       founded: founded ?? this.founded,
       website: website ?? this.website,
       ownership: ownership ?? this.ownership,
+      state: state ?? this.state,
+      type: type ?? this.type,
       employees: employees ?? this.employees,
       annualOutputHl: annualOutputHl ?? this.annualOutputHl,
       revenueEur: revenueEur ?? this.revenueEur,
@@ -1174,6 +1248,12 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
     if (ownership.present) {
       map['ownership'] = Variable<String>(ownership.value);
     }
+    if (state.present) {
+      map['state'] = Variable<String>(state.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
     if (employees.present) {
       map['employees'] = Variable<int>(employees.value);
     }
@@ -1211,6 +1291,8 @@ class BreweriesCompanion extends UpdateCompanion<Brewery> {
           ..write('founded: $founded, ')
           ..write('website: $website, ')
           ..write('ownership: $ownership, ')
+          ..write('state: $state, ')
+          ..write('type: $type, ')
           ..write('employees: $employees, ')
           ..write('annualOutputHl: $annualOutputHl, ')
           ..write('revenueEur: $revenueEur, ')
@@ -1262,6 +1344,12 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
   late final GeneratedColumn<int> ibu = GeneratedColumn<int>(
       'ibu', aliasedName, true,
       type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _ogPlatoMeta =
+      const VerificationMeta('ogPlato');
+  @override
+  late final GeneratedColumn<double> ogPlato = GeneratedColumn<double>(
+      'og_plato', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
   static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   @override
@@ -1339,6 +1427,7 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
         style,
         abv,
         ibu,
+        ogPlato,
         description,
         isAlcoholFree,
         isUserSubmitted,
@@ -1390,6 +1479,10 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
     if (data.containsKey('ibu')) {
       context.handle(
           _ibuMeta, ibu.isAcceptableOrUnknown(data['ibu']!, _ibuMeta));
+    }
+    if (data.containsKey('og_plato')) {
+      context.handle(_ogPlatoMeta,
+          ogPlato.isAcceptableOrUnknown(data['og_plato']!, _ogPlatoMeta));
     }
     if (data.containsKey('description')) {
       context.handle(
@@ -1466,6 +1559,8 @@ class $BeersTable extends Beers with TableInfo<$BeersTable, Beer> {
           .read(DriftSqlType.double, data['${effectivePrefix}abv']),
       ibu: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}ibu']),
+      ogPlato: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}og_plato']),
       description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}description']),
       isAlcoholFree: attachedDatabase.typeMapping
@@ -1502,6 +1597,14 @@ class Beer extends DataClass implements Insertable<Beer> {
   final String style;
   final double? abv;
   final int? ibu;
+
+  /// Stammwürze in Grad Plato — der Zuckergehalt der Würze vor der Gärung.
+  ///
+  /// In Österreich keine Liebhaberzahl, sondern die Bemessungsgrundlage
+  /// der Biersteuer (2 EUR je hl und °Plato). Für den Trinkenden sagt sie
+  /// grob, wie viel Körper zu erwarten ist: 11–12 °P ist Vollbier,
+  /// darüber wird es Spezial- und Bockbier.
+  final double? ogPlato;
   final String? description;
   final bool isAlcoholFree;
   final bool isUserSubmitted;
@@ -1544,6 +1647,7 @@ class Beer extends DataClass implements Insertable<Beer> {
       required this.style,
       this.abv,
       this.ibu,
+      this.ogPlato,
       this.description,
       required this.isAlcoholFree,
       required this.isUserSubmitted,
@@ -1566,6 +1670,9 @@ class Beer extends DataClass implements Insertable<Beer> {
     }
     if (!nullToAbsent || ibu != null) {
       map['ibu'] = Variable<int>(ibu);
+    }
+    if (!nullToAbsent || ogPlato != null) {
+      map['og_plato'] = Variable<double>(ogPlato);
     }
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
@@ -1602,6 +1709,9 @@ class Beer extends DataClass implements Insertable<Beer> {
       style: Value(style),
       abv: abv == null && nullToAbsent ? const Value.absent() : Value(abv),
       ibu: ibu == null && nullToAbsent ? const Value.absent() : Value(ibu),
+      ogPlato: ogPlato == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ogPlato),
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
@@ -1638,6 +1748,7 @@ class Beer extends DataClass implements Insertable<Beer> {
       style: serializer.fromJson<String>(json['style']),
       abv: serializer.fromJson<double?>(json['abv']),
       ibu: serializer.fromJson<int?>(json['ibu']),
+      ogPlato: serializer.fromJson<double?>(json['ogPlato']),
       description: serializer.fromJson<String?>(json['description']),
       isAlcoholFree: serializer.fromJson<bool>(json['isAlcoholFree']),
       isUserSubmitted: serializer.fromJson<bool>(json['isUserSubmitted']),
@@ -1661,6 +1772,7 @@ class Beer extends DataClass implements Insertable<Beer> {
       'style': serializer.toJson<String>(style),
       'abv': serializer.toJson<double?>(abv),
       'ibu': serializer.toJson<int?>(ibu),
+      'ogPlato': serializer.toJson<double?>(ogPlato),
       'description': serializer.toJson<String?>(description),
       'isAlcoholFree': serializer.toJson<bool>(isAlcoholFree),
       'isUserSubmitted': serializer.toJson<bool>(isUserSubmitted),
@@ -1681,6 +1793,7 @@ class Beer extends DataClass implements Insertable<Beer> {
           String? style,
           Value<double?> abv = const Value.absent(),
           Value<int?> ibu = const Value.absent(),
+          Value<double?> ogPlato = const Value.absent(),
           Value<String?> description = const Value.absent(),
           bool? isAlcoholFree,
           bool? isUserSubmitted,
@@ -1698,6 +1811,7 @@ class Beer extends DataClass implements Insertable<Beer> {
         style: style ?? this.style,
         abv: abv.present ? abv.value : this.abv,
         ibu: ibu.present ? ibu.value : this.ibu,
+        ogPlato: ogPlato.present ? ogPlato.value : this.ogPlato,
         description: description.present ? description.value : this.description,
         isAlcoholFree: isAlcoholFree ?? this.isAlcoholFree,
         isUserSubmitted: isUserSubmitted ?? this.isUserSubmitted,
@@ -1722,6 +1836,7 @@ class Beer extends DataClass implements Insertable<Beer> {
       style: data.style.present ? data.style.value : this.style,
       abv: data.abv.present ? data.abv.value : this.abv,
       ibu: data.ibu.present ? data.ibu.value : this.ibu,
+      ogPlato: data.ogPlato.present ? data.ogPlato.value : this.ogPlato,
       description:
           data.description.present ? data.description.value : this.description,
       isAlcoholFree: data.isAlcoholFree.present
@@ -1756,6 +1871,7 @@ class Beer extends DataClass implements Insertable<Beer> {
           ..write('style: $style, ')
           ..write('abv: $abv, ')
           ..write('ibu: $ibu, ')
+          ..write('ogPlato: $ogPlato, ')
           ..write('description: $description, ')
           ..write('isAlcoholFree: $isAlcoholFree, ')
           ..write('isUserSubmitted: $isUserSubmitted, ')
@@ -1778,6 +1894,7 @@ class Beer extends DataClass implements Insertable<Beer> {
       style,
       abv,
       ibu,
+      ogPlato,
       description,
       isAlcoholFree,
       isUserSubmitted,
@@ -1798,6 +1915,7 @@ class Beer extends DataClass implements Insertable<Beer> {
           other.style == this.style &&
           other.abv == this.abv &&
           other.ibu == this.ibu &&
+          other.ogPlato == this.ogPlato &&
           other.description == this.description &&
           other.isAlcoholFree == this.isAlcoholFree &&
           other.isUserSubmitted == this.isUserSubmitted &&
@@ -1817,6 +1935,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
   final Value<String> style;
   final Value<double?> abv;
   final Value<int?> ibu;
+  final Value<double?> ogPlato;
   final Value<String?> description;
   final Value<bool> isAlcoholFree;
   final Value<bool> isUserSubmitted;
@@ -1835,6 +1954,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     this.style = const Value.absent(),
     this.abv = const Value.absent(),
     this.ibu = const Value.absent(),
+    this.ogPlato = const Value.absent(),
     this.description = const Value.absent(),
     this.isAlcoholFree = const Value.absent(),
     this.isUserSubmitted = const Value.absent(),
@@ -1854,6 +1974,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     required String style,
     this.abv = const Value.absent(),
     this.ibu = const Value.absent(),
+    this.ogPlato = const Value.absent(),
     this.description = const Value.absent(),
     this.isAlcoholFree = const Value.absent(),
     this.isUserSubmitted = const Value.absent(),
@@ -1876,6 +1997,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     Expression<String>? style,
     Expression<double>? abv,
     Expression<int>? ibu,
+    Expression<double>? ogPlato,
     Expression<String>? description,
     Expression<bool>? isAlcoholFree,
     Expression<bool>? isUserSubmitted,
@@ -1895,6 +2017,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       if (style != null) 'style': style,
       if (abv != null) 'abv': abv,
       if (ibu != null) 'ibu': ibu,
+      if (ogPlato != null) 'og_plato': ogPlato,
       if (description != null) 'description': description,
       if (isAlcoholFree != null) 'is_alcohol_free': isAlcoholFree,
       if (isUserSubmitted != null) 'is_user_submitted': isUserSubmitted,
@@ -1917,6 +2040,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       Value<String>? style,
       Value<double?>? abv,
       Value<int?>? ibu,
+      Value<double?>? ogPlato,
       Value<String?>? description,
       Value<bool>? isAlcoholFree,
       Value<bool>? isUserSubmitted,
@@ -1935,6 +2059,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
       style: style ?? this.style,
       abv: abv ?? this.abv,
       ibu: ibu ?? this.ibu,
+      ogPlato: ogPlato ?? this.ogPlato,
       description: description ?? this.description,
       isAlcoholFree: isAlcoholFree ?? this.isAlcoholFree,
       isUserSubmitted: isUserSubmitted ?? this.isUserSubmitted,
@@ -1969,6 +2094,9 @@ class BeersCompanion extends UpdateCompanion<Beer> {
     }
     if (ibu.present) {
       map['ibu'] = Variable<int>(ibu.value);
+    }
+    if (ogPlato.present) {
+      map['og_plato'] = Variable<double>(ogPlato.value);
     }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
@@ -2016,6 +2144,7 @@ class BeersCompanion extends UpdateCompanion<Beer> {
           ..write('style: $style, ')
           ..write('abv: $abv, ')
           ..write('ibu: $ibu, ')
+          ..write('ogPlato: $ogPlato, ')
           ..write('description: $description, ')
           ..write('isAlcoholFree: $isAlcoholFree, ')
           ..write('isUserSubmitted: $isUserSubmitted, ')
@@ -7230,6 +7359,8 @@ typedef $$BreweriesTableCreateCompanionBuilder = BreweriesCompanion Function({
   Value<int?> founded,
   Value<String?> website,
   Value<String?> ownership,
+  Value<String?> state,
+  Value<String?> type,
   Value<int?> employees,
   Value<int?> annualOutputHl,
   Value<int?> revenueEur,
@@ -7249,6 +7380,8 @@ typedef $$BreweriesTableUpdateCompanionBuilder = BreweriesCompanion Function({
   Value<int?> founded,
   Value<String?> website,
   Value<String?> ownership,
+  Value<String?> state,
+  Value<String?> type,
   Value<int?> employees,
   Value<int?> annualOutputHl,
   Value<int?> revenueEur,
@@ -7315,6 +7448,12 @@ class $$BreweriesTableFilterComposer
 
   ColumnFilters<String> get ownership => $composableBuilder(
       column: $table.ownership, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get state => $composableBuilder(
+      column: $table.state, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get type => $composableBuilder(
+      column: $table.type, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<int> get employees => $composableBuilder(
       column: $table.employees, builder: (column) => ColumnFilters(column));
@@ -7396,6 +7535,12 @@ class $$BreweriesTableOrderingComposer
   ColumnOrderings<String> get ownership => $composableBuilder(
       column: $table.ownership, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get state => $composableBuilder(
+      column: $table.state, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get type => $composableBuilder(
+      column: $table.type, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<int> get employees => $composableBuilder(
       column: $table.employees, builder: (column) => ColumnOrderings(column));
 
@@ -7454,6 +7599,12 @@ class $$BreweriesTableAnnotationComposer
 
   GeneratedColumn<String> get ownership =>
       $composableBuilder(column: $table.ownership, builder: (column) => column);
+
+  GeneratedColumn<String> get state =>
+      $composableBuilder(column: $table.state, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
 
   GeneratedColumn<int> get employees =>
       $composableBuilder(column: $table.employees, builder: (column) => column);
@@ -7528,6 +7679,8 @@ class $$BreweriesTableTableManager extends RootTableManager<
             Value<int?> founded = const Value.absent(),
             Value<String?> website = const Value.absent(),
             Value<String?> ownership = const Value.absent(),
+            Value<String?> state = const Value.absent(),
+            Value<String?> type = const Value.absent(),
             Value<int?> employees = const Value.absent(),
             Value<int?> annualOutputHl = const Value.absent(),
             Value<int?> revenueEur = const Value.absent(),
@@ -7547,6 +7700,8 @@ class $$BreweriesTableTableManager extends RootTableManager<
             founded: founded,
             website: website,
             ownership: ownership,
+            state: state,
+            type: type,
             employees: employees,
             annualOutputHl: annualOutputHl,
             revenueEur: revenueEur,
@@ -7566,6 +7721,8 @@ class $$BreweriesTableTableManager extends RootTableManager<
             Value<int?> founded = const Value.absent(),
             Value<String?> website = const Value.absent(),
             Value<String?> ownership = const Value.absent(),
+            Value<String?> state = const Value.absent(),
+            Value<String?> type = const Value.absent(),
             Value<int?> employees = const Value.absent(),
             Value<int?> annualOutputHl = const Value.absent(),
             Value<int?> revenueEur = const Value.absent(),
@@ -7585,6 +7742,8 @@ class $$BreweriesTableTableManager extends RootTableManager<
             founded: founded,
             website: website,
             ownership: ownership,
+            state: state,
+            type: type,
             employees: employees,
             annualOutputHl: annualOutputHl,
             revenueEur: revenueEur,
@@ -7643,6 +7802,7 @@ typedef $$BeersTableCreateCompanionBuilder = BeersCompanion Function({
   required String style,
   Value<double?> abv,
   Value<int?> ibu,
+  Value<double?> ogPlato,
   Value<String?> description,
   Value<bool> isAlcoholFree,
   Value<bool> isUserSubmitted,
@@ -7662,6 +7822,7 @@ typedef $$BeersTableUpdateCompanionBuilder = BeersCompanion Function({
   Value<String> style,
   Value<double?> abv,
   Value<int?> ibu,
+  Value<double?> ogPlato,
   Value<String?> description,
   Value<bool> isAlcoholFree,
   Value<bool> isUserSubmitted,
@@ -7743,6 +7904,9 @@ class $$BeersTableFilterComposer extends Composer<_$AppDatabase, $BeersTable> {
 
   ColumnFilters<int> get ibu => $composableBuilder(
       column: $table.ibu, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get ogPlato => $composableBuilder(
+      column: $table.ogPlato, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => ColumnFilters(column));
@@ -7864,6 +8028,9 @@ class $$BeersTableOrderingComposer
   ColumnOrderings<int> get ibu => $composableBuilder(
       column: $table.ibu, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<double> get ogPlato => $composableBuilder(
+      column: $table.ogPlato, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => ColumnOrderings(column));
 
@@ -7943,6 +8110,9 @@ class $$BeersTableAnnotationComposer
 
   GeneratedColumn<int> get ibu =>
       $composableBuilder(column: $table.ibu, builder: (column) => column);
+
+  GeneratedColumn<double> get ogPlato =>
+      $composableBuilder(column: $table.ogPlato, builder: (column) => column);
 
   GeneratedColumn<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => column);
@@ -8067,6 +8237,7 @@ class $$BeersTableTableManager extends RootTableManager<
             Value<String> style = const Value.absent(),
             Value<double?> abv = const Value.absent(),
             Value<int?> ibu = const Value.absent(),
+            Value<double?> ogPlato = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<bool> isAlcoholFree = const Value.absent(),
             Value<bool> isUserSubmitted = const Value.absent(),
@@ -8086,6 +8257,7 @@ class $$BeersTableTableManager extends RootTableManager<
             style: style,
             abv: abv,
             ibu: ibu,
+            ogPlato: ogPlato,
             description: description,
             isAlcoholFree: isAlcoholFree,
             isUserSubmitted: isUserSubmitted,
@@ -8105,6 +8277,7 @@ class $$BeersTableTableManager extends RootTableManager<
             required String style,
             Value<double?> abv = const Value.absent(),
             Value<int?> ibu = const Value.absent(),
+            Value<double?> ogPlato = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<bool> isAlcoholFree = const Value.absent(),
             Value<bool> isUserSubmitted = const Value.absent(),
@@ -8124,6 +8297,7 @@ class $$BeersTableTableManager extends RootTableManager<
             style: style,
             abv: abv,
             ibu: ibu,
+            ogPlato: ogPlato,
             description: description,
             isAlcoholFree: isAlcoholFree,
             isUserSubmitted: isUserSubmitted,

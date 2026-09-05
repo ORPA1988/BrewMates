@@ -247,3 +247,22 @@ Abschnitt dann weg.
 
 Stand: 34 Brauereien (Österreich und Bayern) und 1 Bier haben eine
 Geschichte. Korrekturen und Ergänzungen bitte per GitHub-Issue.
+
+## Bundesland, Brauereityp und Stammwürze (2026-09-05)
+
+Aus einer Recherche zum österreichischen Biermarkt kamen drei Felder
+dazu: `state` und `type` bei allen 46 österreichischen Brauereien sowie
+`og_plato` (Stammwürze) bei 20 Kernbieren, dazu vier bislang fehlende
+IBU-Werte und der Barcode `90129407` (Puntigamer, 0,5-l-Mehrweg).
+
+`type` ordnet ein, wie gebraut wird — `grossbrauerei`, `regional`,
+`craft`, `gasthaus`, `kloster` —, und ist **keine Wertung**. Für die
+anderen Länderdateien sind beide Felder noch nicht gepflegt; sie bleiben
+dort leer, statt geraten zu werden.
+
+Wo Recherche und Bestand beim Alkoholgehalt auseinandergingen, blieb der
+Bestand stehen (Herstellerangabe schlägt Drittquelle); nur wo gar kein
+Wert stand, wurde einer nachgetragen. Handelspreise aus der Recherche
+wurden **nicht** übernommen: Sie waren eine Momentaufnahme und wären eine
+Woche später falsch. Einzelheiten und Quellen:
+[docs/15 — Bier in Österreich](../../../docs/15-bier-in-oesterreich.md).

@@ -47,6 +47,10 @@ void main() {
   late List<Map<String, dynamic>> biere;
   late Set<String> brauereien;
 
+  /// Die österreichischen Brauereizeilen selbst — für die Felder, die
+  /// nur dort gepflegt sind (Bundesland, Typ).
+  late List<Map<String, dynamic>> brauereienAt;
+
   setUpAll(() async {
     biere = [];
     for (final datei in bierDateien) {
@@ -54,6 +58,9 @@ void main() {
       biere.addAll((roh['beers'] as List).cast<Map<String, dynamic>>());
     }
     brauereien = {};
+    brauereienAt = (json.decode(await _lies('assets/data/breweries-at.json'))
+            as Map<String, dynamic>)['breweries']
+        .cast<Map<String, dynamic>>();
     for (final datei in brauereiDateien) {
       final roh = json.decode(await _lies(datei)) as Map<String, dynamic>;
       brauereien.addAll(
@@ -136,6 +143,51 @@ void main() {
     }
     expect(widerspruch, isEmpty, reason: 'Widerspruch: $widerspruch');
   });
+  test('Jede AT-Brauerei hat Bundesland und Typ', () {
+    // Beides kam mit dem Recherchereport vom 2026-09-05 (docs/15) dazu.
+    // Der Test hält es fest, weil eine halb gefüllte Spalte schlimmer
+    // ist als eine leere: Ein Filter „Steiermark" würde stillschweigend
+    // Brauereien verschlucken, die einfach keinen Eintrag haben.
+    const bundeslaender = {
+      'Wien', 'Niederösterreich', 'Oberösterreich', 'Salzburg',
+      'Steiermark', 'Kärnten', 'Tirol', 'Vorarlberg', 'Burgenland',
+    };
+    const typen = {'grossbrauerei', 'regional', 'craft', 'gasthaus', 'kloster'};
+
+    final ohneLand = <String>[];
+    final ohneTyp = <String>[];
+    final unbekannt = <String>[];
+    for (final b in brauereienAt) {
+      final land = b['state'] as String?;
+      final typ = b['type'] as String?;
+      if (land == null || land.isEmpty) {
+        ohneLand.add(b['id'] as String);
+      } else if (!bundeslaender.contains(land)) {
+        unbekannt.add('${b['id']} → $land');
+      }
+      if (typ == null || typ.isEmpty) {
+        ohneTyp.add(b['id'] as String);
+      } else if (!typen.contains(typ)) {
+        unbekannt.add('${b['id']} → $typ');
+      }
+    }
+    expect(ohneLand, isEmpty, reason: 'Brauereien ohne Bundesland: $ohneLand');
+    expect(ohneTyp, isEmpty, reason: 'Brauereien ohne Typ: $ohneTyp');
+    expect(unbekannt, isEmpty, reason: 'Unbekannte Werte: $unbekannt');
+  });
+
+  test('Stammwürze bleibt im plausiblen Bereich', () {
+    // 7 °P ist ungefähr ein Schankbier, 30 °P ein Doppelbock am
+    // oberen Rand. Was darüber oder darunter liegt, ist kein Bier,
+    // sondern ein Tippfehler — etwa ein Wert in Prozent statt Plato.
+    final daneben = <String>[];
+    for (final b in biere) {
+      final og = (b['og_plato'] as num?)?.toDouble();
+      if (og == null) continue;
+      if (og < 7 || og > 30) daneben.add('${b['id']}: $og');
+    }
+    expect(daneben, isEmpty, reason: 'Unplausible Stammwürze: $daneben');
+  });
 }
 
 /// Prüfziffer nach GS1 (GTIN-8 und GTIN-13).
@@ -159,4 +211,5 @@ Future<String> _lies(String asset) async {
     if (await datei.exists()) return datei.readAsString();
   }
   fail('Asset nicht gefunden: $asset');
+
 }

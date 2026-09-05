@@ -64,6 +64,15 @@ class Breweries extends Table {
   IntColumn get founded => integer().nullable()();
   TextColumn get website => text().nullable()();
   TextColumn get ownership => text().nullable()();
+
+  /// Bundesland und Art der Brauerei (Recherche 2026-09-05, docs/15).
+  ///
+  /// `type` ist eine grobe Einordnung — grossbrauerei, regional, craft,
+  /// gasthaus, kloster —, keine Wertung: Ein Kloster braut nicht besser
+  /// als ein Konzern, es braut anders. Beide Felder sind nullable, weil
+  /// sie außerhalb Österreichs noch nirgends gepflegt sind.
+  TextColumn get state => text().nullable()();
+  TextColumn get type => text().nullable()();
   IntColumn get employees => integer().nullable()();
   IntColumn get annualOutputHl => integer().nullable()();
   IntColumn get revenueEur => integer().nullable()();
@@ -84,6 +93,14 @@ class Beers extends Table {
   TextColumn get style => text()();
   RealColumn get abv => real().nullable()();
   IntColumn get ibu => integer().nullable()();
+
+  /// Stammwürze in Grad Plato — der Zuckergehalt der Würze vor der Gärung.
+  ///
+  /// In Österreich keine Liebhaberzahl, sondern die Bemessungsgrundlage
+  /// der Biersteuer (2 EUR je hl und °Plato). Für den Trinkenden sagt sie
+  /// grob, wie viel Körper zu erwarten ist: 11–12 °P ist Vollbier,
+  /// darüber wird es Spezial- und Bockbier.
+  RealColumn get ogPlato => real().nullable()();
   TextColumn get description => text().nullable()();
   BoolColumn get isAlcoholFree => boolean().withDefault(const Constant(false))();
   BoolColumn get isUserSubmitted =>
@@ -425,7 +442,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(openInMemory());
 
   @override
-  int get schemaVersion => 16;
+  int get schemaVersion => 17;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -548,6 +565,12 @@ class AppDatabase extends _$AppDatabase {
             // v12: Hintergrundgeschichten zu Bier und Brauerei.
             await m.addColumn(beers, beers.story);
             await m.addColumn(breweries, breweries.story);
+          }
+          if (from < 17) {
+            // v17: Bundesland und Art der Brauerei, Stammwürze beim Bier.
+            await m.addColumn(breweries, breweries.state);
+            await m.addColumn(breweries, breweries.type);
+            await m.addColumn(beers, beers.ogPlato);
           }
           if (from < 16) {
             // v16: Sichtbarkeit je Check-in und die Voreinstellung dazu

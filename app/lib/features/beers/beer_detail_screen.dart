@@ -190,6 +190,16 @@ class _BeerDetailBody extends ConsumerWidget {
               Chip(label: Text(beer.style)),
               if (beer.abv != null) Chip(label: Text('${beer.abv} %')),
               if (beer.ibu != null) Chip(label: Text('IBU ${beer.ibu}')),
+              // Stammwürze: „12,0 °P" — mit Komma, weil hier so
+              // geschrieben wird, und die Null hinterm Komma bleibt
+              // stehen, damit 11,0 nicht wie eine Schätzung aussieht.
+              if (beer.ogPlato != null)
+                Chip(
+                  label: Text(
+                    '${beer.ogPlato!.toStringAsFixed(1).replaceAll('.', ',')}'
+                    ' °P',
+                  ),
+                ),
               if (beer.isAlcoholFree)
                 const Chip(label: Text('💧 alkoholfrei')),
               if (beer.isUserSubmitted)
