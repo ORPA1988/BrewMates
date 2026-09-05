@@ -174,9 +174,16 @@ class _FeedbackTile extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(item.kind == FeedbackKind.bug
-                    ? Icons.bug_report_outlined
-                    : Icons.lightbulb_outline, size: 18),
+                Icon(
+                    switch (item.kind) {
+                      FeedbackKind.bug => Icons.bug_report_outlined,
+                      FeedbackKind.wish => Icons.lightbulb_outline,
+                      // Eine ergänzte Datenlücke ist keins von beidem:
+                      // Sie steht hier, weil sie geprüft wird, nicht
+                      // weil sie noch entschieden werden müsste.
+                      FeedbackKind.data => Icons.fact_check_outlined,
+                    },
+                    size: 18),
                 const SizedBox(width: 6),
                 Text(datum, style: theme.textTheme.labelMedium),
                 const Spacer(),

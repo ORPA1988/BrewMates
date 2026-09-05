@@ -5,6 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../core/config.dart';
+import '../../core/format.dart' show volumeChoicesMl, formatVolume;
+import '../../data/online/models.dart' show FeedbackKind;
 import '../../data/db/database.dart';
 import '../../data/providers.dart';
 import '../../widgets/kamera_hinweis.dart';
@@ -202,7 +205,11 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
     await showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
-      builder: (sheetContext) => SafeArea(
+      // `StatefulBuilder`, weil die gemeldete Größe im offenen Blatt
+      // sichtbar werden soll: Wer sie gerade eingetragen hat, will sie
+      // dort stehen sehen und nicht erst nach dem nächsten Scan.
+      builder: (sheetContext) => StatefulBuilder(
+        builder: (sheetContext, setSheetState) => SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
           child: Column(
@@ -230,6 +237,38 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
                           '${beer.abv != null ? ' · ${beer.abv} %' : ''}',
                           style: theme.textTheme.bodySmall,
                         ),
+                        const SizedBox(height: 4),
+                        // Fehlt die Gebindegröße, steht das **rot** da
+                        // statt gar nicht: Eine Leerstelle sieht aus wie
+                        // eine vollständige Angabe. Antippen trägt sie
+                        // nach (Funktion 43).
+                        if (volumeMl != null)
+                          Text(formatVolume(volumeMl!),
+                              style: theme.textTheme.bodySmall)
+                        else if (ean != null)
+                          InkWell(
+                            onTap: () async {
+                              final gewaehlt = await _gebindeMelden(
+                                  sheetContext, ean, found);
+                              if (gewaehlt != null) {
+                                setSheetState(() => volumeMl = gewaehlt);
+                              }
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.edit_outlined,
+                                    size: 14, color: theme.colorScheme.error),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Gebindegröße fehlt — eintragen',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                      color: theme.colorScheme.error,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -277,8 +316,113 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
             ],
           ),
         ),
+        ),
       ),
     );
+  }
+
+  /// Für die Meldung: dieselbe Schreibweise wie im Feedback-Bildschirm,
+  /// damit die Auswertung nicht zwei Namen für dieselbe Plattform sieht.
+  String get _plattform =>
+      kIsWeb ? 'web' : defaultTargetPlatform.name.toLowerCase();
+
+  /// Die fehlende Gebindegröße eintragen — der Weg aus Funktion 43.
+  ///
+  /// Gibt die gewählte Größe zurück, wenn sie angekommen ist, sonst
+  /// `null`. **Zurückgemeldet wird nur, was der Server bestätigt hat**
+  /// (Regel A): Eine Größe, die nur lokal steht, hülfe niemandem und
+  /// wäre beim nächsten Abgleich wieder weg.
+  Future<int?> _gebindeMelden(
+    BuildContext sheetContext,
+    String ean,
+    BeerWithBrewery found,
+  ) async {
+    final theme = Theme.of(sheetContext);
+    final gewaehlt = await showModalBottomSheet<int>(
+      context: sheetContext,
+      showDragHandle: true,
+      builder: (waehlContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Wie groß ist dieses Gebinde?',
+                  style: theme.textTheme.titleMedium),
+              const SizedBox(height: 4),
+              Text(
+                'Du hast es in der Hand — das ist die bessere Quelle als '
+                'jede Datenbank. Deine Angabe gilt sofort, für alle, und '
+                'bringt dir zwei Punkte für die Datenpflege.',
+                style: theme.textTheme.bodySmall,
+              ),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final ml in volumeChoicesMl)
+                    ActionChip(
+                      label: Text(formatVolume(ml)),
+                      onPressed: () => Navigator.pop(waehlContext, ml),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Bei einem Tragerl zählt die einzelne Flasche, nicht die '
+                'Summe.',
+                style: theme.textTheme.labelSmall
+                    ?.copyWith(color: theme.colorScheme.outline),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (gewaehlt == null || !mounted) return null;
+
+    final messenger = ScaffoldMessenger.of(context);
+    final online = await ref.read(onlineServiceProvider.future);
+    if (online?.currentUser == null) {
+      messenger.showSnackBar(const SnackBar(
+        content: Text('Dafür musst du angemeldet sein — die Angabe gilt '
+            'für alle, deshalb hängt sie an einem Konto.')));
+      return null;
+    }
+
+    final ok = await online!.upsertBeerBarcode(ean, found.beer.id,
+        volumeMl: gewaehlt);
+    if (!ok) {
+      messenger.showSnackBar(const SnackBar(
+        content: Text('Konnte nicht gespeichert werden — keine Verbindung? '
+            'Die Größe ist noch nicht eingetragen.')));
+      return null;
+    }
+
+    // Erst jetzt lokal: Der Server hat bestätigt.
+    await ref.read(databaseProvider).setBarcodeVolume(ean, gewaehlt);
+
+    // Und die Nachprüfung anstoßen. Sie ist ein Zusatz — schlägt sie
+    // fehl, steht die Größe trotzdem, und das ist wichtiger.
+    final gemeldet = await online.feedback.submit(
+      kind: FeedbackKind.data,
+      body: 'Gebindegröße ergänzt: ${formatVolume(gewaehlt)} '
+          'für ${found.beer.name} (${found.brewery.name}), EAN $ean.\n'
+          'Bitte gegenprüfen: Wenn nichts widerspricht, bleibt der Wert.',
+      appVersion: AppConfig.appVersion,
+      platform: _plattform,
+    );
+    if (!mounted) return gewaehlt;
+    messenger.showSnackBar(SnackBar(
+      content: Text(gemeldet == null
+          ? 'Danke! ${formatVolume(gewaehlt)} steht jetzt an diesem '
+              'Barcode — 2 Punkte für dich.'
+          : 'Größe gespeichert — die Meldung zur Gegenprüfung ging nicht '
+              'raus.'),
+    ));
+    return gewaehlt;
   }
 
   @override
