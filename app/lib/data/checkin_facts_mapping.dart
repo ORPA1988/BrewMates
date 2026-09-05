@@ -13,6 +13,7 @@ extension CheckinDetailsFacts on CheckinDetails {
   CheckinFacts get facts => CheckinFacts(
         createdAt: checkin.createdAt,
         beerId: beer.id,
+        beerName: beer.name,
         beerStyle: beer.style,
         isAlcoholFree: beer.isAlcoholFree,
         breweryId: brewery.id,

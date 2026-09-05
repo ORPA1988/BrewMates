@@ -35,6 +35,7 @@ void main() {
       CheckinFacts(
         createdAt: at,
         beerId: 'beer-$id',
+        beerName: 'Bier $id',
         beerStyle: style,
         isAlcoholFree: alcoholFree,
         breweryId: 'b1',

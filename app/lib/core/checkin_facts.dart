@@ -25,6 +25,7 @@ class CheckinFacts {
   const CheckinFacts({
     required this.createdAt,
     required this.beerId,
+    required this.beerName,
     required this.beerStyle,
     required this.isAlcoholFree,
     required this.breweryId,
@@ -44,6 +45,12 @@ class CheckinFacts {
   final DateTime createdAt;
 
   final String beerId;
+
+  /// Der Name, wie ihn ein Mensch liest. Für die Auswertung selbst
+  /// unnötig — sie gruppiert nach [beerId] —, aber der Datenauszug
+  /// (Funktion 20, Punkt 7) wäre ohne ihn eine Liste von UUIDs.
+  final String beerName;
+
   final String beerStyle;
   final bool isAlcoholFree;
 

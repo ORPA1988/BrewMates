@@ -3,10 +3,10 @@
 > **Status:** 🟢 Stufe 2 zum größten Teil gebaut — acht Aufteilungen per
 > Chip, neun Kennzahlen, freier Zeitraum und Vergleich mit dem Zeitraum
 > davor. Reinalkohol ist **entschieden und gebaut** (siehe Punkt 6).
-> **Offen bleiben** CSV-Export und die Crew-Auswertung auf derselben
-> Maschinerie.
+> **Offen bleibt** die Crew-Auswertung auf derselben Maschinerie; der
+> CSV-Export ist seit 0.10.19 da (Punkt 7).
 > **Seit:** 0.9.15-beta (Stufe 1) · 0.10.14-beta (Stufe 2) ·
-> **Zuletzt geprüft:** 2026-09-04
+> **Zuletzt geprüft:** 2026-09-05
 >
 > **Hier steht die gesamte Auswertung.** [Funktion 13](13-statistiken-und-tagebuch.md)
 > ist das Tagebuch — die Liste zum Nachlesen — und die Wochen-Serie. Die
@@ -352,33 +352,63 @@ Umgesetzt in `domain/statistics/alcohol.dart` und der Karte
 - Fehlt der Alkoholgehalt bei **allen** Check-ins des Zeitraums,
   erscheint die Karte gar nicht.
 
-## 7. Export (nachrangig, aber vorgedacht)
+## 7. Export (seit 0.10.19)
 
-Ausdrücklich **nicht hoch priorisiert** — aber die Architektur aus Punkt 2
-macht ihn fast geschenkt: Wenn die Kette
+Wie unter Punkt 2 vorhergesagt, war es fast geschenkt: Weil die Kette
 `Liste → Auswahl → Aufteilung → Zahlen` sauber getrennt ist, ist CSV nur
-ein anderer Ausgang an derselben Stelle.
+ein anderer Ausgang an derselben Stelle. Der eigentliche Aufwand lag
+woanders — beim Ausliefern der Datei und bei den Zeichen, die eine
+Tabelle zerreißen.
 
-Zwei Exporte, beide sinnvoll:
+**Zwei Exporte**, über das Tabellen-Symbol oben rechts:
 
-1. **Rohdaten** — eine Zeile je Check-in, alle Felder aus `CheckinFacts`
-   plus Bier- und Brauereiname. Das ist der Datenauszug für den Menschen:
-   „meine Daten gehören mir", und die Grundlage für jede Auswertung, die
-   die App nicht anbietet (Excel, Tabellenkalkulation).
-2. **Auswertung** — eine Zeile je Balken der gewählten Aufteilung. Für
-   den, der schnell eine Tabelle in eine Nachricht kopieren will.
+1. **Rohdaten** — eine Zeile je Check-in, fünfzehn Spalten: Datum,
+   Uhrzeit, Bier, Stil, alkoholfrei, Alkoholgehalt, Brauerei, Land,
+   Stadt, Ort, Menge, Gebinde, Bewertung, in Runde, Notiz. Das ist der
+   Datenauszug für den Menschen („meine Daten gehören mir") und die
+   Grundlage für jede Auswertung, die diese App nicht anbietet.
+2. **Diese Auswertung** — eine Zeile je Balken der gewählten Aufteilung,
+   mit Anzahl und Anteil.
 
-Umsetzungshinweise:
+Beide enthalten **nur eigene** Check-ins, und beide nehmen genau die
+Auswahl, die auf dem Bildschirm steht: Zeitraum und Filter kommen aus
+derselben Funktion (`auswahl` in `domain/statistics.dart`), die auch die
+Balken speist. Zwei Kopien derselben Bedingung liefen früher oder später
+auseinander, und der Unterschied fiele niemandem auf — die Datei sieht ja
+immer plausibel aus.
 
-- Trennzeichen **Semikolon** und `sep=;` in der ersten Zeile: Excel in
-  deutscher Ländereinstellung zerlegt Komma-CSV sonst nicht.
-- **UTF-8 mit BOM**, sonst werden Umlaute in Excel zu Kraut.
-- Zahlen mit Punkt als Dezimaltrenner in der Datei, Datum als ISO
-  (`2026-09-04`) — maschinenlesbar schlägt hübsch.
-- **Kein `dart:io`** (Regel G). Auf allen Plattformen über
-  `share_plus`/Speichern-Dialog bzw. im Browser als Blob-Download.
-- Der Export enthält **nur eigene** Check-ins. Fremde Daten mitzugeben
-  wäre eine stille Weitergabe.
+### Die Kleinigkeiten, an denen CSV scheitert
+
+- **`sep=;` in der ersten Zeile.** Kein Standard, aber ohne sie zerlegt
+  Excel in deutscher Ländereinstellung eine Semikolon-Datei nicht.
+- **UTF-8 mit BOM**, sonst wird „Gösser" zu „GÃ¶sser".
+- **Felder in Anführungszeichen**, sobald ein Semikolon, ein
+  Anführungszeichen oder ein Zeilenumbruch darin steht; innere
+  Anführungszeichen verdoppelt (RFC 4180). Notizen enthalten alle drei.
+  Vier der zehn Tests prüfen genau das, einer davon zerlegt die Zeile
+  danach so, wie eine Tabellenkalkulation es täte, und zählt die Felder.
+- **Zahlen mit Punkt, Datum als ISO.** Maschinenlesbar schlägt hübsch:
+  Wer die Datei öffnet, sieht ohnehin die Form seiner Ländereinstellung.
+- **Was fehlt, bleibt leer** — nicht `0` und nicht `null`. Eine 0 bei
+  „Bewertung" wäre eine Aussage, die niemand getroffen hat.
+
+### Wohin die Datei geht
+
+| Plattform | Ergebnis |
+|---|---|
+| Web | echter Download über einen Blob (`core/export/datei_ausgeben_web.dart`) |
+| Android, Desktop | Text in der **Zwischenablage** |
+
+Dasselbe Muster wie bei der Datenbankverbindung: eine Schnittstelle, zwei
+Umsetzungen, bedingter Import — `dart:io` ist in `app/lib/` verboten, und
+`package:web` gibt es auf der VM nicht.
+
+**Die Zwischenablage ist kein Notbehelf aus Bequemlichkeit.** Eine Datei
+auf Android abzulegen hieße `dart:io` plus ein Teilen-Paket, und ein
+neues Plugin ist in dieser Toolchain die teuerste Änderung, die es gibt
+(`CLAUDE.md`, gepinnte Pakete: `mobile_scanner`/AGP). Eingefügt in eine
+Tabellenkalkulation kommt dasselbe heraus. Sollte `share_plus` später aus
+anderem Grund dazukommen, ist es hier eine Zeile.
 
 ## 8. Reihenfolge
 
@@ -391,7 +421,7 @@ Umsetzungshinweise:
 | 5 | Neue Kennzahlen: neue Biere, Ø je Woche, Vergleich zum Vorzeitraum | Der Maßstab, der heute fehlt |
 | 6 | Freier Zeitraum von–bis | Braucht 2 (Zeitraum als Wertobjekt statt Enum) |
 | 7 | Reinalkohol — **erst nach Entscheidung** | Siehe Punkt 6 |
-| 8 | CSV-Export | Nachrangig, fällt aus 2 fast heraus |
+| ~~8~~ | ~~CSV-Export~~ — **erledigt mit 0.10.19**, und tatsächlich fast geschenkt: Der Aufwand lag beim Ausliefern und bei den Zeichen, die eine Tabelle zerreißen | ✅ zehn Tests |
 | 9 | Crew-Auswertung auf dieselbe Maschinerie | Erst wenn 2 steht |
 
 ## 9. Was bewusst nicht kommt
@@ -441,7 +471,7 @@ zeigt sie, ohne dass jemand ihn anfasst.
 | 5 — neue Biere, Ø je Woche, Vergleich zum Vorzeitraum | ✅ |
 | 6 — freier Zeitraum von–bis | ✅ `StatsPeriod` als Wertobjekt |
 | 7 — Reinalkohol | ✅ entschieden am 2026-09-04 und gebaut (Punkt 6) |
-| 8 — CSV-Export | ⏸ nachrangig, wie geplant |
+| 8 — CSV-Export | ✅ fertig (0.10.19) |
 | 9 — Crew-Auswertung auf dieselbe Maschinerie | ⏸ offen |
 
 ### Was beim Bauen anders kam als gedacht

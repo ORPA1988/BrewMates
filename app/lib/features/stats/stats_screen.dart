@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../domain/statistics.dart';
+import '../../core/export/datei_ausgeben.dart';
+import '../../domain/statistics/csv.dart';
 import 'stats_providers.dart';
 
 /// Auswertung der eigenen Check-ins.
@@ -20,6 +22,70 @@ import 'stats_providers.dart';
 class StatsScreen extends ConsumerWidget {
   const StatsScreen({super.key});
 
+  /// Die Auswertung als Tabelle herausgeben — zwei Formen zur Wahl.
+  ///
+  /// **Rohdaten** ist der Datenauszug: eine Zeile je Check-in, alles was
+  /// die App über ihn weiß. „Meine Daten gehören mir" — und die
+  /// Grundlage für jede Auswertung, die diese App nicht anbietet.
+  /// **Auswertung** ist die Tabelle hinter den Balken, zum Weiterreichen.
+  ///
+  /// Beide enthalten **nur eigene** Check-ins. Fremde mitzugeben wäre
+  /// eine stille Weitergabe.
+  Future<void> _exportieren(
+    BuildContext context,
+    WidgetRef ref,
+    String dimensionKey,
+  ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final was = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.list_alt_outlined),
+              title: const Text('Rohdaten'),
+              subtitle: const Text(
+                  'Eine Zeile je Check-in — für Excel oder eigene Auswertungen'),
+              onTap: () => Navigator.pop(sheetContext, 'roh'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.bar_chart_outlined),
+              title: const Text('Diese Auswertung'),
+              subtitle:
+                  const Text('Eine Zeile je Balken der gewählten Aufteilung'),
+              onTap: () => Navigator.pop(sheetContext, 'auswertung'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (was == null) return;
+
+    final stats = ref.read(statsProvider);
+    final inhalt = csvBom +
+        (was == 'roh'
+            ? rohdatenCsv(ref.read(statsRowsProvider))
+            : auswertungCsv(dimensionKey, stats.slices(dimensionKey)));
+
+    final heute = DateTime.now();
+    final datum = '${heute.year}-${heute.month.toString().padLeft(2, '0')}-'
+        '${heute.day.toString().padLeft(2, '0')}';
+    final name = was == 'roh'
+        ? 'brewmates-checkins-$datum.csv'
+        : 'brewmates-$dimensionKey-$datum.csv';
+
+    final alsDatei = await tabelleAusgeben(inhalt, name);
+    messenger.showSnackBar(SnackBar(
+      content: Text(alsDatei
+          ? '$name wurde heruntergeladen.'
+          : 'In die Zwischenablage kopiert — in einer '
+              'Tabellenkalkulation einfügen.'),
+    ));
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -31,7 +97,19 @@ class StatsScreen extends ConsumerWidget {
     final dimensionKey = ref.watch(statsDimensionProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Statistik')),
+      appBar: AppBar(
+        title: const Text('Statistik'),
+        actions: [
+          // Nur wenn es etwas zu exportieren gibt: Ein Knopf, der eine
+          // leere Datei erzeugt, ist eine Enttäuschung mit Umweg.
+          if (!stats.isEmpty)
+            IconButton(
+              tooltip: 'Als Tabelle',
+              icon: const Icon(Icons.table_view_outlined),
+              onPressed: () => _exportieren(context, ref, dimensionKey),
+            ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
