@@ -4963,7 +4963,8 @@
       "barcode_volumes": {
         "9003400390437": 500,
         "9003402194132": 330,
-        "9003402290537": 330
+        "9003402290537": 330,
+        "9003400391632": 500
       },
       "image_url": "https://www.stiegl.at/wp-content/uploads/2022/01/produktgruppe-hell-neu.png",
       "image_source": "https://www.stiegl.at/produkt/stiegl-hell/",
@@ -5990,7 +5991,8 @@
         "9028800602775"
       ],
       "barcode_volumes": {
-        "9028800602751": 500
+        "9028800602751": 500,
+        "9028800602775": 330
       },
       "image_url": "https://images.openfoodfacts.org/images/products/902/880/014/0796/front_en.3.400.jpg",
       "image_source": "https://www.zipfer.at/unser-bier/",

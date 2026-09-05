@@ -129,6 +129,7 @@ eigenen Abschnitt sind unauffällig: Sie haben getan, was ihr Name sagt.
 | 0052 | checkin_crews_rechte | Entzieht, was 0051 nur behauptet hatte |
 | 0053 | verabredung_erinnerungen | Zwei Meldungen zur Verabredung; Laufzeit-Constraint gilt nur noch für laufende Runden |
 | 0054 | community_vergleich | Anonymer Schnitt aller anderen für die Statistik — Werte erst ab 20 beitragenden Personen |
+| 0055 | gebinde_ist_trinkmenge | `volume_ml` auf 100–1000 ml begrenzt — ein Sixpack-Barcode ist keine Trinkmenge |
 
 ### 0025 — Tabellenrechte, oder: das Repo konnte das Projekt nicht wiederherstellen
 

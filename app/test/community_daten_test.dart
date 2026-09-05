@@ -112,7 +112,14 @@ void main() {
       volumen.forEach((ean, ml) {
         if (!codes.contains(ean)) verwaist.add('${b['id']} → $ean');
         final wert = (ml as num).toInt();
-        if (wert < 100 || wert > 5000) unplausibel.add('${b['id']} → $ean = $ml');
+        // Obergrenze 1000 ml, weil hier die **Trinkmenge** steht und
+        // nicht die Verkaufseinheit. Eine EAN darf ein Sixpack
+        // bezeichnen — Open Food Facts führt zu 9003400391632 „3000 ml,
+        // 6er-Tragerl". Wer das scannt, trinkt eine Flasche daraus,
+        // keine drei Liter; eingetragen wird deshalb 3000/6 = 500. Der
+        // größte Wert, den die App überhaupt anbietet, ist 1 l
+        // (`volumeChoicesMl`, Growler).
+        if (wert < 100 || wert > 1000) unplausibel.add('${b['id']} → $ean = $ml');
       });
     }
     expect(verwaist, isEmpty, reason: 'Größe ohne passenden Code: $verwaist');

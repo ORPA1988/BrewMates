@@ -1,3 +1,4 @@
+import 'dart:async' show unawaited;
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart' show compute;
@@ -56,6 +57,32 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
   /// Eine vom Barcode erkannte Menge gilt bereits als gesetzt — sonst
   /// überschriebe die Gebinde-Auswahl sie sofort wieder.
   late bool _volumeTouched = widget.preselectedVolumeMl != null;
+
+  /// Bier, für das die eindeutige Gebindegröße schon nachgeschlagen
+  /// wurde. Ohne das liefe die Abfrage bei jedem Neuzeichnen erneut.
+  String? _gebindeGeprueftFuer;
+
+  /// Kam die Menge aus der Datenbank statt vom Scan? Dann steht es
+  /// unter der Auswahl — eine Zahl, die von selbst dasteht, soll sagen,
+  /// woher sie kommt.
+  bool _gebindeAusDatenbank = false;
+
+  /// Schlägt die Gebindegröße nach, wenn sie für dieses Bier eindeutig
+  /// ist — der Fall „ohne Scan eingecheckt" (Wunsch #144).
+  ///
+  /// Rührt nichts an, sobald der Mensch selbst gewählt hat: Seine Wahl
+  /// gilt, auch wenn die Datenbank etwas anderes weiß.
+  Future<void> _gebindeVorbelegen(String beerId) async {
+    if (_gebindeGeprueftFuer == beerId || _volumeTouched) return;
+    _gebindeGeprueftFuer = beerId;
+    final ml =
+        await ref.read(databaseProvider).eindeutigeGebindegroesse(beerId);
+    if (!mounted || ml == null || _volumeTouched) return;
+    setState(() {
+      _volumeMl = ml;
+      _gebindeAusDatenbank = true;
+    });
+  }
   final _venueController = TextEditingController();
   final _noteController = TextEditingController();
   bool _venuePrefilled = false;
@@ -167,6 +194,13 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
         : null;
     final selected = _selected ?? (_searchMode ? null : pre);
     final session = ref.watch(myActiveSessionProvider).valueOrNull;
+
+    // Gebindegröße nachschlagen, sobald ein Bier feststeht. Läuft
+    // neben dem Aufbau, nicht davor: Der Bildschirm soll nicht auf eine
+    // Datenbankabfrage warten, die vielleicht nichts findet.
+    if (selected != null) {
+      unawaited(_gebindeVorbelegen(selected.beer.id));
+    }
 
     // Venue einmalig aus der aktiven Session vorbefüllen.
     if (session != null && !_venuePrefilled) {
@@ -290,6 +324,16 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
                 ),
             ],
           ),
+          if (_gebindeAusDatenbank && !_volumeTouched)
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Text(
+                'Größe aus der Bierdatenbank — dieses Bier gibt es nur in '
+                'dieser Gebindegröße.',
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              ),
+            ),
           const SizedBox(height: 16),
           TextField(
             controller: _venueController,

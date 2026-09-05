@@ -401,7 +401,10 @@
       "image_license": "Open Food Facts, CC-BY-SA 3.0",
       "description_manufacturer": "Alkoholfreies Pilsener mit friesisch-herbem Geschmack, kalorienarm und isotonisch.",
       "description_community": "Einer der Pioniere und Dauerbrenner im Alkoholfrei-Segment; angenehm herb statt süßlich.",
-      "community_rating": 3.2
+      "community_rating": 3.2,
+      "barcode_volumes": {
+        "4008948192012": 330
+      }
     },
     {
       "id": "de-holsten-pilsener",
