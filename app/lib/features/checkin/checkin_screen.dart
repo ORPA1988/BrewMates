@@ -15,6 +15,7 @@ import '../../data/providers.dart';
 import '../../domain/statistics.dart' show estimatedVolumeMl;
 import '../../widgets/badge_celebration.dart';
 import '../../widgets/beer_thumbnail.dart';
+import '../../widgets/foto_flaeche.dart';
 import '../../widgets/rating_input.dart';
 import '../../widgets/venue_picker.dart';
 
@@ -416,27 +417,13 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
               ],
             )
           else
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.memory(
-                    _photoBytes!,
-                    height: 180,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Positioned(
-                  top: 4,
-                  right: 4,
-                  child: IconButton.filledTonal(
-                    tooltip: 'Foto entfernen',
-                    icon: const Icon(Icons.close, size: 18),
-                    onPressed: () => setState(() => _photoBytes = null),
-                  ),
-                ),
-              ],
+            FotoFlaeche(
+              ecke: IconButton.filledTonal(
+                tooltip: 'Foto entfernen',
+                icon: const Icon(Icons.close, size: 18),
+                onPressed: () => setState(() => _photoBytes = null),
+              ),
+              child: Image.memory(_photoBytes!, fit: BoxFit.cover),
             ),
           const SizedBox(height: 24),
           FilledButton(

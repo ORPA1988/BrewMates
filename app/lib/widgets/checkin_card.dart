@@ -11,6 +11,7 @@ import 'beer_thumbnail.dart';
 import 'rating_stars.dart';
 import 'checkin_edit_sheet.dart';
 import 'foto_ansicht.dart';
+import 'foto_flaeche.dart';
 
 /// Die zentrale Feed-Karte: ein Check-in mit Bier, Bewertung, Notiz,
 /// Geschmacks-Tags sowie Toast- und Kommentar-Aktionen.
@@ -268,26 +269,19 @@ class CheckinCard extends ConsumerWidget {
             // Foto (öffentliche URL aus dem beer-photos-Bucket).
             if (checkin.photoUrl != null) ...[
               const SizedBox(height: 8),
-              InkWell(
+              FotoFlaeche(
                 onTap: () => zeigeFotoGross(context, checkin.photoUrl!),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    checkin.photoUrl!,
-                    height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, progress) =>
-                        progress == null
-                            ? child
-                            : Container(
-                                height: 200,
-                                alignment: Alignment.center,
-                                color: scheme.surfaceContainerHighest,
-                                child: const CircularProgressIndicator(),
-                              ),
-                    errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                  ),
+                child: Image.network(
+                  checkin.photoUrl!,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, progress) => progress == null
+                      ? child
+                      : Container(
+                          alignment: Alignment.center,
+                          color: scheme.surfaceContainerHighest,
+                          child: const CircularProgressIndicator(),
+                        ),
+                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                 ),
               ),
             ],
