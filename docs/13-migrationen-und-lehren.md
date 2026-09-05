@@ -96,7 +96,7 @@ sich die Frage nicht.
 
 ## Teil 2 — Die Migrationen
 
-**`0001–0058` sind live, lückenlos** (Stand 2026-09-05). Die Nummern ohne
+**`0001–0061` sind live, lückenlos** (Stand 2026-09-05). Die Nummern ohne
 eigenen Abschnitt sind unauffällig: Sie haben getan, was ihr Name sagt.
 
 | # | Name | Wofür |
@@ -138,6 +138,31 @@ eigenen Abschnitt sind unauffällig: Sie haben getan, was ihr Name sagt.
 | 0061 | crew_verwalter | Was ein Verwalter darf — und dass Rollen nur der Gründer vergibt |
 
 **Edge Function `feedback-issue` steht auf Version 3** (2026-09-05): Sie kennt seither eine dritte Meldungsart `data` mit dem Label `datenpflege` — gemeldete Gebindegrößen. Die beiden anderen Functions sind unverändert (`notify` v7, `github-sync` v3).
+
+### Rechte an einer neuen Spalte — zweimal am 2026-09-05
+
+Beide Male dieselbe Wurzel, beide Male von der CI gefunden, nicht vom
+Nachdenken:
+
+1. **0058 vergisst die Rechte.** Eine neu angelegte Spalte auf `profiles`
+   erbt nichts — seit 0025/0026 gelten dort **Spaltenrechte**. Die App
+   hätte die Voreinstellung weder lesen noch schreiben können.
+2. **0059 nimmt zu viel zurück — und 0061 lernt, wie man das macht.**
+   `revoke update (owner_id)` neben einem `grant update on <tabelle>`
+   ist **wirkungslos**: Ein Spaltenrecht lässt sich nicht aus einem
+   Tabellenrecht herausbrechen. Es geht nur andersherum — Fläche
+   entziehen, erlaubte Spalten einzeln vergeben (das Verfahren aus 0026).
+
+**Und die dritte Falle am selben Tag:** Eine Policy über `crews` darf
+nicht `crews` abfragen. Der erste Entwurf von 0061 prüfte im `with
+check`, ob `owner_id` unverändert blieb — mit einer Unterabfrage auf
+dieselbe Tabelle. Postgres antwortet mit `infinite recursion detected in
+policy for relation "crews"`.
+
+Merksatz für die nächste Migration mit einer neuen Spalte: **Rechte
+mitdenken, Fläche vor Spalte, und keine Policy, die ihre eigene Tabelle
+liest.** Ein pgTAP-Test, der `has_column_privilege` prüft, kostet zwei
+Zeilen und fängt alle drei.
 
 ### 0025 — Tabellenrechte, oder: das Repo konnte das Projekt nicht wiederherstellen
 
