@@ -23,10 +23,10 @@ begin
 end $$;
 
 -- Der Fragende und drei andere.
-select pg_temp.mkuser('11111111-1111-1111-1111-111111111111', 'ich');
-select pg_temp.mkuser('22222222-2222-2222-2222-222222222222', 'a');
-select pg_temp.mkuser('33333333-3333-3333-3333-333333333333', 'b');
-select pg_temp.mkuser('44444444-4444-4444-4444-444444444444', 'c');
+select pg_temp.mkuser('11111111-1111-1111-1111-111111111111', 'ichselbst');
+select pg_temp.mkuser('22222222-2222-2222-2222-222222222222', 'anderea');
+select pg_temp.mkuser('33333333-3333-3333-3333-333333333333', 'andereb');
+select pg_temp.mkuser('44444444-4444-4444-4444-444444444444', 'anderec');
 
 insert into public.checkins (id, profile_id, beer_name, visibility, created_at)
 values
