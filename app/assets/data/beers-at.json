@@ -114,7 +114,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/901/470/000/0704/front_de.3.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9014700000704",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Intensiv leuchtendes Bernstein, sehr hefetrüb unter sahnigem Schaum; Banane hallt lange nach, dazu leichte Nelke, weich und mild vollmundig im Antrunk."
     },
     {
       "id": "at-brauerei-jos-baumgartner-schaerding-baumgartner-zwickl",
@@ -413,8 +414,8 @@
       "id": "at-bierol-kubrew",
       "brewery_id": "at-bierol",
       "name": "Bierol Kubrew",
-      "style": "Bier",
-      "abv": null,
+      "style": "Molkebier",
+      "abv": 4.4,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
@@ -422,7 +423,8 @@
       ],
       "image_url": "https://images.openfoodfacts.org/images/products/912/007/049/1056/front_de.3.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9120070491056",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Bier mit Molke: Ein Teil des Brauwassers wird durch Molke der Milchbuben aus Hopfgarten ersetzt, dazu Koriander sowie Orangen- und Zitronenschale. Naturtrüb, erfrischend mit feiner Zitrusnote und weniger Alkohol als üblich — ausgezeichnet mit dem Tiroler Lebensmittel-Innovationspreis."
     },
     {
       "id": "at-bierol-bierol-sommerbier",
@@ -948,7 +950,8 @@
       },
       "image_url": "https://egger-bier.at/site/assets/files/2956/egger-hopn-roll-0-33.1200x630.png",
       "image_source": "https://egger-bier.at/sortiment/egger-hopfnroll/",
-      "image_license": "Pressebereich: https://egger-bier.at/presse/"
+      "image_license": "Pressebereich: https://egger-bier.at/presse/",
+      "description_community": "Das hopfenbetonte Glas aus Unterradlberg; im Sortiment der Brauerei das exotische neben Märzen und Radler."
     },
     {
       "id": "at-egger-maerzen",
@@ -1007,7 +1010,8 @@
       },
       "image_url": "https://egger-bier.at/site/assets/files/1489/egger-zitrus-radler-0-33.1200x630.png",
       "image_source": "https://egger-bier.at/sortiment/egger-zitrusradler/",
-      "image_license": "Pressebereich: https://egger-bier.at/presse/"
+      "image_license": "Pressebereich: https://egger-bier.at/presse/",
+      "description_community": "Naturtrüber Radler mit Zitrusfrüchten und 2,5 Prozent; der fruchtige Ausreißer im sonst klassischen Egger-Sortiment."
     },
     {
       "id": "at-egger-zwickl",
@@ -1152,7 +1156,8 @@
         "90165061": 500
       },
       "image_url": "https://www.fohrenburger.at/media/alkoholfrei_group.png",
-      "image_source": "https://www.fohrenburger.at/sortiment/"
+      "image_source": "https://www.fohrenburger.at/sortiment/",
+      "description_community": "Die alkoholfreie Ausgabe aus Bludenz; gedacht für alle, die das Vorarlberger Glas ohne Promille wollen."
     },
     {
       "id": "at-fohrenburger-engelburg-braeu",
@@ -1277,7 +1282,7 @@
       "id": "at-frastanzer-frastanzer-dark",
       "brewery_id": "at-frastanzer",
       "name": "Frastanzer Dark",
-      "style": "Bier",
+      "style": "Dunkles",
       "abv": null,
       "ibu": null,
       "is_alcohol_free": false,
@@ -1289,7 +1294,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/000/009/014/0150/front_de.6.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/90140150",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Dunkelbraun unter feinporiger Krone; in der Nase mehrere Röstaromen, am Gaumen malzig mit einem Anklang von Trockenfrucht und Bitterschokolade — in Bio-Qualität."
     },
     {
       "id": "at-brauerei-frastanz-freibier",
@@ -1522,7 +1528,8 @@
       ],
       "image_url": "https://www.freistaedter-bier.at/wp-content/uploads/2022/06/FREISTAEDTER_Flasche_Lager.png",
       "image_source": "https://www.freistaedter-bier.at/produkte/",
-      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/"
+      "image_license": "Presse & Downloads: https://www.freistaedter-bier.at/presse-downloads/",
+      "description_community": "Das schlanke Glas der ältesten Braucommune Österreichs, die allen Freistädter Hausbesitzern gemeinsam gehört; leichter als das Märzen, mit dem hopfigen Grundton des Hauses."
     },
     {
       "id": "at-braucommune-freistaedter-maerzen",
@@ -1671,7 +1678,8 @@
         "90288593": 500
       },
       "image_url": "https://www.goesser.at/wp-content/uploads/2022/02/Go_Helles.png",
-      "image_source": "https://www.goesser.at/produkte/"
+      "image_source": "https://www.goesser.at/produkte/",
+      "description_community": "Die Helles-Ausgabe der Grünen Brauerei; goldgelb mit ordentlicher Schaumbildung, mild im Antrunk und in der Mitte malzig — solide gemacht, aber im Vergleich zum Sortiment kein Ausreißer."
     },
     {
       "id": "at-goesser-maerzen",
@@ -2512,8 +2520,8 @@
       "id": "at-huber-braeu-huber-braeu-original",
       "brewery_id": "at-huber-braeu",
       "name": "Huber Bräu Original",
-      "style": "Bier",
-      "abv": null,
+      "style": "Spezialbier",
+      "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
@@ -2524,7 +2532,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/000/009/023/6068/front_de.17.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/90236068",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Das Glas der Familienbrauerei aus St. Johann, seit 1727 am Ort; blass und klar, in der Nase intensiv malzig, im Stil zwischen Pils und Spezial mit weicher, feiner Bittere — für alle, die beides mögen."
     },
     {
       "id": "at-huber-braeu-spezial",
@@ -3474,7 +3483,8 @@
         "9120050021655"
       ],
       "image_url": "https://biobrauerei.at/wp-content/uploads/Maerzen-scaled.png",
-      "image_source": "https://biobrauerei.at/produkt/biobier/maerzen-05l-e-199/"
+      "image_source": "https://biobrauerei.at/produkt/biobier/maerzen-05l-e-199/",
+      "description_community": "Aus der ersten Bio-Brauerei Oberösterreichs, die ausschließlich Bio-Rohstoffe verwendet und den Hopfen direkt aus dem Mühlviertel bezieht — regional bis in die Dolde."
     },
     {
       "id": "at-neufeldner-biobrauerei-muehlviertler-weisse-0-5l",
@@ -3590,13 +3600,14 @@
       "id": "at-ottakringer-falco-brew",
       "brewery_id": "at-ottakringer",
       "name": "Ottakringer Falco Brew",
-      "style": "Bier",
-      "abv": null,
+      "style": "Märzen",
+      "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
         "9007600305895"
-      ]
+      ],
+      "description_community": "Zwei Wiener Originale in einer Flasche: Ottakringer und Falco. Spritziger Körper mit ausgesprochen erfrischender Bittere — der Rest ist Etikett."
     },
     {
       "id": "at-ottakringer-ottakringer-frucade-radler",
@@ -3753,7 +3764,7 @@
       "brewery_id": "at-ottakringer",
       "name": "Ottakringer Wassermelone Radler",
       "style": "Radler",
-      "abv": null,
+      "abv": 2.0,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
@@ -3764,7 +3775,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/900/760/030/6311/front_de.3.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/9007600306311",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Ottakringer Bier mit Wassermelonensaft; süß und ausdrücklich für den Sonnentag gemacht, mit 2,0 Prozent entsprechend leicht."
     },
     {
       "id": "at-ottakringer-wiener-original",
@@ -5434,7 +5446,8 @@
         "9002882000056": 330
       },
       "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/zb_biere-falstaff_2024_pils.png",
-      "image_source": "https://www.zillertal-bier.at/sortiment/bierspezialitaeten/pils/"
+      "image_source": "https://www.zillertal-bier.at/sortiment/bierspezialitaeten/pils/",
+      "description_community": "Pils nach böhmischer Art aus dem Innviertel; schlank und hopfig, wie es die Art verlangt."
     },
     {
       "id": "at-vitzthum-uttendorfer-premium",
@@ -5745,7 +5758,7 @@
       "brewery_id": "at-wurmhoeringer",
       "name": "Wurmhöringer Märzen",
       "style": "Märzen",
-      "abv": null,
+      "abv": 5.0,
       "ibu": null,
       "is_alcohol_free": false,
       "barcodes": [
@@ -5756,7 +5769,8 @@
       },
       "image_url": "https://images.openfoodfacts.org/images/products/000/009/015/3501/front_de.3.400.jpg",
       "image_source": "https://world.openfoodfacts.org/product/90153501",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Aus einer Landbrauerei, die seit 1652 in Altheim braut und seit 1885 der Familie gehört; Brauwasser aus dem eigenen Brunnen, Hopfen und Malz aus der Umgebung, lange Lagerung im Keller. Von der DLG mit Bronze ausgezeichnet."
     },
     {
       "id": "at-zillertal-bier-517-dinkel-weizen",
@@ -5797,7 +5811,8 @@
         "90242809": 500
       },
       "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/zb_biere-falstaff_2024_bio-radler.png",
-      "image_source": "https://www.zillertal-bier.at/sortiment/"
+      "image_source": "https://www.zillertal-bier.at/sortiment/",
+      "description_community": "Vierzig Prozent naturtrübes Bio-Bier auf sechzig Prozent Bio-Zitronenlimonade; hellgelb und trüb im Glas, fruchtig und leicht mit natürlichen Zitrusnoten."
     },
     {
       "id": "at-zillertal-bier-biozwickl",
@@ -5881,7 +5896,8 @@
       ],
       "image_url": "https://www.zillertal-bier.at/fileadmin/user_upload/Zillertal_033_Schwarzes_Glas_2024_sRGB.png",
       "image_source": "https://www.zillertal-bier.at/sortiment/",
-      "image_license": "Open Food Facts, CC-BY-SA 3.0"
+      "image_license": "Open Food Facts, CC-BY-SA 3.0",
+      "description_community": "Tiefdunkel bis schwarz im Glas; leichte Röstmalzaromen, feiner Hopfencharakter und eine zarte Malzsüße am Gaumen — die dunkle Seite eines Sortiments, das über 500 Jahre alt ist."
     },
     {
       "id": "at-zillertal-bier-tyroler-hell",

@@ -56,11 +56,26 @@ schreibt sie weiter, und sie zu entfernen wäre eine Migration ohne
 Gewinn. Sie wird nur nirgends mehr angezeigt
 (`test/redaktionelle_einschaetzung_test.dart` hält das fest).
 
-**Was daraus folgt und noch offen ist:** Die geschriebene Einschätzung
-muss es dann auch geben. Bei den 379 österreichischen Bieren ohne Text
-steht heute nichts — das ist die laufende Datenpflege
-([docs/10](../10-community-datenpflege.md)), nicht mehr eine Zahl, die
+**Was daraus folgt:** Die geschriebene Einschätzung muss es dann auch
+geben. Zuerst dort, wo jemand davorsteht — **126 der 129 scanbaren
+österreichischen Biere** haben seit 2026-09-05 eine, recherchiert je
+Bier. Insgesamt sind es 158 von 447; der Rest ist laufende Datenpflege
+([docs/10](../10-community-datenpflege.md)) und nicht mehr eine Zahl, die
 Vollständigkeit vortäuscht.
+
+**Die Recherche korrigiert mehr als den fehlenden Text.** Murauer Pils,
+Weissbier und Zwickl standen alle drei als `Märzen` in den Daten; Zipfer
+HOPS ist alkoholfreie Hopfenlimonade und kein Radler; Edelweiss Dunkel
+ist ein dunkles Weißbier mit 5,3 %, nicht ein „Dunkles" ohne Wert.
+Insgesamt 31 Felder richtiggestellt. Das ist der eigentliche Ertrag: Die
+alten Werte stammten aus demselben Trainingswissen wie die Sterne.
+
+**Drei Biere bleiben bewusst ohne Text**, weil keine belastbare Quelle zu
+finden war: „Brauwerk Export Hell", „Stiegl Hausbier Nr. 55" (die
+Hausbier-Serie wechselt jährlich) — und „Murauer Der Steirer", bei dem
+die Recherche nahelegt, dass es **gar kein Bier** ist, sondern eine
+alkoholfreie Kräuterlimonade der Marke Murelli. Ein erfundener Satz wäre
+genau der Fehler, den dieser Abschnitt behebt.
 
 ## Anlegen ohne Pflichtfelder (2026-08-15)
 
