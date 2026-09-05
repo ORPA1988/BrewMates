@@ -20,7 +20,10 @@
       "energy_notes": null,
       "notes": "Das Bräustübl Mülln ist mit mehreren tausend Plätzen der größte Biergarten bzw. das größte Bräustübl Österreichs. Das ungespundete Märzen wird traditionell aus Holzfässern in Steinkrüge gezapft; Speisen kommen von eigenständigen Schmankerl-Ständen. Klosterbrauerei mit Tradition seit 1621, seit dem 19. Jahrhundert unter dem Stift Michaelbeuern. Bilanzdaten nicht öffentlich.",
       "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
-      "story": "1621 von Augustiner-Eremiten in Mülln gegründet, heute vom Benediktinerstift Michaelbeuern geführt. Das Besondere ist das Wirtshaus: Man kauft eine Marke, spült seinen Steinkrug selbst am Brunnen und lässt ihn direkt aus dem Holzfass füllen. Die Jause bringt man mit oder kauft sie an den Ständen im Haus."
+      "story": "1621 von Augustiner-Eremiten in Mülln gegründet, heute vom Benediktinerstift Michaelbeuern geführt. Das Besondere ist das Wirtshaus: Man kauft eine Marke, spült seinen Steinkrug selbst am Brunnen und lässt ihn direkt aus dem Holzfass füllen. Die Jause bringt man mit oder kauft sie an den Ständen im Haus.",
+      "state": "Salzburg",
+      "type": "kloster",
+      "group_owner": "Benediktinerstift Michaelbeuern"
     },
     {
       "id": "at-bevog",
@@ -39,7 +42,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Eine der bekanntesten Craft-Brauereien Österreichs, 2013 vom Slowenen Vasja Golar an der steirisch-slowenischen Grenze gegründet. Bekannt für hopfenbetonte und experimentelle Biere (u. a. Tak Pale Ale, Ond Smoked Porter) mit markantem Tier-Artwork; stark im Export in die europäische Craft-Szene. Kleinbrauerei; Bilanzdaten nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Steiermark",
+      "type": "craft",
+      "group_owner": "Vasja Golar"
     },
     {
       "id": "at-loncium",
@@ -54,7 +60,10 @@
       "website": "https://www.loncium.at",
       "ownership": "Privatbrauerei in Familienbesitz",
       "notes": "20-hl-Sudhaus (Rolec) im umgebauten Gasthaus der Familie im Gailtal; rund 16 Standardsorten plus Saisonbiere. Ausgezeichnet u. a. beim World Beer Cup, den World Beer Awards und dem European Beer Star.",
-      "story": "Die Brauerei steht im ehemaligen Gasthaus der Familie, in dem der Urgroßvater des Gründers bis 1903 Bier braute. Über hundert Jahre später kam das Sudhaus zurück ins Haus — der Name Loncium stammt von der römischen Straßenstation am Plöckenpass."
+      "story": "Die Brauerei steht im ehemaligen Gasthaus der Familie, in dem der Urgroßvater des Gründers bis 1903 Bier braute. Über hundert Jahre später kam das Sudhaus zurück ins Haus — der Name Loncium stammt von der römischen Straßenstation am Plöckenpass.",
+      "state": "Kärnten",
+      "type": "craft",
+      "group_owner": "Familie (privat)"
     },
     {
       "id": "at-bierol",
@@ -68,7 +77,10 @@
       "address": "Sonnendorf 27, 6334 Schwoich",
       "website": "https://bierol.at",
       "ownership": "Bierol GmbH",
-      "notes": "Tiroler Craft-Brauerei bei Kufstein mit Braugasthaus und Biergarten. Bierinnovation des Jahres im Bier Guide 2026."
+      "notes": "Tiroler Craft-Brauerei bei Kufstein mit Braugasthaus und Biergarten. Bierinnovation des Jahres im Bier Guide 2026.",
+      "state": "Tirol",
+      "type": "craft",
+      "group_owner": "Bierol GmbH"
     },
     {
       "id": "at-freistaedter",
@@ -88,7 +100,10 @@
       "energy_notes": null,
       "notes": "Europaweit einzigartige Eigentümerform: Die Braucommune gehört den Besitzern der Häuser innerhalb der Altstadtmauern von Freistadt, die Anteile sind untrennbar mit den Liegenschaften verbunden. Das gemeinsame Brauhaus besteht seit 1777. Regionale Mühlviertler Marke (Freistädter Bier) mit treuer Stammkundschaft. Bilanzdaten nicht öffentlich.",
       "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
-      "story": "Die Braucommune Freistadt gehört nicht einer Familie und keinem Konzern, sondern den Häusern der Altstadt: Wer eines der Bürgerhäuser mit Braurecht besitzt, ist Miteigentümer der Brauerei. Diese Konstruktion aus dem 18. Jahrhundert hat alle Übernahmewellen überlebt und macht Freistadt zu einem Unikum in Europa."
+      "story": "Die Braucommune Freistadt gehört nicht einer Familie und keinem Konzern, sondern den Häusern der Altstadt: Wer eines der Bürgerhäuser mit Braurecht besitzt, ist Miteigentümer der Brauerei. Diese Konstruktion aus dem 18. Jahrhundert hat alle Übernahmewellen überlebt und macht Freistadt zu einem Unikum in Europa.",
+      "state": "Oberösterreich",
+      "type": "regional",
+      "group_owner": "Braucommune (Braurechte der Altstadt-Hausbesitzer)"
     },
     {
       "id": "at-brauerei-egg",
@@ -104,7 +119,10 @@
       "ownership": "Brauerei Egg, Simma, Kohler GmbH & Co. KG (Familienbesitz)",
       "annual_output_hl": 20000,
       "notes": "Letzte verbliebene Brauerei im Bregenzerwald; die Biere laufen unter der Marke Wälder. Neben 20.000 hl Bier entstehen im Haus rund 7.000 hl Limonade.",
-      "story": "Am 24. März 1894 zapften Egger Wirte das erste Bier der „Simma, Kohler & Cie“ an — aus Ärger über die Preise auswärtiger Brauereien brauten sie kurzerhand selbst. Von den Brauereien des Bregenzerwalds ist sie die einzige, die es noch gibt."
+      "story": "Am 24. März 1894 zapften Egger Wirte das erste Bier der „Simma, Kohler & Cie“ an — aus Ärger über die Preise auswärtiger Brauereien brauten sie kurzerhand selbst. Von den Brauereien des Bregenzerwalds ist sie die einzige, die es noch gibt.",
+      "state": "Vorarlberg",
+      "type": "regional",
+      "group_owner": "Simma, Kohler GmbH & Co. KG"
     },
     {
       "id": "at-fohrenburger",
@@ -123,7 +141,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Zweite große Vorarlberger Brauerei neben der Mohrenbrauerei, seit 1881 in Bludenz ansässig. Braut mit Wasser aus dem Rätikon und ist vor allem im Vorarlberger Oberland stark vertreten (u. a. Fohrenburger Jubiläum). Bilanzdaten nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Vorarlberg",
+      "type": "regional",
+      "group_owner": "Privat"
     },
     {
       "id": "at-frastanzer",
@@ -142,7 +163,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Kleine, genossenschaftlich organisierte Brauerei in Vorarlberg — eine der wenigen Genossenschaftsbrauereien Österreichs. Kultstatus hat das 'frastanzer s'dunkle'. Stark regional im Walgau und Umgebung verankert. Bilanzdaten nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Vorarlberg",
+      "type": "regional",
+      "group_owner": "Genossenschaft"
     },
     {
       "id": "at-goesser",
@@ -161,7 +185,10 @@
       "profit_eur": null,
       "energy_notes": "Gilt als 'Grüne Brauerei Göss': Brauprozess seit ca. 2016 weitgehend CO2-neutral durch Biertreber-Vergärungsanlage, Solarthermie, Abwärmenutzung und Ökostrom.",
       "notes": "Gösser ist eine der bekanntesten Biermarken Österreichs ('Gut. Besser. Gösser.'). Die Braustätte in Leoben-Göss geht auf die Brautradition des Stiftes Göss zurück, die industrielle Brauerei besteht seit 1860. Vorzeigeprojekt der Brau Union für nachhaltige Brauereitechnik. Einzelzahlen zu Mitarbeitern und Ausstoß der Braustätte sind nicht gesichert öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Steiermark",
+      "type": "grossbrauerei",
+      "group_owner": "Brau Union / Heineken"
     },
     {
       "id": "at-hirter",
@@ -181,7 +208,10 @@
       "energy_notes": null,
       "notes": "Eine der ältesten Brauereien Österreichs (Brautradition seit 1270) und eine der größten unabhängigen Privatbrauereien Kärntens. Braut mit eigenem Quellwasser und breitem Sortiment (u. a. Privat Pils, Morchl). Mittelgroße Privatbrauerei; Bilanzdaten nicht öffentlich.",
       "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
-      "story": "In Hirt wird seit 1270 gebraut — die Brauerei zählt damit zu den ältesten Österreichs, die noch am selben Ort arbeiten. Sie ist bis heute privat geführt und schöpft ihr Wasser aus eigenen Quellen am Fuß der Kärntner Nockberge."
+      "story": "In Hirt wird seit 1270 gebraut — die Brauerei zählt damit zu den ältesten Österreichs, die noch am selben Ort arbeiten. Sie ist bis heute privat geführt und schöpft ihr Wasser aus eigenen Quellen am Fuß der Kärntner Nockberge.",
+      "state": "Kärnten",
+      "type": "regional",
+      "group_owner": "Privat (Eigentümerfamilien)"
     },
     {
       "id": "at-hofstettner",
@@ -201,7 +231,10 @@
       "energy_notes": "Kleinbrauerei mit Fokus auf regionale Rohstoffe und traditionelle Verfahren (u. a. offene Gärung beim Granitbock).",
       "notes": "Urkundlich seit 1229 – gilt als älteste Brauerei Österreichs. Der Granitbock reift in ausgehöhlten Granittrögen und machte das Haus weit über das Mühlviertel hinaus bekannt.",
       "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
-      "story": "Die Brauerei Hofstetten führt ihre Geschichte auf das Jahr 1229 zurück und gilt damit als älteste Brauerei Österreichs. Geführt wird sie seit Generationen von der Familie Krammer im Mühlviertel."
+      "story": "Die Brauerei Hofstetten führt ihre Geschichte auf das Jahr 1229 zurück und gilt damit als älteste Brauerei Österreichs. Geführt wird sie seit Generationen von der Familie Krammer im Mühlviertel.",
+      "state": "Oberösterreich",
+      "type": "regional",
+      "group_owner": "Familie Krammer"
     },
     {
       "id": "at-baumgartner",
@@ -220,7 +253,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Innviertler Traditionsbrauerei in der Barockstadt Schärding; ihr Märzen gehört zu den Klassikern der Region entlang des Inn.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Oberösterreich",
+      "type": "regional",
+      "group_owner": "Familie Baumgartner"
     },
     {
       "id": "at-murauer",
@@ -240,7 +276,10 @@
       "energy_notes": "Setzt auf regionale, weitgehend erneuerbare Energieversorgung (u. a. Biomasse/Wasserkraft aus der energieautarken Region Murau) und vermarktet sich als besonders klimafreundliche Brauerei.",
       "notes": "Traditionsbrauerei in der Obersteiermark, seit 1910 als Genossenschaft organisiert — eine Besonderheit in der österreichischen Braulandschaft. Stark in der Steiermark und in Kärnten verankert, bekannt für regionale Rohstoffe. Bilanzdaten nicht öffentlich.",
       "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
-      "story": "In Murau wird seit 1495 gebraut. Die Brauerei gehört bis heute der Region — Getreide und Wasser stammen aus der Steiermark, und das Unternehmen ist einer der wichtigsten Arbeitgeber im oberen Murtal."
+      "story": "In Murau wird seit 1495 gebraut. Die Brauerei gehört bis heute der Region — Getreide und Wasser stammen aus der Steiermark, und das Unternehmen ist einer der wichtigsten Arbeitgeber im oberen Murtal.",
+      "state": "Steiermark",
+      "type": "regional",
+      "group_owner": "Erste Obermurtaler Brauereigenossenschaft"
     },
     {
       "id": "at-puntigamer",
@@ -259,7 +298,10 @@
       "profit_eur": null,
       "energy_notes": "Am Standort Graz wird u. a. Abwärme aus dem Brauprozess für die Fernwärme-Einspeisung genutzt (Projekt mit Grazer Energieversorgern).",
       "notes": "'Das bierige Bier' ist Marktführer in der Steiermark und stark im Sport-Sponsoring (u. a. Fußball, Sturm Graz) verankert. Brautradition am Standort wird auf das Jahr 1478 zurückgeführt. Braustättenspezifische Kennzahlen sind nicht gesichert öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Steiermark",
+      "type": "grossbrauerei",
+      "group_owner": "Brau Union / Heineken"
     },
     {
       "id": "at-raschhofer",
@@ -278,7 +320,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Innviertler Familienbrauerei; neben den klassischen Sorten auch mit moderner Craft-Linie und eigenen Gastronomiebetrieben aktiv.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Oberösterreich",
+      "type": "regional",
+      "group_owner": "Familie Raschhofer"
     },
     {
       "id": "at-rieder",
@@ -297,7 +342,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Innviertler Genossenschaftsbrauerei mit fast 500 Jahren Geschichte; regional stark verankert, mehrfach bei Bierprämierungen ausgezeichnet.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Oberösterreich",
+      "type": "regional",
+      "group_owner": "Genossenschaft"
     },
     {
       "id": "at-eggenberg",
@@ -317,7 +365,10 @@
       "energy_notes": null,
       "notes": "Schlossbrauerei im Almtal-Vorland; international berühmt für den Samichlaus, der lange als stärkstes Lagerbier der Welt galt, und das hopfenbetonte Hopfenkönig-Pils.",
       "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
-      "story": "Schloss Eggenberg wurde im 17. Jahrhundert zur Brauerei — die Sudpfannen stehen bis heute in den historischen Gebäuden. Bekannt wurde das Haus mit dem Samichlaus, das nur einmal im Jahr gebraut und danach zehn Monate gelagert wird; es galt lange als stärkstes Lagerbier der Welt."
+      "story": "Schloss Eggenberg wurde im 17. Jahrhundert zur Brauerei — die Sudpfannen stehen bis heute in den historischen Gebäuden. Bekannt wurde das Haus mit dem Samichlaus, das nur einmal im Jahr gebraut und danach zehn Monate gelagert wird; es galt lange als stärkstes Lagerbier der Welt.",
+      "state": "Oberösterreich",
+      "type": "regional",
+      "group_owner": "Familie Stöhr"
     },
     {
       "id": "at-schremser",
@@ -336,7 +387,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Kleine Waldviertler Traditionsbrauerei mit Wurzeln im 15. Jahrhundert, seit Generationen von der Familie Trojan geführt. Pionier bei Bio-Bieren in Österreich (u. a. Schremser Bio, Roggenbier mit Waldviertler Roggen). Bilanzdaten nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Niederösterreich",
+      "type": "regional",
+      "group_owner": "Familie Trojan"
     },
     {
       "id": "at-schwechater",
@@ -355,7 +409,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Historisch bedeutende Braustätte: Anton Dreher entwickelte hier 1841 das untergärige Wiener Lager und machte Schwechat zeitweise zu einer der größten Brauereien der Welt. Heute Braustätte der Brau Union mit der Marke Schwechater, die zuletzt mit dem 'Wiener Lager' an diese Tradition anknüpft. Einzelkennzahlen der Braustätte sind nicht gesichert öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Niederösterreich",
+      "type": "grossbrauerei",
+      "group_owner": "Brau Union / Heineken"
     },
     {
       "id": "at-vitzthum",
@@ -372,7 +429,10 @@
       "employees": 20,
       "annual_output_hl": 25000,
       "notes": "Innviertler Familienbrauerei; die Biere laufen unter der Marke Uttendorfer. Bekanntestes Bier ist das Uttendorfer Pils, Hauptprodukt das Märzen. Unter der Marke Kristall kommen Limonaden und Mineralwasser aus demselben Haus.",
-      "story": "Seit 1600 wird in Uttendorf gebraut. 1894/95 kaufte Mathias Vitzthum den Betrieb; als 1968 die konkurrierende Brauerei Schmidhammer zusperrte, blieb Vitzthum die einzige Brauerei der Gegend. Aus 3.000 Hektolitern Mitte der 1990er wurden 25.000."
+      "story": "Seit 1600 wird in Uttendorf gebraut. 1894/95 kaufte Mathias Vitzthum den Betrieb; als 1968 die konkurrierende Brauerei Schmidhammer zusperrte, blieb Vitzthum die einzige Brauerei der Gegend. Aus 3.000 Hektolitern Mitte der 1990er wurden 25.000.",
+      "state": "Oberösterreich",
+      "type": "regional",
+      "group_owner": "Familie Vitzthum"
     },
     {
       "id": "at-wieselburger",
@@ -391,7 +451,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Traditionsbrauerei im niederösterreichischen Mostviertel, Marke 'Wieselburger' (u. a. Stammbräu, Gold). Der Standort ist eine der großen Braustätten der Brau Union und produziert auch andere Konzernmarken. Braustättenspezifische Kennzahlen werden nicht gesondert veröffentlicht.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Niederösterreich",
+      "type": "grossbrauerei",
+      "group_owner": "Brau Union / Heineken"
     },
     {
       "id": "at-zipfer",
@@ -410,7 +473,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Zipfer positioniert sich als hopfenbetonte, helle Premium-Marke ('Urtyp') und zählt zu den größten Biermarken Österreichs. Die Braustätte im oberösterreichischen Zipf nutzt eigenes Quellwasser und setzt traditionell auf Naturhopfen-Dolden. Braustättenspezifische Kennzahlen werden nicht gesondert veröffentlicht.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Oberösterreich",
+      "type": "grossbrauerei",
+      "group_owner": "Brau Union / Heineken"
     },
     {
       "id": "at-gusswerk",
@@ -429,7 +495,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Bio-Craft-Pionier aus dem Raum Salzburg: braut seit 2007 ausschließlich zertifizierte Bio-Biere (u. a. Edelguss, Austrian Amber Ale) und zählte zu den ersten Craft-Brauereien Österreichs. Gründer Reinhold Barta setzt auf Bio-Rohstoffe und handwerkliche Spezialitäten, teils in Flaschengärung. Kleinbrauerei; Bilanzdaten nicht öffentlich, genaue Standortadresse ohne Gewähr.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Salzburg",
+      "type": "craft",
+      "group_owner": "Reinhold Barta"
     },
     {
       "id": "at-weitra",
@@ -449,7 +518,10 @@
       "energy_notes": null,
       "notes": "Weitra gilt mit dem Braurecht von 1321 als älteste Braustadt Österreichs. Das heutige Brauhaus bzw. die 'Bierwerkstatt Weitra' wird als kleine Spezialitäten-Braustätte im Verbund der Privatbrauerei Zwettl betrieben (u. a. Weitra Bräu Hadmar, eines der ersten Bio-Biere Österreichs). Das Gründungsjahr 1321 bezieht sich auf das städtische Braurecht, nicht auf den heutigen Betrieb. Bilanzdaten nicht öffentlich.",
       "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
-      "story": "Weitra im Waldviertel trägt seit 1321 das Braurecht und nennt sich Österreichs älteste Braustadt. Im Mittelalter durfte fast jedes Bürgerhaus brauen; geblieben ist das Brauhaus, das die Tradition bis heute fortführt."
+      "story": "Weitra im Waldviertel trägt seit 1321 das Braurecht und nennt sich Österreichs älteste Braustadt. Im Mittelalter durfte fast jedes Bürgerhaus brauen; geblieben ist das Brauhaus, das die Tradition bis heute fortführt.",
+      "state": "Niederösterreich",
+      "type": "craft",
+      "group_owner": "Privatbrauerei Zwettl (Familie Schwarz)"
     },
     {
       "id": "at-brewage",
@@ -468,7 +540,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Wiener Craft-Bier-Pioniere, gestartet Mitte der 2010er-Jahre zunächst als 'Kuckucksbrauer' (Brauen auf fremden Anlagen). Bekannt für kreative, wortspielreiche Biere wie 'Affenkönig' (Double IPA) und 'Hopfenauflauf'; mehrfach bei Bier-Awards ausgezeichnet. Kleinstbetrieb; Bilanzdaten nicht öffentlich, Angaben zu Gründungsjahr und Standort ohne Gewähr.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Wien",
+      "type": "craft",
+      "group_owner": "Gründerteam"
     },
     {
       "id": "at-die-weisse",
@@ -482,7 +557,10 @@
       "founded": 1901,
       "website": "https://www.dieweisse.at",
       "ownership": "Salzburger Biermanufaktur GmbH (Familienbetrieb)",
-      "notes": "Älteste Weißbierbrauerei Österreichs, gegründet von Adelbert Behr in Salzburg-Schallmoos. Flaschengäriges, naturtrübes Weißbier nach dem Originalrezept des Gründers; angeschlossenes Wirtshaus."
+      "notes": "Älteste Weißbierbrauerei Österreichs, gegründet von Adelbert Behr in Salzburg-Schallmoos. Flaschengäriges, naturtrübes Weißbier nach dem Originalrezept des Gründers; angeschlossenes Wirtshaus.",
+      "state": "Salzburg",
+      "type": "regional",
+      "group_owner": "Salzburger Biermanufaktur GmbH"
     },
     {
       "id": "at-grieskirchner",
@@ -501,7 +579,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Traditionsbrauerei aus dem Hausruckviertel, bekannt für ihr hopfenbetontes Pils; nach wirtschaftlich schwierigen Jahren mit regionalem Fokus weitergeführt.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Oberösterreich",
+      "type": "regional",
+      "group_owner": "Grieskirchner Bier GmbH"
     },
     {
       "id": "at-kaltenhausen",
@@ -521,7 +602,10 @@
       "energy_notes": null,
       "notes": "Älteste Brauerei des Landes Salzburg. Der industrielle Braubetrieb endete 2011; Kaiser und Edelweiss werden seither in Zipf und Wieselburg gebraut. Am Standort arbeitet heute eine Spezialitäten-Manufaktur mit rund 12 hl je Sud, dazu Gastronomie und ein Brauerei- und Böttchereimuseum. Die Marke Edelweiss ist hier geführt, weil Kaltenhausen ihre Heimat ist.",
       "data_status": "Recherchiert 2026-09-02 (Wikipedia, Brau Union, hallein.com)",
-      "story": "1475 baute der Salzburger Bürgermeister Hans Elsenheimer die Brauerei genau dort, wo aus dem Schutt der Barmsteine kalte Luft aus dem Boden strömt — die Windröhren kühlten den Bierkeller, lange bevor es Kältemaschinen gab. Der Ort heißt deshalb Kaltenhausen. Von hier kam das erste Edelweiss-Weizen."
+      "story": "1475 baute der Salzburger Bürgermeister Hans Elsenheimer die Brauerei genau dort, wo aus dem Schutt der Barmsteine kalte Luft aus dem Boden strömt — die Windröhren kühlten den Bierkeller, lange bevor es Kältemaschinen gab. Der Ort heißt deshalb Kaltenhausen. Von hier kam das erste Edelweiss-Weizen.",
+      "state": "Salzburg",
+      "type": "craft",
+      "group_owner": "Brau Union / Heineken"
     },
     {
       "id": "at-huber-braeu",
@@ -536,7 +620,10 @@
       "website": "https://www.huberbraeu.at",
       "ownership": "Familienbesitz (Familie Huber seit 1883, 5. Generation)",
       "employees": 35,
-      "notes": "Tiroler Familienbrauerei, seit 1999 von Günther Huber in fünfter Generation geführt."
+      "notes": "Tiroler Familienbrauerei, seit 1999 von Günther Huber in fünfter Generation geführt.",
+      "state": "Tirol",
+      "type": "regional",
+      "group_owner": "Familie Huber"
     },
     {
       "id": "at-mohrenbraeu",
@@ -555,7 +642,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Marktführer in Vorarlberg mit Brautradition seit 1763 (Gasthaus 'Zum Mohren'); seit 1834 im Besitz der Familie Huber. Betreibt am Standort Dornbirn eine Bier-Erlebniswelt. Die Markenidentität (Name und Logo) war zuletzt Gegenstand öffentlicher Diskussionen und wurde überarbeitet. Bilanzdaten nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Vorarlberg",
+      "type": "regional",
+      "group_owner": "Familie Huber"
     },
     {
       "id": "at-neufeldner-bio-bier",
@@ -570,7 +660,10 @@
       "website": "https://biobrauerei.at",
       "ownership": "Neufeldner Bio-Brauerei GmbH (Familie Meir)",
       "annual_output_hl": 4000,
-      "notes": "Mühlviertler Brauerei mit Wurzeln im Jahr 1523, 2011 von der Familie Meir übernommen und zur ersten Biobrauerei Oberösterreichs umgebaut. Bekannte Marken: s'Hopferl und s'Zwickl."
+      "notes": "Mühlviertler Brauerei mit Wurzeln im Jahr 1523, 2011 von der Familie Meir übernommen und zur ersten Biobrauerei Oberösterreichs umgebaut. Bekannte Marken: s'Hopferl und s'Zwickl.",
+      "state": "Oberösterreich",
+      "type": "craft",
+      "group_owner": "Familie Meir"
     },
     {
       "id": "at-ottakringer",
@@ -590,7 +683,10 @@
       "energy_notes": null,
       "notes": "Letzte große Brauerei mit Braustätte im Wiener Stadtgebiet und starke Wiener Traditionsmarke ('16er Blech'). Ausstoß ca. 600.000 hl (Größenordnung, ohne Gewähr). Teil der Ottakringer Getränke AG, zu der auch Vöslauer Mineralwasser gehört; Konzernzahlen werden veröffentlicht, brauereispezifische Umsatz-/Gewinnzahlen sind hier nicht gesichert. Bekannt auch als Veranstaltungsort (Braukultur-Wochen, Wiener Wiesn-Nähe).",
       "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
-      "story": "1837 gegründet und heute die letzte große Brauerei innerhalb Wiens. Für Wiener heißt die Dose nur „16er Blech\" — nach dem 16. Bezirk, in dem die Brauerei seit fast zwei Jahrhunderten steht."
+      "story": "1837 gegründet und heute die letzte große Brauerei innerhalb Wiens. Für Wiener heißt die Dose nur „16er Blech\" — nach dem 16. Bezirk, in dem die Brauerei seit fast zwei Jahrhunderten steht.",
+      "state": "Wien",
+      "type": "grossbrauerei",
+      "group_owner": "Ottakringer Getränke AG"
     },
     {
       "id": "at-ottakringer-brauwerk",
@@ -605,7 +701,10 @@
       "address": "Ottakringer Platz 1, 1160 Wien",
       "website": "https://www.brauwerk.wien",
       "annual_output_hl": 2000,
-      "notes": "Craft-Bier-Brauerei der Ottakringer Brauerei am selben Standort: acht Stammsorten und rund 25 wechselnde Biere im Jahr."
+      "notes": "Craft-Bier-Brauerei der Ottakringer Brauerei am selben Standort: acht Stammsorten und rund 25 wechselnde Biere im Jahr.",
+      "state": "Wien",
+      "type": "craft",
+      "group_owner": "Ottakringer Getränke AG"
     },
     {
       "id": "at-egger",
@@ -624,7 +723,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Moderne Großbrauerei bei St. Pölten und eine der größten privaten Getränkeproduzenten Österreichs; stark im Export und im Handelsmarken-/Dosengeschäft. Am Standort Unterradlberg werden neben Bier auch alkoholfreie Getränke (Radlberger) produziert. Genaue Ausstoß- und Bilanzzahlen sind nicht gesichert öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Niederösterreich",
+      "type": "grossbrauerei",
+      "group_owner": "Familie Egger"
     },
     {
       "id": "at-golser",
@@ -640,7 +742,10 @@
       "ownership": "Privatbrauerei Gols GmbH (Familie Sautner)",
       "employees": 20,
       "annual_output_hl": 8500,
-      "notes": "2007 von Harald Sautner im Nordburgenland gegründet, seit 2016 von Markus Sautner geführt. Rohstoffe zu 100 Prozent aus Österreich."
+      "notes": "2007 von Harald Sautner im Nordburgenland gegründet, seit 2016 von Markus Sautner geführt. Rohstoffe zu 100 Prozent aus Österreich.",
+      "state": "Burgenland",
+      "type": "regional",
+      "group_owner": "Familie Sautner"
     },
     {
       "id": "at-schnaitl",
@@ -654,7 +759,10 @@
       "address": "Gundertshausen 9, 5142 Eggelsberg",
       "website": "https://www.schnaitl.at",
       "ownership": "Familienbesitz (Familie Schnaitl, seit der Gründung)",
-      "notes": "Innviertler Privatbrauerei in Gundertshausen, seit 1842 durchgehend in Familienhand."
+      "notes": "Innviertler Privatbrauerei in Gundertshausen, seit 1842 durchgehend in Familienhand.",
+      "state": "Oberösterreich",
+      "type": "regional",
+      "group_owner": "Familie Schnaitl"
     },
     {
       "id": "at-zwettler",
@@ -674,7 +782,10 @@
       "energy_notes": null,
       "notes": "Größte Brauerei des Waldviertels und eine der größeren unabhängigen Privatbrauereien Österreichs (u. a. Zwettler Original, Export Lager). Setzt auf regionale Rohstoffe wie Waldviertler Braugerste und betreibt zusätzlich die Bierwerkstatt Weitra. Genaue Ausstoß- und Bilanzzahlen nicht gesichert öffentlich.",
       "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
-      "story": "Seit 1708 in Zwettl, seit 1709 in der Hand der Familie Schwarz — eine der wenigen österreichischen Brauereien, die über drei Jahrhunderte in derselben Familie geblieben sind."
+      "story": "Seit 1708 in Zwettl, seit 1709 in der Hand der Familie Schwarz — eine der wenigen österreichischen Brauereien, die über drei Jahrhunderte in derselben Familie geblieben sind.",
+      "state": "Niederösterreich",
+      "type": "regional",
+      "group_owner": "Familie Schwarz"
     },
     {
       "id": "at-schladminger",
@@ -693,7 +804,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Kleine Gebirgsbrauerei in der Dachstein-Tauern-Region, positioniert sich mit Bergwasser und regionalem Charakter (u. a. Schladminger Bio-Zwickl). Vor allem im steirischen Ennstal und im Wintertourismus präsent. Braustättenspezifische Kennzahlen und Bilanzdaten nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Steiermark",
+      "type": "regional",
+      "group_owner": "Brau Union / Heineken"
     },
     {
       "id": "at-starkenberger",
@@ -712,7 +826,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Tiroler Schlossbrauerei im Gurgltal; überregional bekannt durch die Biermythos-Erlebniswelt samt Bierschwimmbädern in den ehemaligen Gärkellern.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Tirol",
+      "type": "regional",
+      "group_owner": "Privat (Schloss Starkenberg)"
     },
     {
       "id": "at-stiegl",
@@ -732,7 +849,10 @@
       "energy_notes": "Umfangreiches Nachhaltigkeitsprogramm mit Kreislaufwirtschafts-Initiativen, eigenem Biergut Wildshut, Reststoffverwertung (u. a. Biertreber) und eigener Energieerzeugung; mehrfach für Umweltmanagement ausgezeichnet.",
       "notes": "Meistgekaufte Biermarke Österreichs und größte Privatbrauerei des Landes mit Ausstoß von ca. 1 Mio. hl (Mitarbeiter- und Ausstoßzahlen ca.-Werte). Hauptbraustätte in Salzburg-Maxglan, dazu das Biergut Wildshut als 'erstes Biergut Österreichs' mit eigenem Urgetreide-Anbau. Detaillierte Bilanzzahlen werden nicht regelmäßig veröffentlicht.",
       "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
-      "story": "Gegründet im Jahr 1492 — dem Jahr, in dem Kolumbus in See stach. Den Namen verdankt die Brauerei einer Stiege am Almkanal, an der das erste Sudhaus stand. Heute ist Stiegl die größte Privatbrauerei Österreichs und noch immer in Familienbesitz; auf dem eigenen Biergut Wildshut baut sie ihr Getreide selbst an."
+      "story": "Gegründet im Jahr 1492 — dem Jahr, in dem Kolumbus in See stach. Den Namen verdankt die Brauerei einer Stiege am Almkanal, an der das erste Sudhaus stand. Heute ist Stiegl die größte Privatbrauerei Österreichs und noch immer in Familienbesitz; auf dem eigenen Biergut Wildshut baut sie ihr Getreide selbst an.",
+      "state": "Salzburg",
+      "type": "grossbrauerei",
+      "group_owner": "Familie Kiener (privat)"
     },
     {
       "id": "at-engelszell",
@@ -752,7 +872,10 @@
       "energy_notes": null,
       "notes": "Einzige Trappistenbrauerei Österreichs und eine von nur rund einem Dutzend weltweit; die Biere (u. a. Gregorius, Benno, Nivard) trugen das Label 'Authentic Trappist Product'. Die Brauerei wurde 2012 im Stift Engelszell an der Donau gegründet, das Kloster selbst besteht seit 1293. Die Zukunft von Stift und Brauerei war zuletzt wegen der sehr kleinen Ordensgemeinschaft im Umbruch (Stand unsicher). Kleinstbrauerei; Bilanzdaten nicht öffentlich.",
       "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
-      "story": "Das Stift Engelszell an der Donau ist die einzige Trappistenbrauerei Österreichs und eine der wenigen weltweit, die das Siegel „Authentic Trappist Product\" tragen darf. Gebraut wird erst seit 2012 — ein junges Bier aus einem Kloster, das bis ins 13. Jahrhundert zurückreicht."
+      "story": "Das Stift Engelszell an der Donau ist die einzige Trappistenbrauerei Österreichs und eine der wenigen weltweit, die das Siegel „Authentic Trappist Product\" tragen darf. Gebraut wird erst seit 2012 — ein junges Bier aus einem Kloster, das bis ins 13. Jahrhundert zurückreicht.",
+      "state": "Oberösterreich",
+      "type": "kloster",
+      "group_owner": "Trappistenstift Engelszell"
     },
     {
       "id": "at-schlaegl",
@@ -772,7 +895,10 @@
       "energy_notes": "Setzt auf Rohstoffe aus der Region Mühlviertel, u. a. Bio-Roggen aus eigener Landwirtschaft.",
       "notes": "Die einzige von einem Kloster geführte Brauerei Österreichs, im oberen Mühlviertel nahe der bayerisch-tschechischen Grenze; bekannt für Spezialitäten wie Roggenbier und Doppelbock.",
       "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
-      "story": "Die Stiftsbrauerei Schlägl wird seit 1580 von Prämonstratenser-Chorherren betrieben und ist damit eine der wenigen Klosterbrauereien Österreichs, die nie verpachtet wurden. Gebraut wird mit Mühlviertler Braugerste aus der Umgebung."
+      "story": "Die Stiftsbrauerei Schlägl wird seit 1580 von Prämonstratenser-Chorherren betrieben und ist damit eine der wenigen Klosterbrauereien Österreichs, die nie verpachtet wurden. Gebraut wird mit Mühlviertler Braugerste aus der Umgebung.",
+      "state": "Oberösterreich",
+      "type": "kloster",
+      "group_owner": "Prämonstratenser-Stift Schlägl"
     },
     {
       "id": "at-trumer",
@@ -792,7 +918,10 @@
       "energy_notes": null,
       "notes": "Pils-Spezialist: Die Brauerei konzentriert sich seit den 1980er-Jahren konsequent auf Pils und braut mit offener Gärung — das Trumer Pils gilt als österreichischer Klassiker des Stils. Betreibt zudem eine Schwesterbrauerei in Berkeley, Kalifornien. Bilanzdaten nicht öffentlich.",
       "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
-      "story": "Die Trumer Privatbrauerei in Obertrum konzentriert sich auf ein einziges Bier: ein schlankes, stark gehopftes Pils. Die Familie Sigl führt das Haus seit dem 19. Jahrhundert und gab das Rezept sogar nach Kalifornien weiter, wo eine Schwesterbrauerei nach denselben Vorgaben braut."
+      "story": "Die Trumer Privatbrauerei in Obertrum konzentriert sich auf ein einziges Bier: ein schlankes, stark gehopftes Pils. Die Familie Sigl führt das Haus seit dem 19. Jahrhundert und gab das Rezept sogar nach Kalifornien weiter, wo eine Schwesterbrauerei nach denselben Vorgaben braut.",
+      "state": "Salzburg",
+      "type": "regional",
+      "group_owner": "Familie Sigl"
     },
     {
       "id": "at-villacher",
@@ -811,7 +940,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Kärntner Traditionsmarke seit 1858, neben Hirter eine der bekanntesten Biermarken des Bundeslandes. Ehemals Teil der Vereinigten Kärntner Brauereien, heute Braustätte bzw. Marke im Verbund der Brau Union. Braustättenspezifische Kennzahlen nicht gesichert öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Kärnten",
+      "type": "regional",
+      "group_owner": "Brau Union / Heineken"
     },
     {
       "id": "at-wurmhoeringer",
@@ -825,7 +957,10 @@
       "founded": 1652,
       "website": "https://www.wurmhoeringer.at",
       "ownership": "Familienbesitz (Wurmhöringer Braugasthof e. U.)",
-      "notes": "Innviertler Privatbrauerei mit angeschlossenem Braugasthof; Brauwasser aus eigenem Brunnen, Hopfen und Malz aus der Region."
+      "notes": "Innviertler Privatbrauerei mit angeschlossenem Braugasthof; Brauwasser aus eigenem Brunnen, Hopfen und Malz aus der Region.",
+      "state": "Oberösterreich",
+      "type": "gasthaus",
+      "group_owner": "Familie Wurmhöringer"
     },
     {
       "id": "at-zillertal",
@@ -844,7 +979,10 @@
       "profit_eur": null,
       "energy_notes": null,
       "notes": "Gilt als älteste Privatbrauerei Tirols (Brautradition seit ca. 1500). 2016 wurde am Standort ein neues, modernes Brauhaus mit Erlebniswelt ('BrauKunstHaus') errichtet. Stark im Tiroler Markt und in der Gastronomie des Zillertals verankert; veranstaltet das traditionelle Gauder Fest mit dem starken Gauder Bock. Bilanzdaten nicht öffentlich.",
-      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr"
+      "data_status": "KI-Trainingswissen Stand ~2025, ohne Gewähr",
+      "state": "Tirol",
+      "type": "regional",
+      "group_owner": "Familie Strasser"
     }
   ]
 }
