@@ -2,7 +2,7 @@
 
 > **Status:** 🟢 fertig — Kamera auf Android/iOS/Web, manuelle Eingabe
 > überall.
-> **Seit:** 0.3.0 · **Zuletzt geprüft:** 2026-09-04
+> **Seit:** 0.3.0 · **Zuletzt geprüft:** 2026-09-05
 
 ## Zielsetzung
 
@@ -71,6 +71,81 @@ hätte es nicht gefunden — die Schreibseite funktionierte ja.
 Einschränkung fürs Protokoll: EANs werden nach Jahrzehnten gelegentlich
 neu vergeben, und Aktionsware trägt manchmal fremde Codes. Die EAN ist ein
 sehr guter Schlüssel — **kein Beweis**.
+
+## Wie eindeutig ist die Zuordnung wirklich? (2026-09-05, nachgezählt)
+
+Die Annahme „jede EAN gehört zu genau einem Bier und einem Gebinde" ist
+die Grundlage dieser Funktion. Am 2026-09-05 wurde sie nachgeprüft statt
+geglaubt — mit einem gemischten Ergebnis:
+
+| Frage | Antwort |
+|---|---|
+| Hängt eine EAN an zwei Bieren? | **Nein**, bei keiner der 432 gebündelten EANs |
+| Wird das erzwungen? | **Ja, doppelt**: `beer_barcodes` hat `ean` als Primärschlüssel, und `community_daten_test.dart` prüft die Repo-Dateien |
+| Kennt jede EAN ihre Größe? | **Nein** — 110 von 432 hatten keine |
+
+Die Bier-Zuordnung ist also belastbar. Die **Gebinde**-Zuordnung war es
+zu einem Viertel nicht.
+
+### Was Open Food Facts dazu beitragen konnte: fast nichts
+
+Alle 110 offenen EANs wurden bei Open Food Facts abgefragt. Ergebnis:
+**vier** verwertbare Mengenangaben. Der Rest trägt dort `quantity: null`
+oder `"1pcs"` — die Produkte sind erfasst, die Füllmenge ist es nicht.
+
+Das ist ein Befund für die Datenpflege: Für österreichische EANs,
+besonders die kurzen GTIN-8, ist Open Food Facts **keine Quelle für
+Gebindegrößen**. Wer die Lücke schließen will, braucht die Flasche in
+der Hand — oder die Nutzer, die sie ohnehin scannen.
+
+### Drei der vier waren Sixpacks
+
+Und das ist die eigentliche Lehre:
+
+```
+9003400391632   „Hell (6er-Tragerl)"              3000 ml
+9028800602775   „6-pack Zipfer Hell alkoholfrei"  2000 ml
+4008948192012   „Jever Fun" (6er)                 1980 ml
+4082100009097   „Mönchshof Kellerbier"             500 ml
+```
+
+Kein Fehler der Quelle — eine EAN bezeichnet die Handelseinheit, und ein
+Tragerl ist eine. Für BrewMates ist der Wert aber etwas anderes: Die App
+setzt ihn nach dem Scannen als **Füllmenge in den Check-in**. Wer ein
+Tragerl scannt, trinkt eine Flasche daraus, keine drei Liter.
+
+Eingetragen wurde deshalb die Einzelflasche (3000 ÷ 6 = 500, 1980 ÷ 6 =
+330). Und damit der Unterschied nicht bei der nächsten Datenpflege
+wieder verlorengeht, steht er jetzt als Regel dort, wo er nicht zu
+umgehen ist:
+
+- **Migration 0055** begrenzt `beer_barcodes.volume_ml` auf 100–1000 ml.
+  1 l ist der größte Wert, den die App überhaupt anbietet
+  (`volumeChoicesMl`, Growler); alles darüber ist eine Verpackungsangabe.
+  Der alte Check erlaubte 20 Liter und war nie erreicht.
+- **`community_daten_test.dart`** zieht dieselbe Grenze für die
+  Repo-Dateien.
+
+Die Regel gehört an den Server: Eine Grenze, die nur der Client kennt,
+umgeht der nächste Client.
+
+### Wo die Größe eindeutig ist, gilt sie auch ohne Scan
+
+Die Größe hängt am Barcode, nicht am Bier — aber **163 der gebündelten
+Biere führen nur Codes einer einzigen Größe**, 50 führen zwei (fast immer
+0,33 und 0,5). Bei den 163 ist die Größe also auch ohne Scan bekannt.
+
+`AppDatabase.eindeutigeGebindegroesse(beerId)` gibt sie zurück, und der
+Check-in belegt das Mengen-Feld damit vor — mit einem Satz darunter,
+woher die Zahl kommt. Bei mehreren Größen antwortet die Methode `null`:
+**raten wäre schlimmer als fragen.** Und sobald der Mensch selbst
+gewählt hat, rührt sie nichts mehr an.
+
+Das ist die Antwort auf Wunsch
+[#144](https://github.com/ORPA1988/BrewMates/issues/144) („Gebinde je
+Bier hinterlegen") — soweit sie ehrlich zu geben ist: nicht am Bier
+hinterlegt, sondern aus seinen Barcodes abgeleitet, und nur dort, wo das
+Ergebnis eindeutig ist.
 
 ## Der beste Scanner nützt nichts bei falschen Daten (2026-09-02)
 

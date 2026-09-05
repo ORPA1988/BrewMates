@@ -850,7 +850,10 @@
       "barcodes": [
         "4082100009097"
       ],
-      "description_manufacturer": "Naturtrübes Kellerbier der Kulmbacher Traditionsmarke Mönchshof: ungefiltert, bernsteinfarben und vollmundig malzig."
+      "description_manufacturer": "Naturtrübes Kellerbier der Kulmbacher Traditionsmarke Mönchshof: ungefiltert, bernsteinfarben und vollmundig malzig.",
+      "barcode_volumes": {
+        "4082100009097": 500
+      }
     },
     {
       "id": "de-by-mahrs-au",

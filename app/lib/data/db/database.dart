@@ -1049,6 +1049,35 @@ class AppDatabase extends _$AppDatabase {
     return row?.volumeMl;
   }
 
+  /// Die Gebindegröße eines Biers, **wenn sie eindeutig ist**.
+  ///
+  /// Die Größe hängt am Barcode, nicht am Bier — dieselbe Marke in 0,33
+  /// und 0,5 hat zwei EANs. Führt ein Bier aber nur Codes **einer**
+  /// Größe, ist sie auch ohne Scan bekannt, und das Einchecken von Hand
+  /// muss nicht danach fragen (Wunsch #144).
+  ///
+  /// `null` heißt: keine Größe bekannt **oder** mehrere verschiedene.
+  /// Beides führt zur selben Antwort — raten wäre schlimmer als fragen.
+  /// Von 660 gebündelten Bieren haben 163 genau eine Größe und 50
+  /// mehrere (Stand 2026-09-05).
+  Future<int?> eindeutigeGebindegroesse(String beerId) async {
+    final beer = await (select(beers)..where((t) => t.id.equals(beerId)))
+        .getSingleOrNull();
+    if (beer == null) return null;
+    final codes = beer.barcodes
+        .split(',')
+        .map((c) => c.trim())
+        .where((c) => c.isNotEmpty)
+        .toList();
+    if (codes.isEmpty) return null;
+
+    final rows = await (select(barcodeVolumes)
+          ..where((t) => t.ean.isIn(codes)))
+        .get();
+    final groessen = {for (final r in rows) r.volumeMl};
+    return groessen.length == 1 ? groessen.first : null;
+  }
+
   Stream<Brewery?> watchBrewery(String id) =>
       (select(breweries)..where((t) => t.id.equals(id))).watchSingleOrNull();
 
