@@ -8,7 +8,7 @@
 -- Ausführen: `supabase test db` (braucht die lokale Instanz).
 
 begin;
-select plan(9);
+select plan(10);
 
 create or replace function pg_temp.mkuser(p_id uuid, p_name text)
 returns void language plpgsql as $$
@@ -39,6 +39,27 @@ values
   ('aaaaaaaa-0000-0000-0000-000000000003',
    '11111111-1111-1111-1111-111111111111',
    '44444444-4444-4444-4444-444444444444', 'accepted', 'freund', 'freund');
+
+-- ============================================================================
+-- Der Constraint, an dem die Funktion vorher scheiterte
+-- ============================================================================
+
+-- `sessions_duration_bounds` beschreibt die Laufzeit einer Runde. Für eine
+-- Verabredung in drei Tagen war das die falsche Regel: Sie ließ sich gar
+-- nicht anlegen — also ausgerechnet nicht für „Freitag 19 Uhr", wofür die
+-- Funktion gebaut wurde. Gefunden hat es dieser Test, nicht die App.
+select lives_ok(
+  $$insert into public.sessions
+      (id, host_id, visibility, status, scheduled_for, started_at, expires_at)
+    values ('55550000-0000-0000-0000-00000000000f',
+            '11111111-1111-1111-1111-111111111111', 'private', 'planned',
+            now() + interval '3 days', now(),
+            now() + interval '3 days 3 hours')$$,
+  'Eine Verabredung in drei Tagen lässt sich anlegen — die 24-Stunden-'
+  'Grenze gilt für laufende Runden, nicht für Termine'
+);
+delete from public.sessions
+ where id = '55550000-0000-0000-0000-00000000000f';
 
 -- ============================================================================
 -- Beim Anlegen

@@ -44,6 +44,37 @@
 -- vorhandene Beacon-Zweig, ohne dass hier etwas Besonderes nötig wäre:
 -- Dann ist die Runde wirklich unterwegs, und genau das meldet er.
 --
+-- ============================================================================
+-- EIN CONSTRAINT, DER FÜR VERABREDUNGEN DIE FALSCHE REGEL WAR
+--
+-- `sessions_duration_bounds` (0021) verlangt
+-- `expires_at <= started_at + 24 h`. Das beschreibt die **Laufzeit einer
+-- Runde** — und war für eine Verabredung schlicht die falsche Frage:
+-- Dort steht in `started_at` der Anlegezeitpunkt und in `expires_at` der
+-- Termin plus Karenz. Wer am Montag für Freitag verabredet, sprengt die
+-- 24 Stunden um das Dreifache.
+--
+-- **Die Funktion aus 0.10.14 war damit in der Praxis kaputt**: Eine
+-- Verabredung ließ sich nur anlegen, wenn sie weniger als 21 Stunden
+-- entfernt war — also ausgerechnet nicht für den Fall „Freitag 19 Uhr",
+-- für den sie gebaut wurde. Gefunden hat es der pgTAP-Test dieser
+-- Migration, nicht die App: Deren Test spricht mit einem Fake, und der
+-- kennt keine Constraints.
+--
+-- Der Constraint gilt jetzt nur noch für Runden, die laufen. Eine
+-- Verabredung hat noch keine Laufzeit — sie bekommt sie beim Start, und
+-- dann greift die Regel wieder.
+-- ============================================================================
+
+alter table public.sessions drop constraint if exists sessions_duration_bounds;
+alter table public.sessions
+  add constraint sessions_duration_bounds
+  check (
+    status = 'planned'
+    or (expires_at > started_at + interval '29 minutes'
+        and expires_at <= started_at + interval '24 hours')
+  ) not valid;
+
 -- Entwurf: docs/features/39-geplante-sessions.md
 -- ============================================================================
 
@@ -53,11 +84,32 @@ language plpgsql security definer set search_path = public as $$
 declare
   v_typ text;
 begin
+  -- ------------------------------------------------------------------ Ende
+  -- Beendet: aufräumen, nicht benachrichtigen. Eine Glocke, die auf eine
+  -- beendete Runde zeigt, führt den Menschen zu etwas, das es nicht mehr
+  -- gibt — und die RLS zeigt sie ihm dann auch nicht mehr (0039).
+  if tg_op = 'UPDATE' and new.status = 'ended' and old.status <> 'ended' then
+    delete from notifications
+     where subject_type = 'session' and subject_id = new.id
+       and type in ('beacon', 'session_planned', 'session_reminder');
+    return new;
+  end if;
+
   if tg_op = 'DELETE' then
     delete from notifications
      where subject_type = 'session' and subject_id = old.id
        and type in ('beacon', 'session_planned', 'session_reminder');
     return old;
+  end if;
+
+  -- Aus der Verabredung wird eine Runde: Die alten Meldungen zeigen auf
+  -- etwas, das so nicht mehr stimmt („verabredet eine Runde", „gleich
+  -- geht's los"). Sie weichen der Beacon-Meldung, die gleich folgt.
+  if tg_op = 'UPDATE' and old.status = 'planned' and new.status = 'active'
+  then
+    delete from notifications
+     where subject_type = 'session' and subject_id = new.id
+       and type in ('session_planned', 'session_reminder');
   end if;
 
   -- Welche Art Runde? Alles andere (beendet, abgelaufen) meldet nichts.
@@ -69,8 +121,10 @@ begin
     return new;
   end if;
 
-  -- Nicht zweimal dasselbe: Ein UPDATE an einer Verabredung (Ort, Text)
-  -- darf die Meldung nicht wiederholen.
+  -- Nicht zweimal dasselbe. **Der Grund, warum 0039 das nicht brauchte:**
+  -- Dort stieg jedes UPDATE vorher aus, ein Beacon entsteht ja per INSERT.
+  -- Hier muss ein UPDATE durchkommen (`planned` → `active`), und damit
+  -- käme jede spätere Änderung an Ort oder Text ebenfalls durch.
   if exists (
     select 1 from notifications
      where subject_type = 'session' and subject_id = new.id and type = v_typ
