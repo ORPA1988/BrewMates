@@ -211,13 +211,19 @@ class CrewDetailScreen extends ConsumerWidget {
                           ),
                           title: Text(m.profile.displayName),
                           subtitle: Text('@${m.profile.username}'),
-                          trailing: m.role == 'owner'
-                              ? Chip(
-                                  label: const Text('Gründer'),
-                                  labelStyle: theme.textTheme.labelSmall,
-                                  visualDensity: VisualDensity.compact,
-                                )
-                              : null,
+                          // Rollen sichtbar machen — und dem Gründer die
+                          // Handgriffe geben, die es dazu braucht (0061).
+                          trailing: _mitgliedsAktionen(
+                            context,
+                            theme,
+                            crewId: crewId,
+                            rolle: m.role,
+                            profil: m.profile,
+                            binGruender: isOwner,
+                            binVerwalter: isOwner ||
+                                members.any((x) =>
+                                    x.profile.id == myUid && x.role == 'admin'),
+                          ),
                         ),
                       // Wer eingeladen ist, aber noch nicht geantwortet
                       // hat. Ohne diese Zeile lädt man ihn dreimal ein
@@ -351,6 +357,83 @@ class _Bilanz extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Was an einer Mitgliederzeile steht — und was man damit tun kann.
+///
+/// **Die Rechte prüft der Server** (`crew_members_update`,
+/// `crew_members_delete` seit 0061). Was hier passiert, ist nur, die
+/// Knöpfe wegzulassen, die ohnehin abgewiesen würden: Ein Knopf, der
+/// nichts tut, ist schlimmer als keiner.
+Widget? _mitgliedsAktionen(
+  BuildContext context,
+  ThemeData theme, {
+  required String crewId,
+  required String rolle,
+  required RemoteProfile profil,
+  required bool binGruender,
+  required bool binVerwalter,
+}) {
+  final zeichen = switch (rolle) {
+    'owner' => 'Gründer',
+    'admin' => 'Verwalter',
+    _ => null,
+  };
+  final chip = zeichen == null
+      ? null
+      : Chip(
+          label: Text(zeichen),
+          labelStyle: theme.textTheme.labelSmall,
+          visualDensity: VisualDensity.compact,
+        );
+
+  // Am Gründer gibt es nichts zu tun: Er lässt sich weder entfernen noch
+  // umstufen, und die Datenbank sagt dasselbe.
+  if (rolle == 'owner' || !binVerwalter) return chip;
+
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      if (chip != null) chip,
+      Consumer(
+        builder: (context, ref, _) => PopupMenuButton<String>(
+          icon: const Icon(Icons.more_vert, size: 20),
+          itemBuilder: (_) => [
+            // Rollen vergibt nur der Gründer — ein Verwalter, der sich
+            // weitere Verwalter machen könnte, wäre der neue Besitzer.
+            if (binGruender)
+              PopupMenuItem(
+                value: rolle == 'admin' ? 'member' : 'admin',
+                child: Text(rolle == 'admin'
+                    ? 'Verwalterrolle nehmen'
+                    : 'Zum Verwalter machen'),
+              ),
+            const PopupMenuItem(
+              value: 'entfernen',
+              child: Text('Aus der Crew entfernen'),
+            ),
+          ],
+          onSelected: (wahl) async {
+            final messenger = ScaffoldMessenger.of(context);
+            final online = await ref.read(onlineServiceProvider.future);
+            if (online == null) return;
+            final ok = wahl == 'entfernen'
+                ? await online.crews.removeMember(crewId, profil.id)
+                : await online.crews.setRole(crewId, profil.id, wahl);
+            messenger.showSnackBar(SnackBar(
+              content: Text(ok
+                  ? (wahl == 'entfernen'
+                      ? '${profil.displayName} ist nicht mehr dabei.'
+                      : 'Rolle geändert.')
+                  : 'Hat nicht geklappt — keine Verbindung, oder du '
+                      'darfst das nicht.'),
+            ));
+            if (ok) ref.invalidate(crewMembersProvider(crewId));
+          },
+        ),
+      ),
+    ],
+  );
 }
 
 /// Die Runden der Crew: was ihre Mitglieder gemeinsam getrunken haben.
