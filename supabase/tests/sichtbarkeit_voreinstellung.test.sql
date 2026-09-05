@@ -9,7 +9,7 @@
 -- Ausführen: `supabase test db` (braucht die lokale Instanz).
 
 begin;
-select plan(7);
+select plan(9);
 
 create or replace function pg_temp.mkuser(p_id uuid, p_name text)
 returns void language plpgsql as $$
@@ -51,10 +51,23 @@ select is(
 -- Mensch die Voreinstellung nicht speichern kann.
 -- ============================================================================
 
+-- Lesen ausdruecklich NICHT: Spaltenrechte gelten pro Spalte, nicht pro
+-- Zeile — ein select-Recht haette die Voreinstellung jedem Freund und
+-- jedem Crew-Mitglied gezeigt (0059, dieselbe Lehre wie thirsty_until).
 select ok(
-  has_column_privilege('authenticated', 'public.profiles',
-                       'default_visibility', 'select'),
-  'authenticated darf die Voreinstellung lesen');
+  not has_column_privilege('authenticated', 'public.profiles',
+                           'default_visibility', 'select'),
+  'die Voreinstellung liest niemand aus der Profilzeile');
+
+select ok(
+  has_function_privilege('authenticated', 'public.my_default_visibility()',
+                         'execute'),
+  'ueber sich selbst erfaehrt man sie per Funktion');
+
+select ok(
+  not has_function_privilege('anon', 'public.my_default_visibility()',
+                             'execute'),
+  'anon nicht');
 
 select ok(
   has_column_privilege('authenticated', 'public.profiles',
@@ -75,16 +88,18 @@ select lives_ok($$
 $$, 'die eigene Voreinstellung darf man setzen');
 
 select is(
-  (select default_visibility::text from public.profiles
-    where id = '11111111-1111-1111-1111-111111111111'),
+  (select my_default_visibility()::text),
   'private',
-  'und sie steht danach so da');
+  'und sie steht danach so da — gelesen ueber die Funktion');
 
 -- Fremde Zeile: RLS laesst sie nicht zu, das Update trifft null Zeilen.
 -- Geprueft wird deshalb der Wert, nicht der Aufruf.
 update public.profiles set default_visibility = 'private'
  where id = '22222222-2222-2222-2222-222222222222';
 
+-- Als `postgres` gelesen, nicht als der Nutzer: Der darf die Spalte
+-- gar nicht mehr sehen — genau das ist der Punkt.
+reset role;
 select is(
   (select default_visibility::text from public.profiles
     where id = '22222222-2222-2222-2222-222222222222'),

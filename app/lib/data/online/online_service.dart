@@ -96,8 +96,14 @@ class OnlineService {
   /// Statistik (Wunsch #146, Migration 0054).
   final StatsApi stats;
 
+  /// Spalten eines **fremden** Profils. Was hier steht, sieht jeder, der
+  /// die Zeile sehen darf — Freunde, Mitglieder derselben Crew.
   static const _profileCols =
-      'id, username, display_name, avatar_emoji, account_no, default_visibility';
+      'id, username, display_name, avatar_emoji, account_no';
+
+  /// Die eigene Sichtbarkeits-Voreinstellung steht **nicht** in dieser
+  /// Liste und in keiner anderen: Sie kommt seit 0059 über
+  /// [myDefaultVisibility]. Der Grund steht dort.
 
   /// Deep-Link, über den OAuth-Anmeldungen in die App zurückkehren.
   static const oauthRedirect = 'de.brewmates.app://login-callback';
@@ -364,6 +370,30 @@ class OnlineService {
       return true;
     } catch (_) {
       return false;
+    }
+  }
+
+  /// Die eigene Voreinstellung für die Sichtbarkeit neuer Check-ins.
+  ///
+  /// **Warum eine RPC und keine Spalte:** Spaltenrechte gelten pro
+  /// Spalte, nicht pro Zeile. Ein `select`-Recht auf
+  /// `profiles.default_visibility` hätte jedem, der eine fremde
+  /// Profilzeile sehen darf — jedem Freund, jedem Crew-Mitglied —
+  /// verraten, wie privat der andere seine Check-ins hält. Dasselbe
+  /// Muster wie `my_thirsty_until()` seit 0026.
+  ///
+  /// `null` heißt abgemeldet, offline oder Aufruf gescheitert; die
+  /// Oberfläche fällt dann auf `friends` zurück — den Wert, der auch am
+  /// Server als Vorgabe steht.
+  Future<SessionVisibility?> myDefaultVisibility() async {
+    if (currentUser == null) return null;
+    try {
+      final value = await _client.rpc('my_default_visibility');
+      if (value == null) return null;
+      return SessionVisibility.values
+          .firstWhere((v) => v.name == value, orElse: () => SessionVisibility.friends);
+    } catch (_) {
+      return null;
     }
   }
 

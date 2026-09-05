@@ -233,6 +233,20 @@ final myThirstyUntilProvider = FutureProvider<DateTime?>((ref) async {
   return online?.friends.myThirstyUntil();
 });
 
+/// Die eigene Voreinstellung für die Sichtbarkeit neuer Check-ins.
+///
+/// Kommt über eine RPC und nicht aus der Profilzeile: Ein Spaltenrecht
+/// hätte sie auch Freunden und Crew-Mitgliedern gezeigt (0059,
+/// Funktion 44). Ohne Konto oder Verbindung bleibt es bei `friends` —
+/// derselbe Wert, den auch der Server als Vorgabe führt.
+final myDefaultVisibilityProvider =
+    FutureProvider<SessionVisibility>((ref) async {
+  ref.watch(_syncTickProvider);
+  ref.watch(onlineUserProvider);
+  final online = await ref.watch(onlineServiceProvider.future);
+  return await online?.myDefaultVisibility() ?? SessionVisibility.friends;
+});
+
 /// Läuft meine Bierlaune gerade noch?
 ///
 /// Getrennt vom Abrufen, weil beides verschiedene Takte hat: Der Wert

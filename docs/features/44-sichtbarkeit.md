@@ -110,6 +110,26 @@ select ok(has_column_privilege('authenticated', 'public.profiles',
 Ohne diese zwei Zeilen wäre es erst aufgefallen, wenn ein Mensch seine
 Voreinstellung nicht speichern kann.
 
+### Und dann las sie jeder mit (0059)
+
+Der zweite Fehler war leiser als der erste. 0058 gab `authenticated` das
+`select`-Recht auf die neue Spalte — und **Spaltenrechte gelten pro
+Spalte, nicht pro Zeile**. Dieselbe Spaltenliste (`_profileCols`) speist
+in der App das eigene Profil, die Crew-Mitgliederliste und die
+Challenge-Abschlüsse. Wer eine Crew öffnete, las damit mit, wie privat
+die anderen ihre Check-ins halten.
+
+Sichtbar war das nirgends. Es wäre niemandem aufgefallen.
+
+Die Lösung stand seit 0026 bereit: Spaltenrecht entziehen, und was man
+über sich selbst wissen darf, kommt über eine Funktion —
+`my_default_visibility()`, genau wie `my_thirsty_until()`. Eine
+Zeilenregel hilft hier nicht: Sie entscheidet über Zeilen, und die fremde
+Zeile **soll** sichtbar sein, nur diese eine Spalte daran nicht.
+
+In der App liegt die Voreinstellung deshalb nicht mehr an `RemoteProfile`,
+sondern in `myDefaultVisibilityProvider`.
+
 ## Modularität
 
 - **Hängt ab von:** Check-ins (02), Konto (01), Runden (40)

@@ -583,7 +583,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         content: Text(err ??
             'Nutzername geändert – Prost, @'
                 '${newName.trim().toLowerCase()}! 🍻')));
-    ref.invalidate(myRemoteProfileProvider);
+    ref.invalidate(myDefaultVisibilityProvider);
   }
 
   // --------------------------------------------------------------------------
@@ -668,7 +668,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     OnlineService online,
     RemoteProfile profile,
   ) {
-    final gewaehlt = profile.defaultVisibility;
+    final gewaehlt = ref.watch(myDefaultVisibilityProvider).valueOrNull ??
+        SessionVisibility.friends;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(12),
