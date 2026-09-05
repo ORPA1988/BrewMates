@@ -194,7 +194,7 @@ mitverschwindet) und `test/crew_einladungen_test.dart` (6 Widget-Tests).
 4. ~~Crew-Bilanz~~ — erledigt in 0.10.12; **nicht** auf
    [Funktion 20](20-feed-statistiken.md) aufgebaut, siehe unten
 5. ~~Freunde einladen~~ — erledigt in 0.10.12 (0044)
-6. Offen: Crew-Challenges — Rollen gibt es seit 0.10.21 (siehe oben); erst
+6. Erledigt: Rollen (0.10.21) und Crew-Challenges (0.10.22) — erst
    sinnvoll, wenn es mehr als eine aktive Crew gibt
 
 ## Verwalter neben dem Gründer (seit 0.10.21)
@@ -235,6 +235,38 @@ weg, die ohnehin abgewiesen würden — ein Knopf, der nichts tut, ist
 schlimmer als keiner. Und was der Server nicht bestätigt, meldet die App
 nicht als Erfolg (Regel A): `setRole` und `removeMember` geben `false`
 zurück, wenn das Update keine Zeile trifft.
+
+## Gemeinsame Challenges (seit 0.10.22)
+
+Eine Crew-Challenge unterscheidet sich von einer globalen in **genau
+einem Punkt: wer mitzählt.** Dieselben sieben Regelarten, derselbe
+Zeitraum, derselbe Schwellwert — nur zählen die Check-ins aller
+Mitglieder zusammen.
+
+Genau deshalb wurde die Regelauswertung mit 0062 **herausgezogen**:
+`challenge_progress(challenge, profile[])` ist jetzt die eine Stelle, an
+der eine Regel gerechnet wird, und `complete_challenge` ruft sie mit
+einer einelementigen Liste. Zwei Kopien derselben sieben Regeln wären die
+naheliegende Lösung gewesen und die schlechteste — die erste Regel, die
+jemand nur in einer der beiden ändert, fiele niemandem auf, weil beide
+Zahlen plausibel aussehen.
+
+**Anlegen** darf sie, wer die Crew verwaltet (Gründer oder Verwalter,
+`is_crew_admin`). Der Dialog ist bewusst schmal: vier der sieben
+Regelarten, Ziel als Zahl, Zeitraum ist der laufende Monat. Wer mehr
+braucht, braucht ein Formular; wer eine Crew hat, braucht meistens
+„gemeinsam zwanzig Biere bis Monatsende".
+
+**Sehen** kann sie nur, wer in der Crew ist — `challenges_select` prüft
+das, und `crew_challenge_progress` gibt einem Außenstehenden `0` statt
+einer Auskunft über eine fremde Crew.
+
+**Der Stand kommt vom Server, immer.** Die App könnte ihn nicht rechnen:
+Die Check-ins der anderen Mitglieder liegen nicht auf diesem Gerät. Ohne
+Verbindung erscheint die Liste deshalb leer statt falsch — und die
+globale Challenge-Liste filtert Crew-Challenges ausdrücklich heraus,
+damit keine davon in den lokalen Cache gerät und dort einen selbst
+gerechneten, per Definition falschen Fortschritt bekommt.
 
 ## Offene Punkte / Ideen
 

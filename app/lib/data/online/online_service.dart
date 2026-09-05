@@ -1039,6 +1039,10 @@ class OnlineService {
       final rows = await _client
           .from('challenges')
           .select(_challengeCols)
+          // **Nur globale.** Eine Crew-Challenge im selben Topf bekaeme
+          // den lokal gerechneten Fortschritt einer Person — und der ist
+          // bei ihr per Definition falsch (0062).
+          .isFilter('crew_id', null)
           .order('ends_at', ascending: false)
           .limit(100);
       return rows.cast<Map<String, dynamic>>();
@@ -1054,6 +1058,9 @@ class OnlineService {
     required Map<String, dynamic> rule,
     required DateTime startsAt,
     required DateTime endsAt,
+    /// Gehoert die Challenge einer Crew? Dann darf sie jeder Gruender
+    /// oder Verwalter anlegen; ohne Crew bleibt es bei den Admins.
+    String? crewId,
   }) async {
     final me = currentUser;
     if (me == null) return 'Nicht angemeldet.';
@@ -1066,13 +1073,56 @@ class OnlineService {
         'starts_at': startsAt.toUtc().toIso8601String(),
         'ends_at': endsAt.toUtc().toIso8601String(),
         'created_by': me.id,
+        if (crewId != null) 'crew_id': crewId,
       });
       return null;
     } on PostgrestException catch (e) {
-      if (e.code == '42501') return 'Nur Admins können Challenges anlegen.';
+      if (e.code == '42501') {
+        return crewId == null
+            ? 'Nur Admins können Challenges anlegen.'
+            : 'Das darf nur der Gründer oder ein Verwalter.';
+      }
       return 'Anlegen fehlgeschlagen.';
     } catch (_) {
       return 'Keine Verbindung.';
+    }
+  }
+
+  /// Die Challenges einer Crew.
+  ///
+  /// Getrennt von [listChallenges], weil sie einen anderen Fortschritt
+  /// haben: Der wird nicht lokal gerechnet, sondern in
+  /// [crewChallengeProgress] erfragt — die Check-ins der anderen
+  /// Mitglieder liegen nicht auf diesem Gerät.
+  Future<List<Map<String, dynamic>>?> crewChallenges(String crewId) async {
+    if (currentUser == null) return null;
+    try {
+      final rows = await _client
+          .from('challenges')
+          .select(_challengeCols)
+          .eq('crew_id', crewId)
+          .order('ends_at', ascending: false)
+          .limit(50);
+      return rows.cast<Map<String, dynamic>>();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Der gemeinsame Stand einer Crew-Challenge (0062).
+  ///
+  /// `null` heißt offline oder kein Konto — die Oberfläche zeigt dann
+  /// den Balken gar nicht, statt einen falschen.
+  Future<int?> crewChallengeProgress(String challengeId) async {
+    if (currentUser == null) return null;
+    try {
+      final value =
+          await _client.rpc('crew_challenge_progress', params: {
+        'p_challenge': challengeId,
+      });
+      return (value as num?)?.toInt();
+    } catch (_) {
+      return null;
     }
   }
 

@@ -223,6 +223,23 @@ class FakeOnlineService extends OnlineService {
   @override
   Future<List<RemoteCrew>> myCrews() async => crews_;
 
+  /// Was der „Server" an Crew-Challenges fuehrt: die Zeilen und der
+  /// gemeinsame Stand je Challenge.
+  List<Map<String, dynamic>> crewChallengeZeilen = const [];
+  Map<String, int> crewChallengeStand = const {};
+
+  @override
+  Future<List<Map<String, dynamic>>?> crewChallenges(String crewId) async {
+    aufrufe.add('crewChallenges:$crewId');
+    return crewChallengeZeilen;
+  }
+
+  @override
+  Future<int?> crewChallengeProgress(String challengeId) async {
+    aufrufe.add('crewChallengeProgress:$challengeId');
+    return crewChallengeStand[challengeId];
+  }
+
   @override
   Future<List<({RemoteProfile profile, String role})>?> crewMembers(
       String crewId) async {
