@@ -2,7 +2,7 @@
 
 > **Status:** 🟢 fertig — 660 Biere und 137 Brauereien aus dem DACH-Raum,
 > kuratiert im Repository, per GitHub aktualisiert.
-> **Seit:** 0.4.0 (AT), DACH seit 0.9.13 · **Zuletzt geprüft:** 2026-09-03
+> **Seit:** 0.4.0 (AT), DACH seit 0.9.13 · **Zuletzt geprüft:** 2026-09-05
 
 ## Zielsetzung
 
@@ -16,12 +16,66 @@ Region gut als die Welt schlecht.
 ## Funktion (Nutzersicht)
 
 - Suche über Biere **und** Brauereien, Filter nach Stil
-- Bierseite: Beschreibung (Hersteller und Community), Bewertung,
+- Bierseite: Beschreibung (Hersteller und Redaktion), echte
+  Bewertungen,
   Alkoholgehalt, Etikettfoto, Brauerei — und zurück zu allen Bieren dieser
   Brauerei
 - Brauereiseite: Ort, Gründung, Eigentümer, Kennzahlen, Karte
 - Fehlt etwas: „Korrektur vorschlagen" öffnet ein vorbefülltes
   GitHub-Issue; neue Biere legt man direkt in der App an
+
+## Sterne nur für Gemessenes (2026-09-05, Meldung [#143](https://github.com/ORPA1988/BrewMates/issues/143))
+
+Ein Tester meldete: „Die redaktionelle Einschätzung ist bei allen Bieren
+gleich." Nachgezählt stimmt das im Kern:
+
+| | |
+|---|---|
+| Österreich | **379 von 447** Bieren hatten gar keinen Wert |
+| Bayern / Deutschland / Schweiz | fast vollständig, aber alle zwischen **2,8 und 4,3** |
+
+Auf fünf Sternen ist diese Spanne nicht zu unterscheiden — jedes Bier
+sah nach „drei von fünf" aus. Dazu kommt die Herkunft: `community_rating`
+ist laut [DATENHERKUNFT.md](../../app/assets/data/DATENHERKUNFT.md) eine
+„konservative redaktionelle Schätzung auf Basis des allgemeinen Rufs" und
+**keine Messung**. Ein Sternebild behauptet aber genau das.
+
+**Deshalb sind die Sterne weg** — im Bier-Detail, in der Bierliste einer
+Brauerei und im Scanner-Treffer. Sterne zeigt die App nur noch dort, wo
+wirklich gezählt wurde: bei den echten Community-Bewertungen aus den
+Check-ins aller Nutzer (`onlineRatingStatsProvider`) und bei der eigenen.
+
+**An ihre Stelle tritt ein Satz.** Der Abschnitt heißt jetzt
+**„Redaktionelle Einschätzung"** statt „Erfahrungen aus der Community" —
+er war nie eine Erfahrung aus der Community, sondern redaktionell
+geschrieben, und ein Etikett, das eine fremde Quelle behauptet, ist
+schlimmer als ein nüchternes.
+
+Die Spalte `communityRating` bleibt in Daten und Schema: Der GitHub-Sync
+schreibt sie weiter, und sie zu entfernen wäre eine Migration ohne
+Gewinn. Sie wird nur nirgends mehr angezeigt
+(`test/redaktionelle_einschaetzung_test.dart` hält das fest).
+
+**Was daraus folgt:** Die geschriebene Einschätzung muss es dann auch
+geben. Zuerst dort, wo jemand davorsteht — **126 der 129 scanbaren
+österreichischen Biere** haben seit 2026-09-05 eine, recherchiert je
+Bier. Insgesamt sind es 158 von 447; der Rest ist laufende Datenpflege
+([docs/10](../10-community-datenpflege.md)) und nicht mehr eine Zahl, die
+Vollständigkeit vortäuscht.
+
+**Die Recherche korrigiert mehr als den fehlenden Text.** Murauer Pils,
+Weissbier und Zwickl standen alle drei als `Märzen` in den Daten; Zipfer
+HOPS ist alkoholfreie Hopfenlimonade und kein Radler; Edelweiss Dunkel
+ist ein dunkles Weißbier mit 5,3 %, nicht ein „Dunkles" ohne Wert.
+Insgesamt 31 Felder richtiggestellt. Das ist der eigentliche Ertrag: Die
+alten Werte stammten aus demselben Trainingswissen wie die Sterne.
+
+**Drei Biere bleiben bewusst ohne Text**, weil keine belastbare Quelle zu
+finden war: „Brauwerk Export Hell", „Stiegl Hausbier Nr. 55" (die
+Hausbier-Serie wechselt jährlich) — und „Murauer Der Steirer", bei dem
+die Recherche nahelegt, dass es **gar kein Bier** ist, sondern eine
+alkoholfreie Kräuterlimonade der Marke Murelli. Ein erfundener Satz wäre
+genau der Fehler, den dieser Abschnitt behebt.
 
 ## Anlegen ohne Pflichtfelder (2026-08-15)
 

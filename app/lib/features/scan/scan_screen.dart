@@ -9,7 +9,6 @@ import '../../data/db/database.dart';
 import '../../data/providers.dart';
 import '../../widgets/kamera_hinweis.dart';
 import '../../widgets/beer_thumbnail.dart';
-import '../../widgets/rating_stars.dart';
 import '../../widgets/story_sheet.dart';
 import 'barcode_lookup.dart';
 import 'kamera/aufloesung.dart';
@@ -231,12 +230,6 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
                           '${beer.abv != null ? ' · ${beer.abv} %' : ''}',
                           style: theme.textTheme.bodySmall,
                         ),
-                        if (beer.communityRating != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: RatingStars(
-                                rating: beer.communityRating!, size: 16),
-                          ),
                       ],
                     ),
                   ),

@@ -208,9 +208,13 @@ class _BeerDetailBody extends ConsumerWidget {
             const SizedBox(height: 4),
             Text(beer.description!, style: theme.textTheme.bodyMedium),
           ],
+          // „Erfahrungen aus der Community" hieß dieser Abschnitt bis
+          // 0.10.15 — er ist aber keine: Der Text ist redaktionell
+          // geschrieben, nicht von Nutzern. Ein Etikett, das eine
+          // fremde Quelle behauptet, ist schlimmer als ein nüchternes.
           if (beer.descriptionCommunity != null) ...[
             const SizedBox(height: 12),
-            Text('Erfahrungen aus der Community',
+            Text('Redaktionelle Einschätzung',
                 style: theme.textTheme.titleSmall),
             const SizedBox(height: 4),
             Text(beer.descriptionCommunity!,
@@ -240,22 +244,19 @@ class _BeerDetailBody extends ConsumerWidget {
               ],
             null => const <Widget>[],
           },
-          if (beer.communityRating != null) ...[
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                RatingStars(rating: beer.communityRating!, size: 18),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    '${beer.communityRating!.toStringAsFixed(1)} · '
-                    'Community-Datenbank (redaktionelle Einschätzung)',
-                    style: theme.textTheme.bodySmall,
-                  ),
-                ),
-              ],
-            ),
-          ],
+          // Hier stand bis 0.10.15 `communityRating` als Sternebild.
+          // Es ist keins: Der Wert ist eine redaktionelle Schätzung
+          // „auf Basis des allgemeinen Rufs" (DATENHERKUNFT.md), und er
+          // lag bei fast allen Bieren zwischen 2,8 und 4,3 — als Sterne
+          // ununterscheidbar. Ein Tester hat genau das gemeldet
+          // (#143). Sterne behaupten eine Messung; was die Datenbank
+          // wirklich hat, ist ein **Satz** über das Bier, und der steht
+          // jetzt oben. Gemessene Sterne gibt es nur noch aus echten
+          // Bewertungen (`onlineRatingStatsProvider`, darüber).
+          //
+          // Die Spalte bleibt in Daten und Schema: Der GitHub-Sync
+          // schreibt sie weiter, und sie zu entfernen wäre eine
+          // Migration ohne Gewinn.
           const SizedBox(height: 16),
           // Bewertungs-Card
           Card(
