@@ -291,6 +291,9 @@ class OnlineService {
         Anmeldeverfahren.facebook => OAuthProvider.facebook,
         Anmeldeverfahren.discord => OAuthProvider.discord,
         Anmeldeverfahren.github => OAuthProvider.github,
+        Anmeldeverfahren.linkedin => OAuthProvider.linkedinOidc,
+        Anmeldeverfahren.twitch => OAuthProvider.twitch,
+        Anmeldeverfahren.spotify => OAuthProvider.spotify,
       };
 
   /// Nutzername ändern – frei wählbar, aber global nur einmal vergeben.

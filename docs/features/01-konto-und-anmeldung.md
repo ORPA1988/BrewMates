@@ -1,11 +1,41 @@
 # 01 Konto & Anmeldung
 
-> **Status:** 🟢 fertig — Google und E-Mail funktionieren, Konto ist
-> in-App löschbar, Daten kehren nach Neuanmeldung zurück. Weitere
-> Anmeldewege (Apple, Microsoft, Facebook, Discord, GitHub) sind in der
-> App fertig und warten je auf ihre Einrichtung beim Anbieter.
-> **Seit:** 0.9.2 (Kontopflicht); weitere Anbieter 0.10.13 ·
-> **Zuletzt geprüft:** 2026-09-04
+> **Status:** 🟢 fertig — **acht Anmeldewege plus E-Mail** sind
+> eingerichtet und freigeschaltet, Konto ist in-App löschbar, Daten
+> kehren nach Neuanmeldung zurück.
+> **Seit:** 0.9.2 (Kontopflicht); weitere Anbieter 0.10.13, alle acht
+> freigeschaltet 2026-09-06 · **Zuletzt geprüft:** 2026-09-06
+
+## Welche Wege es gibt (Stand 2026-09-06)
+
+| Weg | Schlüssel bei Supabase |
+|---|---|
+| Google | `google` |
+| Microsoft | `azure` |
+| Facebook | `facebook` |
+| GitHub | `github` |
+| Discord | `discord` |
+| LinkedIn | `linkedin_oidc` |
+| Twitch | `twitch` |
+| Spotify | `spotify` |
+| E-Mail + Passwort | — (ohne Bestätigungspflicht) |
+
+**Apple fehlt bewusst.** Es kostet 99 $ im Jahr, und ob die App das
+ausgibt, ist eine Entscheidung des Menschen (Regel K). In der App ist
+der Weg fertig; er erscheint, sobald der Schlüssel in der Liste steht.
+
+**Zwei Fallen, beide teuer und beide leise:**
+
+1. **LinkedIn heißt `linkedin_oidc`.** Die alte Variante `linkedin` ist
+   bei Supabase abgekündigt. Wer den falschen Schlüssel in
+   `app_config.auth_providers` schreibt, bekommt einen Knopf, der
+   „provider is not enabled" antwortet — genau der Fehler, den diese
+   Liste verhindern soll. Ein Test hält das fest.
+2. **Die Liste ist die Wahrheit, nicht das Release.** Ein Anbieter, der
+   im Supabase-Dashboard eingeschaltet, aber nicht in
+   `auth_providers` eingetragen ist, existiert für die App nicht — und
+   umgekehrt ergibt ein Eintrag ohne Einrichtung einen Knopf, der bricht.
+   Beides muss zusammenpassen; der Server entscheidet, nicht der Code.
 
 ## Zielsetzung
 

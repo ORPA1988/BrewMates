@@ -50,4 +50,37 @@ void main() {
     expect(Anmeldeverfahren.microsoft.knopfText, 'Mit Microsoft anmelden');
     expect(anmeldeverfahrenAus('microsoft'), isEmpty);
   });
+
+  test('Die 2026-09-06 freigeschalteten Wege werden erkannt', () {
+    expect(
+      anmeldeverfahrenAus(
+          'google,azure,facebook,github,discord,linkedin_oidc,twitch,spotify'),
+      [
+        Anmeldeverfahren.google,
+        Anmeldeverfahren.microsoft,
+        Anmeldeverfahren.facebook,
+        Anmeldeverfahren.github,
+        Anmeldeverfahren.discord,
+        Anmeldeverfahren.linkedin,
+        Anmeldeverfahren.twitch,
+        Anmeldeverfahren.spotify,
+      ],
+    );
+  });
+
+  test('LinkedIn heißt linkedin_oidc, nicht linkedin', () {
+    // Die alte Variante ist bei Supabase abgekündigt. Wer sie in
+    // app_config schreibt, bekommt einen Knopf, der „provider is not
+    // enabled" antwortet — genau der Fehler, den diese Liste verhindern
+    // soll.
+    expect(anmeldeverfahrenAus('linkedin_oidc'), [Anmeldeverfahren.linkedin]);
+    expect(anmeldeverfahrenAus('linkedin'), isEmpty);
+  });
+
+  test('Jedes Verfahren hat einen eigenen Schlüssel', () {
+    final schluessel =
+        Anmeldeverfahren.values.map((v) => v.schluessel).toList();
+    expect(schluessel.toSet().length, schluessel.length,
+        reason: 'zwei gleiche Schlüssel hießen: einer wird nie gefunden');
+  });
 }

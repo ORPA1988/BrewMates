@@ -125,7 +125,7 @@ nicht nachlesen.
 
 ## 5. Der Stand
 
-- **Version:** `0.10.23-beta+43` (Beta 0.x bis zum Play-Store-1.0; der
+- **Version:** `0.10.24-beta+44` (Beta 0.x bis zum Play-Store-1.0; der
   Android-`versionCode` zählt immer weiter hoch).
 - **Rückfallpunkte:** `git tag -l "stand/*"` — mindestens zehn lauffähige
   Stände, jeder nach grüner CI getaggt und mit einem Satz beschrieben.
@@ -141,11 +141,17 @@ nicht nachlesen.
 - **Riegel:** `app_config.min_supported_version` steht auf `0.10.4`.
   Anheben ist eine Aussperr-Entscheidung (Regel K); Einzeiler im
   Release-Playbook.
-- **Anmeldung:** Google und E-Mail (ohne Bestätigungspflicht) sind
-  eingerichtet. Die App **kann** zusätzlich Apple, Microsoft (`azure`),
-  Facebook, Discord und GitHub — welche Knöpfe erscheinen, sagt
-  `app_config.auth_providers` (0046), nicht das Release. Einrichtung je
-  Anbieter im Release-Playbook; **Apple kostet 99 $/Jahr.**
+- **Anmeldung:** Seit 2026-09-06 sind **acht Wege** freigeschaltet —
+  Google, Microsoft (`azure`), Facebook, GitHub, Discord, LinkedIn
+  (`linkedin_oidc`), Twitch, Spotify — dazu E-Mail ohne
+  Bestätigungspflicht. Welche Knöpfe erscheinen, sagt
+  `app_config.auth_providers` (0046), **nicht das Release**: Die Liste
+  ändern heißt, die Knöpfe ändern, auch auf Geräten, die nie wieder
+  aktualisiert werden.
+  **Apple fehlt bewusst** — 99 $/Jahr, Entscheidung des Menschen.
+  **LinkedIn heißt `linkedin_oidc`**; die alte Variante `linkedin` ist
+  bei Supabase abgekündigt, und der falsche Schlüssel ergibt einen
+  Knopf, der „provider is not enabled" antwortet.
 - **Drift-Stand v16** (v10 Löschwarteschlange, v11 `checkins.volumeMl`,
   v12 `story`, v13 `checkins.dirty`, v14 `barcode_volumes`, v15
   `imageSource`/`imageLicense`, v16 `checkins.visibility` +
