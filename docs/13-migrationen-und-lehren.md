@@ -2,7 +2,9 @@
 
 > **Zweck:** Das Gedächtnis des Backends. Was am Server steht, warum es so
 > steht — und die Fehler, die dabei Geld gekostet haben.
-> **Zuletzt geprüft:** 2026-09-04 (gegen die Datenbank, nicht gegen diese Datei)
+> **Zuletzt geprüft:** 2026-09-06 (gegen die Datenbank, nicht gegen diese Datei):
+> live sind `0001`–`0062`, `list_migrations` meldet 63 Einträge — der
+> dokumentierte 0024-Zweischritt, kein Drift.
 
 Dieses Dokument stand bis 2026-09-04 in `CLAUDE.md` und hatte es auf 283
 Zeilen gebracht — zwei Drittel der Datei, die jede Sitzung als erstes

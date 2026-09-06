@@ -30,7 +30,7 @@
     "ms-python.vscode-pylance",
 
     // Testen: Die CI misst die Abdeckung und hält sie mit einer Ratsche
-    // (--min 32) unten fest — aber sie meldet nur eine Zahl. Coverage
+    // (--min 46) unten fest — aber sie meldet nur eine Zahl. Coverage
     // Gutters färbt die ungeprüften Zeilen im Editor ein, nachdem der
     // Task „Tests mit Abdeckung" gelaufen ist.
     "ryanluker.vscode-coverage-gutters",

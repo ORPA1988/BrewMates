@@ -1,7 +1,8 @@
 # 43 Fehlende Angaben melden
 
-> **Status:** 🟡 in Arbeit
-> **Seit:** 0.10.18 · **Zuletzt geprüft:** 2026-09-05
+> **Status:** 🟢 fertig — Meldeweg, Punkte und das Label `datenpflege`
+> stehen; ausgeliefert mit v0.10.27-beta.
+> **Seit:** 0.10.18 · **Zuletzt geprüft:** 2026-09-06
 
 ## Zielsetzung
 
@@ -143,9 +144,9 @@ Issue je Tag statt je Angabe) — dann, nicht vorher.
 | Schritt | Was | Prüfkriterium |
 |---|---|---|
 | ~~1~~ | ~~Migration 0056~~ — **erledigt**, aber kleiner als geplant: nur der Punkte-Trigger. Der zweite, geplante Trigger fiel im Test durch (siehe oben) | ✅ pgTAP, 8 Tests: Punkte, eigene Korrektur erlaubt, fremde nur ab Stufe 2 |
-| 2 | Edge Function um `data` erweitern | Issue trägt Label `datenpflege` |
-| 3 | Rote Markierung im Scan-Treffer | Widget-Test: fehlt die Größe, ist die Zeile rot |
-| 4 | Melde-Blatt, das beides schreibt | Widget-Test: Größe steht danach am Barcode |
+| ~~2~~ | ~~Edge Function um `data` erweitern~~ | ✅ Issue trägt Label `datenpflege` (`functions/feedback-issue/index.ts`) |
+| ~~3~~ | ~~Rote Markierung im Scan-Treffer~~ | ✅ Widget-Test: fehlt die Größe, ist die Zeile rot |
+| ~~4~~ | ~~Melde-Blatt, das beides schreibt~~ | ✅ `test/gebinde_melden_test.dart` |
 
 ## Bewusst nicht
 

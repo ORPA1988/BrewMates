@@ -1,7 +1,7 @@
 # 12 — Funktionsaudit
 
 > **Erstellt:** 2026-08-15 (0.9.13-beta) ·
-> **Nachgeführt:** 2026-09-04 (0.10.13-beta)
+> **Nachgeführt:** 2026-09-06 (0.10.27-beta)
 
 Durchsicht aller bestehenden Funktionen auf drei Fragen: Ist sie
 vollständig? Ist sie sinnvoll geschnitten? Trägt sie Wachstum?
@@ -10,10 +10,15 @@ Der Befund war schon 2026-08-15 gut — die App ist funktional weiter, als
 der Beta-Stand vermuten lässt. Die Schwächen lagen fast alle an derselben
 Stelle: Sie stammten aus der Zeit, als „viele Daten" fünf Check-ins hieß.
 
-**Von den ursprünglichen Befunden ist einer übrig.** Der Rest ist
+**Von den ursprünglichen Befunden ist keiner mehr offen.** Sie sind
 erledigt und hier durchgestrichen statt gelöscht — ein Audit, das seine
 eigene Geschichte verschweigt, sieht aus, als hätte es nie Mängel gegeben.
 Durchgestrichenes ist **nicht mehr zu tun.**
+
+Am 2026-09-06 stand die Zusammenfassung unten noch auf fünf offenen
+Zeilen, während der Fließtext darunter vier davon längst als erledigt
+beschrieb. **Eine Tabelle, die dem eigenen Text widerspricht, ist die
+gefährlichere Hälfte** — sie wird zuerst gelesen und zuletzt gepflegt.
 
 ## Zusammenfassung
 
@@ -24,11 +29,11 @@ Durchgestrichenes ist **nicht mehr zu tun.**
 | ~~Eigene Check-ins nicht löschbar~~ | erledigt | Feed, Tagebuch |
 | ~~Fehlender Index auf `checkins.created_at`~~ | erledigt (0020) | Feed |
 | ~~Freundessuche über `display_name` ohne Trigram-Index~~ | erledigt (0027) | Freundessuche |
-| Statistiken bleiben unter ihren Möglichkeiten | mittel | Profil |
-| Cloud-Wiederherstellung holt immer alles | mittel | Synchronisation |
-| Beacon-Laufzeit nicht wählbar | niedrig | Sessions |
-| Freunde ohne Abstufung | niedrig | Freunde, Sichtbarkeit |
-| Community-DB wird als Ganzes geladen | niedrig | Bierdatenbank |
+| ~~Statistiken bleiben unter ihren Möglichkeiten~~ | erledigt (0.9.15, Ausbau bis 0.10.27) | Profil |
+| ~~Cloud-Wiederherstellung holt immer alles~~ | erledigt (Backlog B-2) | Synchronisation |
+| ~~Beacon-Laufzeit nicht wählbar~~ | erledigt (0021) | Sessions |
+| ~~Freunde ohne Abstufung~~ | erledigt (0024) | Freunde, Sichtbarkeit |
+| Community-DB wird als Ganzes geladen | niedrig, bewusst | Bierdatenbank |
 
 ## Die Listen sind das dringendste Problem
 
@@ -48,8 +53,8 @@ Hier ist Genauigkeit wichtig, weil die naheliegende Formulierung falsch
 wäre: Flutter erzeugt die Elemente und Render-Objekte auch bei
 `children:` nur für den sichtbaren Ausschnitt. Was tatsächlich eifrig
 passiert, ist das **Konstruieren der Widget-Beschreibungen** — bei jedem
-Rebuild, für jeden Eintrag. Bei der Bierliste heißt das: 280 Objekte pro
-Tastendruck im Suchfeld. Spürbar wird das früher als die Element-Inflation,
+Rebuild, für jeden Eintrag. Bei der Bierliste hieß das damals 280 Objekte
+pro Tastendruck im Suchfeld — heute wären es 660. Spürbar wird das früher als die Element-Inflation,
 aber es ist kein Einfrieren, sondern zunehmende Zähigkeit.
 
 Für Formulare ist `children:` richtig und harmlos — ein
@@ -58,7 +63,7 @@ was mit der Nutzung **wächst**:
 
 - `feed_screen.dart` — jeder Check-in aller Freunde
 - `diary_screen.dart` — das eigene Tagebuch, wächst ein Leben lang
-- `beers_screen.dart` — 280 Biere heute, mehr morgen, neu bei jedem
+- `beers_screen.dart` — damals 280 Biere, heute 660, neu bei jedem
   Tastendruck
 - `venues_list_screen.dart` — alle Gasthäuser
 - `leaderboard_screen.dart` — alle Beitragenden
@@ -119,9 +124,14 @@ Behauptung. Dieselbe Lehre wie in
 **Vor dem Berichten gegen die Wirklichkeit prüfen, nicht gegen die
 Notiz.**
 
-Offen ist die **Ausbaustufe 2** — mehr Aufteilungen, freier Zeitraum,
-Vergleich zum Vorzeitraum, Export. Der Plan dafür steht ausführlich in
-[Funktion 20](features/20-feed-statistiken.md).
+**Auch die Ausbaustufe 2 ist inzwischen zum größten Teil gebaut:** acht
+Aufteilungen, neun Kennzahlen, konfigurierbare Kacheln
+([Funktion 20](features/20-feed-statistiken.md)), CSV-Export
+([#133](https://github.com/ORPA1988/BrewMates/issues/133)), anonymer
+Vergleich mit allen anderen ([Funktion 42](features/42-vergleich-mit-anderen.md)),
+Wochen-Heatmap ([Funktion 45](features/45-wochen-heatmap.md)) und
+Jahresrückblick ([Funktion 46](features/46-jahresrueckblick.md)). Offen
+bleibt der Vergleich zum **Vorzeitraum**.
 
 **~~Beacons laufen fest.~~** Die Laufzeit war einprogrammiert. Seit
 0.9.14 wählbar, verlängerbar und serverseitig auf 29 min–24 h begrenzt
@@ -134,9 +144,9 @@ er war kein Freund. Seit 0024 gibt es **Freundeskreise** (Bekannter /
 Freund / Enger Freund) mit serverseitiger Durchsetzung
 ([Funktion 24](features/24-freundeskreise.md)).
 
-**Die Statistiken sind damit der einzige Befund, der offen geblieben
-ist** — und der größte Hebel im Bestand. Der Plan dazu steht in
-[Funktion 20](features/20-feed-statistiken.md).
+**Damit ist von den ursprünglichen Befunden keiner mehr offen.** Der
+Bestand trägt; was jetzt lohnt, ist nicht mehr Nachrüsten, sondern
+Gestaltung — Abzeichen, Challenges und die Oberfläche, die beides zeigt.
 
 ## Was gut ist und so bleiben sollte
 
@@ -164,12 +174,11 @@ Grobe Einschätzung, ab wann welcher Punkt weh tut:
 |---|---|
 | **~50 Nutzer** | Nichts. Der heutige Stand trägt das mühelos. |
 | **~500 Nutzer / 10.000 Check-ins** | ~~Tagebuch und Feed werden träge~~ — entschärft durch Seitenladen und Index 0020. |
-| **~5.000 Nutzer** | Die Freundessuche ohne Trigram-Index wird langsam. Die Cloud-Wiederherstellung, die immer alles holt, wird beim Gerätewechsel unangenehm. |
+| **~5.000 Nutzer** | ~~Freundessuche ohne Trigram-Index~~ (0027) und ~~Cloud-Wiederherstellung, die immer alles holt~~ (inkrementell seit Backlog B-2) — beide entschärft. |
 | **~50.000 Nutzer** | Die Community-Datenbank als acht Volldateien im Bundle ist nicht mehr sinnvoll; es braucht serverseitige Suche statt lokaler Vollkopie. |
 
-Die zweite Stufe ist erledigt. Die dritte ist mit überschaubarem Aufwand
-zu entschärfen, die letzte wäre ein Umbau, der jetzt weder nötig noch
-klug wäre.
+Die zweite und die dritte Stufe sind erledigt. Die letzte wäre ein Umbau,
+der jetzt weder nötig noch klug wäre.
 
 ## Empfohlene Reihenfolge
 
@@ -177,5 +186,6 @@ klug wäre.
 2. ~~Listen auf faules Bauen umstellen + Feed seitenweise laden~~ —
    erledigt (0.9.14)
 3. ~~Index für den Feed~~ — erledigt (Migration 0020)
-4. **Füllmenge erfassen**, dann die Statistiken darauf aufbauen
+4. ~~Füllmenge erfassen, dann die Statistiken darauf aufbauen~~ —
+   erledigt (0022/Drift v11, Gebinde am Barcode seit 0.10.17)
 5. Alles Weitere nach Roadmap

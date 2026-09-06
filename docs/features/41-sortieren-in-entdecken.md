@@ -1,8 +1,8 @@
 # 41 Sortieren in Entdecken
 
-> **Status:** 🟡 in Arbeit — Gasthäuser konnten es längst, Biere und
-> Brauereien bekommen es jetzt.
-> **Seit:** 0.10.16 · **Zuletzt geprüft:** 2026-09-05
+> **Status:** 🟢 fertig — Gasthäuser konnten es längst, Biere und
+> Brauereien können es seit 0.10.16. Ausgeliefert mit v0.10.27-beta.
+> **Seit:** 0.10.16 · **Zuletzt geprüft:** 2026-09-06
 >
 > Aus Meldung [#145](https://github.com/ORPA1988/BrewMates/issues/145):
 > „Bier und Brauereien sollen nach verschiedenen Kriterien wie z. B.
@@ -83,11 +83,14 @@ durchsuchbar (Backlog C-1), zöge die Sortierung mit in die Abfrage.
 
 ## Umsetzungsplan
 
+Alle drei Schritte sind erledigt (`data/beer_sort.dart`,
+`features/discover/discover_screen.dart`, `test/sortieren_entdecken_test.dart`).
+
 | Schritt | Was | Prüfkriterium |
 |---|---|---|
-| 1 | `data/beer_sort.dart` mit Tests | Unit-Tests: Nullwerte ans Ende, Name als Zweitschlüssel |
-| 2 | Chipleiste für alle drei Bereiche | Widget-Test: „Nähe" ohne Standort ausgegraut |
-| 3 | Entfernung in der Bierzeile anschreiben | sichtbar, dass sie zur Brauerei gehört |
+| ~~1~~ | ~~`data/beer_sort.dart` mit Tests~~ | ✅ Unit-Tests: Nullwerte ans Ende, Name als Zweitschlüssel |
+| ~~2~~ | ~~Chipleiste für alle drei Bereiche~~ | ✅ Widget-Test: „Nähe" ohne Standort ausgegraut |
+| ~~3~~ | ~~Entfernung in der Bierzeile anschreiben~~ | ✅ sichtbar, dass sie zur Brauerei gehört |
 
 ## Bewusst nicht
 

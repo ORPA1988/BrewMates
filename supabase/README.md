@@ -1,34 +1,35 @@
 # BrewMates – Supabase-Backend
 
-## 🧪 Online-Beta (v0.9) — Setup-Status
+## Stand des Projekts
 
 Projekt: `swlqkwlpnxwthbneblww` (EU, eu-central-1).
 
-**✅ Erledigt (per Supabase-MCP eingespielt):**
+**Live sind die Migrationen `0001`–`0062`**, lückenlos. `list_migrations`
+meldet 63 Einträge gegen 62 Dateien im Repo — das ist **kein Drift**:
+`0024_friend_tiers.sql` wurde seinerzeit in zwei Schritten eingespielt,
+inhaltlich steht beides in der einen Datei. Was am Server steht und warum,
+führt [docs/13 — Migrationen & Lehren](../docs/13-migrationen-und-lehren.md);
+diese Datei sagt nur, wie man damit arbeitet.
 
-- Migrationen `0001`–`0005` angewendet: komplettes Schema mit RLS,
-  Badges-Seed, Beta-Angleichung (venue_name/Koordinaten/denormalisierte
-  Check-ins, Realtime für `sessions`), **Kontomodell** (unveränderliche
-  `account_no`, Auto-Profil-Trigger `handle_new_user` für alle
-  Anmeldeverfahren inkl. OAuth) und Security-Härtung laut Advisor.
-- Projekt-URL + anon-Key sind in `app/lib/core/supabase_config.dart`
-  eingetragen (der anon-Key ist per Design öffentlich; Schutz = RLS).
+**Drei Edge Functions sind aktiv:** `notify` (Beacon- und Session-Push),
+`feedback-issue` (Meldung aus der App wird ein GitHub-Issue) und
+`github-sync` (Status und Antwort vom Issue zurück in die App).
 
-**☐ Verbleibende Dashboard-Schritte (nur über die Web-Oberfläche möglich):**
+**Anmeldung:** acht OAuth-Anbieter (Google, Microsoft/`azure`, Facebook,
+GitHub, Discord, LinkedIn/`linkedin_oidc`, Twitch, Spotify) plus E-Mail
+ohne Bestätigungspflicht. **Welche Knöpfe die App zeigt, entscheidet die
+Tabelle `app_config` (Schlüssel `auth_providers`), nicht das Release** —
+die Liste zu ändern ändert die Knöpfe auch auf Geräten, die nie wieder
+aktualisiert werden. Apple fehlt bewusst (99 $/Jahr).
 
-1. **E-Mail-Bestätigung aus (empfohlen für die Beta)** — Authentication →
-   Sign In / Providers → Email → „Confirm email" deaktivieren. (Bleibt sie
-   an, funktioniert die App trotzdem und fordert zur Bestätigung auf.)
-2. **Google-Login freischalten** — braucht einmalig OAuth-Zugangsdaten aus
-   der [Google Cloud Console](https://console.cloud.google.com/apis/credentials):
-   „OAuth-Client-ID" vom Typ **Webanwendung** anlegen mit Redirect-URI
-   `https://swlqkwlpnxwthbneblww.supabase.co/auth/v1/callback`, dann
-   Client-ID + Secret im Supabase-Dashboard unter Authentication →
-   Providers → Google eintragen. Zusätzlich unter Authentication →
-   URL Configuration die Redirect-URL `de.brewmates.app://login-callback`
-   erlauben (der Deep-Link, über den die App aus dem Browser zurückkehrt).
-   Bis dahin zeigt der Google-Knopf in der App eine verständliche Meldung;
-   E-Mail + Passwort funktioniert sofort.
+**Der Riegel** `app_config.min_supported_version` steht auf `0.10.4`.
+Ihn anzuheben sperrt ältere Installationen aus und ist eine Entscheidung
+für einen Menschen, nicht für eine Sitzung.
+
+> Bis 2026-09-06 stand hier eine Einrichtungsanleitung auf dem Stand von
+> Migration 0005, samt „☐ Google-Login freischalten" — erledigt seit
+> Monaten. Eine Anleitung, die längst Getanes als offen führt, kostet
+> beim nächsten Lauf echte Zeit.
 
 **Rollen & Funktionen (Migration 0006):** `user_roles` (admin/moderator)
 und `user_features` (premium, moderation, beta_features, …) — schreiben
@@ -42,7 +43,7 @@ App-Updates hinweg.
 
 **Kontomodell (Stand der Technik):** Die unveränderliche Konto-Identität
 ist `auth.users.id` (UUID) plus die kurze Anzeige-`account_no`. Daran
-hängen die Anmeldeverfahren (E-Mail, Google, später Telefon) als
+hängen die Anmeldeverfahren (E-Mail und acht OAuth-Anbieter) als
 `auth.identities` — alle änderbar. Der Nutzername ist frei wählbar,
 global einmalig (unique) und jederzeit änderbar (Konto-Screen der App).
 
@@ -78,8 +79,12 @@ Danach in der Supabase-Konsole einen **Database Webhook** anlegen:
 | Pfad | Inhalt |
 |---|---|
 | `migrations/0001_initial_schema.sql` | Alle Tabellen, Enums, Indizes, RLS-Policies, Auto-Ende-Job |
-| `migrations/0002_seed_badges.sql` | Start-Set der Abzeichen |
-| `functions/notify/` | Beacon-Fan-out beim Session-Start (Push folgt in Phase 1) |
+| `migrations/0002_seed_badges.sql` | Sechs Abzeichen als Katalog-Rest. **Die App führt ihren Katalog (23 Abzeichen) in `domain/badges.dart` und liest diese Tabelle nicht** — seit 0016 hängt `user_badges` nicht mehr daran |
+| `migrations/…` bis `0062` | Der weitere Aufbau, erklärt in docs/13 |
+| `functions/notify/` | Push beim Session-Start und für Beacons (live seit 0.10.10) |
+| `functions/feedback-issue/` | Meldung aus der App → GitHub-Issue |
+| `functions/github-sync/` | Issue-Status und Antwort → zurück in die App |
+| `tests/` | pgTAP-Tests gegen die RLS-Regeln, laufen in der CI |
 
 ## Sicherheitsmodell (Kurzfassung)
 
