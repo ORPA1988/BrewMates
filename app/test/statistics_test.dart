@@ -26,6 +26,7 @@ void main() {
     ServingStyle? serving,
     double? rating,
     bool alcoholFree = false,
+    String? venueId,
     String? venueName,
     String breweryName = 'Stiegl',
     String? city,
@@ -44,6 +45,7 @@ void main() {
         breweryCity: city,
         sessionId: sessionId,
         abv: abv,
+        venueId: venueId,
         venueName: venueName,
         volumeMl: volumeMl,
         serving: serving,
@@ -277,6 +279,38 @@ void main() {
         for (final s in stats.slices('company')) s.label: s.count,
       };
       expect(nach, {'allein': 2, 'in einer Runde': 1});
+    });
+
+    test('Bier gruppiert nach Name, nicht nach ID', () {
+      // Dasselbe Bier unter zwei IDs — einmal aus der Community-Datenbank,
+      // einmal selbst angelegt. Für die Frage „was trinke ich am
+      // liebsten" ist das eins, nicht zwei.
+      final stats = computeStats([
+        detail(id: 'x', at: now),
+        detail(id: 'x', at: now),
+        detail(id: 'y', at: now),
+      ], now: now, period: alles);
+
+      expect(stats.slices('beer').map((s) => s.label).toList(),
+          ['Bier x', 'Bier y']);
+      expect(stats.slices('beer').first.count, 2);
+    });
+
+    test('Orte zählen nur mit venueId — Freitext nicht', () {
+      // Die Regel steht in docs/features/20, Punkt 5: Der Name ist am
+      // Check-in denormalisiert, „Augustiner" und „augustiner" wären
+      // zwei Wirtshäuser. Angezeigt wird trotzdem der Name — eine UUID
+      // als Balkenbeschriftung liest niemand.
+      final stats = computeStats([
+        detail(id: '1', at: now, venueId: 'v1', venueName: 'Augustiner'),
+        detail(id: '2', at: now, venueId: 'v1', venueName: 'Augustiner'),
+        detail(id: '3', at: now, venueName: 'augustiner'), // Freitext
+        detail(id: '4', at: now), // zu Hause, ohne Auswahl
+      ], now: now, period: alles);
+
+      expect(stats.slices('venue').length, 1);
+      expect(stats.slices('venue').single.label, 'Augustiner');
+      expect(stats.slices('venue').single.count, 2);
     });
 
     test('Top-N schneidet ab, geschlossene Mengen nicht', () {

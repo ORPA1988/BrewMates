@@ -11,6 +11,8 @@ import '../../domain/streak.dart';
 import '../../domain/wochen_verlauf.dart';
 import '../../widgets/badge_celebration.dart';
 import '../../widgets/wochen_heatmap.dart';
+import 'widgets/schnellzugriff.dart';
+import 'widgets/zahlen_kachel.dart';
 
 const List<String> _avatarEmojis = [
   '🍺',
@@ -25,8 +27,14 @@ const List<String> _avatarEmojis = [
   '🐻',
 ];
 
-/// Profil: Kopf mit Avatar, Statistiken, Abzeichen-Vorschau,
-/// Tagebuch, Wunschliste und Über-Sektion.
+/// Profil: Kopf, Schnellzugriff, Zahlen, Jahr, Abzeichen, Stufe, Mehr.
+///
+/// **Die Reihenfolge ist die Aussage dieses Bildschirms** (Funktion 47).
+/// Bis 0.10.30 stand oben, was gut aussah — neun Zahlen ohne Funktion —
+/// und unten in einer Reihe gleichförmiger Listeneinträge das, wofür man
+/// den Reiter öffnet: Freunde, Tagebuch, Statistik, Challenges. Jetzt
+/// führen vier Kacheln direkt unter dem Kopf dorthin, und die Zahlen
+/// darunter erzählen beim Antippen, woraus sie bestehen.
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
@@ -218,7 +226,13 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 16),
 
           // ------------------------------------------------------------------
-          // Statistik-Grid
+          // Schnellzugriff — die vier Wege, für die man herkommt (F. 47)
+          // ------------------------------------------------------------------
+          const Schnellzugriff(),
+          const SizedBox(height: 20),
+
+          // ------------------------------------------------------------------
+          // Deine Zahlen — jede Kachel erklärt sich beim Antippen (F. 47)
           // ------------------------------------------------------------------
           // Einmal geholt, zweimal gebraucht: für die Serie und für das
           // Bild darunter. Zwei `watch` auf denselben Provider wären
@@ -232,29 +246,25 @@ class ProfileScreen extends ConsumerWidget {
             ];
             final jetzt = DateTime.now();
             return [
+              Text('Deine Zahlen', style: theme.textTheme.titleSmall),
+              const SizedBox(height: 8),
               GridView.count(
-            crossAxisCount: MediaQuery.sizeOf(context).width >= 800 ? 4 : 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            childAspectRatio: 1.9,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            children: [
-              _StatTile(label: 'Biere', value: stats?.uniqueBeers),
-              _StatTile(label: 'Stile', value: stats?.uniqueStyles),
-              _StatTile(label: 'Brauereien', value: stats?.uniqueBreweries),
-              _StatTile(label: 'Länder', value: stats?.uniqueCountries),
-              _StatTile(label: 'Venues', value: stats?.uniqueVenues),
-              _StatTile(label: 'Check-ins', value: stats?.totalCheckins),
-              _StatTile(label: 'Sessions', value: stats?.totalSessions),
-              _StatTile(label: 'Abzeichen', value: stats?.badgeCount),
-              // 🔥 Wochen-Serie „mit Augenmaß": Wochen, nicht Tage.
-              _StatTile(
-                label: '🔥 Wochen-Serie',
-                value: weeklyStreak(termine, jetzt),
+                crossAxisCount:
+                    MediaQuery.sizeOf(context).width >= 800 ? 4 : 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                childAspectRatio: 1.9,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                children: [
+                  for (final k in _zahlenKacheln(stats, termine, jetzt))
+                    ZahlenKachel(
+                      label: k.label,
+                      value: k.value,
+                      info: k.info,
+                    ),
+                ],
               ),
-            ],
-          ),
 
               // Dasselbe Jahr, das die Serie zusammenfasst — als Fläche
               // (#166). Die Zahl sagt, wie es gerade läuft; das Bild
@@ -370,48 +380,12 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 16),
 
           // ------------------------------------------------------------------
-          // Navigation
+          // Mehr — was selten gebraucht wird, steht beieinander am Ende
           // ------------------------------------------------------------------
-          Builder(builder: (context) {
-            final signedIn = ref.watch(isSignedInProvider);
-            final friendCount = signedIn
-                ? ref.watch(onlineFriendsProvider).valueOrNull?.length
-                : null;
-            final requestCount =
-                signedIn ? ref.watch(offeneAnfragenProvider).length : 0;
-            return ListTile(
-              leading: const Text('👥', style: TextStyle(fontSize: 24)),
-              title: const Text('Freunde'),
-              subtitle: friendCount == null
-                  ? null
-                  : Text(friendCount == 1
-                      ? '1 Freund'
-                      : '$friendCount Freunde'),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (requestCount > 0)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: scheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        requestCount == 1
-                            ? '1 Anfrage offen'
-                            : '$requestCount Anfragen offen',
-                        style: theme.textTheme.labelSmall
-                            ?.copyWith(color: scheme.onPrimaryContainer),
-                      ),
-                    ),
-                  const Icon(Icons.chevron_right),
-                ],
-              ),
-              onTap: () => context.push('/friends'),
-            );
-          }),
+          // Freunde, Tagebuch, Statistik und Challenges standen bis
+          // 0.10.30 hier unten in derselben Reihe. Sie sind jetzt im
+          // Schnellzugriff oben; was bleibt, öffnet man selten.
+          Text('Mehr', style: theme.textTheme.titleSmall),
           Builder(builder: (context) {
             final profile = ref.watch(isSignedInProvider)
                 ? ref.watch(myRemoteProfileProvider).valueOrNull
@@ -426,26 +400,6 @@ class ProfileScreen extends ConsumerWidget {
               onTap: () => context.push('/account'),
             );
           }),
-          ListTile(
-            leading: const Text('📖', style: TextStyle(fontSize: 24)),
-            title: const Text('Tagebuch'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push('/profile/diary'),
-          ),
-          ListTile(
-            leading: const Text('📊', style: TextStyle(fontSize: 24)),
-            title: const Text('Statistik'),
-            subtitle: const Text('Menge, Länder, Stile, Verlauf'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push('/profile/stats'),
-          ),
-          ListTile(
-            leading: const Text('🎁', style: TextStyle(fontSize: 24)),
-            title: const Text('Dein Bierjahr'),
-            subtitle: const Text('Rückblick auf einer Seite, zum Weitergeben'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push('/profile/rueckblick'),
-          ),
           ListTile(
             leading: const Text('⭐', style: TextStyle(fontSize: 24)),
             title: const Text('Wunschliste'),
@@ -470,6 +424,13 @@ class ProfileScreen extends ConsumerWidget {
               ],
             ),
             onTap: () => context.push('/profile/wishlist'),
+          ),
+          ListTile(
+            leading: const Text('🎁', style: TextStyle(fontSize: 24)),
+            title: const Text('Dein Bierjahr'),
+            subtitle: const Text('Rückblick auf einer Seite, zum Weitergeben'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/profile/rueckblick'),
           ),
           const SizedBox(height: 16),
 
@@ -504,36 +465,131 @@ class ProfileScreen extends ConsumerWidget {
   }
 }
 
-class _StatTile extends StatelessWidget {
-  const _StatTile({required this.label, required this.value});
+/// Eine Zahl auf dem Profil, mit allem, was ihr Blatt braucht.
+typedef _Zahl = ({String label, int? value, ZahlenKachelInfo info});
 
-  final String label;
-  final int? value;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Card(
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              value?.toString() ?? '–',
-              style: theme.textTheme.headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            Text(
-              label,
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-            ),
-          ],
+/// Der Katalog der neun Zahlen (Funktion 47).
+///
+/// **Warum das eine Liste ist und keine neun Widgets:** Dieselbe
+/// Überlegung wie bei `domain/statistics/dimensions.dart` — eine zehnte
+/// Zahl ist ein Eintrag hier, kein Eingriff in den Bildschirm. Und die
+/// Erklärungen stehen beieinander, wo man sie miteinander vergleichen
+/// kann, statt verstreut zwischen Layoutcode.
+///
+/// Vier der neun haben keine Aufteilung, aus der sich Balken bilden
+/// ließen. Sie bekommen trotzdem ein Blatt: Was die Zahl bedeutet, ist
+/// auch eine Auskunft — und ein Raster, in dem manche Kacheln reagieren
+/// und manche nicht, sieht aus wie ein Fehler.
+List<_Zahl> _zahlenKacheln(
+  ProfileStats? stats,
+  List<DateTime> termine,
+  DateTime jetzt,
+) =>
+    [
+      (
+        label: 'Biere',
+        value: stats?.uniqueBeers,
+        info: const ZahlenKachelInfo(
+          titel: 'Deine Biere',
+          erklaerung: 'So viele verschiedene Biere stehen in deinem '
+              'Tagebuch. Zweimal dasselbe zählt einmal.',
+          dimension: 'beer',
+          ziel: '/profile/diary',
+          zielName: 'Zum Tagebuch',
         ),
       ),
-    );
-  }
-}
+      (
+        label: 'Stile',
+        value: stats?.uniqueStyles,
+        info: const ZahlenKachelInfo(
+          titel: 'Deine Bierstile',
+          erklaerung: 'Wie breit du unterwegs bist — von Märzen bis '
+              'Gose.',
+          dimension: 'style',
+          ziel: '/profile/stats',
+          zielName: 'Zur vollen Statistik',
+        ),
+      ),
+      (
+        label: 'Brauereien',
+        value: stats?.uniqueBreweries,
+        info: const ZahlenKachelInfo(
+          titel: 'Deine Brauereien',
+          erklaerung: 'Von wie vielen Betrieben du schon etwas '
+              'getrunken hast.',
+          dimension: 'brewery',
+          ziel: '/profile/stats',
+          zielName: 'Zur vollen Statistik',
+        ),
+      ),
+      (
+        label: 'Länder',
+        value: stats?.uniqueCountries,
+        info: const ZahlenKachelInfo(
+          titel: 'Deine Länder',
+          erklaerung: 'Nach dem Sitz der Brauerei, nicht nach dem Ort, '
+              'an dem du das Bier getrunken hast.',
+          dimension: 'country',
+          ziel: '/profile/stats',
+          zielName: 'Zur vollen Statistik',
+        ),
+      ),
+      (
+        label: 'Venues',
+        value: stats?.uniqueVenues,
+        info: const ZahlenKachelInfo(
+          titel: 'Deine Orte',
+          erklaerung: 'Gasthäuser und Lokale, die du bei einem Check-in '
+              'angegeben hast. Ohne Ortsangabe zählt ein Check-in hier '
+              'nicht mit — er ist deshalb nicht verloren.',
+          dimension: 'venue',
+        ),
+      ),
+      (
+        label: 'Check-ins',
+        value: stats?.totalCheckins,
+        info: const ZahlenKachelInfo(
+          titel: 'Deine Check-ins',
+          erklaerung: 'Jeder Eintrag zählt, auch wenn es dasselbe Bier '
+              'zum zehnten Mal war. Hier nach Wochentagen.',
+          dimension: 'weekday',
+          ziel: '/profile/diary',
+          zielName: 'Zum Tagebuch',
+        ),
+      ),
+      (
+        label: 'Sessions',
+        value: stats?.totalSessions,
+        info: const ZahlenKachelInfo(
+          titel: 'Deine Runden',
+          erklaerung: 'Wie oft du bei einer gemeinsamen Runde dabei '
+              'warst — als Gastgeber oder als Gast.',
+        ),
+      ),
+      (
+        label: 'Abzeichen',
+        value: stats?.badgeCount,
+        info: const ZahlenKachelInfo(
+          titel: 'Deine Abzeichen',
+          erklaerung: 'Verdient aus 55 möglichen, in vier Rängen.',
+          ziel: '/profile/badges',
+          zielName: 'Alle Abzeichen ansehen',
+        ),
+      ),
+      (
+        // 🔥 Wochen-Serie „mit Augenmaß": Wochen, nicht Tage — ein
+        // Kalender mit 365 Feldern wäre ein täglicher Trinkanreiz.
+        label: '🔥 Wochen-Serie',
+        value: weeklyStreak(termine, jetzt),
+        info: const ZahlenKachelInfo(
+          titel: 'Deine Wochen-Serie',
+          erklaerung: 'So viele Wochen in Folge hast du mindestens '
+              'einen Check-in gemacht. Absichtlich Wochen und nicht '
+              'Tage — eine Tagesserie wäre ein täglicher Anreiz zu '
+              'trinken.',
+        ),
+      ),
+    ];
 
 class _BadgePreviewRow extends StatelessWidget {
   const _BadgePreviewRow({required this.earned});

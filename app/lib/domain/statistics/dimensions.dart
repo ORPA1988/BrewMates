@@ -106,6 +106,8 @@ const List<Dimension> dimensions = [
   Dimension('country', 'Land', _countryOf),
   Dimension('region', 'Region', _regionOf, top: 10),
   Dimension('brewery', 'Brauerei', _breweryOf, top: 10),
+  Dimension('beer', 'Bier', _beerOf, top: 10),
+  Dimension('venue', 'Ort', _venueOf, top: 10),
   Dimension('serving', 'Gebinde', _servingOf),
   Dimension('weekday', 'Wochentag', _weekdayOf, fixedOrder: _weekdays),
   Dimension('rating', 'Bewertung', _ratingOf, fixedOrder: _ratingOrder),
@@ -121,6 +123,31 @@ String? _styleOf(CheckinFacts c) => c.beerStyle;
 String? _countryOf(CheckinFacts c) => c.breweryCountry;
 String? _regionOf(CheckinFacts c) => c.breweryCity;
 String? _breweryOf(CheckinFacts c) => c.breweryName;
+/// Gruppiert nach **Name**, nicht nach [CheckinFacts.beerId].
+///
+/// Die ID wäre die genauere Gruppierung, aber niemand liest eine UUID als
+/// Balkenbeschriftung — und die Aufteilung dient dem Lesen. Dasselbe Bier
+/// unter zwei IDs (einmal aus der Community-Datenbank, einmal selbst
+/// angelegt) fällt hier also zusammen, was für diese Frage eher hilft als
+/// schadet.
+String? _beerOf(CheckinFacts c) => c.beerName;
+
+/// Gezählt wird **nur, was eine [CheckinFacts.venueId] hat** — angezeigt
+/// wird trotzdem der Name, weil eine UUID als Balkenbeschriftung niemand
+/// liest.
+///
+/// Die Bedingung ist der Punkt: Ein Freitext-Ort ist am Check-in
+/// denormalisiert, und „Augustiner", „Augustiner Bräu" und „augustiner"
+/// wären drei Wirtshäuser. Wo eine ID dranhängt, stammt der Name aus dem
+/// Gasthaus-Datensatz und ist für alle derselbe. (Wird ein Gasthaus
+/// später umbenannt, stehen alte und neue Schreibung nebeneinander — ein
+/// seltener Fall, den nur eine Nachführung der alten Zeilen löste.)
+///
+/// Ohne Ort ist ein Check-in nicht „unbekannt", sondern **irgendwo** — zu
+/// Hause, unterwegs, ohne Auswahl. Deshalb `null` statt „ohne Angabe":
+/// Ein erfundener Balken wäre keine Auskunft.
+String? _venueOf(CheckinFacts c) => c.venueId == null ? null : c.venueName;
+
 String? _servingOf(CheckinFacts c) => servingLabel(c.serving);
 String? _weekdayOf(CheckinFacts c) => _weekdays[c.createdAt.weekday - 1];
 String? _ratingOf(CheckinFacts c) =>
