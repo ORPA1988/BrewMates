@@ -87,6 +87,48 @@ Das ist die Stelle, an der die App am deutlichsten zeigt, wie sie mit
 Vertrauen umgeht: Die Oberfläche rechnet den Fortschritt vor, aber
 entscheiden darf sie nicht.
 
+## Der Jahresplan (0064)
+
+Bis 0.10.27 stand in `challenges` genau **eine** Zeile: „Stil-Safari
+August", abgelaufen am 31.08.2026. Die Funktion war fertig und lief ins
+Leere.
+
+Zwölf Anlässe decken jetzt ein Jahr ab. Sie brauchen kein App-Update: Eine
+Challenge erscheint, wenn ihr Zeitfenster beginnt, und verschwindet, wenn
+es endet — auch auf Geräten, die nie wieder aktualisiert werden.
+
+| Zeitraum | Challenge | Ziel |
+|---|---|---|
+| 19.09.–04.10.26 | Wiesnzeit | 3 Märzen |
+| 24.10.–02.11.26 | Herbstferien | 3 neue Brauereien |
+| 01.–06.12.26 | Nikolaus | 2 dunkle Biere |
+| 01.12.26–06.01.27 | Bratapfel & Bock | 4 Bockbiere |
+| 07.01.–03.02.27 | Klarer Jänner | 8 alkoholfreie |
+| 04.–09.02.27 | Fasching | 3 verschiedene Lokale |
+| ca. 08.02.–09.03.27 | Alkoholfrei durch den Fastenmonat | 10 alkoholfreie |
+| 10.02.–27.03.27 | Starkbierzeit | 3 Bockbiere |
+| 17.04.–16.05.27 | Frühlingserwachen | 5 Stile |
+| 28.06.–11.07.27 | Schulschluss | 5 Brauereien |
+| 12.07.–31.08.27 | Lange Abende | 6 Orte |
+| 01.–21.09.27 | Schulbeginn | 3 neue Biere |
+
+**Kein Mengenziel, kein einziges.** `checkins_count` kommt in keiner der
+zwölf vor; ein pgTAP-Test hält das fest. Gefordert werden andere Stile,
+andere Brauereien, andere Orte — oder ausdrücklich Alkoholfreiheit.
+
+Drei Dinge, die beim Fortschreiben schiefgehen:
+
+- **Zeitzone.** Alle Zeitpunkte stehen als `Europe/Vienna`. In UTC begänne
+  der 1. Dezember um 01:00, und die Sommerzeit verschöbe die Hälfte des
+  Plans um eine Stunde.
+- **`ends_at` schließt aus** (0014 vergleicht `created_at < ends_at`). Der
+  letzte Tag steht deshalb immer als Mitternacht des Folgetags.
+- **Fasching, Fastenzeit und Ramadan wandern.** Ostern 2027 fällt auf den
+  28. März, Aschermittwoch damit auf den 10. Februar. Ramadan verschiebt
+  sich jährlich um etwa elf Tage und gehört aus einer Tabelle geprüft, nicht
+  gerechnet. Ramadan überschneidet sich bewusst mit Fasching und
+  Starkbierzeit — es sind verschiedene Menschen, und niemand muss beides.
+
 ## Modularität
 
 - **Hängt ab von:** Check-ins (02), Vertrauensstufen (15) für den Editor
