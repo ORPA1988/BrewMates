@@ -176,7 +176,7 @@ Abgesichert durch `test/browser_benachrichtigungen_test.dart` (6 Tests:
 alle drei Zweige, mehrere verpasste Meldungen werden gezählt statt
 gestapelt, kein Banner ohne Inhalt, und ausdrücklich, dass die stumme
 Fassung außerhalb des Browsers nichts ändert),
-`test/web_hinweis_test.dart` (7 Tests auf die Verzweigung des Hinweises —
+`test/web_hinweis_test.dart` (8 Tests auf die Verzweigung des Hinweises —
 darunter der Fall „schon installiert und trotzdem keine Meldungen", in
 dem zu schweigen ist, und dass zwei Hinweise getrennt weggewischt werden)
 und `test/web_hinweis_karte_test.dart` (4 Tests auf die Karte selbst:
@@ -185,6 +185,16 @@ Anleitung öffnet sich) — plus `flutter build web`, das das Interop
 tatsächlich übersetzt.
 
 Der Doppelgänger für alle drei liegt in `test/fake_browserfenster.dart`.
+
+**Zwei der acht fassen keinen Doppelgänger an**, sondern das, was die
+Weiche auf der jeweiligen Plattform wirklich baut — einer mit
+`testOn: 'vm'`, einer mit `testOn: 'browser'`. Der Grund steht im Test:
+Als es nur einen gab, behauptete er „die stumme Fassung schweigt" und
+rief dafür `Browserfenster()`. Auf der VM stimmte das; im
+Chrome-Lauf der CI baut derselbe Ausdruck die **echte** Fassung, und die
+schweigt zu Recht nicht. Der Browserlauf hat damit keinen Codefehler
+gefunden, sondern einen Denkfehler im Test — und wäre er nicht in der CI,
+hätte niemand ihn gesehen ([Funktion 18](18-plattformen.md)).
 
 **Was Tests hier nicht können:** die `Notification`-API selbst. Sie
 braucht einen echten Browser und eine erteilte Erlaubnis. Geprüft ist die

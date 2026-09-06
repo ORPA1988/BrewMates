@@ -77,9 +77,29 @@ void main() {
     expect(webHinweisFuer(fenster), WebHinweis.erlauben);
   });
 
-  test('die stumme Fassung schweigt', () {
-    // Kein Doppelgänger, sondern die Fassung, die auf Android und Windows
-    // wirklich läuft: Sie darf nie einen Hinweis auslösen.
-    expect(webHinweisFuer(Browserfenster()), WebHinweis.keiner);
-  });
+  // Die zwei folgenden Tests fassen **keinen Doppelgänger** an, sondern
+  // die Fassung, die der Aufbau auf dieser Plattform wirklich liefert.
+  // Sie stehen hier zu zweit, weil `Browserfenster()` je nach Ziel etwas
+  // anderes baut — ein einzelner Test hätte auf einer der beiden Seiten
+  // eine falsche Erwartung, und genau das ist er beim ersten CI-Lauf
+  // auch gewesen.
+
+  test('außerhalb des Browsers schweigt die echte Weiche', () {
+    // Android und Windows: Dort gibt es echten Push, und ein Hinweis auf
+    // Browsermeldungen wäre schlicht falsch.
+    final echt = Browserfenster();
+    expect(echt.imBrowser, isFalse);
+    expect(webHinweisFuer(echt), WebHinweis.keiner);
+  }, testOn: 'vm');
+
+  test('im Browser erkennt sich die echte Weiche als Browser', () {
+    final echt = Browserfenster();
+    expect(echt.imBrowser, isTrue);
+    // **Welcher** Hinweis daraus wird, hängt am Browser des Läufers:
+    // Kennt er `Notification`? Wurde schon gefragt? Beides festzuschreiben
+    // hieße, den Testrechner zur Anforderung zu machen. Geprüft ist, dass
+    // die Frage beantwortbar ist, ohne zu werfen — der Zugriff auf
+    // `Notification` und `localStorage` tut das in manchen Lagen nämlich.
+    expect(() => webHinweisFuer(echt), returnsNormally);
+  }, testOn: 'browser');
 }
