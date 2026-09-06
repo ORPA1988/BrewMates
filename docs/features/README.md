@@ -66,6 +66,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [43](43-fehlende-angaben-melden.md) | Fehlende Angaben melden | 🟡 | Rot markiert, ein Tipp trägt nach — sofort gültig, Punkte, Issue zur Nachprüfung |
 | [44](44-sichtbarkeit.md) | Wer sieht meine Check-ins | 🟢 | Voreinstellung im Konto, je Check-in änderbar, auch nachträglich |
 | [45](45-wochen-heatmap.md) | Wochen-Heatmap | 🟢 | Ein Jahr als Fläche: ein Feld je Woche, je mehr Check-ins desto kräftiger |
+| [46](46-jahresrueckblick.md) | Dein Bierjahr | 🟡 | Rückblick auf einer Seite; als PNG herunterladen geht nur im Browser |
 
 ## Geplante Funktionen
 
