@@ -62,5 +62,76 @@ class BrewTheme {
           backgroundColor: scheme.primary,
           foregroundColor: scheme.onPrimary,
         ),
+        // Knöpfe und Chips waren bis 0.10.27 reine Material-3-Vorgabe: 40 px
+        // hoch, Normalschrift, 20 px Radius. Das ist ordentlich und
+        // austauschbar. Festgelegt sind jetzt Höhe, Radius und Schriftschnitt
+        // — die Farben bleiben bewusst die des `ColorScheme`, weil Material
+        // deren Kontrast bereits sicherstellt und ein selbst gewählter Ton
+        // ihn brechen könnte (siehe docs/14).
+        filledButtonTheme: FilledButtonThemeData(style: _buttonStyle),
+        elevatedButtonTheme: ElevatedButtonThemeData(style: _buttonStyle),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: _buttonStyle.copyWith(
+            side: WidgetStatePropertyAll(
+              BorderSide(color: scheme.primary, width: 1.5),
+            ),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            minimumSize: const Size(64, 48),
+            textStyle: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ),
+        // Material legt unter jeden Chip eine unsichtbare 48er-Trefferfläche.
+        // Die *sichtbare* Höhe kommt aus dem Innenabstand — einhändig, mit dem
+        // Glas in der anderen Hand, ist der Unterschied spürbar.
+        //
+        // **Die Farbe muss mit.** Ein `labelStyle` ohne `color` ersetzt den
+        // Stil, den Material aus dem Schema ableitet, vollständig — die
+        // Schrift fiel dadurch auf einen Containerton zurück und stand mit
+        // 1,1:1 weiß auf weiß. `barrierefreiheit_test` hat das im ersten
+        // Lauf gefangen; ohne ihn wäre es in ein Release gegangen.
+        chipTheme: ChipThemeData(
+          shape: const StadiumBorder(),
+          side: BorderSide(color: scheme.outlineVariant, width: 1.5),
+          labelStyle: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: scheme.onSurfaceVariant,
+          ),
+          secondaryLabelStyle: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: scheme.onSecondaryContainer,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 11),
+        ),
+      );
+
+  static final ButtonStyle _buttonStyle = FilledButton.styleFrom(
+    minimumSize: const Size(64, 48),
+    padding: const EdgeInsets.symmetric(horizontal: 22),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+    textStyle: const TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0.1,
+    ),
+  );
+
+  /// Verlauf für die Hero-Flächen. Er läuft **immer in Richtung des
+  /// Untergrunds**: hell wird heller, dunkel wird dunkler. Damit kann er den
+  /// Kontrast zur Schrift nie verschlechtern, sondern nur verbessern — ein
+  /// Verlauf, der in die Gegenrichtung liefe, würde `barrierefreiheit_test`
+  /// in genau einer der beiden Paletten brechen.
+  static LinearGradient lebhaft(ColorScheme scheme, Color grund) =>
+      LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Color.lerp(grund, scheme.surface, 0.22)!,
+          grund,
+        ],
       );
 }

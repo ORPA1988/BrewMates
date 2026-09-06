@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/export/datei_ausgeben.dart';
 import '../../core/format.dart';
+import '../../core/theme.dart';
 import '../../core/kalender.dart';
 import '../../data/db/database.dart';
 import '../../data/online/models.dart' show RemoteSession;
@@ -509,41 +510,47 @@ class _HeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     return Card(
-      color: theme.colorScheme.primaryContainer,
+      color: scheme.primaryContainer,
       margin: EdgeInsets.zero,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Row(
-            children: [
-              Text(emoji, style: const TextStyle(fontSize: 44)),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: theme.colorScheme.onPrimaryContainer,
-                        fontWeight: FontWeight.bold,
+      child: Ink(
+        decoration: BoxDecoration(
+          gradient: BrewTheme.lebhaft(scheme, scheme.primaryContainer),
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Text(emoji, style: const TextStyle(fontSize: 44)),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          color: scheme.onPrimaryContainer,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onPrimaryContainer),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: theme.textTheme.bodyMedium
+                            ?.copyWith(color: scheme.onPrimaryContainer),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Icon(Icons.chevron_right,
-                  color: theme.colorScheme.onPrimaryContainer),
-            ],
+                Icon(Icons.chevron_right,
+                    color: scheme.onPrimaryContainer),
+              ],
+            ),
           ),
         ),
       ),

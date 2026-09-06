@@ -1,8 +1,9 @@
 # 11 Abzeichen
 
-> **Status:** 🟢 fertig — 23 Abzeichen, mit Zwischenstufen und
-> Cloud-Sicherung.
-> **Seit:** 0.2.0, Stufen seit 0.9.12 · **Zuletzt geprüft:** 2026-09-02
+> **Status:** 🟢 fertig — **55 Abzeichen** in vier Rängen, als geprägte
+> Medaillons mit Fortschrittsring, cloud-gesichert.
+> **Seit:** 0.2.0, Stufen seit 0.9.12, Ränge und Medaillons seit
+> 0.10.28 · **Zuletzt geprüft:** 2026-09-06
 
 ## Zielsetzung
 
@@ -16,11 +17,30 @@ Entscheidung, die die App von einer Trink-Zähl-App unterscheidet.
 
 ## Funktion (Nutzersicht)
 
-- Galerie mit Fortschrittsbalken je Abzeichen
+- Galerie mit **Medaillon** je Abzeichen: Metallrand nach Rang, der
+  Fortschritt läuft als Ring darum herum
 - Beim Erreichen eine kurze Gratulation
 - Gestaffelte Reihen, damit immer etwas in Reichweite ist: Stil-Entdecker
-  (5) → Stil-Kenner (10) → Stil-Professor (20)
+  (5) → Stil-Kenner (10) → Stil-Professor (20) → Stil-Archivar (30)
 - Abzeichen bleiben über Gerätewechsel erhalten
+
+## Die Ränge
+
+**Das Metall sagt den Rang — sonst nichts.** Nicht das Jahr, nicht das
+Thema, nicht eine Menge. Drei Bedeutungen gleichzeitig wären keine.
+
+| Rang | Wofür | Farben |
+|---|---|---|
+| Bronze | erste Stufe einer Reihe | das **Kupfer der Palette** samt heller und dunkler Kante |
+| Silber | zweite Stufe | kühl, hell |
+| Gold | Endstufe einer Reihe | der Bernstein der Palette |
+| Platin | **nur Challenge-Ränge** | ein zweiter dünner Reif, damit er sich auch in Graustufen von Silber unterscheidet |
+
+Metall statt fünf bunter Abzeichenfarben, weil die Palette warm und
+einfarbig ist: Eine Helligkeitsstaffel liest sich neben Bernstein und
+Kupfer, ohne sich damit zu beißen — und sie funktioniert in Graustufen.
+`test/abzeichen_katalog_test.dart` hält fest, dass **kein Dauerabzeichen
+Platin trägt**.
 
 ## Technische Umsetzung
 
@@ -46,8 +66,23 @@ kein Länder-Abzeichen mit fünfzig Check-ins **desselben** Biers fällt.
   die Wiederherstellung
 
 **Ein neues Abzeichen ist ein Eintrag in einer Liste** — Name,
-Beschreibung, Emoji, Ziel, Rechenvorschrift. Das ist die modularste Stelle
-der ganzen App.
+Beschreibung, Emoji, Ziel, Rang, Rechenvorschrift. Das ist die modularste
+Stelle der ganzen App: Die Erweiterung von 23 auf 55 (0.10.28) brauchte
+**keine Migration, keine neue Abfrage und kein neues Feld** — alle 32 neuen
+rechnen aus `CheckinFacts`, das die nötigen Angaben längst trägt.
+
+**Das Symbol bleibt ein Emoji.** Der Entwurf sah gezeichnete Zeichen vor;
+bei 55 Abzeichen wären das 55 Pfadsätze, die niemand pflegt. Gezeichnet ist
+das *Medaillon* (`widgets/abzeichen_medaillon.dart`), das Symbol darin
+bleibt das Emoji — die Fallback-Kette dafür steht in `core/theme.dart` und
+ist für genau diesen Zweck gebaut.
+
+**Ein Kontrastfehler nebenbei behoben:** Der gesperrte Zustand legte
+`Opacity(0.35)` über die ganze Kachel — auch über die Schrift, die damit
+unter 4,5:1 fiel. Aufgefallen war es nie, weil
+`barrierefreiheit_test.dart` nur Home, Feed, Entdecken und Profil anfährt.
+Jetzt verliert nur das Medaillon seine Farbe, die Beschriftung bleibt voll
+lesbar (docs/14).
 
 ## Modularität
 
@@ -63,7 +98,7 @@ Alle.
 ## Skalierung
 
 `BadgeContext.load` holt **alle** eigenen Check-ins in den Speicher und
-wertet 23 Abzeichen darüber aus. Bei einigen tausend Check-ins wird das
+wertet 55 Abzeichen darüber aus. Bei einigen tausend Check-ins wird das
 träge; dann gehören die Zähler in SQL-Aggregate. Die Trennung ist bereits
 richtig geschnitten: Nur `BadgeContext` müsste sich ändern.
 

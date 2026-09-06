@@ -40,7 +40,7 @@ FUNKTIONEN
 - Check-ins mit Bewertung und Geschmacksnoten
 - 660 Biere und 137 Brauereien aus Österreich, Bayern, Deutschland und
   der Schweiz – eigene Biere jederzeit ergänzen
-- 23 Abzeichen zum Freischalten, mit Zwischenstufen
+- 55 Abzeichen zum Freischalten, in vier Rängen von Bronze bis Platin
 - Statistiken, Wochen-Heatmap und Jahresrückblick: dein Bierjahr auf
   einen Blick
 - Crews: gemeinsame Runden, Rollen und Challenges

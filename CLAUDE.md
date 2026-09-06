@@ -126,7 +126,7 @@ nicht nachlesen.
 
 ## 5. Der Stand
 
-- **Version:** `0.10.27-beta+47` (Beta 0.x bis zum Play-Store-1.0; der
+- **Version:** `0.10.28-beta+48` (Beta 0.x bis zum Play-Store-1.0; der
   Android-`versionCode` zählt immer weiter hoch).
 - **Letztes Release:** **`v0.10.27-beta`, 2026-09-06** — signiert mit dem
   Upload-Keystore. Davor lag `v0.10.13-beta`; die vierzehn Versionen
@@ -138,7 +138,8 @@ nicht nachlesen.
   Regeln in `.claude/conventions.md`. **Gemergte Branches werden nicht
   mehr pauschal gelöscht.**
 - **Backend:** Supabase-Projekt `swlqkwlpnxwthbneblww` (EU).
-  **`0001–0062` sind live, lückenlos.** Details: docs/13.
+  **`0001–0062` sind live, lückenlos**; `0063` liegt im Repo und wartet
+  auf grüne CI (Regel C). Details: docs/13.
   `list_migrations` zeigt **63** Einträge, das Repo hat 62 Dateien —
   **das ist kein Drift.** `0024_friend_tiers.sql` wurde live in zwei
   Schritten eingespielt (`friend_tiers` + `friend_tiers_thirsty_friends`);
@@ -252,7 +253,7 @@ Die Web-App wird bei jedem Push auf `main` automatisch deployt
 
 ## 8. Daten & Konventionen
 
-- **Abzeichen:** Der Katalog steht in `domain/badges.dart` (**23 Stück**),
+- **Abzeichen:** Der Katalog steht in `domain/badges.dart` (**55 Stück**),
   nicht am Server. Die Tabelle `badges` (0002, sechs Zeilen) ist ein Rest:
   Seit 0016 hängt `user_badges` nicht mehr daran, und die App liest sie
   nicht. Wer Abzeichen ergänzt, ergänzt die Dart-Liste.

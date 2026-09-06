@@ -57,7 +57,7 @@ Einchecken, Tagebuch und Bierdatenbank laufen im Bierkeller weiter:
 - ✅ **Sessions & Beacon**: Ein-Tap-Session mit Sichtbarkeit, Stealth-Modus, Auto-Ende, Live-Karte
 - ✅ **Check-ins**: Bewertung in 0,25er-Schritten, Geschmacks-Tags, Serving-Style, Venue, Notizen
 - ✅ **Bier-Datenbank**: die gebündelte DACH-Datenbank (siehe unten), Suche, Stil-Filter, Sortierung nach Nähe/Alkohol/Name, eigene Einreichungen
-- ✅ **23 Abzeichen** mit Galerie, Zwischenstufen und Fortschrittsanzeige (belohnt Vielfalt, nie Menge)
+- ✅ **55 Abzeichen** als Medaillons in vier Rängen (Bronze bis Platin), mit Fortschrittsring (belohnt Vielfalt, nie Menge)
 - ✅ **Statistiken, Tagebuch, Wunschliste**, Feed mit Toasts & Kommentaren
 - ✅ **Wochen-Heatmap, Jahresrückblick und CSV-Export** der eigenen Zahlen
 - ✅ **Crews** mit Runden-Feed, Rollen und gemeinsamen Challenges

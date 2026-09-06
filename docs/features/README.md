@@ -34,7 +34,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [08](08-freunde.md) | Freunde | 🟢 | Anfragen, Suche, QR-Code, Blockieren, Freundeskreise |
 | [09](09-crews.md) | Crews | 🟢 | Vier Beitrittswege inkl. Einladung, Runden-Feed und Bilanz |
 | [10](10-feed.md) | Feed | 🟢 | Check-in-Strom, Toasts, Kommentare, Löschen, Seitenladen |
-| [11](11-abzeichen.md) | Abzeichen | 🟢 | 23 Abzeichen, Vielfalt statt Menge |
+| [11](11-abzeichen.md) | Abzeichen | 🟢 | 55 Abzeichen in vier Rängen, Vielfalt statt Menge |
 | [12](12-challenges.md) | Challenges | 🟢 | Serverseitig validiert |
 | [13](13-statistiken-und-tagebuch.md) | Tagebuch & Wochen-Serie | 🟢 | Nachlesen und Suche — ausgewertet wird in 20 |
 | [14](14-wunschliste.md) | Wunschliste | 🟢 | Merken, Cloud-Sync |
