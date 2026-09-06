@@ -14,10 +14,15 @@ entsprechen.)
 
 ## Kurzbeschreibung (Google Play, max. 80 Zeichen)
 
-**Bier-Sessions mit Freunden: Check-ins, Live-Karte, Abzeichen – 100 % lokal.**
+**Bier-Sessions mit Freunden: Check-ins, Live-Karte, Abzeichen – ohne Werbung.**
 
-(69 Zeichen. App Store: als „Untertitel" auf 30 Zeichen kürzen, z. B.
-„Check-ins, Karte & Abzeichen".)
+(76 Zeichen ohne Sternchen, Grenze 80. App Store: als „Untertitel" auf
+30 Zeichen kürzen, z. B. „Check-ins, Karte & Abzeichen".)
+
+> **Achtung beim Übernehmen:** Hier stand bis 2026-09-06 „100 % lokal".
+> Das stimmt seit der Online-Beta nicht mehr — für Freunde, Beacons und
+> Feed ist ein Konto nötig. Eine falsche Store-Aussage über Datenflüsse
+> ist ein Ablehnungsgrund, kein Schönheitsfehler.
 
 ## Langbeschreibung (alle Stores)
 
@@ -26,19 +31,23 @@ ohne Schnickschnack.
 
 Starte mit einem Tipp eine Session, sieh auf der Live-Karte, wo deine
 Freunde gerade anstoßen, und halte jedes Bier mit Bewertung und
-Geschmacksnotizen fest. Alle Daten bleiben auf deinem Gerät.
+Geschmacksnotizen fest. Dein Tagebuch funktioniert auch ohne Netz.
 
 FUNKTIONEN
 
 - Ein-Tap-Session: Session starten mit einem einzigen Tipp
 - Live-Karte der Freunde: sieh, wer wo gerade eine Session laufen hat
 - Check-ins mit Bewertung und Geschmacksnoten
-- 31 Biere zum Start – eigene Biere jederzeit ergänzen
-- 12 Abzeichen zum Freischalten
-- Statistiken und Tagebuch: dein Bierjahr auf einen Blick
+- 660 Biere und 137 Brauereien aus Österreich, Bayern, Deutschland und
+  der Schweiz – eigene Biere jederzeit ergänzen
+- 23 Abzeichen zum Freischalten, mit Zwischenstufen
+- Statistiken, Wochen-Heatmap und Jahresrückblick: dein Bierjahr auf
+  einen Blick
+- Crews: gemeinsame Runden, Rollen und Challenges
 - Wunschliste für Biere, die du noch probieren willst
-- 100 % lokal und privat: keine Konten, kein Tracking, keine Werbung –
-  alle Daten bleiben auf deinem Gerät
+- Du bestimmst je Check-in, wer ihn sieht
+- Kein Tracking, keine Werbung. Das Tagebuch bleibt auf dem Gerät; für
+  Freunde und Live-Karte braucht es ein Konto (Server in der EU)
 
 BrewMates richtet sich an Erwachsene. Bitte genieße verantwortungsvoll.
 

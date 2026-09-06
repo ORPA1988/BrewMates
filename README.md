@@ -7,7 +7,10 @@ BrewMates kombiniert zwei Hälften desselben Abends:
 - **Das Bier** – entdecken, einchecken, bewerten, Abzeichen sammeln und ein persönliches Bier-Tagebuch führen.
 - **Die Leute** – mit einem Tap den Freunden sagen *„Ich trinke gerade ein Bier – komm vorbei!"*, Freunde live auf der Karte sehen und spontane Treffen ermöglichen.
 
-**Plattform-Fokus: Android** (die iOS-Option bleibt über dieselbe Flutter-Codebasis offen; Windows/macOS/Web funktionieren als Entwickler-Targets).
+**Plattformen: Android und Web** — die Web-App ist Zweitgerät mit vollem
+Funktionsumfang (<https://orpa1988.github.io/BrewMates/>), nicht bloß ein
+Entwickler-Target. Die iOS-Option bleibt über dieselbe Flutter-Codebasis
+offen; Windows/macOS bauen, sind aber ungetestet.
 
 **📲 APK herunterladen:** [Neuestes Release](https://github.com/ORPA1988/BrewMates/releases/latest) – `.apk` auf dem Android-Gerät öffnen und installieren.
 
@@ -28,6 +31,8 @@ BrewMates kombiniert zwei Hälften desselben Abends:
 | [11 – Modularität & Portierbarkeit](docs/11-modularitaet-und-portierbarkeit.md) | Architekturgrenzen, die eingehalten werden |
 | [12 – Funktionsaudit](docs/12-funktionsaudit.md) | Vollständigkeit und Skalierbarkeit des Bestands |
 | [13 – Migrationen & Lehren](docs/13-migrationen-und-lehren.md) | Was am Server steht, warum — und welche Fehler es gekostet hat |
+| [14 – Barrierefreiheit](docs/14-barrierefreiheit.md) | Was zugesichert ist und wie es gemessen wird |
+| [15 – Bier in Österreich](docs/15-bier-in-oesterreich.md) | Marktbild und Rechtsrahmen des Zielmarkts |
 | [Funktionen im Einzelnen](docs/features/README.md) | Ein Dokument je Funktion: Zweck, Bedienung, Umsetzung, Status |
 
 ## 💡 Das Kernkonzept: zwei Buttons
@@ -35,29 +40,30 @@ BrewMates kombiniert zwei Hälften desselben Abends:
 Der Startbildschirm besteht aus zwei großen Hero-Aktionen — alles andere gruppiert sich darum:
 
 1. **🍺 Bier scannen** — Barcode der Flasche/Dose scannen → Bier erkannt → bewerten und ins Tagebuch. Unbekannter Code? Erkennung über Open Food Facts oder in 30 Sekunden selbst anlegen (und der Community vorschlagen).
-2. **🍻 Zusammenkommen!** — ein Tap: deine Session startet mit echtem GPS-Standort, Freunde sehen dich auf der Karte, Botschaft: „Alle willkommen!" Nach 3 Stunden endet sie automatisch.
+2. **🍻 Zusammenkommen!** — ein Tap: deine Session startet mit echtem GPS-Standort, Freunde sehen dich auf der Karte, Botschaft: „Alle willkommen!" Die Laufzeit wählst du selbst (29 Minuten bis 24 Stunden), danach endet die Session von allein.
 
 Jedes Bier während einer Session landet automatisch im gemeinsamen Abend-Album; Statistiken und Abzeichen wachsen mit.
 
-## 🚀 Status: Beta 0.9 — lokaler Kern (Alpha 0.2) + Online-Beta
+## 🚀 Status: Beta 0.10 — lokaler Kern plus Online-Beta
 
 Die App ist bewusst als **0.x** versioniert, bis der Play-Store-Release
 1.0 kommt (der interne Android-`versionCode` zählt weiter hoch, Updates
 funktionieren normal); die ersten Alpha-Releases heißen 0.1.0 und 0.2.0.
-Der lokale Kern (Funktionsumfang der Alpha 0.2) ist
-**local-first** und voll funktionsfähig – ohne Konto, ohne Backend:
+Der lokale Kern ist **local-first** und funktioniert ohne Netz —
+Einchecken, Tagebuch und Bierdatenbank laufen im Bierkeller weiter:
 
 - ✅ **Hero-Aktionen**: Barcode-Scanner (EAN-8/13, Open-Food-Facts-Fallback) und Ein-Tap-Beacon mit echtem GPS
 
 - ✅ **Sessions & Beacon**: Ein-Tap-Session mit Sichtbarkeit, Stealth-Modus, Auto-Ende, Live-Karte
 - ✅ **Check-ins**: Bewertung in 0,25er-Schritten, Geschmacks-Tags, Serving-Style, Venue, Notizen
-- ✅ **Bier-Datenbank**: 31 Biere / 14 Brauereien als Start, Suche, Stil-Filter, eigene Einreichungen
-- ✅ **12 Abzeichen** mit grafischer Galerie und Fortschrittsanzeige (belohnt Vielfalt, nie Menge)
+- ✅ **Bier-Datenbank**: die gebündelte DACH-Datenbank (siehe unten), Suche, Stil-Filter, Sortierung nach Nähe/Alkohol/Name, eigene Einreichungen
+- ✅ **23 Abzeichen** mit Galerie, Zwischenstufen und Fortschrittsanzeige (belohnt Vielfalt, nie Menge)
 - ✅ **Statistiken, Tagebuch, Wunschliste**, Feed mit Toasts & Kommentaren
-- ✅ Drei Demo-Freunde mit Aktivität, damit die App ab Sekunde 1 lebt (nur abgemeldet)
-- 🧪 **Online-Beta**: Konto-Pflicht ab v0.9.2 (einmal anmelden, dauerhaft eingeloggt), Freunde per Nutzername, Live-Beacons und Feed echter Freunde (Supabase, EU); Karte zeigt Freunde mit Standort, alle übrigen aktiven Nutzer nur als Zähler rechts oben
+- ✅ **Wochen-Heatmap, Jahresrückblick und CSV-Export** der eigenen Zahlen
+- ✅ **Crews** mit Runden-Feed, Rollen und gemeinsamen Challenges
+- 🧪 **Online-Beta**: Konto-Pflicht ab v0.9.2 (einmal anmelden, dauerhaft eingeloggt) über **acht Anmeldewege plus E-Mail**, Freunde per Nutzername oder QR-Code, Live-Beacons und Feed echter Freunde (Supabase, EU); Karte zeigt Freunde mit Standort, alle übrigen aktiven Nutzer nur als Zähler rechts oben. Wer was sieht, bestimmst du je Check-in.
 
-**🇦🇹🇩🇪🇨🇭 Fokus: DACH-Raum (Herz: Österreich + Bayern).** Die App bringt eine redaktionelle Datenbank mit **280 Bieren** (68 Österreich, 72 Bayern, 95 Restdeutschland, 45 Schweiz) und **125 Brauereistandorten** (34 AT / 33 BY / 40 DE / 18 CH) mit: Geschmacksbeschreibungen laut Brauerei + Community-Erfahrungen, Bewertung, EAN-Barcodes und Etikett-Fotos (verlinkt von Open Food Facts, CC-BY-SA) sowie Brauerei-Detailinfos (Eigentümer, Gründungsjahr, Kennzahlen soweit öffentlich). Biere und Brauereien sind miteinander verknüpft — von jedem Bier zur Brauerei und zurück. Gepflegt wird alles direkt in diesem Repository (`app/assets/data/`), von der App beim Start via GitHub aktualisiert und auf der Karte sichtbar (Brauerei-Ebene abschaltbar; herausgezoomt als Punkte). Die Suche im Entdecken-Tab findet Biere **und** Brauereien. Neue Biere schlägst du direkt aus der App vor ([Anleitung](CONTRIBUTING.md)).
+**🇦🇹🇩🇪🇨🇭 Fokus: DACH-Raum (Herz: Österreich + Bayern).** Die App bringt eine redaktionelle Datenbank mit **660 Bieren** (447 Österreich, 73 Bayern, 95 Restdeutschland, 45 Schweiz) und **137 Brauereistandorten** (46 AT / 33 BY / 40 DE / 18 CH) mit: Geschmacksbeschreibungen laut Brauerei + Community-Erfahrungen, Bewertung, EAN-Barcodes und Etikett-Fotos (verlinkt von Open Food Facts, CC-BY-SA) sowie Brauerei-Detailinfos (Eigentümer, Gründungsjahr, Kennzahlen soweit öffentlich). Biere und Brauereien sind miteinander verknüpft — von jedem Bier zur Brauerei und zurück. Gepflegt wird alles direkt in diesem Repository (`app/assets/data/`), von der App beim Start via GitHub aktualisiert und auf der Karte sichtbar (Brauerei-Ebene abschaltbar; herausgezoomt als Punkte). Die Suche im Entdecken-Tab findet Biere **und** Brauereien. Neue Biere schlägst du direkt aus der App vor ([Anleitung](CONTRIBUTING.md)).
 
 | Bereich | Inhalt |
 |---|---|
@@ -69,7 +75,9 @@ Der lokale Kern (Funktionsumfang der Alpha 0.2) ist
 | [`PRIVACY.md`](PRIVACY.md) | Datenschutzerklärung |
 | [`LICENSE`](LICENSE) | **Proprietär — der Code ist einsehbar, aber nicht frei verwendbar** |
 
-CI: Analyze + Tests je PR. Ein Release entsteht per Git-Tag `v*` **oder** manuell im Actions-Tab („Release" → „Run workflow") — beides baut die APK und veröffentlicht sie unter [Releases](https://github.com/ORPA1988/BrewMates/releases).
+CI je PR: `flutter analyze`, Tests (auch im Browser), Abdeckungs-Ratsche und ein Neuaufbau der Datenbank aus `supabase/migrations/` samt pgTAP-Tests gegen die RLS-Regeln.
+
+Ein Release entsteht **manuell** im Actions-Tab („Release" → „Run workflow", Eingabe z. B. `v0.10.27-beta`); der Lauf legt Tag und Release an und veröffentlicht die signierte APK unter [Releases](https://github.com/ORPA1988/BrewMates/releases). Ein Tag-Push allein genügt nicht — `main` ist geschützt und weist ihn mit 403 ab.
 
 ## Lizenz
 

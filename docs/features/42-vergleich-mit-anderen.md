@@ -1,8 +1,9 @@
 # 42 Vergleich mit anderen BrewMates
 
-> **Status:** 🟡 in Arbeit — Server (0054) und Anzeige stehen; sichtbar
-> wird der Vergleich erst ab 20 beitragenden Personen.
-> **Seit:** 0.10.16 · **Zuletzt geprüft:** 2026-09-05
+> **Status:** 🟢 fertig — Server (0054) und Anzeige stehen, ausgeliefert
+> mit v0.10.27-beta. Dass der Vergleich erst ab 20 beitragenden Personen
+> erscheint, ist die eingebaute Schwelle, kein fehlendes Stück.
+> **Seit:** 0.10.16 · **Zuletzt geprüft:** 2026-09-06
 >
 > Aus Meldung [#146](https://github.com/ORPA1988/BrewMates/issues/146):
 > „In der Statistik sollen auch Vergleichswerte zu anderen Nutzern bzw.

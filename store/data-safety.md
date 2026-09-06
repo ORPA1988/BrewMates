@@ -2,7 +2,11 @@
 
 Vorbereitete Antworten für den Abschnitt **App-Inhalte → Datensicherheit**
 in der Play Console. Grundlage: tatsächliche Datenflüsse der App
-(Stand v0.9.9, Migrationen 0001–0016). Bitte beim Ausfüllen gegenprüfen.
+(Stand 0.10.27-beta, Migrationen 0001–0062). Bitte beim Ausfüllen
+gegenprüfen — und **zuerst `PRIVACY.md` nachziehen**: Push
+(Firebase Cloud Messaging) und das Melden über öffentliche
+GitHub-Issues stehen dort noch nicht drin, gehören aber in beide
+Dokumente.
 
 ## Übersicht
 

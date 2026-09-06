@@ -128,6 +128,11 @@ nicht nachlesen.
 
 - **Version:** `0.10.27-beta+47` (Beta 0.x bis zum Play-Store-1.0; der
   Android-`versionCode` zählt immer weiter hoch).
+- **Letztes Release:** **`v0.10.27-beta`, 2026-09-06** — signiert mit dem
+  Upload-Keystore. Davor lag `v0.10.13-beta`; die vierzehn Versionen
+  dazwischen hatte niemand bekommen. **Nach einem Merge, der Nutzer
+  betrifft, gehört die Frage „ausliefern?" auf den Tisch** — sonst
+  sammeln sich fertige Antworten an, die keinen Melder erreichen.
 - **Rückfallpunkte:** `git tag -l "stand/*"` — mindestens zehn lauffähige
   Stände, jeder nach grüner CI getaggt und mit einem Satz beschrieben.
   Regeln in `.claude/conventions.md`. **Gemergte Branches werden nicht
@@ -237,7 +242,7 @@ nicht nachlesen.
 ## 7. Releases
 
 GitHub-Release = Workflow `release.yml` per **workflow_dispatch**
-triggern (Input `version`, z. B. `v0.10.13-beta`); ein Tag-Push scheitert
+triggern (Input `version`, z. B. `v0.10.27-beta`); ein Tag-Push scheitert
 mit 403. Der Lauf baut APK + AAB und veröffentlicht sie, signiert mit dem
 Upload-Keystore aus den Secrets `KEYSTORE_BASE64`/`KEYSTORE_PASSWORD` —
 **stabile Signatur = Updates ohne Datenverlust.**
@@ -247,6 +252,10 @@ Die Web-App wird bei jedem Push auf `main` automatisch deployt
 
 ## 8. Daten & Konventionen
 
+- **Abzeichen:** Der Katalog steht in `domain/badges.dart` (**23 Stück**),
+  nicht am Server. Die Tabelle `badges` (0002, sechs Zeilen) ist ein Rest:
+  Seit 0016 hängt `user_badges` nicht mehr daran, und die App liest sie
+  nicht. Wer Abzeichen ergänzt, ergänzt die Dart-Liste.
 - **Community-DB:** `app/assets/data/` — acht Dateien (`beers-at/by/de/ch`,
   `breweries-at/by/de/ch`), verknüpft über `brewery_id`. Bayern-IDs
   `de-by-…`, Restdeutschland `de-…`, Schweiz `ch-…`. Bild-URLs nur als
