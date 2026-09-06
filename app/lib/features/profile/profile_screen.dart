@@ -8,7 +8,9 @@ import '../../data/providers.dart';
 import '../../domain/account_level.dart';
 import '../../domain/badges.dart';
 import '../../domain/streak.dart';
+import '../../domain/wochen_verlauf.dart';
 import '../../widgets/badge_celebration.dart';
+import '../../widgets/wochen_heatmap.dart';
 
 const List<String> _avatarEmojis = [
   '🍺',
@@ -218,7 +220,19 @@ class ProfileScreen extends ConsumerWidget {
           // ------------------------------------------------------------------
           // Statistik-Grid
           // ------------------------------------------------------------------
-          GridView.count(
+          // Einmal geholt, zweimal gebraucht: für die Serie und für das
+          // Bild darunter. Zwei `watch` auf denselben Provider wären
+          // kein Fehler, aber eine Einladung, sie auseinanderlaufen zu
+          // lassen.
+          ...() {
+            final termine = [
+              for (final d in ref.watch(myDiaryProvider).valueOrNull ??
+                  const <CheckinDetails>[])
+                d.checkin.createdAt,
+            ];
+            final jetzt = DateTime.now();
+            return [
+              GridView.count(
             crossAxisCount: MediaQuery.sizeOf(context).width >= 800 ? 4 : 2,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -237,17 +251,22 @@ class ProfileScreen extends ConsumerWidget {
               // 🔥 Wochen-Serie „mit Augenmaß": Wochen, nicht Tage.
               _StatTile(
                 label: '🔥 Wochen-Serie',
-                value: weeklyStreak(
-                  [
-                    for (final d in ref.watch(myDiaryProvider).valueOrNull ??
-                        const <CheckinDetails>[])
-                      d.checkin.createdAt,
-                  ],
-                  DateTime.now(),
-                ),
+                value: weeklyStreak(termine, jetzt),
               ),
             ],
           ),
+
+              // Dasselbe Jahr, das die Serie zusammenfasst — als Fläche
+              // (#166). Die Zahl sagt, wie es gerade läuft; das Bild
+              // sagt, wie das Jahr war.
+              if (termine.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                Text('Dein Jahr', style: theme.textTheme.titleSmall),
+                const SizedBox(height: 8),
+                WochenHeatmap(wochen: wochenVerlauf(termine, jetzt)),
+              ],
+            ];
+          }(),
           const SizedBox(height: 16),
 
           // ------------------------------------------------------------------

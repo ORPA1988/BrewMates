@@ -65,6 +65,7 @@ Verlässlichkeit, die es nicht hat. Beim Prüfen darum lieber ein ehrliches
 | [42](42-vergleich-mit-anderen.md) | Vergleich mit anderen | 🟡 | Anonymer Schnitt aller anderen, erst ab 20 Personen |
 | [43](43-fehlende-angaben-melden.md) | Fehlende Angaben melden | 🟡 | Rot markiert, ein Tipp trägt nach — sofort gültig, Punkte, Issue zur Nachprüfung |
 | [44](44-sichtbarkeit.md) | Wer sieht meine Check-ins | 🟢 | Voreinstellung im Konto, je Check-in änderbar, auch nachträglich |
+| [45](45-wochen-heatmap.md) | Wochen-Heatmap | 🟢 | Ein Jahr als Fläche: ein Feld je Woche, je mehr Check-ins desto kräftiger |
 
 ## Geplante Funktionen
 
