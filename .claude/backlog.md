@@ -40,7 +40,7 @@ KI-Unterstützung deutlich weniger).
 | ~~C-2~~ | ~~Push-Benachrichtigungen (FCM) für Session-Start~~ — **erledigt 0.10.10** (Migration 0039): Push beim Session-Start, eine Meldung je Gastgeber und Stunde, Empfängerliste = Sichtbarkeitsregel. Die Notiz „extern blockiert" stand hier, bis das Firebase-Projekt da war. | — | [Funktion 29](../docs/features/29-push-benachrichtigungen.md) |
 | C-3 | Homescreen-Widget (`home_widget`) | M | Sichtbares Alleinstellungsmerkmal, aber kein Fundament. |
 | ~~C-4~~ | ~~Crew-Feed~~ — **erledigt 0.10.12**: Runden-Feed im Crew-Detail, dazu Bilanz. Mit Rollen und Challenges (0.10.21/0.10.22) ist die Crew-Funktion vollständig. | — | [Funktion 09](../docs/features/09-crews.md) |
-| C-5 | Heatmap zur Wochen-Serie | S | Nice-to-have aus der Wettbewerbsanalyse. |
+| ~~C-5~~ | ~~Heatmap zur Wochen-Serie~~ — **erledigt 0.10.26-beta** (#166): 52 Felder im Profil, ein Quartal je Zeile, Farbstufen relativ zur eigenen besten Woche. | — | [Funktion 45](../docs/features/45-wochen-heatmap.md). Wochen und nicht Tage — ein Kalender mit 365 Feldern wäre ein täglicher Trinkanreiz. |
 
 ## Bewusst offen (keine Aufgabe, dokumentierte Baseline)
 
