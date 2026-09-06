@@ -17,10 +17,12 @@ import 'api/friends_api.dart';
 import 'api/moderation_api.dart';
 import 'api/notifications_api.dart';
 import 'api/sessions_api.dart';
+import 'api/auszeichnungen_api.dart';
 import 'api/stats_api.dart';
 import 'api/venues_api.dart';
 import 'models.dart';
 
+export 'api/auszeichnungen_api.dart';
 export 'api/checkins_api.dart';
 export 'api/devices_api.dart';
 export 'api/feedback_api.dart';
@@ -54,7 +56,9 @@ class OnlineService {
         feedback = FeedbackApi(_client, () => _client.auth.currentUser),
         moderation =
             ModerationApi(_client, () => _client.auth.currentUser),
-        crews = CrewsApi(_client, () => _client.auth.currentUser);
+        crews = CrewsApi(_client, () => _client.auth.currentUser),
+        auszeichnungen =
+            AuszeichnungenApi(_client, () => _client.auth.currentUser);
 
   final SupabaseClient _client;
 
@@ -82,6 +86,9 @@ class OnlineService {
 
   /// Crew-Feed und Beitritt per sprechbarem Code.
   final CrewsApi crews;
+
+  /// Trophäen aus abgeschlossenen Challenges (0063).
+  final AuszeichnungenApi auszeichnungen;
 
   /// Live-Beacons: starten, spiegeln, verlängern, beenden.
   final SessionsApi sessions;

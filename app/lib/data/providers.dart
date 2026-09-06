@@ -15,6 +15,7 @@ import '../core/config.dart';
 import '../core/min_version.dart';
 import '../core/format.dart' show isUuid;
 import '../domain/account_level.dart';
+import '../domain/auszeichnung.dart';
 import '../domain/badges.dart';
 import '../domain/challenges.dart';
 import '../domain/crew_stats.dart';
@@ -38,6 +39,7 @@ import 'online/remote_mapping.dart';
 // Aufgeteilt nach Themen (Backlog B-4). Reihenfolge alphabetisch.
 part 'providers/anfragen.dart';
 part 'providers/anmeldung.dart';
+part 'providers/auszeichnungen.dart';
 part 'providers/beers.dart';
 part 'providers/challenges.dart';
 part 'providers/crews.dart';

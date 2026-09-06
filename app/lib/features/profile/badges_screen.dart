@@ -5,6 +5,7 @@ import '../../core/format.dart';
 import '../../data/providers.dart';
 import '../../domain/badges.dart';
 import '../../widgets/abzeichen_medaillon.dart';
+import '../../widgets/trophaee.dart';
 
 /// Grafische Abzeichen-Galerie mit Fortschritt.
 class BadgesScreen extends ConsumerWidget {
@@ -40,29 +41,7 @@ class BadgesScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              // Challenge-Trophäen (aus abgeschlossenen Herausforderungen)
-              if ((ref.watch(earnedChallengeBadgesProvider).valueOrNull ??
-                      const [])
-                  .isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Wrap(
-                      spacing: 8,
-                      runSpacing: 4,
-                      children: [
-                        for (final trophy in ref
-                            .watch(earnedChallengeBadgesProvider)
-                            .valueOrNull!)
-                          Chip(
-                            avatar: Text(trophy.emoji),
-                            label: Text(trophy.title),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
+              const _Trophaeenband(),
               Expanded(
                 child: GridView.count(
                   padding: const EdgeInsets.all(16),
@@ -80,6 +59,87 @@ class BadgesScreen extends ConsumerWidget {
           );
         },
       ),
+    );
+  }
+}
+
+/// Die Trophäen aus abgeschlossenen Challenges, quer scrollbar.
+///
+/// Bis 0.10.28 stand hier eine Reihe grauer `Chip`s mit Emoji und Titel —
+/// vier verschiedene Auszeichnungen sahen darin identisch aus. Jetzt trägt
+/// jede Trophäe ihr Metall (den Rang) und ihr Band samt Jahreszahl (das
+/// Jahr).
+///
+/// Die Zeile fehlt ganz, solange es nichts zu zeigen gibt: Ein leerer
+/// Abschnitt „Trophäen" wäre eine Aufforderung, keine Auskunft.
+class _Trophaeenband extends ConsumerWidget {
+  const _Trophaeenband();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final liste =
+        ref.watch(meineAuszeichnungenProvider).valueOrNull ?? const [];
+    if (liste.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
+          child: Text(
+            liste.length == 1 ? '1 Trophäe' : '${liste.length} Trophäen',
+            style: theme.textTheme.titleMedium,
+          ),
+        ),
+        SizedBox(
+          height: 168,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: liste.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            itemBuilder: (context, i) {
+              final a = liste[i];
+              final woFuer = a.crewName == null
+                  ? a.art.erklaerung
+                  : '${a.art.erklaerung} · ${a.crewName}';
+              return Semantics(
+                // Ohne dies liest die Vorlesehilfe drei Bruchstücke
+                // untereinander vor. Ein Satz sagt dasselbe in einem Zug.
+                label: '${a.art.anzeige}, ${a.art.tier.anzeige}, für '
+                    '${a.titel} ${a.jahr}. $woFuer.',
+                excludeSemantics: true,
+                child: SizedBox(
+                  width: 104,
+                  child: Column(
+                    children: [
+                      Trophaee(emoji: a.emoji, art: a.art, jahr: a.jahr),
+                      const SizedBox(height: 6),
+                      Text(
+                        a.art.anzeige,
+                        style: theme.textTheme.labelMedium
+                            ?.copyWith(fontWeight: FontWeight.w700),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        a.titel,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

@@ -52,37 +52,12 @@ final challengeProgressProvider =
   return ChallengeEngine(ref.watch(databaseProvider)).progressList(me.id);
 });
 
-/// Verdiente Challenge-Trophäen für die Abzeichen-Galerie; Titel/Emoji
-/// kommen aus dem Challenge-Cache (funktioniert auch nach Challenge-Ende).
-final earnedChallengeBadgesProvider = FutureProvider<
-    List<({String emoji, String title, DateTime awardedAt})>>((ref) async {
-  final me = await ref.watch(meProvider.future);
-  ref.watch(myBadgesProvider);
-  final db = ref.watch(databaseProvider);
-  final rows = await db.earnedChallengeBadges(me.id);
-  if (rows.isEmpty) return const [];
-  final cache = await db.allCachedChallenges();
-  return [
-    for (final row in rows)
-      () {
-        final idPrefix = row.badgeSlug.substring('challenge-'.length);
-        for (final c in cache) {
-          if (c.id.startsWith(idPrefix)) {
-            return (
-              emoji: c.emoji,
-              title: c.title,
-              awardedAt: row.awardedAt,
-            );
-          }
-        }
-        return (
-          emoji: '🏆',
-          title: 'Challenge',
-          awardedAt: row.awardedAt,
-        );
-      }(),
-  ];
-});
+// `earnedChallengeBadgesProvider` stand hier bis 0.10.28 und lieferte die
+// lokalen Challenge-Trophäen als (Emoji, Titel, Datum). Seit es vier
+// Auszeichnungsarten gibt (0063), ist das zu wenig: Vier verschiedene
+// Trophäen sahen darin identisch aus. Die Auswertung liegt jetzt in
+// `providers/auszeichnungen.dart` — sie nimmt den Rang vom Server und
+// dieselben lokalen Zeilen als Rückfall für „Dabei gewesen".
 
 /// Automatischer Konto-Abgleich: überträgt offline entstandene Check-ins,
 /// sobald Konto und Verbindung da sind – bei Anmeldung, nach jedem lokalen
