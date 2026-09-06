@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/format.dart';
 import '../../data/providers.dart';
 import '../../domain/badges.dart';
+import '../../widgets/abzeichen_medaillon.dart';
 
 /// Grafische Abzeichen-Galerie mit Fortschritt.
 class BadgesScreen extends ConsumerWidget {
@@ -101,21 +102,11 @@ class _BadgeCard extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-            Container(
-              width: 72,
-              height: 72,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: earned
-                    ? scheme.surface
-                    : scheme.surfaceContainerHighest,
-                shape: BoxShape.circle,
-              ),
-              child: Opacity(
-                opacity: earned ? 1.0 : 0.35,
-                child:
-                    Text(def.emoji, style: const TextStyle(fontSize: 48)),
-              ),
+            AbzeichenMedaillon(
+              emoji: def.emoji,
+              tier: def.tier,
+              anteil: progress.fraction,
+              verdient: earned,
             ),
             const SizedBox(height: 8),
             Text(
@@ -124,7 +115,7 @@ class _BadgeCard extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: earned
                     ? scheme.onPrimaryContainer
-                    : scheme.onSurfaceVariant,
+                    : scheme.onSurface,
               ),
               textAlign: TextAlign.center,
               maxLines: 1,
@@ -145,9 +136,11 @@ class _BadgeCard extends StatelessWidget {
             const Spacer(),
             if (earned)
               Text(
-                'Verdient · ${timeAgo(progress.awardedAt!)}',
-                style: theme.textTheme.labelSmall
-                    ?.copyWith(color: scheme.onPrimaryContainer),
+                '${def.tier.anzeige} · ${timeAgo(progress.awardedAt!)}',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: scheme.onPrimaryContainer,
+                  fontWeight: FontWeight.w700,
+                ),
               )
             else ...[
               LinearProgressIndicator(value: progress.fraction),
