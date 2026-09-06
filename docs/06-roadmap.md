@@ -18,10 +18,30 @@ lebte nur in dieser Datei.
 | Rang | Vorhaben | Warum jetzt |
 |---|---|---|
 | ~~1~~ | ~~**Anmeldeverfahren freischalten**~~ ([#131](https://github.com/ORPA1988/BrewMates/issues/131)) — **erledigt am 2026-09-06**: acht Wege plus E-Mail, freigeschaltet über `app_config.auth_providers` ohne Release ([Funktion 01](features/01-konto-und-anmeldung.md)). Apple bleibt offen, es kostet 99 $/Jahr | — |
-| 2 | **[Kalender-Export für Verabredungen](features/39-geplante-sessions.md)** ([#165](https://github.com/ORPA1988/BrewMates/issues/165)) | Der letzte offene Punkt einer sonst fertigen Funktion: „Freitag 19 Uhr" gehört in den Kalender, nicht nur in die App |
-| 3 | **Heatmap zur Wochen-Serie** ([#166](https://github.com/ORPA1988/BrewMates/issues/166)) | Klein, rein lokal, und macht aus einer Zahl ein Bild ([Backlog C-5](../.claude/backlog.md)) |
-| 4 | **[Jahresrückblick](features/20-feed-statistiken.md)** („Dein Bierjahr", [#167](https://github.com/ORPA1988/BrewMates/issues/167)) | Teilbar — das einzige Marketing, das diese App je hätte |
+| ~~2~~ | ~~**Kalender-Export für Verabredungen**~~ ([#165](https://github.com/ORPA1988/BrewMates/issues/165)) — **erledigt am 2026-09-06**: `.ics`-Datei und Web-Kalender-Link ([Funktion 39](features/39-geplante-sessions.md)) | — |
+| ~~3~~ | ~~**Heatmap zur Wochen-Serie**~~ ([#166](https://github.com/ORPA1988/BrewMates/issues/166)) — **erledigt am 2026-09-06** ([Funktion 45](features/45-wochen-heatmap.md)) | — |
+| ~~4~~ | ~~**Jahresrückblick**~~ ([#167](https://github.com/ORPA1988/BrewMates/issues/167)) — **erledigt am 2026-09-06**; der PNG-Download läuft nur im Browser ([Funktion 46](features/46-jahresrueckblick.md)) | — |
 | 5 | **[Play Store](https://github.com/ORPA1988/BrewMates/issues/67)** | Braucht Konto, Ausweisprüfung und Store-Prozess — Menschenarbeit |
+
+**Damit ist diese Liste bis auf den Play Store abgearbeitet.** Was danach
+kommt, entscheidet sich nicht am Code, sondern an drei Fragen, die einem
+Menschen gehören (Regel K):
+
+1. **Release herausgeben** — seit 0.10.14-beta sind dreizehn Versionen
+   entstanden, die noch niemand bekommen hat.
+2. **Play Store und Apple-Anmeldung** — Konto, Ausweisprüfung, 99 $/Jahr.
+3. **`min_supported_version` anheben** — steht auf `0.10.4`.
+
+Technisch naheliegend, aber ohne Auftrag nicht angefangen:
+
+- **Teilen statt Herunterladen** beim Jahresrückblick — braucht ein
+  Teilen-Paket und damit einen Toolchain-Schritt
+  ([Funktion 46](features/46-jahresrueckblick.md)).
+- **Homescreen-Widget** ([Backlog C-3](../.claude/backlog.md)) —
+  sichtbares Alleinstellungsmerkmal, ebenfalls ein neues Plugin.
+- **Community-DB serverseitig durchsuchbar**
+  ([Backlog C-1](../.claude/backlog.md)) — erst ab etwa 50.000 Nutzern
+  nötig; vorher wäre der Umbau verfrüht.
 
 **Erledigt seit dieser Liste** (2026-09-05, alles in 0.10.15–0.10.22):
 Einchecken ohne Barcode ([#139](https://github.com/ORPA1988/BrewMates/issues/139)),
@@ -160,7 +180,7 @@ Kosten trägt (siehe [docs/09](09-wachstum-und-geschaeftsmodell.md)).
       ([Funktion 39](features/39-geplante-sessions.md)). Offen bleibt nur
       der **Kalender-Export** (.ics) — plattformabhängig und nachrangig*
 - [ ] **Empfehlungen**: „Das könnte dir schmecken" auf Basis eigener Bewertungen
-- [ ] **Jahresrückblick** („Dein Bierjahr") mit teilbarem Bild-Export
+- [x] **Jahresrückblick** („Dein Bierjahr") mit teilbarem Bild-Export — 0.10.27-beta, Download nur im Browser ([Funktion 46](features/46-jahresrueckblick.md))
 - [ ] **Etikett-Foto-KI** als Ausbau des Scanners: Kein Barcode? Foto vom
       Etikett genügt — *Vorstufe fertig: Foto + EAN landen beim Anlegen
       direkt in der Community-DB (Migration 0010), die Community validiert
@@ -261,7 +281,8 @@ Maßnahmen sind überwiegend Aktivierung des Vorhandenen.
       (Stil-Kenner/-Professor, Globetrotter, Kurator, Brauerei-Pilger,
       Wirtshaus-Legende, Klarer Kopf, Landvermesser) + 🔥
       **Wochen-Serie** (Wochen statt Tage — kein täglicher Trinkanreiz)
-      als Badge und Profil-Statistik. Offen: Heatmap.
+      als Badge und Profil-Statistik. Heatmap seit 0.10.26-beta
+      ([Funktion 45](features/45-wochen-heatmap.md)).
 - [ ] **Homescreen-Widget** („Session starten / letztes Bier einchecken",
       Flutter `home_widget`) — sichtbares Alleinstellungsmerkmal
 - [ ] **„Year in Beer"-Story-Export** (teilbar = kostenloses Marketing)
