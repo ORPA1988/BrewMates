@@ -1,6 +1,6 @@
 # 06 – Roadmap
 
-> **Stand: 2026-09-06, Version 0.10.27-beta.**
+> **Stand: 2026-09-06, Version 0.10.29-beta.**
 > Diese Datei sagt **wann** etwas kommt und in welcher Reihenfolge.
 > **Was** eine Funktion ist und wie sie gebaut ist, steht je Funktion in
 > [docs/features/](features/README.md) — hier wird nur verlinkt, nicht
@@ -34,7 +34,9 @@ Der dritte Punkt ist erledigt: **[v0.10.27-beta](https://github.com/ORPA1988/Bre
 ist am 2026-09-06 erschienen** und schließt die Lücke von vierzehn
 Versionen seit 0.10.13-beta. Die sechs offenen Meldungen (#139, #143,
 #144, #145, #146, #171) waren erledigt, aber unausgeliefert — sie sind
-beantwortet und geschlossen.
+beantwortet und geschlossen. **[v0.10.29-beta](https://github.com/ORPA1988/BrewMates/releases/tag/v0.10.29-beta)
+folgte noch am selben Tag** und liefert die 55 Abzeichen, den
+Challenge-Jahresplan und den Trophäenbildschirm aus.
 
 Technisch naheliegend, aber ohne Auftrag nicht angefangen:
 
