@@ -128,9 +128,11 @@ nicht nachlesen.
 
 - **Version:** `0.10.29-beta+49` (Beta 0.x bis zum Play-Store-1.0; der
   Android-`versionCode` zählt immer weiter hoch).
-- **Letztes Release:** **`v0.10.27-beta`, 2026-09-06** — signiert mit dem
-  Upload-Keystore. Davor lag `v0.10.13-beta`; die vierzehn Versionen
-  dazwischen hatte niemand bekommen. **Nach einem Merge, der Nutzer
+- **Letztes Release:** **`v0.10.29-beta`, 2026-09-06** — signiert mit dem
+  Upload-Keystore; es bringt die 55 Abzeichen, den Challenge-Jahresplan
+  und den Trophäenbildschirm heraus. Davor lag am selben Tag
+  `v0.10.27-beta`, und davor `v0.10.13-beta` mit vierzehn Versionen
+  Lücke, die niemand bekommen hatte. **Nach einem Merge, der Nutzer
   betrifft, gehört die Frage „ausliefern?" auf den Tisch** — sonst
   sammeln sich fertige Antworten an, die keinen Melder erreichen.
 - **Rückfallpunkte:** `git tag -l "stand/*"` — mindestens zehn lauffähige
