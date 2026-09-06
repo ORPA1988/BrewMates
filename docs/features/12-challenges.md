@@ -99,6 +99,7 @@ es endet — auch auf Geräten, die nie wieder aktualisiert werden.
 
 | Zeitraum | Challenge | Ziel |
 |---|---|---|
+| **06.–18.09.26** | **Spätsommer** | **4 Stile** |
 | 19.09.–04.10.26 | Wiesnzeit | 3 Märzen |
 | 24.10.–02.11.26 | Herbstferien | 3 neue Brauereien |
 | 01.–06.12.26 | Nikolaus | 2 dunkle Biere |
@@ -111,6 +112,12 @@ es endet — auch auf Geräten, die nie wieder aktualisiert werden.
 | 28.06.–11.07.27 | Schulschluss | 5 Brauereien |
 | 12.07.–31.08.27 | Lange Abende | 6 Orte |
 | 01.–21.09.27 | Schulbeginn | 3 neue Biere |
+
+**Die Spätsommer-Challenge schließt eine Lücke, die erst am Server
+auffiel.** Der Plan begann am 19.09.; zwischen Einspielen und diesem Datum
+lief dreizehn Tage lang gar keine Challenge. Ein Plan, der erst in zwei
+Wochen anfängt, ist kein aktiver Plan — gesehen hat das nicht die Datei,
+sondern eine Abfrage mit `now() >= starts_at and now() < ends_at`.
 
 **Kein Mengenziel, kein einziges.** `checkins_count` kommt in keiner der
 zwölf vor; ein pgTAP-Test hält das fest. Gefordert werden andere Stile,

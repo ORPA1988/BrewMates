@@ -12,7 +12,7 @@
 -- Ausführen: `supabase test db` (braucht die lokale Instanz).
 
 begin;
-select plan(11);
+select plan(12);
 
 create or replace function pg_temp.mkuser(p_id uuid, p_name text)
 returns void language plpgsql as $$
@@ -168,6 +168,16 @@ select is(
   (select count(*)::int from public.challenge_awards
    where profile_id = '44444444-4444-4444-4444-444444444444'),
   0, 'Auszeichnungen Fremder bleiben unsichtbar');
+
+-- --------------------------------------------------------------------------
+-- 12: Die Trigger-Funktion gehört dem Trigger, nicht der REST-Schnittstelle.
+--     Sie ist SECURITY DEFINER; offen stehen darf sie deshalb nicht (0066).
+-- --------------------------------------------------------------------------
+reset role;
+select ok(
+  not has_function_privilege('authenticated',
+    'public.vergib_sofortige_auszeichnungen()', 'execute'),
+  'Die Auszeichnungs-Trigger-Funktion ist nicht per RPC aufrufbar');
 
 select * from finish();
 rollback;
