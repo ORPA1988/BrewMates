@@ -42,12 +42,22 @@ create unique index challenge_awards_ein_letzter
 create index challenge_awards_profile_idx
   on challenge_awards (profile_id, awarded_at desc);
 
+-- Jeder Fremdschlüssel in `public` braucht einen Index (0036). Der
+-- Primärschlüssel deckt `challenge_id` ab, der Index darüber
+-- `profile_id` — `crew_id` hatte keinen, und der Test hat es gemeldet.
+create index challenge_awards_crew_idx
+  on challenge_awards (crew_id) where crew_id is not null;
+
 -- Lesen wie bei den Abschlüssen: selbst, Freunde, Admins. Schreiben gar
 -- nicht — es gibt bewusst keine insert/update/delete-Policy.
+-- `(select auth.uid())` statt `auth.uid()`: Nackt wertet Postgres es für
+-- **jede geprüfte Zeile** neu aus, im Subselect einmal als InitPlan
+-- (Migration 0036). `performance_0036.test.sql` wacht darüber und hat
+-- genau diese Policy im ersten Lauf gefangen.
 create policy challenge_awards_select on challenge_awards for select
-  using (profile_id = auth.uid()
-      or are_friends(auth.uid(), profile_id)
-      or is_admin(auth.uid()));
+  using (profile_id = (select auth.uid())
+      or are_friends((select auth.uid()), profile_id)
+      or is_admin((select auth.uid())));
 
 grant select on challenge_awards to authenticated;
 
