@@ -1,6 +1,6 @@
 # 06 – Roadmap
 
-> **Stand: 2026-09-06, Version 0.10.22-beta.**
+> **Stand: 2026-09-06, Version 0.10.27-beta.**
 > Diese Datei sagt **wann** etwas kommt und in welcher Reihenfolge.
 > **Was** eine Funktion ist und wie sie gebaut ist, steht je Funktion in
 > [docs/features/](features/README.md) — hier wird nur verlinkt, nicht
@@ -24,13 +24,17 @@ lebte nur in dieser Datei.
 | 5 | **[Play Store](https://github.com/ORPA1988/BrewMates/issues/67)** | Braucht Konto, Ausweisprüfung und Store-Prozess — Menschenarbeit |
 
 **Damit ist diese Liste bis auf den Play Store abgearbeitet.** Was danach
-kommt, entscheidet sich nicht am Code, sondern an drei Fragen, die einem
+kommt, entscheidet sich nicht am Code, sondern an zwei Fragen, die einem
 Menschen gehören (Regel K):
 
-1. **Release herausgeben** — seit 0.10.14-beta sind dreizehn Versionen
-   entstanden, die noch niemand bekommen hat.
-2. **Play Store und Apple-Anmeldung** — Konto, Ausweisprüfung, 99 $/Jahr.
-3. **`min_supported_version` anheben** — steht auf `0.10.4`.
+1. **Play Store und Apple-Anmeldung** — Konto, Ausweisprüfung, 99 $/Jahr.
+2. **`min_supported_version` anheben** — steht auf `0.10.4`.
+
+Der dritte Punkt ist erledigt: **[v0.10.27-beta](https://github.com/ORPA1988/BrewMates/releases/tag/v0.10.27-beta)
+ist am 2026-09-06 erschienen** und schließt die Lücke von vierzehn
+Versionen seit 0.10.13-beta. Die sechs offenen Meldungen (#139, #143,
+#144, #145, #146, #171) waren erledigt, aber unausgeliefert — sie sind
+beantwortet und geschlossen.
 
 Technisch naheliegend, aber ohne Auftrag nicht angefangen:
 
