@@ -126,7 +126,7 @@ nicht nachlesen.
 
 ## 5. Der Stand
 
-- **Version:** `0.10.28-beta+48` (Beta 0.x bis zum Play-Store-1.0; der
+- **Version:** `0.10.29-beta+49` (Beta 0.x bis zum Play-Store-1.0; der
   Android-`versionCode` zählt immer weiter hoch).
 - **Letztes Release:** **`v0.10.27-beta`, 2026-09-06** — signiert mit dem
   Upload-Keystore. Davor lag `v0.10.13-beta`; die vierzehn Versionen

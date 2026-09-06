@@ -51,6 +51,36 @@ deshalb festhält:
    `finalisiere_challenges()`. Dieselbe Entscheidung wie bei den
    Abschlüssen seit 0014.
 
+### Wie sie aussehen
+
+Der Bildschirm dazu ist das **Trophäenband** oben in der Abzeichen-Galerie
+(`widgets/trophaee.dart`, seit 0.10.29). Bis dahin standen dort graue
+`Chip`s mit Emoji und Titel — vier verschiedene Auszeichnungen sahen darin
+identisch aus.
+
+Eine Trophäe trägt zwei Angaben auf zwei getrennten Achsen:
+
+- **Das Metall sagt den Rang** — Bronze, Silber, Gold, Platin.
+- **Das Band und die Jahreszahl sagen das Jahr.** Die Bandfarbe *rechnet
+  sich aus dem Jahr* (`bandFarben`, sechs Bänder im Wechsel ab 2026) und
+  steht in keiner Datei: Eine neue Trophäe kostet keinen Entwurf.
+
+Deshalb kann dieselbe Weihnachtstrophäe in vier Metallen existieren, ohne
+dass ihr Jahr unklar wird — und zwei Jahrgänge unterscheiden sich, ohne
+dass jemand sie jedes Jahr neu gestaltet.
+
+**Die Jahreszahl steht auf einem eigenen dunklen Schild**, nicht auf dem
+Metallverlauf. Der Grund ist gerechnet: Über einen Verlauf von Lichtkante
+zu Schattenkante trägt keine einzelne Tinte durchgehend 4,5:1 — Stout
+fällt auf Bronze bis 2,2. Auf ruhigem Stout steht Schaum bei rund 14:1, in
+beiden Paletten. So sehen Pokale ohnehin aus.
+
+**Offline zeigt die App „Dabei gewesen" in Bronze.** Rang und Crew braucht
+den Server; *dass* jemand abgeschlossen hat, weiß das Gerät selbst. Das ist
+keine Schätzung, sondern genau die Aussage, die der lokale Eintrag deckt —
+und ohne diesen Rückfall wäre die Zeile ohne Netz leer, wo bis 0.10.28
+Trophäen standen.
+
 Eine **Crew-Challenge** (0062) bekommt keine „beste Crew": Dort tritt
 genau eine Crew an, und eine Auszeichnung ohne Wettbewerb ist keine.
 

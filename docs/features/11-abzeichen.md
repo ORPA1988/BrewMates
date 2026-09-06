@@ -23,6 +23,9 @@ Entscheidung, die die App von einer Trink-Zähl-App unterscheidet.
 - Gestaffelte Reihen, damit immer etwas in Reichweite ist: Stil-Entdecker
   (5) → Stil-Kenner (10) → Stil-Professor (20) → Stil-Archivar (30)
 - Abzeichen bleiben über Gerätewechsel erhalten
+- Ganz oben das **Trophäenband**: die Auszeichnungen aus abgeschlossenen
+  Challenges, quer scrollbar, mit Metall (Rang) und Band samt Jahreszahl
+  (Jahr) — siehe [Funktion 12](12-challenges.md)
 
 ## Die Ränge
 
