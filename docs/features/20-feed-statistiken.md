@@ -1,12 +1,12 @@
 # 20 Statistiken & Auswertung
 
-> **Status:** 🟢 Stufe 2 zum größten Teil gebaut — acht Aufteilungen per
+> **Status:** 🟢 Stufe 2 zum größten Teil gebaut — zehn Aufteilungen per
 > Chip, neun Kennzahlen, freier Zeitraum und Vergleich mit dem Zeitraum
 > davor. Reinalkohol ist **entschieden und gebaut** (siehe Punkt 6).
 > **Offen bleibt** die Crew-Auswertung auf derselben Maschinerie; der
 > CSV-Export ist seit 0.10.19 da (Punkt 7).
 > **Seit:** 0.9.15-beta (Stufe 1) · 0.10.14-beta (Stufe 2) ·
-> **Zuletzt geprüft:** 2026-09-05
+> **Zuletzt geprüft:** 2026-09-06
 >
 > **Hier steht die gesamte Auswertung.** [Funktion 13](13-statistiken-und-tagebuch.md)
 > ist das Tagebuch — die Liste zum Nachlesen — und die Wochen-Serie. Die
@@ -262,11 +262,21 @@ Neu, in dieser Reihenfolge des Nutzens:
 3. **Region/Stadt** (`breweries.city`) — für eine DACH-App interessanter
    als das Land.
 4. **Bewertung** (1–5 Sterne) — „was gibst du eigentlich für Noten?"
-5. **Ort** (Gasthaus) — **nur über `venueId`**, nie über den Namen. Der
-   Name ist am Check-in denormalisiert; Schreibvarianten würden dieselbe
-   Wirtschaft mehrfach auflisten. Freitext-Orte fallen in „ohne Angabe".
+5. ~~**Ort** (Gasthaus)~~ — gebaut in 0.10.31 als Dimension `venue`.
+   **Gezählt wird nur, was eine `venueId` hat**, angezeigt der Name: Der
+   Name allein ist am Check-in denormalisiert, und „Augustiner",
+   „Augustiner Bräu", „augustiner" wären drei Wirtschaften. Freitext-Orte
+   fallen deshalb heraus — und zwar ganz, nicht in einen Balken „ohne
+   Angabe": Ein Check-in ohne Ort ist nicht an einem unbekannten Ort,
+   sondern an keinem.
 6. **Allein oder in Runde** (`sessionId != null`) — sagt etwas über die
    App selbst: Ist BrewMates ein Tagebuch oder ein Treffpunkt?
+7. **Bier** — gebaut in 0.10.31 als Dimension `beer`, gruppiert nach
+   **Name**. Anders als beim Ort ist das Zusammenfallen hier erwünscht:
+   Dasselbe Bier einmal aus der Community-Datenbank und einmal selbst
+   angelegt hat zwei IDs, ist aber ein Bier. Kam mit der Profil-Übersicht
+   ([Funktion 47](47-profil-uebersicht.md)), die es für die Kachel
+   „Biere" brauchte.
 
 ## 5. Wie es angezeigt wird
 

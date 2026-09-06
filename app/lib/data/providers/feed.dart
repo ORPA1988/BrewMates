@@ -114,6 +114,27 @@ final myDiaryProvider = StreamProvider<List<CheckinDetails>>((ref) {
       );
 });
 
+/// Alle eigenen Check-ins, **ohne Fenster und ohne Suchfilter**.
+///
+/// [myDiaryProvider] ist die Ansicht des Tagebuchs — begrenzt und
+/// durchsuchbar, weil man dort blättert. Wer auswertet, braucht das
+/// Gegenteil: Eine Auswertung über die letzten dreißig Einträge ist keine.
+///
+/// Steht hier und nicht in einem Feature, weil zwei ihn brauchen: die
+/// Statistik und die Profil-Übersicht. Ein Feature, das den Provider
+/// eines anderen importiert, wäre der Cross-Import, den `docs/11`
+/// ausschließt.
+///
+/// Bei einigen tausend Check-ins gehört die Summenbildung nach SQL; der
+/// Schnitt ist dafür vorbereitet, weil `computeStats` nur eine Liste
+/// bekommt.
+final alleEigenenCheckinsProvider =
+    StreamProvider<List<CheckinDetails>>((ref) {
+  final me = ref.watch(meProvider).valueOrNull;
+  if (me == null) return Stream.value(const []);
+  return ref.watch(databaseProvider).watchFeed(onlyProfileId: me.id);
+});
+
 /// Gesamtzahl eigener Check-ins — für „alles geladen?" und Statistiken.
 final myCheckinCountProvider = StreamProvider<int>((ref) {
   final me = ref.watch(meProvider).valueOrNull;
