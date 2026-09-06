@@ -126,7 +126,7 @@ nicht nachlesen.
 
 ## 5. Der Stand
 
-- **Version:** `0.10.24-beta+44` (Beta 0.x bis zum Play-Store-1.0; der
+- **Version:** `0.10.26-beta+46` (Beta 0.x bis zum Play-Store-1.0; der
   Android-`versionCode` zählt immer weiter hoch).
 - **Rückfallpunkte:** `git tag -l "stand/*"` — mindestens zehn lauffähige
   Stände, jeder nach grüner CI getaggt und mit einem Satz beschrieben.
@@ -153,10 +153,11 @@ nicht nachlesen.
   **LinkedIn heißt `linkedin_oidc`**; die alte Variante `linkedin` ist
   bei Supabase abgekündigt, und der falsche Schlüssel ergibt einen
   Knopf, der „provider is not enabled" antwortet.
-- **Drift-Stand v16** (v10 Löschwarteschlange, v11 `checkins.volumeMl`,
+- **Drift-Stand v17** (v10 Löschwarteschlange, v11 `checkins.volumeMl`,
   v12 `story`, v13 `checkins.dirty`, v14 `barcode_volumes`, v15
   `imageSource`/`imageLicense`, v16 `checkins.visibility` +
-  `profiles.defaultVisibility`). Schreibende Aktionen, die offline
+  `profiles.defaultVisibility`, v17 `breweries.state`/`type` +
+  `beers.ogPlato`). Schreibende Aktionen, die offline
   funktionieren sollen, folgen dem Muster `venue_queue.dart` /
   `checkin_delete_queue.dart` (FIFO, idempotent, Verbindungsfehler bricht
   ab, fachlicher Fehler verwirft).
