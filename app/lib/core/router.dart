@@ -35,6 +35,7 @@ import '../features/profile/diary_screen.dart';
 import '../features/stats/stats_screen.dart';
 import '../features/profile/profile_screen.dart';
 import '../features/profile/wishlist_screen.dart';
+import '../features/rueckblick/rueckblick_screen.dart';
 import '../features/scan/scan_screen.dart';
 import '../features/session/beacon_screen.dart';
 import '../features/session/session_detail_screen.dart';
@@ -243,6 +244,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile/stats',
         builder: (_, __) => const StatsScreen(),
+      ),
+      // Dein Bierjahr — Rückblick zum Weitergeben (Funktion 46)
+      GoRoute(
+        path: '/profile/rueckblick',
+        builder: (_, __) => const RueckblickScreen(),
       ),
     ],
   );
