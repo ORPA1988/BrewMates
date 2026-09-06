@@ -126,7 +126,7 @@ nicht nachlesen.
 
 ## 5. Der Stand
 
-- **Version:** `0.10.29-beta+49` (Beta 0.x bis zum Play-Store-1.0; der
+- **Version:** `0.10.30-beta+50` (Beta 0.x bis zum Play-Store-1.0; der
   Android-`versionCode` zählt immer weiter hoch).
 - **Letztes Release:** **`v0.10.29-beta`, 2026-09-06** — signiert mit dem
   Upload-Keystore; es bringt die 55 Abzeichen, den Challenge-Jahresplan

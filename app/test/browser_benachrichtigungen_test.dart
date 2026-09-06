@@ -20,6 +20,7 @@ import 'package:brewmates/data/online/models.dart';
 import 'package:brewmates/data/providers.dart';
 import 'package:brewmates/features/shell/app_shell.dart';
 
+import 'fake_browserfenster.dart';
 import 'fake_online_service.dart';
 
 /// Benachrichtigungen, solange die Web-App offen ist (Issue #63).
@@ -37,7 +38,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late AppDatabase db;
   late FakeOnlineService online;
-  late _FakesFenster fenster;
+  late FakesFenster fenster;
   late StreamController<RemoteNotification> meldungen;
 
   RemoteNotification anfrage() => RemoteNotification(
@@ -56,7 +57,7 @@ void main() {
     db = AppDatabase.memory();
     await CommunitySync(db).importBundledData();
     online = FakeOnlineService();
-    fenster = _FakesFenster();
+    fenster = FakesFenster();
     meldungen = StreamController<RemoteNotification>.broadcast();
   });
 
@@ -205,40 +206,3 @@ void main() {
 }
 
 /// Ein Fenster, das der Test steuert.
-class _FakesFenster implements Browserfenster {
-  final _sichtbarkeit = StreamController<bool>.broadcast();
-  bool _sichtbar = true;
-
-  final List<({String text, String? tag})> gezeigt = [];
-
-  @override
-  String erlaubnis = 'default';
-
-  void sichtbarSetzen(bool wert) {
-    _sichtbar = wert;
-    _sichtbarkeit.add(wert);
-  }
-
-  void dispose() => _sichtbarkeit.close();
-
-  @override
-  bool get benachrichtigungenMoeglich =>
-      erlaubnis != Browserfenster.nichtVerfuegbar;
-
-  @override
-  Future<String> erlaubnisAnfragen() async => erlaubnis;
-
-  @override
-  bool get sichtbar => _sichtbar;
-
-  @override
-  Stream<bool> get sichtbarkeit => _sichtbarkeit.stream;
-
-  @override
-  void zeige({
-    required String text,
-    String? tag,
-    void Function()? beiKlick,
-  }) =>
-      gezeigt.add((text: text, tag: tag));
-}

@@ -185,6 +185,20 @@ class HomeScreen extends ConsumerWidget {
               ),
             ];
           }(),
+          // ------------------------------------------------------------------
+          // Browser-Hinweis: installieren oder Meldungen erlauben (F. 38)
+          // ------------------------------------------------------------------
+          ...() {
+            final hinweis = ref.watch(webHinweisProvider);
+            final angemeldet =
+                ref.watch(onlineUserProvider).valueOrNull != null;
+            // Unangemeldet gibt es nichts zu melden — weder Anfragen noch
+            // Beacons. Der Hinweis wäre dann ein Versprechen ohne Inhalt.
+            if (hinweis == WebHinweis.keiner || !angemeldet) {
+              return const <Widget>[];
+            }
+            return [_WebHinweisKarte(hinweis: hinweis)];
+          }(),
 
           // ------------------------------------------------------------------
           // Hero-Aktionen
@@ -717,5 +731,103 @@ class _Verabredung extends StatelessWidget {
           : 'Auf diesem Gerät geht die Datei nicht direkt; nimm den '
               'Web-Kalender oder trage den Termin von Hand ein.'),
     ));
+  }
+}
+
+/// Der Browser-Hinweis auf der Startseite (Funktion 38).
+///
+/// **Warum er hier steht und nicht im Konto.** Im Konto stehen beide Wege
+/// längst — nur findet sie dort niemand, der nicht ohnehin schon weiß,
+/// dass es sie gibt. Die Startseite ist der einzige Ort, an dem jeder
+/// vorbeikommt.
+///
+/// **Warum er nicht selbst nach der Erlaubnis fragt:** Sie muss aus einer
+/// echten Geste kommen, und der Browser gibt nur einen Versuch. Der
+/// Hinweis führt deshalb zum Knopf im Konto, statt ihn vorwegzunehmen.
+class _WebHinweisKarte extends ConsumerWidget {
+  const _WebHinweisKarte({required this.hinweis});
+
+  final WebHinweis hinweis;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
+    final installieren = hinweis == WebHinweis.installieren;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      child: Card(
+        color: scheme.secondaryContainer,
+        child: ListTile(
+          leading: Text(installieren ? '📲' : '🔔',
+              style: const TextStyle(fontSize: 24)),
+          title: Text(installieren
+              ? 'BrewMates auf den Home-Bildschirm'
+              : 'Meldungen im Browser einschalten'),
+          subtitle: Text(installieren
+              ? 'Dann kommen Anfragen und Beacons als Meldung an. '
+                  'Antippen zeigt, wie es geht.'
+              : 'Neue Anfragen und Beacons, solange ein Tab offen ist. '
+                  'Antippen führt zum Knopf im Konto.'),
+          trailing: IconButton(
+            tooltip: 'Nicht mehr zeigen',
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              ref
+                  .read(browserfensterProvider)
+                  .hinweisWegwischen(webHinweisSchluessel(hinweis));
+              ref.read(webHinweisTickProvider.notifier).state++;
+            },
+          ),
+          isThreeLine: true,
+          onTap: () {
+            if (installieren) {
+              _installationsAnleitung(context);
+            } else {
+              context.push('/account');
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  /// Die Anleitung nennt Safari beim Namen.
+  ///
+  /// Ausgelöst wird der Hinweis von einer Merkmalsprüfung, nicht von der
+  /// Browserkennung — es trifft also im Grundsatz jeden Browser ohne
+  /// `Notification`. In der Praxis ist das iPhone-Safari, und eine
+  /// Anleitung, die sich nicht festlegt, hilft dort niemandem.
+  void _installationsAnleitung(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Zum Home-Bildschirm hinzufügen'),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Auf dem iPhone in Safari:'),
+            SizedBox(height: 8),
+            Text('1. Unten auf das Teilen-Symbol tippen (Kästchen mit '
+                'Pfeil nach oben)'),
+            Text('2. „Zum Home-Bildschirm" wählen'),
+            Text('3. BrewMates von dort öffnen'),
+            SizedBox(height: 12),
+            Text('Danach steht im Konto der Knopf „Benachrichtigungen '
+                'erlauben". Am Rechner geht das auch ohne Installation.'),
+            SizedBox(height: 12),
+            Text('Ist die App ganz geschlossen, kommt nichts an — dafür '
+                'gibt es die Android-App.'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Verstanden'),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -3,7 +3,7 @@
 > **Status:** 🟢 fertig für den festgelegten Zweck — Meldungen erreichen
 > dich, **solange BrewMates in einem Tab offen ist**. Ist der Tab zu,
 > kommt nichts; das ist die bewusste Grenze, nicht eine Lücke.
-> **Seit:** 0.10.11-beta · **Zuletzt geprüft:** 2026-09-03
+> **Seit:** 0.10.11-beta · **Zuletzt geprüft:** 2026-09-06
 
 ## Zielsetzung
 
@@ -22,15 +22,20 @@ startet einen Beacon, und man erfährt es trotzdem.
 
 ## Funktion (Nutzersicht)
 
-1. Im Konto steht — **nur im Browser** — „Benachrichtigungen erlauben".
+1. **Die Startseite sagt, dass es das gibt** — nur im Browser, nur
+   angemeldet, und nur solange es etwas zu tun gibt. Zwei Gesichter, je
+   nach Lage: „Meldungen im Browser einschalten" führt zum Knopf im
+   Konto, „BrewMates auf den Home-Bildschirm" öffnet die Anleitung für
+   das iPhone. Wegwischen merkt sich der Browser dauerhaft
+2. Im Konto steht — **nur im Browser** — „Benachrichtigungen erlauben".
    Ein Tipp, der Browser fragt, fertig
-2. Danach: Liegt BrewMates vorn, erscheint wie bisher das Banner am
+3. Danach: Liegt BrewMates vorn, erscheint wie bisher das Banner am
    unteren Rand. Liegt der Tab hinten, kommt eine Systemmeldung; ein
    Klick holt das Fenster nach vorn und springt an die richtige Stelle
-3. **Ohne Erlaubnis geht nichts verloren:** Was während des Hintergrunds
+4. **Ohne Erlaubnis geht nichts verloren:** Was während des Hintergrunds
    ankam, erscheint beim Zurückkommen als Banner — bei mehreren als
    „3 neue Meldungen, während du weg warst"
-4. Ist der Tab geschlossen, kommt nichts. Dafür gibt es die Android-App
+5. Ist der Tab geschlossen, kommt nichts. Dafür gibt es die Android-App
 
 Zustände, die die App ausspricht statt zu schweigen:
 
@@ -40,6 +45,21 @@ Zustände, die die App ausspricht statt zu schweigen:
 | erlaubt | „Du bekommst sie, solange BrewMates in einem Tab offen ist" |
 | abgelehnt | der Weg zurück über das Schloss-Symbol — die App kann nicht erneut fragen |
 | gibt es nicht (iPhone ohne installierte Web-App) | gar nichts; der Knopf wäre eine Sackgasse |
+
+Und auf der **Startseite**, weil das Konto niemand von selbst aufsucht:
+
+| Lage | Was auf der Startseite steht |
+|---|---|
+| kein Browser (Android-App) | nichts — dort gibt es echten Push |
+| Browser ohne `Notification`, in einem Tab | „BrewMates auf den Home-Bildschirm", mit Anleitung |
+| Browser ohne `Notification`, schon installiert | nichts — die Installation ist geschehen und hat nicht geholfen |
+| noch nicht gefragt | „Meldungen im Browser einschalten", führt ins Konto |
+| erlaubt oder abgelehnt | nichts — beides ist eine Antwort |
+| weggewischt | nichts, dauerhaft und je Hinweis getrennt |
+
+**Der Hinweis fragt nicht selbst.** Die Erlaubnis muss aus einer echten
+Geste kommen und der Browser gibt nur einen Versuch — deshalb führt er
+zum Knopf, statt ihn vorwegzunehmen.
 
 **Auf dem iPhone** stellt Safari `Notification` außerhalb einer
 installierten Web-App nicht bereit. Dort greift Punkt 3: Die Meldungen
@@ -83,9 +103,10 @@ ermittelt werden müssen.
 
 - **Dateien:** `data/push/browserfenster.dart` (Schnittstelle + Weiche),
   `browserfenster_stub.dart` (überall sonst), `browserfenster_web.dart`
-  (Browser), `data/providers/glocke.dart` (drei Provider),
+  (Browser), `data/providers/glocke.dart` (Provider, `webHinweisFuer`),
   `features/shell/app_shell.dart` (Verzweigung),
-  `features/account/account_screen.dart` (Erlaubnis)
+  `features/account/account_screen.dart` (Erlaubnis),
+  `features/home/home_screen.dart` (`_WebHinweisKarte`)
 - **Paket:** `web: ^1.1.1` — reines Dart, kein Plugin, und ohnehin schon
   in genau dieser Fassung als transitive Abhängigkeit aufgelöst; die
   Zeile in `pubspec.yaml` macht sie nur benutzbar
@@ -154,8 +175,16 @@ Vollständig für den festgelegten Zweck.
 Abgesichert durch `test/browser_benachrichtigungen_test.dart` (6 Tests:
 alle drei Zweige, mehrere verpasste Meldungen werden gezählt statt
 gestapelt, kein Banner ohne Inhalt, und ausdrücklich, dass die stumme
-Fassung außerhalb des Browsers nichts ändert) — plus `flutter build web`,
-das das Interop tatsächlich übersetzt.
+Fassung außerhalb des Browsers nichts ändert),
+`test/web_hinweis_test.dart` (7 Tests auf die Verzweigung des Hinweises —
+darunter der Fall „schon installiert und trotzdem keine Meldungen", in
+dem zu schweigen ist, und dass zwei Hinweise getrennt weggewischt werden)
+und `test/web_hinweis_karte_test.dart` (4 Tests auf die Karte selbst:
+sichtbar angemeldet, still unangemeldet, Wegwischen landet im Browser,
+Anleitung öffnet sich) — plus `flutter build web`, das das Interop
+tatsächlich übersetzt.
+
+Der Doppelgänger für alle drei liegt in `test/fake_browserfenster.dart`.
 
 **Was Tests hier nicht können:** die `Notification`-API selbst. Sie
 braucht einen echten Browser und eine erteilte Erlaubnis. Geprüft ist die
@@ -176,11 +205,15 @@ ist ein Aufruf ohne Logik.
 
 ## Offene Punkte / Ideen
 
-- Ein Hinweis beim ersten Anmelden im Browser, dass es den Knopf gibt —
-  heute muss man ihn im Konto finden
+- ~~Ein Hinweis beim ersten Anmelden im Browser, dass es den Knopf gibt~~
+  — erledigt 2026-09-06: die Karte auf der Startseite (siehe oben)
 - ~~Die Glocke hat keinen eigenen Bildschirm~~ — erledigt in 0.10.12
   ([Funktion 29](29-push-benachrichtigungen.md)). Für den Fall „Tab war
   zu" ist sie die eigentliche Antwort, nicht Push: Was währenddessen
   ankam, steht beim nächsten Öffnen in der Liste
-- „Zum Home-Bildschirm hinzufügen" gehört ins iOS-Onboarding — nützlich
-  auch unabhängig von Meldungen
+- ~~„Zum Home-Bildschirm hinzufügen" gehört ins iOS-Onboarding~~ —
+  erledigt 2026-09-06. Ein eigenes Onboarding gibt es nicht und brauchte
+  es nicht: Der Hinweis erscheint dort, wo er hingehört — auf der
+  Startseite, ausgelöst vom **fehlenden `Notification`**, nicht von einer
+  Browserkennung. Das `manifest.json` war längst richtig (`standalone`);
+  gefehlt hat nur der Satz, dass es die Möglichkeit gibt

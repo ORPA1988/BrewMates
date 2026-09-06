@@ -22,12 +22,27 @@ abstract class Browserfenster {
   /// Die echte Fassung im Browser, sonst die stumme.
   factory Browserfenster() = impl.BrowserfensterImpl;
 
+  /// Läuft die App überhaupt in einem Browser?
+  ///
+  /// Die stumme Fassung sagt `false`. Ohne diese Frage ließe sich
+  /// „iPhone-Safari, wo es `Notification` nicht gibt" nicht von „Android-App,
+  /// wo es die Klasse gar nicht braucht" unterscheiden — beide melden
+  /// sonst dasselbe, brauchen aber entgegengesetzte Hinweise.
+  bool get imBrowser;
+
   /// Kennt dieser Browser überhaupt Benachrichtigungen?
   ///
   /// Auf dem iPhone lautet die Antwort außerhalb einer installierten
   /// Web-App **nein** — Safari stellt `Notification` dort nicht bereit.
   /// Das ist keine Einstellung, die jemand ändern könnte.
   bool get benachrichtigungenMoeglich;
+
+  /// Läuft die Seite als installierte Web-App statt in einem Tab?
+  ///
+  /// Auf dem iPhone ist das der Unterschied, an dem alles hängt: Erst die
+  /// Installation über „Zum Home-Bildschirm" stellt `Notification`
+  /// überhaupt bereit. Ist sie schon geschehen und fehlt die Klasse
+  /// trotzdem, hilft kein Hinweis mehr — dann ist zu schweigen.
 
   /// `default` (noch nicht gefragt), `granted`, `denied` — oder
   /// [nichtVerfuegbar], wo es die Sache gar nicht gibt.
@@ -46,6 +61,25 @@ abstract class Browserfenster {
 
   /// Wechsel zwischen Vordergrund und Hintergrund.
   Stream<bool> get sichtbarkeit;
+
+  bool get alsAppInstalliert;
+
+  /// Hat der Mensch diesen Hinweis schon weggewischt?
+  ///
+  /// Liegt im Speicher des Browsers und **überlebt das Neuladen** —
+  /// anders als der Update-Hinweis auf der Startseite, der nur bis zum
+  /// nächsten Start verschwindet. Der Unterschied ist Absicht: Wer sich
+  /// gegen das Installieren entschieden hat, soll nicht bei jedem Öffnen
+  /// erneut gefragt werden.
+  ///
+  /// Außerhalb des Browsers immer `false` — dort gibt es die Hinweise
+  /// nicht, also auch nichts zu merken.
+  bool hinweisWeggewischt(String schluessel);
+
+  /// Merkt sich, dass dieser Hinweis erledigt ist. Scheitert das (privates
+  /// Fenster, gesperrter Speicher), ist das kein Fehler: Dann kommt der
+  /// Hinweis eben wieder.
+  void hinweisWegwischen(String schluessel);
 
   /// Zeigt eine Systemmeldung. Tut nichts, wenn die Erlaubnis fehlt.
   ///

@@ -21,6 +21,9 @@ import 'browserfenster.dart';
 /// Was das kostet: Ist der Tab zu, kommt nichts. Das ist die bewusste
 /// Grenze dieser Lösung, nicht ein Versehen.
 class BrowserfensterImpl implements Browserfenster {
+  @override
+  bool get imBrowser => true;
+
   /// `Notification` gibt es nicht überall. Auf dem iPhone fehlt die
   /// Klasse außerhalb einer installierten Web-App vollständig — ein
   /// Zugriff darauf wirft, statt `denied` zu melden. Deshalb wird das
@@ -28,6 +31,50 @@ class BrowserfensterImpl implements Browserfenster {
   @override
   bool get benachrichtigungenMoeglich =>
       globalContext.has('Notification');
+
+  /// Zwei Wege, weil kein einzelner reicht: `display-mode: standalone`
+  /// ist der Standard und antwortet in Chrome und Firefox; Safari auf dem
+  /// iPhone kennt stattdessen `navigator.standalone`. Gerade dort wird die
+  /// Frage gestellt, also muss beides gefragt werden.
+  @override
+  bool get alsAppInstalliert {
+    try {
+      if (web.window.matchMedia('(display-mode: standalone)').matches) {
+        return true;
+      }
+    } catch (_) {
+      // Ein Browser ohne matchMedia ist nicht installiert — weiterfragen.
+    }
+    final navigator = web.window.navigator as JSObject;
+    if (!navigator.has('standalone')) return false;
+    return navigator.getProperty<JSBoolean?>('standalone'.toJS)?.toDart ??
+        false;
+  }
+
+  /// `localStorage` wirft in manchen Lagen schon beim Zugriff — ein
+  /// privates Fenster, Speicher gesperrt, Kontingent voll. Ein Hinweis,
+  /// der wiederkommt, ist harmloser als eine Startseite, die nicht baut.
+  @override
+  bool hinweisWeggewischt(String schluessel) {
+    try {
+      return web.window.localStorage.getItem(_schluessel(schluessel)) != null;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  @override
+  void hinweisWegwischen(String schluessel) {
+    try {
+      web.window.localStorage.setItem(_schluessel(schluessel), '1');
+    } catch (_) {
+      // Siehe oben: dann kommt der Hinweis beim nächsten Mal wieder.
+    }
+  }
+
+  /// Eigener Namensraum: Die Web-App teilt sich `localStorage` mit allem,
+  /// was sonst unter `orpa1988.github.io` liegt.
+  static String _schluessel(String name) => 'brewmates.hinweis.$name';
 
   @override
   String get erlaubnis => benachrichtigungenMoeglich
